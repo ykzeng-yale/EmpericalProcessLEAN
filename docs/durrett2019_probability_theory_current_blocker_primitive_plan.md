@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V412
+## Live In-Thread Goal Prompt V413
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -13,27 +13,38 @@ below are provenance, not prompt text.
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
 in `StatInference/ProbabilityTheory/Basic.lean`.  Theorem 2.5.10 now has the
-compiled moving-truncation setup for `Y_k = X_k 1_{|X_k| <= k}`: notation for
-`Y_k`, `E Y_k`, and `(Y_k - E Y_k) / k`; measurability, independence, `L^2`,
-and mean-zero support for the scaled centered sequence; and a source-facing
-truncated-average endpoint under the two remaining hypotheses
-`sum Var((Y_k - E Y_k) / k) < infinity` and `E Y_k -> mu`.  Next aggressive
-target: discharge those two real probability estimates and then transfer from
-`T_n/n` to `S_n/n`.  For variance summability, reuse
-mathlib `Probability.StrongLaw.sum_variance_truncation_le`,
+compiled moving-truncation setup for `Y_k = X_k 1_{|X_k| <= k}` and the
+closed-absolute truncation mean-convergence step `E Y_k -> mu` under
+integrability plus identical distribution.  The source-facing truncated-average
+endpoint now needs only the remaining scaled-centered variance summability
+`sum Var((Y_k - E Y_k) / k) < infinity`; after that, transfer from `T_n/n` to
+the original sums `S_n/n`.  For variance summability, reuse mathlib
+`Probability.StrongLaw.sum_variance_truncation_le`,
 `variance_le_expectation_sq`, and local centered-variance wrappers where they
-directly match the Durrett closed-truncation display.  For mean convergence,
-reuse dominated convergence / `tendsto_integral_truncation` style facts.
-Reuse the compiled Chapter 2.1 independence/product-expectation bridges,
-Theorem 2.2.1 variance-sum APIs, V391-V412 first-crossing/block-tail/
-oscillation/pathwise-Cauchy/a.s.-convergence/Kronecker/Cesaro/moving-truncation
-infrastructure, and mathlib `Probability.StrongLaw` truncation lemmas only when
-they shorten the source route.  Do not route back to Theorem 2.4.9, 2.5.5,
-2.5.8, 2.5.9, or deterministic 2.5.10 assembly unless search proves a concrete
-missing source display.
+directly match the Durrett closed-truncation display.  Reuse the compiled
+Chapter 2.1 independence/product-expectation bridges, Theorem 2.2.1
+variance-sum APIs, V391-V413 first-crossing/block-tail/oscillation/
+pathwise-Cauchy/a.s.-convergence/Kronecker/Cesaro/moving-truncation/mean-
+convergence infrastructure, and mathlib `Probability.StrongLaw` truncation
+lemmas only when they shorten the source route.  Do not route back to Theorem
+2.4.9, 2.5.5, 2.5.8, 2.5.9, deterministic 2.5.10 assembly, or the solved
+`E Y_k -> mu` layer unless search proves a concrete missing source display.
 
-Latest verified target V412 packages Durrett Theorem 2.5.10 moving-truncation
-support.  New compiled anchors:
+Latest verified target V413 packages Durrett Theorem 2.5.10 moving-truncation
+mean convergence.  New compiled anchors:
+`durrett2019_theorem_2_5_10_tendsto_integral_fixed_truncation`,
+`durrett2019_theorem_2_5_10_integral_truncated_eq_base_truncated_of_identDistrib`,
+`durrett2019_theorem_2_5_10_truncatedMean_tendsto_of_integrable_identDistrib`,
+and
+`durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_scaled_variance_summable`.
+This discharges the textbook dominated-convergence step
+`E[X_k 1_{|X_k| <= k}] -> mu` for identically distributed integrable random
+variables and plugs it into the V412 truncated-average endpoint.  The remaining
+blockers are now the scaled-centered variance summability and the
+truncated-to-original transfer.
+
+V412 packages Durrett Theorem 2.5.10 moving-truncation support.  Compiled
+anchors:
 `durrett2019_theorem_2_5_10_truncated`,
 `durrett2019_theorem_2_5_10_truncatedMean`,
 `durrett2019_theorem_2_5_10_scaledCenteredTruncated`,
@@ -47,10 +58,7 @@ support.  New compiled anchors:
 and
 `durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_scaled_variance_summable_and_mean_tendsto`.
 This discharges the moving-truncation measurability/independence/L2/mean-zero
-obligations and plugs them into the V411 random-series assembly.  The remaining
-blockers are now narrow: prove the scaled-centered variance summability and
-`E Y_k -> mu`, then add the eventual-equality/transfer from truncated sums
-`T_n` to original sums `S_n`.
+obligations and plugs them into the V411 random-series assembly.
 
 V411 packages the first Durrett Theorem 2.5.10
 random-series strong-law assembly layer.  New compiled anchors:

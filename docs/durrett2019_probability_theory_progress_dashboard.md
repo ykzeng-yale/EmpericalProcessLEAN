@@ -32,12 +32,27 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V412` in
+Route from `Live In-Thread Goal Prompt V413` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`,
-with Theorem 2.5.10 SLLN variance/mean/truncated-to-original source estimates
-next.  V412 packages the moving-truncation setup.  New compiled anchors:
+with Theorem 2.5.10 SLLN variance/truncated-to-original source estimates next.
+V413 packages the moving-truncation mean-convergence step.  New compiled
+anchors:
+`durrett2019_theorem_2_5_10_tendsto_integral_fixed_truncation`,
+`durrett2019_theorem_2_5_10_integral_truncated_eq_base_truncated_of_identDistrib`,
+`durrett2019_theorem_2_5_10_truncatedMean_tendsto_of_integrable_identDistrib`,
+and
+`durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_scaled_variance_summable`.
+This proves the closed-absolute dominated-convergence step
+`E[X_k 1_{|X_k| <= k}] -> mu` under integrability plus identical distribution
+and plugs it into the source-facing truncated-average endpoint.  Next work
+should prove the remaining estimates: summability of
+`Var((Y_k - E Y_k) / k)` and transfer from truncated averages to original
+averages.
+
+Verified route history below is provenance, not live prompt text.  V412
+packages the moving-truncation setup.  Compiled anchors:
 `durrett2019_theorem_2_5_10_truncated`,
 `durrett2019_theorem_2_5_10_truncatedMean`,
 `durrett2019_theorem_2_5_10_scaledCenteredTruncated`,
@@ -52,12 +67,7 @@ and
 `durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_scaled_variance_summable_and_mean_tendsto`.
 This proves that the source moving truncations
 `Y_k = X_k 1_{|X_k| <= k}` supply the measurability, independence, `L^2`, and
-mean-zero hypotheses needed by the V411 random-series assembly.  Next work
-should prove the remaining estimates: summability of
-`Var((Y_k - E Y_k) / k)`, convergence `E Y_k -> mu`, and transfer from
-truncated averages to original averages.
-
-Verified route history below is provenance, not live prompt text.  V411
+mean-zero hypotheses needed by the V411 random-series assembly.  V411
 packages the Kronecker/Cesaro/random-series assembly spine.  Compiled anchors:
 `durrett2019_theorem_2_5_10_centered_average_tendsto_zero_of_scaled_series`,
 `durrett2019_theorem_2_5_10_centered_average_difference_tendsto_zero_of_scaled_series`,

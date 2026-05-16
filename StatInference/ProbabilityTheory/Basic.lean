@@ -5715,6 +5715,108 @@ noncomputable def durrett2019_theorem_2_5_10_truncatedMean
   ∫ ω, durrett2019_theorem_2_5_10_truncated X k ω ∂P
 
 /--
+Durrett 2019, Theorem 2.5.10 support: the fixed closed-absolute truncation
+`X 1_{|X| <= A}` converges in expectation to `X` as `A -> infinity`.
+-/
+theorem durrett2019_theorem_2_5_10_tendsto_integral_fixed_truncation
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : Ω -> ℝ}
+    (hX_meas : Measurable X) (hX_int : Integrable X P) :
+    Tendsto
+      (fun A : ℝ =>
+        ∫ ω, durrett2019_theorem_2_5_8_truncated
+          (fun _ : ℕ => X) A 0 ω ∂P)
+      atTop (𝓝 (∫ ω, X ω ∂P)) := by
+  refine tendsto_integral_filter_of_dominated_convergence
+    (fun ω => |X ω|) ?_ ?_ hX_int.abs ?_
+  · exact Eventually.of_forall fun A =>
+      (durrett2019_theorem_2_5_8_measurable_truncated
+        (X := fun _ : ℕ => X) (A := A) (n := 0) hX_meas).aestronglyMeasurable
+  · exact Eventually.of_forall fun A =>
+      Eventually.of_forall fun ω => by
+        simpa [Real.norm_eq_abs] using
+          durrett2019_theorem_2_5_8_abs_truncated_le_abs
+            (X := fun _ : ℕ => X) (A := A) 0 ω
+  · exact Eventually.of_forall fun ω => by
+      apply tendsto_const_nhds.congr'
+      filter_upwards [Ioi_mem_atTop (|X ω|)] with A hA
+      have hsmall : |X ω| ≤ A := le_of_lt hA
+      exact
+        (durrett2019_theorem_2_5_8_truncated_eq_self_of_abs_le
+          (X := fun _ : ℕ => X) (A := A) (n := 0) (ω := ω) hsmall).symm
+
+/--
+Durrett 2019, Theorem 2.5.10 support: identical distribution identifies the
+mean of the moving truncation of `X_k` with the same truncation level applied
+to `X_0`.
+-/
+theorem durrett2019_theorem_2_5_10_integral_truncated_eq_base_truncated_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (k : ℕ) :
+    (∫ ω, durrett2019_theorem_2_5_10_truncated X k ω ∂P) =
+      ∫ ω,
+        durrett2019_theorem_2_5_8_truncated
+          (fun _ : ℕ => X 0) (k : ℝ) 0 ω ∂P := by
+  let truncMap : ℝ -> ℝ :=
+    fun x => Set.indicator {y : ℝ | |y| ≤ (k : ℝ)} (fun y => y) x
+  have htrunc_meas : Measurable truncMap :=
+    durrett2019_theorem_2_5_8_measurable_truncationMap
+      (A := (k : ℝ))
+  have hident_trunc :
+      _root_.ProbabilityTheory.IdentDistrib
+        (truncMap ∘ X k) (truncMap ∘ X 0) P P :=
+    (hX_ident k).comp htrunc_meas
+  simpa [durrett2019_theorem_2_5_10_truncated,
+    durrett2019_theorem_2_5_8_truncated, truncMap, Function.comp_def]
+    using hident_trunc.integral_eq
+
+/--
+Durrett 2019, Theorem 2.5.10 support: for identically distributed integrable
+random variables, the moving-truncation means `E[X_k 1_{|X_k| <= k}]`
+converge to the common mean.
+-/
+theorem durrett2019_theorem_2_5_10_truncatedMean_tendsto_of_integrable_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {μ : ℝ}
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_int0 : Integrable (X 0) P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hμ : ∫ ω, X 0 ω ∂P = μ) :
+    Tendsto
+      (fun n : ℕ => durrett2019_theorem_2_5_10_truncatedMean P X (n + 1))
+      atTop (𝓝 μ) := by
+  have hfixed :
+      Tendsto
+        (fun A : ℝ =>
+          ∫ ω, durrett2019_theorem_2_5_8_truncated
+            (fun _ : ℕ => X 0) A 0 ω ∂P)
+        atTop (𝓝 μ) := by
+    simpa [hμ] using
+      durrett2019_theorem_2_5_10_tendsto_integral_fixed_truncation
+        (P := P) (X := X 0) (hX_meas 0) hX_int0
+  have hlevels :
+      Tendsto (fun n : ℕ => ((n + 1 : ℕ) : ℝ)) atTop atTop := by
+    have hnat : Tendsto (fun n : ℕ => (n : ℝ)) atTop atTop :=
+      tendsto_natCast_atTop_atTop
+    simpa [Function.comp_def] using (hnat.comp (tendsto_add_atTop_nat 1))
+  have hseq :
+      Tendsto
+        (fun n : ℕ =>
+          ∫ ω, durrett2019_theorem_2_5_8_truncated
+            (fun _ : ℕ => X 0) ((n + 1 : ℕ) : ℝ) 0 ω ∂P)
+        atTop (𝓝 μ) :=
+    hfixed.comp hlevels
+  convert hseq using 1
+  ext n
+  exact
+    durrett2019_theorem_2_5_10_integral_truncated_eq_base_truncated_of_identDistrib
+      (P := P) (X := X) hX_ident (n + 1)
+
+/--
 Durrett 2019, Theorem 2.5.10 notation for the scaled centered moving
 truncation `(Y_k - E Y_k) / k`.
 -/
@@ -5900,6 +6002,36 @@ theorem durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_scaled_varian
         durrett2019_theorem_2_5_10_integral_scaledCenteredTruncated_eq_zero
           (P := P) (X := X) (k := k) (hX_meas k))
       hscaled_var_summable hmean_tendsto
+
+/--
+Durrett 2019, Theorem 2.5.10 source-facing truncated-average endpoint: the
+common integrability and identical-distribution hypotheses discharge the
+textbook step `E Y_k -> mu`.
+-/
+theorem durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_scaled_variance_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {μ : ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_int0 : Integrable (X 0) P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hμ : ∫ ω, X 0 ω ∂P = μ)
+    (hscaled_var_summable :
+      Summable fun k : ℕ =>
+        _root_.ProbabilityTheory.variance
+          (durrett2019_theorem_2_5_10_scaledCenteredTruncated P X (k + 1)) P) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_10_truncated X (k + 1) ω) /
+            ((n + 1 : ℕ) : ℝ))
+        atTop (𝓝 μ) :=
+  durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_scaled_variance_summable_and_mean_tendsto
+    (P := P) (X := X) (μ := μ) hX_indep hX_meas hscaled_var_summable
+    (durrett2019_theorem_2_5_10_truncatedMean_tendsto_of_integrable_identDistrib
+      (P := P) (X := X) (μ := μ) hX_meas hX_int0 hX_ident hμ)
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
