@@ -26865,6 +26865,38 @@ theorem chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_subset_closedB
   Metric.isBounded_closedBall.subset hsubset
 
 /--
+Distance-to-center source certificate for boundedness of the polytope slack
+set.  This is the pointwise-radius form that source geometry often proves
+before packaging it as a closed-ball inclusion.
+-/
+theorem chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_dist_le
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {center : F} {R : ℝ}
+    (hdist : ∀ x : F, x ∈ polytopeSlackSet a b -> dist x center ≤ R) :
+    Bornology.IsBounded (polytopeSlackSet a b) :=
+  chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_subset_closedBall
+    a b (by
+      intro x hx
+      simpa [Metric.mem_closedBall] using hdist x hx)
+
+/--
+Norm-radius source certificate for boundedness of the polytope slack set.
+This matches the common Euclidean statement `‖x - center‖ <= R` for all
+feasible source points.
+-/
+theorem chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_norm_sub_le
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {center : F} {R : ℝ}
+    (hnorm : ∀ x : F, x ∈ polytopeSlackSet a b -> ‖x - center‖ ≤ R) :
+    Bornology.IsBounded (polytopeSlackSet a b) :=
+  chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_dist_le
+    a b (by
+      intro x hx
+      simpa [dist_eq_norm] using hnorm x hx)
+
+/--
 Compact-source-envelope certificate for boundedness of the polytope slack set.
 This lets compact closure/envelope geometry feed the bounded-polytope §13.16
 handoff without first constructing an explicit radius.
@@ -26877,6 +26909,30 @@ theorem chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_subset_isCompa
     (hsubset : polytopeSlackSet a b ⊆ K) :
     Bornology.IsBounded (polytopeSlackSet a b) :=
   hKcompact.isBounded.subset hsubset
+
+/--
+Compact source slack set certificate for boundedness.  This direct form is
+mostly useful for abstract source statements; for strict-interior polytopes,
+the compact-closure version below is usually the natural hypothesis.
+-/
+theorem chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_isCompact
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (hcompact : IsCompact (polytopeSlackSet a b)) :
+    Bornology.IsBounded (polytopeSlackSet a b) :=
+  hcompact.isBounded
+
+/--
+Compact closure certificate for boundedness of the source polytope slack set.
+This is the source-shaped bounded-polytope hypothesis for a strict interior:
+prove compactness of the closure/envelope, then use `subset_closure`.
+-/
+theorem chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_closure_isCompact
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (hcompact : IsCompact (closure (polytopeSlackSet a b))) :
+    Bornology.IsBounded (polytopeSlackSet a b) :=
+  hcompact.isBounded.subset subset_closure
 
 /--
 Chewi Example 13.14, finite-row logarithmic barrier in supplied right-inverse
@@ -44277,6 +44333,110 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
       aRow bSlack hsubset_source)
 
 /--
+Distance-to-center source-space bounded-polytope version of the actual
+preliminary Newton initializer.  This avoids forcing callers to first rewrite
+their radius certificate as an explicit closed-ball subset.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytopeDistBound_autoFloor_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj center : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ} {R : ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hdist_source : ∀ x : F,
+      x ∈ polytopeSlackSet aRow bSlack -> dist x center ≤ R) :
+    ∃ sFloor rho tailBound : ℝ, ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < sFloor ∧
+      0 ≤ rho ∧
+      Real.sqrt (m : ℝ) * (1 + rho) ≤ tailBound ∧
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 :=
+  chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_autoFloor_succ_noFactor_standardConstants
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (xseq := xseq) (tseq := tseq)
+    hxbar0Range hx0 ht0 htstep hnewton_next_source
+    (chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_dist_le
+      aRow bSlack hdist_source)
+
+/--
+Norm-radius source-space bounded-polytope version of the actual preliminary
+Newton initializer.  This matches the textbook-style bounded-domain
+certificate `‖x - center‖ <= R` on the source feasible slack set.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytopeNormSubBound_autoFloor_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj center : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ} {R : ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hnorm_source : ∀ x : F,
+      x ∈ polytopeSlackSet aRow bSlack -> ‖x - center‖ ≤ R) :
+    ∃ sFloor rho tailBound : ℝ, ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < sFloor ∧
+      0 ≤ rho ∧
+      Real.sqrt (m : ℝ) * (1 + rho) ≤ tailBound ∧
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 :=
+  chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_autoFloor_succ_noFactor_standardConstants
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (xseq := xseq) (tseq := tseq)
+    hxbar0Range hx0 ht0 htstep hnewton_next_source
+    (chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_norm_sub_le
+      aRow bSlack hnorm_source)
+
+/--
 Compact-source-envelope bounded-polytope version of the actual preliminary
 Newton initializer.  A compact source envelope containing the slack set gives
 the boundedness source required by the auto-floor endpoint.
@@ -44327,6 +44487,109 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
     hxbar0Range hx0 ht0 htstep hnewton_next_source
     (chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_subset_isCompact
       aRow bSlack hKcompact hsubset_source)
+
+/--
+Compact source slack set version of the actual preliminary Newton initializer.
+This direct compact-set wrapper is mostly useful for abstract source domains;
+for strict-interior polytopes, use the compact-closure wrapper below.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSourcePolytope_autoFloor_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hcompact_source : IsCompact (polytopeSlackSet aRow bSlack)) :
+    ∃ sFloor rho tailBound : ℝ, ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < sFloor ∧
+      0 ≤ rho ∧
+      Real.sqrt (m : ℝ) * (1 + rho) ≤ tailBound ∧
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 :=
+  chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_autoFloor_succ_noFactor_standardConstants
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (xseq := xseq) (tseq := tseq)
+    hxbar0Range hx0 ht0 htstep hnewton_next_source
+    (chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_isCompact
+      aRow bSlack hcompact_source)
+
+/--
+Compact-closure source-space bounded-polytope version of the actual
+preliminary Newton initializer.  This is the natural strict-interior
+bounded-polytope entrypoint: compactness of the closure gives boundedness of
+the open slack set by `subset_closure`.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSourceClosurePolytope_autoFloor_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hcompact_closure : IsCompact (closure (polytopeSlackSet aRow bSlack))) :
+    ∃ sFloor rho tailBound : ℝ, ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < sFloor ∧
+      0 ≤ rho ∧
+      Real.sqrt (m : ℝ) * (1 + rho) ≤ tailBound ∧
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 :=
+  chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_autoFloor_succ_noFactor_standardConstants
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (xseq := xseq) (tseq := tseq)
+    hxbar0Range hx0 ht0 htstep hnewton_next_source
+    (chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_closure_isCompact
+      aRow bSlack hcompact_closure)
 
 /--
 Post-threshold source-centered radius handoff using a single source slack floor.
