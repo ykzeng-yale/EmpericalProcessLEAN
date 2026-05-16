@@ -269,6 +269,8 @@ The least-upper-bound version now compiles as
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_compactSuperset_slackCoordinateUpperBound`,
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_closedBall_slackCoordinateUpperBound`,
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_sourceCenteredRadiusBound`,
+`chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_sourceLocalNormBound`,
+`chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_sourceLocalNormBound_le`,
 and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_bddAboveSlackCoordinateSup_succ_noFactor_standardConstants`,
 with compact feasible-range specialization
@@ -282,7 +284,9 @@ and pointwise compact-envelope upper-bound specialization
 with closed-ball envelope specialization
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_closedBallSlackCoordinateUpperBound_succ_noFactor_standardConstants`
 and source-centered radius specialization
-`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceCenteredRadiusBound_succ_noFactor_standardConstants`.
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceCenteredRadiusBound_succ_noFactor_standardConstants`,
+plus source-local-norm specialization
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceLocalNormBound_succ_noFactor_standardConstants`.
 Use this when the bounded-polytope proof supplies `BddAbove` coordinate images
 or compactness facts.  Prefer the compact-superset form when the strict
 positive-orthant feasible set is open but contained in a compact
@@ -296,7 +300,11 @@ coordinate upper bounds `slack_i(center) + R` by `PiLp.norm_apply_le`.  Prefer
 the source-centered radius specialization when the radius center is exactly
 `(polytopeSlackCLM aRow).rangeRestrict xbar0`; it feeds the closed-ball bridge
 via `Metric.mem_closedBall` and leaves only the scalar comparison
-`R <= (B - 1) * slack_i(xbar0)`.  The compact bridge reuses Mathlib
+`R <= (B - 1) * slack_i(xbar0)`.  Prefer the source-local-norm specialization
+when the boundedness certificate is a uniform Dikin radius around the source
+range point; it reuses
+`chewi1314_polytopeSlackNegLog_range_slackRatio_le_one_add_of_sourceLocalNorm_le`
+and leaves only `1 + r <= B` plus the usual tail budget.  The compact bridge reuses Mathlib
 `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,
 `csSup_le_csSup`, `csSup_le`, `isCompact_closedBall`, `PiLp.norm_apply_le`,
 `Metric.mem_closedBall`, and coordinate continuity from `PiLp.continuous_apply`.

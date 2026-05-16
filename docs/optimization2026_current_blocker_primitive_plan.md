@@ -770,6 +770,8 @@ The newest `BddAbove`/`sSup` version adds
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_compactSuperset_slackCoordinateUpperBound`,
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_closedBall_slackCoordinateUpperBound`,
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_sourceCenteredRadiusBound`,
+`chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_sourceLocalNormBound`,
+`chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_sourceLocalNormBound_le`,
 and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_bddAboveSlackCoordinateSup_succ_noFactor_standardConstants`,
 with the compact-entry wrapper
@@ -783,7 +785,9 @@ and the pointwise envelope-upper-bound entrypoint
 now followed by the closed-ball envelope entrypoint
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_closedBallSlackCoordinateUpperBound_succ_noFactor_standardConstants`
 and the source-centered radius entrypoint
-`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceCenteredRadiusBound_succ_noFactor_standardConstants`.
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceCenteredRadiusBound_succ_noFactor_standardConstants`,
+plus the Dikin/source-local-norm entrypoint
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceLocalNormBound_succ_noFactor_standardConstants`.
 This lets compactness or boundedness proofs feed Mathlib least-upper-bound
 data directly: prove the feasible translated slack range is compact (or show
 it sits inside a compact closure/envelope, or show each coordinate image is
@@ -803,7 +807,14 @@ can show
 `dist y ((polytopeSlackCLM aRow).rangeRestrict xbar0) <= R` for every
 feasible translated slack-range point; it reuses `Metric.mem_closedBall` to
 feed the closed-ball bridge and reduces the remaining scalar work to
-`R <= (B - 1) * slack_i(xbar0)`.
+`R <= (B - 1) * slack_i(xbar0)`.  When the geometry is naturally in the
+logarithmic-barrier/Dikin metric, prefer the source-local-norm wrapper: a
+uniform bound
+`localNorm rangeHess xbar0Range (y - xbar0Range) <= r` gives slack-ratio
+budget `1 + r` by reusing
+`chewi1314_polytopeSlackNegLog_range_slackRatio_le_one_add_of_sourceLocalNorm_le`;
+the remaining scalar work is `1 + r <= B` and
+`sqrt(m) * B <= tailBound`.
 
 Archived route log below: the active Chapter 13 lane has moved beyond
 Example 13.14's finite-row logarithmic barrier closure into Chewi Lemma
