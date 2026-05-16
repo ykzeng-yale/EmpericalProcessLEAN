@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V387
+## Live In-Thread Goal Prompt V388
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,21 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V387 adds canonical iid product-space pointwise
+Latest verified target V388 lifts the finite-cutpoint burn-in step in
+Durrett Theorem 2.4.9 to product-law and canonical source forms:
+`durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_shift_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt_canonical_iid`,
+and
+`durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_canonical_iid`.
+These consume the compiled Chapter 2.1.11 product-law/canonical iid packages
+and the pointwise empirical-CDF endpoints.  Next work should not rebuild
+finite-cutpoint product-law consumers; move to the next global Theorem 2.4.9
+middle/tail or outer-a.s. empirical-CDF source display that still lacks a
+direct product-law/canonical entry.
+
+V387 adds canonical iid product-space pointwise
 Theorem 2.4.9 displays for both the empirical CDF and the left empirical CDF:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae_canonical_iid`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae_canonical_iid`,

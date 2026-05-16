@@ -6417,6 +6417,139 @@ theorem durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_
     div_eq_mul_inv, mul_comm] using hn c hc
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step from a full infinite-product joint law:
+a finite set of cutpoints has one random burn-in after which the closed and
+strict-left empirical-CDF errors are small.
+-/
+theorem durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (cutpoints : Finset ℝ)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c ∈ cutpoints,
+          |empiricalDistributionFunction (samplePath X ω n) c -
+              ProbabilityTheory.cdf P c| < epsilon ∧
+            |empiricalLeftDistributionFunction (samplePath X ω n) c -
+              Function.leftLim (ProbabilityTheory.cdf P) c| < epsilon := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt
+      X cutpoints hepsilon hSource.1
+      (fun _ _ hij => hSource.2.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from a full infinite-product joint law,
+in exact one-based textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (cutpoints : Finset ℝ)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c ∈ cutpoints,
+          |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+              ProbabilityTheory.cdf P c| < epsilon ∧
+            |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X (i + 1) ω) -
+              Function.leftLim (ProbabilityTheory.cdf P) c| < epsilon := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_iIndepFun
+      X cutpoints hepsilon hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from a shifted infinite-product joint
+law, in exact one-based textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_shift_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (cutpoints : Finset ℝ)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c ∈ cutpoints,
+          |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+              ProbabilityTheory.cdf P c| < epsilon ∧
+            |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X (i + 1) ω) -
+              Function.leftLim (ProbabilityTheory.cdf P) c| < epsilon := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  filter_upwards
+    [durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt
+      (fun i => fun ω => X (i + 1) ω) cutpoints hepsilon hSource.1
+      (fun _ _ hij => hSource.2.indepFun hij)] with ω hω
+  filter_upwards [hω] with n hn c hc
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum,
+    empiricalLeftDistributionFunction_samplePath_eq_range_sum,
+    div_eq_mul_inv, mul_comm] using hn c hc
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples:
+a finite set of cutpoints has one random burn-in after which the closed and
+strict-left empirical-CDF errors are small.
+-/
+theorem durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (cutpoints : Finset ℝ)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      ∀ᶠ n in atTop,
+        ∀ c ∈ cutpoints,
+          |empiricalDistributionFunction
+              (samplePath (fun i => fun sample : ℕ -> ℝ => sample i) sample n) c -
+              ProbabilityTheory.cdf (P : Measure ℝ) c| < epsilon ∧
+            |empiricalLeftDistributionFunction
+              (samplePath (fun i => fun sample : ℕ -> ℝ => sample i) sample n) c -
+              Function.leftLim (ProbabilityTheory.cdf (P : Measure ℝ)) c| < epsilon := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  exact
+    durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt
+      (fun i => fun sample : ℕ -> ℝ => sample i) cutpoints hepsilon hCoord.1
+      (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+exact one-based textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (cutpoints : Finset ℝ)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c ∈ cutpoints,
+          |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realHalfLineIndicator c (sample (i + 1)) -
+              ProbabilityTheory.cdf (P : Measure ℝ) c| < epsilon ∧
+            |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (sample (i + 1)) -
+              Function.leftLim (ProbabilityTheory.cdf (P : Measure ℝ)) c| < epsilon := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  exact
+    durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_iIndepFun
+      (fun i => fun sample : ℕ -> ℝ => sample i) cutpoints hepsilon hCoord.1 hCoord.2.1
+
+/--
 Durrett 2019, Theorem 2.4.9 proof step: deterministic middle-partition
 squeeze.
 

@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V387`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V388`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -37,8 +37,14 @@ independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V387 adds canonical
-iid product-space pointwise displays for both the empirical CDF and the left
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V388 lifts the
+finite-cutpoint burn-in step in Theorem 2.4.9 to product-law and canonical
+source forms.  The new wrappers consume the compiled Chapter 2.1.11
+product-law/canonical iid packages and the pointwise empirical-CDF endpoints.
+Next work should not rebuild finite-cutpoint product-law consumers; move to
+the next global Theorem 2.4.9 middle/tail or outer-a.s. empirical-CDF source
+display that still lacks a direct product-law/canonical entry.  V387 adds
+canonical iid product-space pointwise displays for both the empirical CDF and the left
 empirical CDF, in zero-based and one-based sample notation, by consuming the
 compiled Chapter 2.1.11 canonical coordinate iid package on `P^N`.  Next work
 should not rebuild these canonical pointwise displays; move to a new
