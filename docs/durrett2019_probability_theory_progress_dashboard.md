@@ -32,16 +32,16 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V430` in
+Route from `Live In-Thread Goal Prompt V431` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
-V430 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
-`1 < p < 2`.  In addition to the V421-V429 endpoint, Tonelli/Fubini,
-scalar-kernel, and scalar-summability reducers, the two kernels now rewrite to
-canonical Nat-indicator threshold sums.  The endpoint wrappers only need the
-two quantitative p-series estimates on these canonical sums.  New compiled
-anchors through V430:
+V431 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
+`1 < p < 2`.  In addition to the V421-V430 endpoint, Tonelli/Fubini,
+scalar-kernel, scalar-summability, and canonical threshold reducers, the two
+kernels now rewrite to standard rpow Nat-indicator p-series sums.  The endpoint
+wrappers only need the two quantitative p-series estimates on these standard
+rpow sums.  New compiled anchors through V431:
 `durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
@@ -97,9 +97,16 @@ and
 `durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_eq_nat_indicator`,
 `durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_nat_indicator`,
 and
-`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_nat_indicator`.
+`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_nat_indicator`,
+`durrett2019_theorem_2_5_12_normalizer_inv_eq_rpow_neg`,
+`durrett2019_theorem_2_5_12_normalizer_sq_inv_eq_rpow_neg`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_rpow_indicator`,
+`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_eq_rpow_indicator`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_indicator`,
+and
+`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_rpow_indicator`.
 The current blocker is now only ordinary real p-series/integral comparison for
-the two canonical Nat-indicator `tsum` inequalities.
+the two standard rpow Nat-indicator `tsum` inequalities.
 
 Verified route history below is provenance, not live prompt text.  V425 added
 the truncated-mean Kronecker layer reducing normalized mean convergence to
