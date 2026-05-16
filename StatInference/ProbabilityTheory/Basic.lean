@@ -8785,6 +8785,173 @@ theorem durrett2019_theorem_2_5_12_truncatedSqKernel_nonneg
   exact mul_nonneg (inv_nonneg.2 (sq_nonneg _)) (sq_nonneg _)
 
 /--
+Durrett 2019, Theorem 2.5.12 scalar threshold algebra: the tail-first kernel
+condition `(k+1)^(1/p) < x` is equivalent to `k+1 < x^p`.
+-/
+theorem durrett2019_theorem_2_5_12_tailFirstKernel_threshold_iff
+    {p x : ℝ} (hp_pos : 0 < p) (hx_nonneg : 0 ≤ x) (k : ℕ) :
+    durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < x ↔
+      (((k + 1 : ℕ) : ℝ) < x ^ p) := by
+  simpa [durrett2019_theorem_2_5_12_truncationLevel,
+    durrett2019_theorem_2_5_12_normalizer, one_div] using
+    Real.rpow_inv_lt_iff_of_pos
+      (x := (((k + 1 : ℕ) : ℝ))) (y := x) (z := p)
+      (by positivity) hx_nonneg hp_pos
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar threshold algebra: the truncated-square
+condition `|x| <= (k+1)^(1/p)` is equivalent to `|x|^p <= k+1`.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedSqKernel_threshold_iff
+    {p x : ℝ} (hp_pos : 0 < p) (k : ℕ) :
+    |x| ≤ durrett2019_theorem_2_5_12_truncationLevel p (k + 1) ↔
+      |x| ^ p ≤ (((k + 1 : ℕ) : ℝ)) := by
+  simpa [durrett2019_theorem_2_5_12_truncationLevel,
+    durrett2019_theorem_2_5_12_normalizer, one_div] using
+    Real.le_rpow_inv_iff_of_pos
+      (x := |x|) (y := (((k + 1 : ℕ) : ℝ))) (z := p)
+      (abs_nonneg x) (by positivity) hp_pos
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar tail-first kernel in canonical
+`k+1 < x^p` indicator form.
+-/
+theorem durrett2019_theorem_2_5_12_tailFirstKernel_eq_nat_indicator
+    {p x : ℝ} (hp_pos : 0 < p) (hx_nonneg : 0 ≤ x) (k : ℕ) :
+    durrett2019_theorem_2_5_12_tailFirstKernel p x k =
+      Set.indicator
+        {j : ℕ | (((j + 1 : ℕ) : ℝ) < x ^ p)}
+        (fun j : ℕ =>
+          x / durrett2019_theorem_2_5_12_normalizer p (j + 1)) k := by
+  by_cases htail :
+      durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < x
+  · have hpow :
+        (((k + 1 : ℕ) : ℝ) < x ^ p) :=
+      (durrett2019_theorem_2_5_12_tailFirstKernel_threshold_iff
+        (p := p) (x := x) hp_pos hx_nonneg k).1 htail
+    have hk_mem : k ∈ {j : ℕ | (((j + 1 : ℕ) : ℝ) < x ^ p)} := by
+      simpa [Nat.cast_add, Nat.cast_one] using hpow
+    rw [Set.indicator_of_mem hk_mem]
+    simp [durrett2019_theorem_2_5_12_tailFirstKernel, htail]
+  · have hpow :
+        ¬ (((k + 1 : ℕ) : ℝ) < x ^ p) := by
+      intro h
+      exact htail
+        ((durrett2019_theorem_2_5_12_tailFirstKernel_threshold_iff
+          (p := p) (x := x) hp_pos hx_nonneg k).2 h)
+    have hk_not : k ∉ {j : ℕ | (((j + 1 : ℕ) : ℝ) < x ^ p)} := by
+      intro hk
+      exact hpow (by simpa [Nat.cast_add, Nat.cast_one] using hk)
+    rw [Set.indicator_of_notMem hk_not]
+    simp [durrett2019_theorem_2_5_12_tailFirstKernel, htail]
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar truncated-square kernel in canonical
+`|x|^p <= k+1` indicator form.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedSqKernel_eq_nat_indicator
+    {p x : ℝ} (hp_pos : 0 < p) (k : ℕ) :
+    durrett2019_theorem_2_5_12_truncatedSqKernel p x k =
+      Set.indicator
+        {j : ℕ | |x| ^ p ≤ (((j + 1 : ℕ) : ℝ))}
+        (fun j : ℕ =>
+          (((durrett2019_theorem_2_5_12_normalizer p (j + 1)) ^ 2)⁻¹) *
+            x ^ 2) k := by
+  by_cases htrunc :
+      |x| ≤ durrett2019_theorem_2_5_12_truncationLevel p (k + 1)
+  · have hpow :
+        |x| ^ p ≤ (((k + 1 : ℕ) : ℝ)) :=
+      (durrett2019_theorem_2_5_12_truncatedSqKernel_threshold_iff
+        (p := p) (x := x) hp_pos k).1 htrunc
+    have hk_mem : k ∈ {j : ℕ | |x| ^ p ≤ (((j + 1 : ℕ) : ℝ))} := by
+      simpa [Nat.cast_add, Nat.cast_one] using hpow
+    rw [Set.indicator_of_mem hk_mem]
+    simp [durrett2019_theorem_2_5_12_truncatedSqKernel,
+      durrett2019_theorem_2_5_12_scalarTruncated, htrunc]
+  · have hpow :
+        ¬ |x| ^ p ≤ (((k + 1 : ℕ) : ℝ)) := by
+      intro h
+      exact htrunc
+        ((durrett2019_theorem_2_5_12_truncatedSqKernel_threshold_iff
+          (p := p) (x := x) hp_pos k).2 h)
+    have hk_not : k ∉ {j : ℕ | |x| ^ p ≤ (((j + 1 : ℕ) : ℝ))} := by
+      intro hk
+      exact hpow (by simpa [Nat.cast_add, Nat.cast_one] using hk)
+    rw [Set.indicator_of_notMem hk_not]
+    simp [durrett2019_theorem_2_5_12_truncatedSqKernel,
+      durrett2019_theorem_2_5_12_scalarTruncated, htrunc]
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar tail-first `tsum` in canonical threshold
+form.
+-/
+theorem durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_nat_indicator
+    {p x : ℝ} (hp_pos : 0 < p) (hx_nonneg : 0 ≤ x) :
+    (∑' k : ℕ, durrett2019_theorem_2_5_12_tailFirstKernel p x k) =
+      ∑' k : ℕ,
+        Set.indicator
+          {j : ℕ | (((j + 1 : ℕ) : ℝ) < x ^ p)}
+          (fun j : ℕ =>
+            x / durrett2019_theorem_2_5_12_normalizer p (j + 1)) k := by
+  refine tsum_congr fun k => ?_
+  exact durrett2019_theorem_2_5_12_tailFirstKernel_eq_nat_indicator
+    (p := p) (x := x) hp_pos hx_nonneg k
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar truncated-square `tsum` in canonical
+threshold form.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_eq_nat_indicator
+    {p x : ℝ} (hp_pos : 0 < p) :
+    (∑' k : ℕ, durrett2019_theorem_2_5_12_truncatedSqKernel p x k) =
+      ∑' k : ℕ,
+        Set.indicator
+          {j : ℕ | |x| ^ p ≤ (((j + 1 : ℕ) : ℝ))}
+          (fun j : ℕ =>
+            (((durrett2019_theorem_2_5_12_normalizer p (j + 1)) ^ 2)⁻¹) *
+              x ^ 2) k := by
+  refine tsum_congr fun k => ?_
+  exact durrett2019_theorem_2_5_12_truncatedSqKernel_eq_nat_indicator
+    (p := p) (x := x) hp_pos k
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar tail-first bound consumer in canonical
+threshold form.
+-/
+theorem durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_nat_indicator
+    {p C x : ℝ} (hp_pos : 0 < p) (hx_nonneg : 0 ≤ x)
+    (hbound :
+      (∑' k : ℕ,
+        Set.indicator
+          {j : ℕ | (((j + 1 : ℕ) : ℝ) < x ^ p)}
+          (fun j : ℕ =>
+            x / durrett2019_theorem_2_5_12_normalizer p (j + 1)) k) ≤
+        C * x ^ p) :
+    (∑' k : ℕ, durrett2019_theorem_2_5_12_tailFirstKernel p x k) ≤
+      C * x ^ p := by
+  rwa [durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_nat_indicator
+    (p := p) (x := x) hp_pos hx_nonneg]
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar truncated-square bound consumer in
+canonical threshold form.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_nat_indicator
+    {p C x : ℝ} (hp_pos : 0 < p)
+    (hbound :
+      (∑' k : ℕ,
+        Set.indicator
+          {j : ℕ | |x| ^ p ≤ (((j + 1 : ℕ) : ℝ))}
+          (fun j : ℕ =>
+            (((durrett2019_theorem_2_5_12_normalizer p (j + 1)) ^ 2)⁻¹) *
+              x ^ 2) k) ≤
+        C * |x| ^ p) :
+    (∑' k : ℕ, durrett2019_theorem_2_5_12_truncatedSqKernel p x k) ≤
+      C * |x| ^ p := by
+  rwa [durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_eq_nat_indicator
+    (p := p) (x := x) hp_pos]
+
+/--
 Durrett 2019, Theorem 2.5.12 scalar tail-first-moment kernel is eventually
 zero, since the normalizer diverges.
 -/

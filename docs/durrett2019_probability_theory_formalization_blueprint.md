@@ -27,17 +27,18 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V429`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V430`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V429 advances
+consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V430 advances
 Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the endpoint
-reducers through V428 are compiled, and scalar summability is now proved for
-both remaining scalar kernels.  The source wrappers now only require the
-quantitative real `tsum` inequalities.  New compiled anchors through V429:
+reducers through V429 are compiled, and the two scalar kernels now rewrite to
+canonical Nat-indicator threshold sums.  The source wrappers now only require
+the quantitative p-series estimates on these canonical sums.  New compiled
+anchors through V430:
 `durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
@@ -84,10 +85,18 @@ and
 `durrett2019_theorem_2_5_12_truncatedSqKernel_summable`,
 `durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_tailFirstKernel_tsum_bound`,
 and
-`durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_truncatedSqKernel_tsum_bound`.
+`durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_truncatedSqKernel_tsum_bound`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_threshold_iff`,
+`durrett2019_theorem_2_5_12_truncatedSqKernel_threshold_iff`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_eq_nat_indicator`,
+`durrett2019_theorem_2_5_12_truncatedSqKernel_eq_nat_indicator`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_nat_indicator`,
+`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_eq_nat_indicator`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_nat_indicator`,
+and
+`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_nat_indicator`.
 The next source work is only the ordinary real p-series/integral comparison
-for the two `tsum` inequalities for `tailFirstKernel` and
-`truncatedSqKernel`.
+for the two canonical Nat-indicator `tsum` inequalities.
 
 Verified route history below is provenance, not live prompt text.  V425 added
 the truncated-mean Kronecker layer reducing normalized mean convergence to

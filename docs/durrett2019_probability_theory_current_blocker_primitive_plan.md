@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V429
+## Live In-Thread Goal Prompt V430
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,20 +12,33 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V429 advances Durrett
-Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: scalar summability
-is now compiled for both `durrett2019_theorem_2_5_12_tailFirstKernel` and
-`durrett2019_theorem_2_5_12_truncatedSqKernel`, using eventual finite support,
-mathlib `Real.summable_nat_rpow_inv`, and the local normalizer divergence.
-The base tail/truncated-square wrappers now only need the quantitative real
-`tsum` estimates.  Next aggressive target: prove those two real scalar `tsum`
-bounds via mathlib p-series and integral-comparison APIs.  The exact real
-goals are
+in `StatInference/ProbabilityTheory/Basic.lean`.  V430 advances Durrett
+Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the scalar kernels
+now have canonical threshold forms rewriting `(k+1)^(1/p) < x` to
+`k+1 < x^p` and `|x| <= (k+1)^(1/p)` to `|x|^p <= k+1`, plus `tsum`
+consumers for these Nat-indicator forms.  Next aggressive target: prove the
+two quantitative p-series estimates directly for these canonical Nat-indicator
+sums via mathlib finite partial-sum/tail and integral-comparison APIs.  The
+exact real goals are
 `sum_k x 1_{(k+1)^(1/p) < x} / (k+1)^(1/p) <= C x^p` for `x >= 0`, `1 < p`,
 and `sum_k x^2 1_{x <= (k+1)^(1/p)} / (k+1)^(2/p) <= C x^p` for `x >= 0`,
 `p < 2`.  Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V430 adds the Theorem 2.5.12 canonical scalar-threshold
+layer.  New compiled anchors:
+`durrett2019_theorem_2_5_12_tailFirstKernel_threshold_iff`,
+`durrett2019_theorem_2_5_12_truncatedSqKernel_threshold_iff`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_eq_nat_indicator`,
+`durrett2019_theorem_2_5_12_truncatedSqKernel_eq_nat_indicator`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_nat_indicator`,
+`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_eq_nat_indicator`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_nat_indicator`,
+and
+`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_nat_indicator`.
+The remaining 2.5.12 blocker is now the ordinary p-series finite partial-sum
+and tail estimates on those canonical Nat-indicator sums.
 
 Latest verified target V429 adds the Theorem 2.5.12 scalar summability layer.
 New compiled anchors:
