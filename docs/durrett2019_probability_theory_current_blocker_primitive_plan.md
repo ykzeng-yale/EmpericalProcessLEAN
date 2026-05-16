@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V391
+## Live In-Thread Goal Prompt V392
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,22 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V391 starts the Durrett Theorem 2.5.5 Kolmogorov
+Latest verified target V392 adds the single first-crossing square/mass lower
+bound for Durrett Theorem 2.5.5:
+`durrett2019_theorem_2_5_5_firstCrossingBlockSet_sq_le`,
+`durrett2019_theorem_2_5_5_firstCrossing_sq_mul_measureReal_le_integral`,
+and
+`durrett2019_theorem_2_5_5_firstCrossing_sq_mul_measureReal_le_integral_oneBased`.
+These show that each first-crossing event contributes at least
+`x^2 * P(A_m)` to the squared partial-sum integral.  Next aggressive target:
+sum this over the disjoint first-crossing events and combine it with the
+V391 mixed-term zero to assemble the full Theorem 2.5.5 display.  Do not
+return to Theorem 2.4.9 source-entry plumbing unless search proves a concrete
+missing display.
+
+## Recent Verified Route Notes
+
+V391 starts the Durrett Theorem 2.5.5 Kolmogorov
 maximal-inequality proof route by packaging the first-crossing mixed-term
 calculation:
 `durrett2019_theorem_2_5_5_firstCrossingBlockSet`,
@@ -34,8 +49,6 @@ prove the square-integral lower-bound/mass inequality over the disjoint
 first-crossing events, then assemble the full Theorem 2.5.5 display.  Do not
 return to Theorem 2.4.9 source-entry plumbing unless search proves a concrete
 missing display.
-
-## Recent Verified Route Notes
 
 V390 adds the direct countable supplied-partition and
 one-based outer-a.s. product-law/canonical route for Durrett Theorem 2.4.9:
@@ -3273,6 +3286,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V391` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V392` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

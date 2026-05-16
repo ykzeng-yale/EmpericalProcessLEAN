@@ -1414,6 +1414,118 @@ theorem durrett2019_theorem_2_5_5_measurableSet_firstCrossingBlockSet
         measurableSet_lt (hprefix j) measurable_const)
 
 /--
+Durrett 2019, Theorem 2.5.5 support: on the first-crossing block set, the
+terminal partial-sum square dominates the squared threshold.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossingBlockSet_sq_le
+    {m : ℕ} {x : ℝ} (hx_nonneg : 0 ≤ x)
+    {z : ((i : Finset.range m) -> ℝ)}
+    (hz : z ∈ durrett2019_theorem_2_5_5_firstCrossingBlockSet m x) :
+    x ^ 2 ≤ (∑ i : Finset.range m, z i) ^ 2 := by
+  have hcross : x ≤ |∑ i : Finset.range m, z i| := hz.1
+  have hsq_abs : x ^ 2 ≤ |∑ i : Finset.range m, z i| ^ 2 :=
+    (sq_le_sq₀ hx_nonneg (abs_nonneg _)).2 hcross
+  simpa [sq_abs] using hsq_abs
+
+/--
+Durrett 2019, Theorem 2.5.5 support: the first-crossing event contributes at
+least `x^2 * P(A_m)` to the integral of the squared stopped partial sum.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_sq_mul_measureReal_le_integral
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i))
+    {m : ℕ} {x : ℝ} (hx_nonneg : 0 ≤ x)
+    (hS_sq_int : Integrable
+      (fun ω => (∑ i : Finset.range m, X i ω) ^ 2) P) :
+    x ^ 2 *
+        P.real
+          {ω : Ω |
+            (fun i : Finset.range m => X i ω) ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x} ≤
+      ∫ ω,
+        Set.indicator
+          {ω' : Ω |
+            (fun i : Finset.range m => X i ω') ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+          (fun ω' : Ω => (∑ i : Finset.range m, X i ω') ^ 2) ω ∂P := by
+  let A : Set Ω :=
+    {ω : Ω |
+      (fun i : Finset.range m => X i ω) ∈
+        durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+  have hcoords :
+      Measurable (fun ω : Ω => fun i : Finset.range m => X i ω) :=
+    measurable_pi_lambda _ fun i => hX_meas i
+  have hA : MeasurableSet A := by
+    dsimp [A]
+    exact
+      (durrett2019_theorem_2_5_5_measurableSet_firstCrossingBlockSet m x).preimage
+        hcoords
+  have hleft_int : Integrable (Set.indicator A (fun _ : Ω => x ^ 2)) P :=
+    (integrable_const (x ^ 2)).indicator hA
+  have hright_int :
+      Integrable
+        (Set.indicator A
+          (fun ω : Ω => (∑ i : Finset.range m, X i ω) ^ 2)) P :=
+    hS_sq_int.indicator hA
+  have hpoint :
+      ∀ ω : Ω,
+        Set.indicator A (fun _ : Ω => x ^ 2) ω ≤
+          Set.indicator A
+            (fun ω' : Ω => (∑ i : Finset.range m, X i ω') ^ 2) ω := by
+    intro ω
+    by_cases hω : ω ∈ A
+    · have hsq :
+          x ^ 2 ≤ (∑ i : Finset.range m, X i ω) ^ 2 := by
+        exact
+          durrett2019_theorem_2_5_5_firstCrossingBlockSet_sq_le
+            (m := m) (x := x) hx_nonneg (z := fun i : Finset.range m => X i ω)
+            (by simpa [A] using hω)
+      simpa [Set.indicator_of_mem hω] using hsq
+    · simp [Set.indicator_of_notMem hω]
+  have hconst_integral :
+      ∫ ω, Set.indicator A (fun _ : Ω => x ^ 2) ω ∂P =
+        P.real A * x ^ 2 := by
+    simpa [smul_eq_mul] using
+      (integral_indicator_const (μ := P) (s := A) (e := x ^ 2) hA)
+  calc
+    x ^ 2 * P.real A =
+        ∫ ω, Set.indicator A (fun _ : Ω => x ^ 2) ω ∂P := by
+          rw [hconst_integral]
+          ring
+    _ ≤ ∫ ω,
+        Set.indicator A
+          (fun ω' : Ω => (∑ i : Finset.range m, X i ω') ^ 2) ω ∂P :=
+          integral_mono hleft_int hright_int hpoint
+
+/--
+Durrett 2019, Theorem 2.5.5 support in one-based textbook notation: the
+first-crossing event contributes at least `x^2 * P(A_m)` for the shifted
+source sequence `X_1, X_2, ...`.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_sq_mul_measureReal_le_integral_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i))
+    {m : ℕ} {x : ℝ} (hx_nonneg : 0 ≤ x)
+    (hS_sq_int : Integrable
+      (fun ω => (∑ i : Finset.range m, X (i + 1) ω) ^ 2) P) :
+    x ^ 2 *
+        P.real
+          {ω : Ω |
+            (fun i : Finset.range m => X (i + 1) ω) ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x} ≤
+      ∫ ω,
+        Set.indicator
+          {ω' : Ω |
+            (fun i : Finset.range m => X (i + 1) ω') ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+          (fun ω' : Ω => (∑ i : Finset.range m, X (i + 1) ω') ^ 2) ω ∂P :=
+  durrett2019_theorem_2_5_5_firstCrossing_sq_mul_measureReal_le_integral
+    (P := P) (X := fun i => fun ω => X (i + 1) ω)
+    (fun i => hX_meas (i + 1)) hx_nonneg hS_sq_int
+
+/--
 Durrett 2019, Theorem 2.5.5 support: the mixed term for the first-crossing
 event vanishes.  This is the source-shaped instance of Theorems 2.1.10 and
 2.1.13 used in the proof of Kolmogorov's maximal inequality.
