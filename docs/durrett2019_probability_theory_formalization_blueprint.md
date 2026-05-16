@@ -27,13 +27,29 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V399`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V400`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current active frontier for this goal cycle: Durrett Theorem 2.5.5 Kolmogorov
-maximal inequality in `StatInference/ProbabilityTheory/Basic.lean`.  V399 adds
+Current active frontier for this goal cycle: Durrett Theorem 2.5.6 convergence
+of random series in `StatInference/ProbabilityTheory/Basic.lean`.  V400 adds
+the final source-style statement of Kolmogorov's maximal inequality and the
+first Theorem 2.5.6 block estimate:
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_inequality`.  Its hypotheses
+match the one-based textbook statement over `i in Finset.Icc 1 n`: independent
+random variables, coordinate measurability, `MemLp (X_i) 2`, and mean zero.
+The new support theorem
+`durrett2019_theorem_2_5_6_finite_block_kolmogorov_maximal_bound` applies
+Theorem 2.5.5 to the shifted block `X_{M+1}, ..., X_N` and rewrites the RHS
+using the compiled Theorem 2.2.1 variance-sum API.  This closes the
+front-facing Theorem 2.5.5 package and starts Theorem 2.5.6.  Next work should
+lift the finite block estimate toward the textbook limit step
+`P(sup_{m >= M} |S_m - S_M| > eps) <= eps^{-2} *
+sum_{i=M+1}^\infty Var(X_i)`, then package the Cauchy/a.s. convergence
+endpoint.
+
+Verified route history below is provenance, not live prompt text.  V399 adds
 `L^2` source-side reduction for Theorem 2.5.5:
 `durrett2019_theorem_2_5_5_partialSum_memLp_two_of_increment_memLp_two`,
 `durrett2019_theorem_2_5_5_partialSum_sq_integrable_of_increment_memLp_two`,
@@ -44,12 +60,7 @@ maximal inequality in `StatInference/ProbabilityTheory/Basic.lean`.  V399 adds
 and its one-based wrapper.  The front-facing textbook display now only needs
 independence, coordinate measurability, finite-range `MemLp X_i 2`, and
 finite-range mean zero; partial-square, terminal-square, future-integrability,
-and mixed-term integrability obligations are generated internally.  Next work
-should either package the final source statement in the exact Durrett
-hypothesis style, or move forward to the next theorem using 2.5.5 after
-checking source anchors.
-
-Verified route history below is provenance, not live prompt text.  V398 adds
+and mixed-term integrability obligations are generated internally.  V398 adds
 source-facing increment mean-zero wrappers:
 `durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_mean_zero`
 and

@@ -3024,6 +3024,45 @@ theorem durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment
       hx_pos hX_mem hX_zero
 
 /--
+Durrett 2019, Theorem 2.5.5, Kolmogorov's maximal inequality in the
+one-based textbook hypothesis style: if `X_1, ..., X_n` are independent,
+mean-zero, and square-integrable, then the maximal partial-sum crossing
+probability is bounded by `x^{-2} Var(S_n)`.
+-/
+theorem durrett2019_theorem_2_5_5_kolmogorov_maximal_inequality
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {n : ℕ} {x : ℝ} (hx_pos : 0 < x)
+    (hX_mem : ∀ i ∈ Finset.Icc 1 n, MemLp (X i) 2 P)
+    (hX_zero : ∀ i ∈ Finset.Icc 1 n, ∫ ω, X i ω ∂P = 0) :
+    P.real
+        (durrett2019_theorem_2_5_5_maxCrossingEvent
+          (fun i => fun ω => X (i + 1) ω) n x) ≤
+      (x ^ 2)⁻¹ *
+        _root_.ProbabilityTheory.variance
+          (fun ω => ∑ k ∈ Finset.range n, X (k + 1) ω) P := by
+  have hX_mem_range :
+      ∀ i ∈ Finset.range n, MemLp (X (i + 1)) 2 P := by
+    intro i hi
+    have hiIcc : i + 1 ∈ Finset.Icc 1 n := by
+      exact Finset.mem_Icc.mpr
+        ⟨Nat.succ_le_succ (Nat.zero_le i), Nat.succ_le_of_lt (Finset.mem_range.mp hi)⟩
+    exact hX_mem (i + 1) hiIcc
+  have hX_zero_range :
+      ∀ i ∈ Finset.range n, ∫ ω, X (i + 1) ω ∂P = 0 := by
+    intro i hi
+    have hiIcc : i + 1 ∈ Finset.Icc 1 n := by
+      exact Finset.mem_Icc.mpr
+        ⟨Nat.succ_le_succ (Nat.zero_le i), Nat.succ_le_of_lt (Finset.mem_range.mp hi)⟩
+    exact hX_zero (i + 1) hiIcc
+  exact
+    durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_memLp_two_mean_zero_oneBased
+      (P := P) (X := X) hX_indep hX_meas (n := n) (x := x)
+      hx_pos hX_mem_range hX_zero_range
+
+/--
 Durrett 2019, Theorem 2.1.15, product-space CDF convolution form.
 
 For independent coordinates with laws `μ` and `ν`, the distribution function
@@ -3514,6 +3553,94 @@ theorem durrett2019_theorem_2_2_1_variance_rangeSum_of_iIndepFun
       ∑ i ∈ Finset.range n, _root_.ProbabilityTheory.variance (X i) P :=
   durrett2019_theorem_2_2_1_variance_finsetSum_of_iIndepFun
     (P := P) (X := X) (s := Finset.range n) hX_indep hX
+
+/--
+Durrett 2019, Theorem 2.5.6 support: applying Kolmogorov's maximal inequality
+to the shifted block `X_{M+1}, ..., X_N` gives the finite block maximal
+variance bound used to prove almost sure convergence of random series.
+-/
+theorem durrett2019_theorem_2_5_6_finite_block_kolmogorov_maximal_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {M N : ℕ} (hMN : M ≤ N) {eps : ℝ} (heps_pos : 0 < eps)
+    (hX_mem : ∀ i ∈ Finset.Icc (M + 1) N, MemLp (X i) 2 P)
+    (hX_zero : ∀ i ∈ Finset.Icc (M + 1) N, ∫ ω, X i ω ∂P = 0) :
+    P.real
+        (durrett2019_theorem_2_5_5_maxCrossingEvent
+          (fun i => fun ω => X (M + (i + 1)) ω) (N - M) eps) ≤
+      (eps ^ 2)⁻¹ *
+        ∑ i ∈ Finset.range (N - M),
+          _root_.ProbabilityTheory.variance (X (M + (i + 1))) P := by
+  have hshift_inj : Function.Injective (fun i : ℕ => M + i) := by
+    intro a b h
+    exact Nat.add_left_cancel h
+  have hshift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (M + i) ω) :=
+    _root_.ProbabilityTheory.iIndepFun.precomp hshift_inj hX_indep
+  have hblock_mem_Icc :
+      ∀ i ∈ Finset.Icc 1 (N - M), MemLp (X (M + i)) 2 P := by
+    intro i hi
+    have hi_mem : M + i ∈ Finset.Icc (M + 1) N := by
+      have hi_bounds := Finset.mem_Icc.mp hi
+      refine Finset.mem_Icc.mpr ⟨?_, ?_⟩
+      · exact Nat.add_le_add_left hi_bounds.1 M
+      · have hupper : M + i ≤ M + (N - M) :=
+          Nat.add_le_add_left hi_bounds.2 M
+        simpa [Nat.add_sub_of_le hMN] using hupper
+    exact hX_mem (M + i) hi_mem
+  have hblock_zero_Icc :
+      ∀ i ∈ Finset.Icc 1 (N - M), ∫ ω, X (M + i) ω ∂P = 0 := by
+    intro i hi
+    have hi_mem : M + i ∈ Finset.Icc (M + 1) N := by
+      have hi_bounds := Finset.mem_Icc.mp hi
+      refine Finset.mem_Icc.mpr ⟨?_, ?_⟩
+      · exact Nat.add_le_add_left hi_bounds.1 M
+      · have hupper : M + i ≤ M + (N - M) :=
+          Nat.add_le_add_left hi_bounds.2 M
+        simpa [Nat.add_sub_of_le hMN] using hupper
+    exact hX_zero (M + i) hi_mem
+  have hbase :
+      P.real
+          (durrett2019_theorem_2_5_5_maxCrossingEvent
+            (fun i => fun ω => X (M + (i + 1)) ω) (N - M) eps) ≤
+        (eps ^ 2)⁻¹ *
+          _root_.ProbabilityTheory.variance
+            (fun ω => ∑ k ∈ Finset.range (N - M), X (M + (k + 1)) ω) P :=
+    durrett2019_theorem_2_5_5_kolmogorov_maximal_inequality
+      (P := P) (X := fun i => fun ω => X (M + i) ω)
+      hshift_indep (fun i => hX_meas (M + i)) (n := N - M) (x := eps)
+      heps_pos hblock_mem_Icc hblock_zero_Icc
+  have hblock_succ_inj : Function.Injective (fun i : ℕ => M + (i + 1)) := by
+    intro a b h
+    have h' : a + 1 = b + 1 := Nat.add_left_cancel h
+    exact Nat.succ_injective h'
+  have hblock_succ_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (M + (i + 1)) ω) :=
+    _root_.ProbabilityTheory.iIndepFun.precomp hblock_succ_inj hX_indep
+  have hblock_mem_range :
+      ∀ i ∈ Finset.range (N - M), MemLp (X (M + (i + 1))) 2 P := by
+    intro i hi
+    have hi_mem : M + (i + 1) ∈ Finset.Icc (M + 1) N := by
+      refine Finset.mem_Icc.mpr ⟨?_, ?_⟩
+      · exact Nat.add_le_add_left (Nat.succ_le_succ (Nat.zero_le i)) M
+      · have hi_succ : i + 1 ≤ N - M := Nat.succ_le_of_lt (Finset.mem_range.mp hi)
+        have hupper : M + (i + 1) ≤ M + (N - M) :=
+          Nat.add_le_add_left hi_succ M
+        simpa [Nat.add_sub_of_le hMN] using hupper
+    exact hX_mem (M + (i + 1)) hi_mem
+  have hvar_sum :
+      _root_.ProbabilityTheory.variance
+          (fun ω => ∑ k ∈ Finset.range (N - M), X (M + (k + 1)) ω) P =
+        ∑ i ∈ Finset.range (N - M),
+          _root_.ProbabilityTheory.variance (X (M + (i + 1))) P :=
+    durrett2019_theorem_2_2_1_variance_rangeSum_of_iIndepFun
+      (P := P) (X := fun i => fun ω => X (M + (i + 1)) ω)
+      hblock_succ_indep hblock_mem_range
+  simpa [hvar_sum] using hbase
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the

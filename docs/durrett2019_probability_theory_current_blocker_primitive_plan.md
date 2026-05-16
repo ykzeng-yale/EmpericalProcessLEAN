@@ -4,20 +4,36 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V399
+## Live In-Thread Goal Prompt V400
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
 below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Immediate lane: Durrett Theorem 2.5.5 Kolmogorov maximal
-inequality in `StatInference/ProbabilityTheory/Basic.lean`.  Reuse the
-compiled Chapter 2.1 independence/product-expectation bridges and the
-V391-V399 first-crossing infrastructure; do not route back to Theorem 2.4.9
+synced `main`.  Immediate lane: Durrett Theorem 2.5.6 convergence of random
+series in `StatInference/ProbabilityTheory/Basic.lean`.  Reuse the compiled
+Chapter 2.1 independence/product-expectation bridges, Theorem 2.2.1
+variance-sum APIs, and V391-V400 first-crossing infrastructure; do not route
+back to Theorem 2.4.9 or 2.5.5 source packaging
 unless search proves a concrete missing source display.
 
-Latest verified target V399 adds `L^2` source-side reduction for Theorem
+Latest verified target V400 adds the final source-style statement of
+Kolmogorov's maximal inequality and the first Theorem 2.5.6 block estimate:
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_inequality`.  Its hypotheses
+match the one-based textbook statement over `i in Finset.Icc 1 n`: independent
+random variables, coordinate measurability, `MemLp (X_i) 2`, and mean zero.
+The new support theorem
+`durrett2019_theorem_2_5_6_finite_block_kolmogorov_maximal_bound` applies
+Theorem 2.5.5 to the shifted block `X_{M+1}, ..., X_N` and rewrites the RHS
+using the compiled Theorem 2.2.1 variance-sum API.  This closes the
+front-facing Theorem 2.5.5 package and starts Theorem 2.5.6.  Next aggressive
+target: lift the finite block estimate toward the textbook limit step
+`P(sup_{m >= M} |S_m - S_M| > eps) <= eps^{-2} *
+sum_{i=M+1}^\infty Var(X_i)`, then package the Cauchy/a.s. convergence
+endpoint.
+
+V399 adds `L^2` source-side reduction for Theorem
 2.5.5:
 `durrett2019_theorem_2_5_5_partialSum_memLp_two_of_increment_memLp_two`,
 `durrett2019_theorem_2_5_5_partialSum_sq_integrable_of_increment_memLp_two`,
@@ -28,10 +44,7 @@ Latest verified target V399 adds `L^2` source-side reduction for Theorem
 and its one-based wrapper.  The front-facing textbook display now only needs
 independence, coordinate measurability, finite-range `MemLp X_i 2`, and
 finite-range mean zero; partial-square, terminal-square, future-integrability,
-and mixed-term integrability obligations are generated internally.  Next
-aggressive target: either package the final source statement in the exact
-Durrett hypothesis style, or move forward to the next theorem using 2.5.5,
-after checking source anchors and avoiding any return to solved 2.4.9 plumbing.
+and mixed-term integrability obligations are generated internally.
 
 V398 adds source-facing increment mean-zero wrappers:
 `durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_mean_zero`
@@ -62,8 +75,8 @@ first-crossing bridges.
 
 ## Recent Verified Route Notes
 
-V397 through V399 close the theorem-facing probability display and the main
-source-side integrability packaging for Durrett Theorem 2.5.5.  V395 adds the
+V397 through V400 close the theorem-facing probability display and the main
+source-side packaging for Durrett Theorem 2.5.5.  V395 adds the
 square-expansion upper-comparison layer:
 `durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_add_mixed_le_terminalSq`,
 `durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral_of_mixed_zero`,
@@ -3357,6 +3370,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V399` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V400` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
