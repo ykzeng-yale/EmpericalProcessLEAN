@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V428
+## Live In-Thread Goal Prompt V429
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,19 +12,34 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V428 advances Durrett
-Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: scalar kernel
-definitions now bridge ordinary real `Summable`/`tsum` estimates into the
-V427 Tonelli/Fubini wrappers and then into the original normalized-sum
-endpoint.  Next aggressive target: prove the real scalar summability and
-`tsum` bounds for `durrett2019_theorem_2_5_12_tailFirstKernel` and
-`durrett2019_theorem_2_5_12_truncatedSqKernel` via mathlib p-series and
-integral-comparison APIs.  The exact real goals are
+in `StatInference/ProbabilityTheory/Basic.lean`.  V429 advances Durrett
+Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: scalar summability
+is now compiled for both `durrett2019_theorem_2_5_12_tailFirstKernel` and
+`durrett2019_theorem_2_5_12_truncatedSqKernel`, using eventual finite support,
+mathlib `Real.summable_nat_rpow_inv`, and the local normalizer divergence.
+The base tail/truncated-square wrappers now only need the quantitative real
+`tsum` estimates.  Next aggressive target: prove those two real scalar `tsum`
+bounds via mathlib p-series and integral-comparison APIs.  The exact real
+goals are
 `sum_k x 1_{(k+1)^(1/p) < x} / (k+1)^(1/p) <= C x^p` for `x >= 0`, `1 < p`,
 and `sum_k x^2 1_{x <= (k+1)^(1/p)} / (k+1)^(2/p) <= C x^p` for `x >= 0`,
 `p < 2`.  Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V429 adds the Theorem 2.5.12 scalar summability layer.
+New compiled anchors:
+`durrett2019_theorem_2_5_12_tailFirstKernel_eventually_eq_zero`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_hasFiniteSupport`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_summable`,
+`durrett2019_theorem_2_5_12_normalizer_sq_inv_summable`,
+`durrett2019_theorem_2_5_12_truncatedSqKernel_le_sq_majorant`,
+`durrett2019_theorem_2_5_12_truncatedSqKernel_summable`,
+`durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_tailFirstKernel_tsum_bound`,
+and
+`durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_truncatedSqKernel_tsum_bound`.
+The remaining 2.5.12 blocker is no longer scalar summability; it is the two
+ordinary real `tsum` inequalities displayed above.
 
 Latest verified target V428 adds the Theorem 2.5.12 real scalar-kernel bridge
 layer.  New compiled anchors:
