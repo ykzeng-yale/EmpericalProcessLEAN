@@ -27,15 +27,32 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V411`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V412`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
 consequences in `StatInference/ProbabilityTheory/Basic.lean`, with Theorem
-2.5.10 SLLN moving-truncation source obligations next.  V411 packages the
-Kronecker/Cesaro/random-series assembly spine.  New compiled anchors:
+2.5.10 SLLN variance/mean/truncated-to-original source estimates next.  V412
+packages the moving-truncation setup.  New compiled anchors:
+`durrett2019_theorem_2_5_10_truncated`,
+`durrett2019_theorem_2_5_10_truncatedMean`,
+`durrett2019_theorem_2_5_10_scaledCenteredTruncated`,
+`durrett2019_theorem_2_5_10_measurable_truncated`,
+`durrett2019_theorem_2_5_10_iIndepFun_truncated_of_iIndepFun`,
+`durrett2019_theorem_2_5_10_truncated_memLp_two_of_measurable`,
+`durrett2019_theorem_2_5_10_measurable_scaledCenteredTruncated`,
+`durrett2019_theorem_2_5_10_scaledCenteredTruncated_memLp_two_of_measurable`,
+`durrett2019_theorem_2_5_10_integral_scaledCenteredTruncated_eq_zero`,
+`durrett2019_theorem_2_5_10_iIndepFun_scaledCenteredTruncated_of_iIndepFun`,
+and
+`durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_scaled_variance_summable_and_mean_tendsto`.
+The remaining source work is now narrow: prove scaled-centered variance
+summability, prove `E Y_k -> mu`, and transfer from `T_n/n` to `S_n/n`.
+
+Verified route history below is provenance, not live prompt text.  V411
+packages the Kronecker/Cesaro/random-series assembly spine.  Compiled anchors:
 `durrett2019_theorem_2_5_10_centered_average_tendsto_zero_of_scaled_series`,
 `durrett2019_theorem_2_5_10_centered_average_difference_tendsto_zero_of_scaled_series`,
 `durrett2019_theorem_2_5_10_mean_average_tendsto_of_tendsto`,
@@ -49,8 +66,7 @@ and instantiate Durrett's moving truncation `Y_k = X_k 1_{|X_k| <= k}`, prove
 the scaled centered hypotheses, prove `E Y_k -> mu`, and transfer from
 `T_n/n` back to `S_n/n`.
 
-Verified route history below is provenance, not live prompt text.  V410
-packages Durrett Theorem 2.5.9 deterministic Kronecker support.  Compiled
+V410 packages Durrett Theorem 2.5.9 deterministic Kronecker support.  Compiled
 anchors:
 `durrett2019_theorem_2_5_9_kronecker_summation_by_parts`,
 `durrett2019_theorem_2_5_9_kronecker_ratio_eq`,

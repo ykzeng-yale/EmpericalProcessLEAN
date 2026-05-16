@@ -32,13 +32,33 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V411` in
+Route from `Live In-Thread Goal Prompt V412` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`,
-with Theorem 2.5.10 SLLN moving-truncation source obligations next.  V411
-packages the Kronecker/Cesaro/random-series assembly spine.  New compiled
-anchors:
+with Theorem 2.5.10 SLLN variance/mean/truncated-to-original source estimates
+next.  V412 packages the moving-truncation setup.  New compiled anchors:
+`durrett2019_theorem_2_5_10_truncated`,
+`durrett2019_theorem_2_5_10_truncatedMean`,
+`durrett2019_theorem_2_5_10_scaledCenteredTruncated`,
+`durrett2019_theorem_2_5_10_measurable_truncated`,
+`durrett2019_theorem_2_5_10_iIndepFun_truncated_of_iIndepFun`,
+`durrett2019_theorem_2_5_10_truncated_memLp_two_of_measurable`,
+`durrett2019_theorem_2_5_10_measurable_scaledCenteredTruncated`,
+`durrett2019_theorem_2_5_10_scaledCenteredTruncated_memLp_two_of_measurable`,
+`durrett2019_theorem_2_5_10_integral_scaledCenteredTruncated_eq_zero`,
+`durrett2019_theorem_2_5_10_iIndepFun_scaledCenteredTruncated_of_iIndepFun`,
+and
+`durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_scaled_variance_summable_and_mean_tendsto`.
+This proves that the source moving truncations
+`Y_k = X_k 1_{|X_k| <= k}` supply the measurability, independence, `L^2`, and
+mean-zero hypotheses needed by the V411 random-series assembly.  Next work
+should prove the remaining estimates: summability of
+`Var((Y_k - E Y_k) / k)`, convergence `E Y_k -> mu`, and transfer from
+truncated averages to original averages.
+
+Verified route history below is provenance, not live prompt text.  V411
+packages the Kronecker/Cesaro/random-series assembly spine.  Compiled anchors:
 `durrett2019_theorem_2_5_10_centered_average_tendsto_zero_of_scaled_series`,
 `durrett2019_theorem_2_5_10_centered_average_difference_tendsto_zero_of_scaled_series`,
 `durrett2019_theorem_2_5_10_mean_average_tendsto_of_tendsto`,
@@ -54,8 +74,7 @@ discharge the actual source proof obligations for
 `Y_k = X_k 1_{|X_k| <= k}`: moving truncation, variance summability,
 dominated-convergence mean convergence, and transfer from `T_n/n` to `S_n/n`.
 
-Verified route history below is provenance, not live prompt text.  V410
-packages the deterministic Chapter 2.5 Kronecker lemma route.  Compiled
+V410 packages the deterministic Chapter 2.5 Kronecker lemma route.  Compiled
 anchors:
 `durrett2019_theorem_2_5_9_kronecker_summation_by_parts`,
 `durrett2019_theorem_2_5_9_kronecker_ratio_eq`,

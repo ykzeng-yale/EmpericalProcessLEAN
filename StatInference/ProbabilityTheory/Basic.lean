@@ -5698,6 +5698,210 @@ theorem durrett2019_theorem_2_5_10_ae_average_tendsto_of_scaled_centered_summabl
       (P := P) (Y := Y) (m := m) (μ := μ) hscaled_series hm
 
 /--
+Durrett 2019, Theorem 2.5.10 moving truncation notation:
+`Y_k = X_k 1_{|X_k| <= k}`.
+-/
+noncomputable def durrett2019_theorem_2_5_10_truncated
+    {Ω : Type u} (X : ℕ -> Ω -> ℝ) (k : ℕ) : Ω -> ℝ :=
+  durrett2019_theorem_2_5_8_truncated X (k : ℝ) k
+
+/--
+Durrett 2019, Theorem 2.5.10 notation for the moving-truncation mean
+`m_k = E Y_k`.
+-/
+noncomputable def durrett2019_theorem_2_5_10_truncatedMean
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> Ω -> ℝ) (k : ℕ) : ℝ :=
+  ∫ ω, durrett2019_theorem_2_5_10_truncated X k ω ∂P
+
+/--
+Durrett 2019, Theorem 2.5.10 notation for the scaled centered moving
+truncation `(Y_k - E Y_k) / k`.
+-/
+noncomputable def durrett2019_theorem_2_5_10_scaledCenteredTruncated
+    {Ω : Type u} [MeasurableSpace Ω] (P : Measure Ω)
+    (X : ℕ -> Ω -> ℝ) (k : ℕ) : Ω -> ℝ :=
+  fun ω =>
+    (durrett2019_theorem_2_5_10_truncated X k ω -
+      durrett2019_theorem_2_5_10_truncatedMean P X k) / (k : ℝ)
+
+/--
+Durrett 2019, Theorem 2.5.10 support: moving truncations are measurable.
+-/
+theorem durrett2019_theorem_2_5_10_measurable_truncated
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X : ℕ -> Ω -> ℝ} {k : ℕ}
+    (hX : Measurable (X k)) :
+    Measurable (durrett2019_theorem_2_5_10_truncated X k) :=
+  durrett2019_theorem_2_5_8_measurable_truncated
+    (X := X) (A := (k : ℝ)) (n := k) hX
+
+/--
+Durrett 2019, Theorem 2.5.10 support: independence is preserved by the moving
+truncation operation.
+-/
+theorem durrett2019_theorem_2_5_10_iIndepFun_truncated_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.iIndepFun (μ := P)
+      (fun k : ℕ => durrett2019_theorem_2_5_10_truncated X k) := by
+  have hcomp :=
+    durrett2019_theorem_2_1_10_iIndepFun_comp
+      (P := P) (X := X) hX_indep
+      (f := fun k : ℕ =>
+        fun x : ℝ => Set.indicator {y : ℝ | |y| ≤ (k : ℝ)} (fun y => y) x)
+      (fun k => durrett2019_theorem_2_5_8_measurable_truncationMap
+        (A := (k : ℝ)))
+  simpa [durrett2019_theorem_2_5_10_truncated,
+    durrett2019_theorem_2_5_8_truncated, Function.comp_def] using hcomp
+
+/--
+Durrett 2019, Theorem 2.5.10 support: moving truncations are bounded and hence
+belong to `L^2`.
+-/
+theorem durrett2019_theorem_2_5_10_truncated_memLp_two_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {k : ℕ}
+    (hX : Measurable (X k)) :
+    MemLp (durrett2019_theorem_2_5_10_truncated X k) (2 : ℝ≥0∞) P :=
+  durrett2019_theorem_2_5_8_truncated_memLp_two_of_measurable
+    (P := P) (X := X) (A := (k : ℝ)) (n := k) hX
+
+/--
+Durrett 2019, Theorem 2.5.10 support: the scaled centered moving truncations
+are measurable.
+-/
+theorem durrett2019_theorem_2_5_10_measurable_scaledCenteredTruncated
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {k : ℕ}
+    (hX : Measurable (X k)) :
+    Measurable (durrett2019_theorem_2_5_10_scaledCenteredTruncated P X k) := by
+  exact
+    ((durrett2019_theorem_2_5_10_measurable_truncated
+      (X := X) (k := k) hX).sub measurable_const).div_const _
+
+/--
+Durrett 2019, Theorem 2.5.10 support: the scaled centered moving truncations
+belong to `L^2`.
+-/
+theorem durrett2019_theorem_2_5_10_scaledCenteredTruncated_memLp_two_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {k : ℕ}
+    (hX : Measurable (X k)) :
+    MemLp (durrett2019_theorem_2_5_10_scaledCenteredTruncated P X k)
+      (2 : ℝ≥0∞) P := by
+  have htrunc :
+      MemLp (durrett2019_theorem_2_5_10_truncated X k) (2 : ℝ≥0∞) P :=
+    durrett2019_theorem_2_5_10_truncated_memLp_two_of_measurable
+      (P := P) (X := X) (k := k) hX
+  simpa [durrett2019_theorem_2_5_10_scaledCenteredTruncated] using
+    (htrunc.sub (memLp_const (c :=
+      durrett2019_theorem_2_5_10_truncatedMean P X k))).mul_const ((k : ℝ)⁻¹)
+
+/--
+Durrett 2019, Theorem 2.5.10 support: scaled centered moving truncations have
+mean zero.
+-/
+theorem durrett2019_theorem_2_5_10_integral_scaledCenteredTruncated_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {k : ℕ}
+    (hX : Measurable (X k)) :
+    ∫ ω, durrett2019_theorem_2_5_10_scaledCenteredTruncated P X k ω ∂P = 0 := by
+  have htrunc_mem :
+      MemLp (durrett2019_theorem_2_5_10_truncated X k) (2 : ℝ≥0∞) P :=
+    durrett2019_theorem_2_5_10_truncated_memLp_two_of_measurable
+      (P := P) (X := X) (k := k) hX
+  have htrunc_int :
+      Integrable (durrett2019_theorem_2_5_10_truncated X k) P :=
+    htrunc_mem.integrable one_le_two
+  change
+    ∫ (ω : Ω),
+      (durrett2019_theorem_2_5_10_truncated X k ω -
+        durrett2019_theorem_2_5_10_truncatedMean P X k) / (k : ℝ) ∂P = 0
+  simp only [div_eq_mul_inv]
+  rw [integral_mul_const]
+  have hcenter :
+      ∫ (ω : Ω),
+        (durrett2019_theorem_2_5_10_truncated X k ω -
+          durrett2019_theorem_2_5_10_truncatedMean P X k) ∂P = 0 := by
+    rw [integral_sub htrunc_int (integrable_const _)]
+    simp [durrett2019_theorem_2_5_10_truncatedMean, integral_const,
+      probReal_univ, smul_eq_mul]
+  simp [hcenter]
+
+/--
+Durrett 2019, Theorem 2.5.10 support: independence is preserved after moving
+truncation, centering, and scaling by the deterministic factor `1 / k`.
+-/
+theorem durrett2019_theorem_2_5_10_iIndepFun_scaledCenteredTruncated_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.iIndepFun (μ := P)
+      (fun k : ℕ => durrett2019_theorem_2_5_10_scaledCenteredTruncated P X k) := by
+  have htrunc_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun k : ℕ => durrett2019_theorem_2_5_10_truncated X k) :=
+    durrett2019_theorem_2_5_10_iIndepFun_truncated_of_iIndepFun
+      (P := P) (X := X) hX_indep
+  have hcomp :=
+    durrett2019_theorem_2_1_10_iIndepFun_comp
+      (P := P)
+      (X := fun k : ℕ => durrett2019_theorem_2_5_10_truncated X k)
+      htrunc_indep
+      (f := fun k : ℕ => fun y : ℝ =>
+        (y - durrett2019_theorem_2_5_10_truncatedMean P X k) / (k : ℝ))
+      (fun _ => (measurable_id.sub measurable_const).div_const _)
+  simpa [durrett2019_theorem_2_5_10_scaledCenteredTruncated,
+    Function.comp_def] using hcomp
+
+/--
+Durrett 2019, Theorem 2.5.10 source-facing truncated-average endpoint: once
+the scaled centered moving truncations have summable variances and the
+truncated means tend to `mu`, the averages of
+`Y_k = X_k 1_{|X_k| <= k}` tend to `mu` almost surely.
+-/
+theorem durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_scaled_variance_summable_and_mean_tendsto
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {μ : ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hscaled_var_summable :
+      Summable fun k : ℕ =>
+        _root_.ProbabilityTheory.variance
+          (durrett2019_theorem_2_5_10_scaledCenteredTruncated P X (k + 1)) P)
+    (hmean_tendsto :
+      Tendsto
+        (fun n : ℕ => durrett2019_theorem_2_5_10_truncatedMean P X (n + 1))
+        atTop (𝓝 μ)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_10_truncated X (k + 1) ω) /
+            ((n + 1 : ℕ) : ℝ))
+        atTop (𝓝 μ) := by
+  exact
+    durrett2019_theorem_2_5_10_ae_average_tendsto_of_scaled_centered_summable_variance_and_mean_tendsto
+      (P := P)
+      (Y := durrett2019_theorem_2_5_10_truncated X)
+      (m := durrett2019_theorem_2_5_10_truncatedMean P X)
+      (μ := μ)
+      (durrett2019_theorem_2_5_10_iIndepFun_scaledCenteredTruncated_of_iIndepFun
+        (P := P) (X := X) hX_indep)
+      (fun k =>
+        durrett2019_theorem_2_5_10_measurable_scaledCenteredTruncated
+          (P := P) (X := X) (k := k) (hX_meas k))
+      (fun k =>
+        durrett2019_theorem_2_5_10_scaledCenteredTruncated_memLp_two_of_measurable
+          (P := P) (X := X) (k := k) (hX_meas k))
+      (fun k =>
+        durrett2019_theorem_2_5_10_integral_scaledCenteredTruncated_eq_zero
+          (P := P) (X := X) (k := k) (hX_meas k))
+      hscaled_var_summable hmean_tendsto
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
