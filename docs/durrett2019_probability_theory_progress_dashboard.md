@@ -32,14 +32,20 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V383` in
+Route from `Live In-Thread Goal Prompt V384` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Chapter 2.1
 independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V383 adds the
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V384 consumes the V382
+shifted infinite-product law bridge in the one-based Durrett 2.4.9 endpoints:
+the new `*_of_shift_hasLaw_infinitePi_oneBased` wrappers take a joint law
+directly for `fun i => X (i + 1)` and feed the compiled GC/outer
+empirical-CDF route.  Next work should not rebuild these shifted-joint-law
+endpoints; move to another genuine Chapter 2.1/2.4.9 source display or a
+missing theorem-sized consumer.  V383 adds the
 Theorem 2.1.10/2.1.13 mixed-term bridge used by the Kolmogorov maximal
 inequality proof:
 `durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero`,

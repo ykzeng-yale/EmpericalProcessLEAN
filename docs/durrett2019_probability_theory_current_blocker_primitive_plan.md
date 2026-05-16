@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V383
+## Live In-Thread Goal Prompt V384
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,21 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V383 adds the Theorem 2.1.10/2.1.13 mixed-term bridge
+Latest verified target V384 consumes the V382 shifted infinite-product law
+bridge in the one-based Durrett 2.4.9 endpoints.  The new wrappers
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_shift_hasLaw_infinitePi_oneBased`,
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_shift_hasLaw_infinitePi_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_shift_hasLaw_infinitePi_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_shift_hasLaw_infinitePi_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_shift_hasLaw_infinitePi_oneBased`,
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_shift_hasLaw_infinitePi_oneBased`
+take a joint law directly for `fun i => X (i + 1)` and feed the compiled
+2.4.9 GC/outer empirical-CDF route.  Next work should not rebuild these
+shifted-joint-law endpoints; move to another genuine Chapter 2.1/2.4.9
+source display or a missing theorem-sized consumer.
+
+V383 adds the Theorem 2.1.10/2.1.13 mixed-term bridge
 used by the Kolmogorov maximal inequality proof:
 `durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero`,
 `durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integral_Ico_eq_zero`,

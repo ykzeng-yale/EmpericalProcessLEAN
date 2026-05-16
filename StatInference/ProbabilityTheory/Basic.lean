@@ -7093,6 +7093,136 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
       X hSource.1 hSource.2
 
 /--
+Durrett 2019, Theorem 2.4.9, one-based half-line Glivenko-Cantelli theorem
+from a shifted infinite-product joint law for the Durrett-indexed source
+sequence `X_1, X_2, ...`.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_shift_hasLaw_infinitePi_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator
+      (fun i => fun ω => X (i + 1) ω) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_iIndepFun
+      (fun i => fun ω => X (i + 1) ω) hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based outer-a.s. half-line
+Glivenko-Cantelli theorem from a shifted infinite-product joint law.
+-/
+theorem durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_shift_hasLaw_infinitePi_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWOuterAlmostSurePGlivenkoCantelliClass μ P Set.univ
+      realHalfLineIndicator (fun i => fun ω => X (i + 1) ω) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_iIndepFun
+      (fun i => fun ω => X (i + 1) ω) hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based empirical-CDF Glivenko-Cantelli form
+from a shifted infinite-product joint law.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_shift_hasLaw_infinitePi_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    _root_.StatInference.RealEmpiricalCDFGlivenkoCantelliClass μ P
+      (fun i => fun ω => X (i + 1) ω) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_iIndepFun
+      (fun i => fun ω => X (i + 1) ω) hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based exact outer-a.s. empirical-CDF form
+from a shifted infinite-product joint law.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_shift_hasLaw_infinitePi_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction
+          (samplePath (fun i => fun ω => X (i + 1) ω) ω sampleSize) c) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun
+      (fun i => fun ω => X (i + 1) ω) hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based exact outer-a.s. empirical-CDF
+range-sum display from a shifted infinite-product joint law.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_shift_hasLaw_infinitePi_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) /
+          (sampleSize : ℝ)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun
+      (fun i => fun ω => X (i + 1) ω) hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based exact outer-a.s. empirical-CDF display
+in textbook notation from a shifted infinite-product joint law.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_shift_hasLaw_infinitePi_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun
+      (fun i => fun ω => X (i + 1) ω) hSource.1 hSource.2
+
+/--
 Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem from the
 standard iid source shape `X_i` identically distributed as `X_0` plus
 `iIndepFun`.
