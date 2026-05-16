@@ -32,27 +32,27 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V392` in
+Route from `Live In-Thread Goal Prompt V393` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
-The active immediate lane for this goal cycle is Chapter 2.1
-independence/product-law support and Durrett Theorem 2.4.9
-Glivenko-Cantelli source-facing wrappers in
-`StatInference/ProbabilityTheory/Basic.lean`,
-`StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V392 adds the single
-first-crossing square/mass lower bound for Durrett Theorem 2.5.5, showing
-that each first-crossing event contributes at least `x^2 * P(A_m)` to the
-squared partial-sum integral.  Next work should sum this over the disjoint
-first-crossing events and combine it with the V391 mixed-term zero to assemble
-the full Theorem 2.5.5 display.
+The active immediate lane for this goal cycle is Durrett Theorem 2.5.5
+Kolmogorov maximal inequality in `StatInference/ProbabilityTheory/Basic.lean`.
+V393 adds the finite first-crossing disjoint-union layer:
+`durrett2019_theorem_2_5_5_measurableSet_firstCrossingEvent`,
+`durrett2019_theorem_2_5_5_firstCrossing_events_disjoint`,
+`durrett2019_theorem_2_5_5_firstCrossing_events_pairwiseDisjoint`,
+`durrett2019_theorem_2_5_5_measureReal_firstCrossing_biUnion_eq_sum`, and
+the one-based wrappers.  Next work should combine the finite sum layer with
+V391 mixed-term zero and V392 first-crossing mass lower bounds to assemble the
+full Theorem 2.5.5 display.
 
-Verified route history below is provenance, not live prompt text.  V391 starts the
+Verified route history below is provenance, not live prompt text.  V392 adds
+the single first-crossing square/mass lower bound for Durrett Theorem 2.5.5,
+showing that each first-crossing event contributes at least `x^2 * P(A_m)` to
+the squared partial-sum integral.  V391 starts the
 Durrett Theorem 2.5.5 Kolmogorov maximal-inequality proof route by packaging
 the first-crossing mixed-term calculation from Theorems 2.1.10 and 2.1.13.
-Next work should prove the square-integral lower-bound/mass inequality over
-the disjoint first-crossing events, then assemble the full Theorem 2.5.5
-display.  Do not return to Theorem 2.4.9 source-entry plumbing unless search
-proves a concrete missing display.  V390 adds the direct
+Do not return to Theorem 2.4.9 source-entry plumbing unless search proves a
+concrete missing display.  V390 adds the direct
 countable supplied-partition and one-based outer-a.s. product-law/canonical
 route for Theorem 2.4.9, consuming the compiled Chapter 2.1.11 product-law
 and canonical iid packages.  Next work should not rebuild Theorem 2.4.9

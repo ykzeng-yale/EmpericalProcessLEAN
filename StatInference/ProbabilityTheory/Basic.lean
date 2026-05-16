@@ -1414,6 +1414,25 @@ theorem durrett2019_theorem_2_5_5_measurableSet_firstCrossingBlockSet
         measurableSet_lt (hprefix j) measurable_const)
 
 /--
+Durrett 2019, Theorem 2.5.5 support: the source-space first-crossing event is
+measurable under measurable coordinates.
+-/
+theorem durrett2019_theorem_2_5_5_measurableSet_firstCrossingEvent
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i)) (m : ℕ) (x : ℝ) :
+    MeasurableSet
+      {ω : Ω |
+        (fun i : Finset.range m => X i ω) ∈
+          durrett2019_theorem_2_5_5_firstCrossingBlockSet m x} := by
+  have hcoords :
+      Measurable (fun ω : Ω => fun i : Finset.range m => X i ω) :=
+    measurable_pi_lambda _ fun i => hX_meas i
+  exact
+    (durrett2019_theorem_2_5_5_measurableSet_firstCrossingBlockSet m x).preimage
+      hcoords
+
+/--
 Durrett 2019, Theorem 2.5.5 support: on the first-crossing block set, the
 terminal partial-sum square dominates the squared threshold.
 -/
@@ -1524,6 +1543,156 @@ theorem durrett2019_theorem_2_5_5_firstCrossing_sq_mul_measureReal_le_integral_o
   durrett2019_theorem_2_5_5_firstCrossing_sq_mul_measureReal_le_integral
     (P := P) (X := fun i => fun ω => X (i + 1) ω)
     (fun i => hX_meas (i + 1)) hx_nonneg hS_sq_int
+
+/--
+Durrett 2019, Theorem 2.5.5 support: first-crossing events at distinct times
+are disjoint.  If time `m` crosses first and `m < k`, the time-`k`
+first-crossing event requires the time-`m` partial sum to still be below the
+threshold, a contradiction.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_events_disjoint
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X : ℕ -> Ω -> ℝ} {x : ℝ} {m k : ℕ} (hmk : m < k) :
+    Disjoint
+      {ω : Ω |
+        (fun i : Finset.range m => X i ω) ∈
+          durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+      {ω : Ω |
+        (fun i : Finset.range k => X i ω) ∈
+          durrett2019_theorem_2_5_5_firstCrossingBlockSet k x} := by
+  rw [Set.disjoint_left]
+  intro ω hm hk
+  have hcross : x ≤ |∑ i : Finset.range m, X i ω| := hm.1
+  have hk_prefix :
+      (fun i : Finset.range k => X i ω) ∈
+        ⋂ j : Finset.range k,
+          {z : ((i : Finset.range k) -> ℝ) |
+            |∑ i : Finset.range j.1,
+                z ⟨i.1,
+                  Finset.mem_range.mpr
+                    ((Finset.mem_range.mp i.2).trans
+                      (Finset.mem_range.mp j.2))⟩| < x} := hk.2
+  rw [Set.mem_iInter] at hk_prefix
+  have hbefore :
+      |∑ i : Finset.range m,
+          (fun i : Finset.range k => X i ω)
+            ⟨i.1,
+              Finset.mem_range.mpr
+                ((Finset.mem_range.mp i.2).trans hmk)⟩| < x := by
+    exact hk_prefix ⟨m, Finset.mem_range.mpr hmk⟩
+  have hbefore' : |∑ i : Finset.range m, X i ω| < x := by
+    simpa using hbefore
+  exact not_lt_of_ge hcross hbefore'
+
+/--
+Durrett 2019, Theorem 2.5.5 support: first-crossing events are pairwise
+disjoint over any finite set of candidate crossing times.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_events_pairwiseDisjoint
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X : ℕ -> Ω -> ℝ} (x : ℝ) (s : Finset ℕ) :
+    Set.PairwiseDisjoint (↑s)
+      (fun m =>
+        {ω : Ω |
+          (fun i : Finset.range m => X i ω) ∈
+            durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}) := by
+  intro m _hm k _hk hmk
+  rcases lt_or_gt_of_ne hmk with hlt | hgt
+  · exact
+      durrett2019_theorem_2_5_5_firstCrossing_events_disjoint
+        (X := X) (x := x) hlt
+  · exact
+      (durrett2019_theorem_2_5_5_firstCrossing_events_disjoint
+        (X := X) (x := x) hgt).symm
+
+/--
+Durrett 2019, Theorem 2.5.5 support: the measure of a finite union of
+first-crossing events is the sum of their measures.
+-/
+theorem durrett2019_theorem_2_5_5_measureReal_firstCrossing_biUnion_eq_sum
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i)) (x : ℝ) (s : Finset ℕ) :
+    P.real
+        (⋃ m ∈ s,
+          {ω : Ω |
+            (fun i : Finset.range m => X i ω) ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}) =
+      ∑ m ∈ s,
+        P.real
+          {ω : Ω |
+            (fun i : Finset.range m => X i ω) ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x} := by
+  classical
+  let A : ℕ -> Set Ω := fun m =>
+    {ω : Ω |
+      (fun i : Finset.range m => X i ω) ∈
+        durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+  have hdisj : Set.PairwiseDisjoint (↑s) A :=
+    durrett2019_theorem_2_5_5_firstCrossing_events_pairwiseDisjoint
+      (X := X) x s
+  have hmeas : ∀ m ∈ s, MeasurableSet (A m) := by
+    intro m _hm
+    exact durrett2019_theorem_2_5_5_measurableSet_firstCrossingEvent
+      (X := X) hX_meas m x
+  simpa [A] using
+    (measureReal_biUnion_finset (μ := P) (s := s) (f := A) hdisj hmeas)
+
+/--
+Durrett 2019, Theorem 2.5.5 support in one-based textbook notation:
+first-crossing events are disjoint for the shifted source sequence
+`X_1, X_2, ...`.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_events_disjoint_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X : ℕ -> Ω -> ℝ} {x : ℝ} {m k : ℕ} (hmk : m < k) :
+    Disjoint
+      {ω : Ω |
+        (fun i : Finset.range m => X (i + 1) ω) ∈
+          durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+      {ω : Ω |
+        (fun i : Finset.range k => X (i + 1) ω) ∈
+          durrett2019_theorem_2_5_5_firstCrossingBlockSet k x} :=
+  durrett2019_theorem_2_5_5_firstCrossing_events_disjoint
+    (X := fun i => fun ω => X (i + 1) ω) (x := x) hmk
+
+/--
+Durrett 2019, Theorem 2.5.5 support in one-based textbook notation: the
+first-crossing events are pairwise disjoint over any finite index set.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_events_pairwiseDisjoint_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X : ℕ -> Ω -> ℝ} (x : ℝ) (s : Finset ℕ) :
+    Set.PairwiseDisjoint (↑s)
+      (fun m =>
+        {ω : Ω |
+          (fun i : Finset.range m => X (i + 1) ω) ∈
+            durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}) :=
+  durrett2019_theorem_2_5_5_firstCrossing_events_pairwiseDisjoint
+    (X := fun i => fun ω => X (i + 1) ω) x s
+
+/--
+Durrett 2019, Theorem 2.5.5 support in one-based textbook notation: the
+measure of a finite union of first-crossing events is the sum of their
+measures.
+-/
+theorem durrett2019_theorem_2_5_5_measureReal_firstCrossing_biUnion_eq_sum_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i)) (x : ℝ) (s : Finset ℕ) :
+    P.real
+        (⋃ m ∈ s,
+          {ω : Ω |
+            (fun i : Finset.range m => X (i + 1) ω) ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}) =
+      ∑ m ∈ s,
+        P.real
+          {ω : Ω |
+            (fun i : Finset.range m => X (i + 1) ω) ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x} :=
+  durrett2019_theorem_2_5_5_measureReal_firstCrossing_biUnion_eq_sum
+    (P := P) (X := fun i => fun ω => X (i + 1) ω)
+    (fun i => hX_meas (i + 1)) x s
 
 /--
 Durrett 2019, Theorem 2.5.5 support: the mixed term for the first-crossing
