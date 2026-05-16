@@ -150,11 +150,18 @@ the scalar/vector barrier gradient uses mathlib `Real.hasDerivAt_log`,
 `HasDerivAt.comp_hasFDerivAt`, `PiLp.hasFDerivAt_apply`,
 `HasFDerivAt.fun_sum`, and `hasGradientAt_iff_hasFDerivAt`; the selector
 bridge reuses the local Fermat theorem
-`gradient_eq_zero_of_isMinOn_univ_hasGradientAt`.  Next finite-row work should
-define the concrete range central-path value, prove its gradient formula from
-the V34 positive-orthant barrier gradient plus affine composition, then obtain
-the minimizer selector from compact/closed minimizer existence and interior
-barrier optimality.
+`gradient_eq_zero_of_isMinOn_univ_hasGradientAt`.  The V35 packet adds
+`barrierAffineRangeValue`, `barrierAffineRangeValue_hasGradientAt`,
+`barrierAffineRangeValue_positiveOrthantNegLogBarrier_hasGradientAt`,
+`chewi1316RangeCentralPathValue`,
+`chewi1316RangeCentralPathValue_hasGradientAt`,
+`Chewi1316RangeCentralPathValueMinimizerSelector`, and the value-minimizer to
+central-selector bridges.  Search-first reuse for V35: mathlib linear-map
+derivatives, `HasFDerivAt.const_smul`/`add`/`comp`, `hasGradientAt_iff_hasFDerivAt`,
+and `ContinuousLinearMap.adjoint_inner_left`, plus the V34 positive-orthant
+barrier gradient.  Next finite-row work should obtain the value-minimizer
+selector from compact/closed minimizer existence and interior barrier
+optimality.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

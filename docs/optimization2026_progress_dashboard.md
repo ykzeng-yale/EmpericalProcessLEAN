@@ -194,12 +194,20 @@ This dashboard tracks the Chewi optimization formalization lane for
   global minimizer of a verified central-path value model can be converted into
   the V33 centrality selector by the reused Fermat bridge from
   `Minimizer.lean`.
+  The V35 packet adds `barrierAffineRangeValue`,
+  `barrierAffineRangeValue_hasGradientAt`,
+  `barrierAffineRangeValue_positiveOrthantNegLogBarrier_hasGradientAt`,
+  `chewi1316RangeCentralPathValue`,
+  `chewi1316RangeCentralPathValue_hasGradientAt`,
+  `Chewi1316RangeCentralPathValueMinimizerSelector`, and the bridges from a
+  concrete value-minimizer selector to the V34/V33 selector interfaces.  The
+  finite-row central-path value now has the exact verified gradient
+  `t • aObj + barrierAffineRangeGrad ... positiveOrthantNegLogGrad center`.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: define and
-  differentiate the concrete range central-path value, then prove a concrete
-  minimizer selector from compact/closed minimizer existence and interior
-  barrier optimality, reusing mathlib `IsCompact.exists_isMinOn`/Fermat APIs
+  `hxseq_mem` or per-step decrement premise.  Next proof target: prove a
+  concrete value-minimizer selector from compact/closed minimizer existence and
+  interior barrier optimality, reusing mathlib `IsCompact.exists_isMinOn`/Fermat APIs
   where applicable.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or

@@ -4146,6 +4146,33 @@ noncomputable def barrierAffineRangeGrad
     (grad : E -> E) : A.range -> A.range :=
   barrierAffinePreimageGrad A.range.subtypeL b grad
 
+noncomputable def barrierAffineRangeValue
+    (A : F →L[ℝ] E) (b : E) (value : E -> ℝ) : A.range -> ℝ :=
+  fun y => value ((y : E) + b)
+
+omit [CompleteSpace F] in
+theorem barrierAffineRangeValue_hasGradientAt
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    {value : E -> ℝ} {grad : E -> E} {y : A.range}
+    (hgrad : HasGradientAt value (grad ((y : E) + b)) ((y : E) + b)) :
+    HasGradientAt (barrierAffineRangeValue A b value)
+      (barrierAffineRangeGrad A b grad y) y := by
+  rw [hasGradientAt_iff_hasFDerivAt]
+  have hpoint :
+      HasFDerivAt (fun z : A.range => (z : E) + b) A.range.subtypeL y := by
+    simpa using A.range.subtypeL.hasFDerivAt.add_const b
+  have hcomp :
+      HasFDerivAt (barrierAffineRangeValue A b value)
+        (((InnerProductSpace.toDual ℝ E) (grad ((y : E) + b))).comp
+          A.range.subtypeL) y := by
+    simpa [barrierAffineRangeValue, Function.comp_def] using
+      hgrad.hasFDerivAt.comp y hpoint
+  convert hcomp using 1
+  ext v
+  simp [barrierAffineRangeGrad, barrierAffinePreimageGrad,
+    InnerProductSpace.toDual_apply_apply,
+    ContinuousLinearMap.adjoint_inner_left]
+
 omit [CompleteSpace F] in
 theorem barrierAffineRangeGrad_hasFDerivAt
     (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
@@ -25618,6 +25645,19 @@ theorem positiveOrthantNegLogBarrier_hasGradientAt {d : ℕ}
   ext y
   simp [positiveOrthantNegLogGrad, PiLp.inner_apply, RCLike.inner_apply, mul_comm]
 
+theorem barrierAffineRangeValue_positiveOrthantNegLogBarrier_hasGradientAt
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (A : F →L[ℝ] (EuclideanSpace ℝ (Fin m)))
+    (b : EuclideanSpace ℝ (Fin m)) [FiniteDimensional ℝ A.range]
+    {y : A.range}
+    (hy : y ∈ barrierAffineRangeSet A b (positiveOrthant (d := m))) :
+    HasGradientAt (barrierAffineRangeValue A b positiveOrthantNegLogBarrier)
+      (barrierAffineRangeGrad A b positiveOrthantNegLogGrad y) y :=
+  barrierAffineRangeValue_hasGradientAt A b
+    (value := positiveOrthantNegLogBarrier)
+    (grad := positiveOrthantNegLogGrad)
+    (y := y) (positiveOrthantNegLogBarrier_hasGradientAt hy)
+
 /--
 The coordinatewise inverse-Hessian model for the finite product logarithmic
 barrier.  On coordinate `i` this applies the scalar inverse Hessian `x_i^2`.
@@ -36736,6 +36776,70 @@ def Chewi1316RangeCentralPathSelector
             positiveOrthantNegLogGrad center = 0
 
 /--
+Concrete finite-row central-path value on the slack range:
+linear objective plus the translated positive-orthant logarithmic barrier.
+-/
+noncomputable def chewi1316RangeCentralPathValue
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (t : ℝ) (aObj : (polytopeSlackCLM aRow).range) :
+    (polytopeSlackCLM aRow).range -> ℝ :=
+  fun center =>
+    t * inner ℝ aObj center +
+      barrierAffineRangeValue (polytopeSlackCLM aRow) bSlack
+        (positiveOrthantNegLogBarrier (d := m)) center
+
+theorem chewi1316RangeCentralPathValue_hasGradientAt
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (t : ℝ) (aObj : (polytopeSlackCLM aRow).range)
+    {center : (polytopeSlackCLM aRow).range}
+    (hcenter_mem :
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m))) :
+    HasGradientAt (chewi1316RangeCentralPathValue aRow bSlack t aObj)
+      (t • aObj +
+        barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad center) center := by
+  rw [hasGradientAt_iff_hasFDerivAt]
+  have hlinear :
+      HasFDerivAt
+        (fun y : (polytopeSlackCLM aRow).range =>
+          t * inner ℝ aObj y)
+        (t •
+          ((InnerProductSpace.toDual ℝ (polytopeSlackCLM aRow).range)
+            aObj)) center := by
+    simpa [InnerProductSpace.toDual_apply_apply, smul_eq_mul] using
+      ((
+        (InnerProductSpace.toDual ℝ (polytopeSlackCLM aRow).range)
+          aObj).hasFDerivAt.const_smul t)
+  have hbarrier :
+      HasFDerivAt
+        (barrierAffineRangeValue (polytopeSlackCLM aRow) bSlack
+          (positiveOrthantNegLogBarrier (d := m)))
+        ((InnerProductSpace.toDual ℝ (polytopeSlackCLM aRow).range)
+          (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad center)) center :=
+    (barrierAffineRangeValue_positiveOrthantNegLogBarrier_hasGradientAt
+      (A := polytopeSlackCLM aRow) (b := bSlack)
+      (y := center) hcenter_mem).hasFDerivAt
+  have hsum :
+      HasFDerivAt (chewi1316RangeCentralPathValue aRow bSlack t aObj)
+        ((t •
+          ((InnerProductSpace.toDual ℝ (polytopeSlackCLM aRow).range)
+            aObj)) +
+          ((InnerProductSpace.toDual ℝ (polytopeSlackCLM aRow).range)
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad center))) center := by
+    simpa [chewi1316RangeCentralPathValue, InnerProductSpace.toDual_apply_apply]
+      using hlinear.add hbarrier
+  convert hsum using 1
+  ext v
+  simp [InnerProductSpace.toDual_apply_apply, smul_eq_mul]
+
+/--
 Source-shaped minimizer certificate for the finite-row central path.  For each
 positive barrier parameter it supplies a feasible range point that globally
 minimizes some verified central-path value model whose mathlib gradient is the
@@ -36768,6 +36872,51 @@ theorem chewi1316_rangeCentralPathSelector_of_minimizerSelector
   rcases hselector ht with ⟨center, hcenter_mem, centralValue, hmin, hgrad⟩
   refine ⟨center, hcenter_mem, ?_⟩
   exact gradient_eq_zero_of_isMinOn_univ_hasGradientAt hmin hgrad
+
+/--
+Concrete minimizer selector for the finite-row central-path value.  This is the
+remaining existence certificate after the value and gradient have been fixed.
+-/
+def Chewi1316RangeCentralPathValueMinimizerSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range) : Prop :=
+  ∀ {t : ℝ}, 0 < t ->
+    ∃ center : (polytopeSlackCLM aRow).range,
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) ∧
+      IsMinOn (chewi1316RangeCentralPathValue aRow bSlack t aObj)
+        Set.univ center
+
+theorem chewi1316_rangeCentralPathMinimizerSelector_of_valueMinimizerSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range)
+    (hselector :
+      Chewi1316RangeCentralPathValueMinimizerSelector aRow bSlack aObj) :
+    Chewi1316RangeCentralPathMinimizerSelector aRow bSlack aObj := by
+  intro t ht
+  rcases hselector ht with ⟨center, hcenter_mem, hmin⟩
+  exact
+    ⟨center, hcenter_mem,
+      chewi1316RangeCentralPathValue aRow bSlack t aObj,
+      hmin,
+      chewi1316RangeCentralPathValue_hasGradientAt
+        aRow bSlack t aObj hcenter_mem⟩
+
+theorem chewi1316_rangeCentralPathSelector_of_valueMinimizerSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range)
+    (hselector :
+      Chewi1316RangeCentralPathValueMinimizerSelector aRow bSlack aObj) :
+    Chewi1316RangeCentralPathSelector aRow bSlack aObj :=
+  chewi1316_rangeCentralPathSelector_of_minimizerSelector aRow bSlack aObj
+    (chewi1316_rangeCentralPathMinimizerSelector_of_valueMinimizerSelector
+      aRow bSlack aObj hselector)
 
 theorem chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_centralPathSelector
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]

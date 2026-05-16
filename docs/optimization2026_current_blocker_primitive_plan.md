@@ -413,16 +413,31 @@ the finite positive-orthant barrier gradient; local `Minimizer.lean` already
 supplies `gradient_eq_zero_of_isMinOn_univ_hasGradientAt`, so V34 reuses that
 Fermat wrapper instead of reproving local-minimum calculus.
 
-Next theorem-sized target: define the concrete finite-row central-path value on
-`(polytopeSlackCLM aRow).range`,
-`center ↦ t * inner ℝ aObj center + positiveOrthantNegLogBarrier ((center :
-EuclideanSpace ℝ (Fin m)) + bSlack)`, prove its gradient is
-`t • aObj + barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
-positiveOrthantNegLogGrad center` at feasible positive-orthant points, and use
-that formula with compact/closed feasible-range minimizer existence and interior
-barrier optimality to build a concrete
-`Chewi1316RangeCentralPathMinimizerSelector`.  The V34 bridge will then
-immediately yield the existing `Chewi1316RangeCentralPathSelector` endpoints.
+Current V35 packet fixes the concrete finite-row central-path value and its
+selector handoff.  New compiled declarations:
+`barrierAffineRangeValue`,
+`barrierAffineRangeValue_hasGradientAt`,
+`barrierAffineRangeValue_positiveOrthantNegLogBarrier_hasGradientAt`,
+`chewi1316RangeCentralPathValue`,
+`chewi1316RangeCentralPathValue_hasGradientAt`,
+`Chewi1316RangeCentralPathValueMinimizerSelector`,
+`chewi1316_rangeCentralPathMinimizerSelector_of_valueMinimizerSelector`, and
+`chewi1316_rangeCentralPathSelector_of_valueMinimizerSelector`.
+Search-first result: the value-gradient proof reuses mathlib
+`ContinuousLinearMap.hasFDerivAt`, `HasFDerivAt.const_smul`,
+`HasFDerivAt.add`, `HasFDerivAt.comp`, `hasGradientAt_iff_hasFDerivAt`, and
+`ContinuousLinearMap.adjoint_inner_left`, plus the V34
+`positiveOrthantNegLogBarrier_hasGradientAt`.  The remaining selector
+existence problem is now exactly a value-minimizer existence certificate for
+`chewi1316RangeCentralPathValue`.
+
+Next theorem-sized target: prove a concrete
+`Chewi1316RangeCentralPathValueMinimizerSelector` from compact/closed
+feasible-range minimizer existence and interior barrier optimality.  Search
+mathlib first for `IsCompact.exists_isMinOn`, `ContinuousOn.exists_isMinOn'`,
+open-domain/interior minimizer/Fermat helpers, lower semicontinuity and coercion
+lemmas for submodules; search local code for compact feasible-range wrappers,
+bounded/closed polytope endpoints, and barrierAffineRangeSet continuity lemmas.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
