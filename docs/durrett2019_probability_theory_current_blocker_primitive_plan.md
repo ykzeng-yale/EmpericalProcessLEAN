@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V410
+## Live In-Thread Goal Prompt V411
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,21 +12,37 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  Theorem 2.5.9 Kronecker's
-lemma now has a compiled deterministic real-sequence core, including Abel
-summation, Toeplitz weighted averages, the monotone-divergent normalizer route,
-and the textbook one-based conclusion
-`(sum_{m <= n} x_m) / a_n -> 0` from convergence of `sum x_n / a_n`.
-Next aggressive target: use V410 Kronecker plus V406-V409 random-series
-convergence to start Durrett Theorem 2.5.10 strong law via the random-series
-route.  Reuse the compiled Chapter 2.1 independence/product-expectation
-bridges, Theorem 2.2.1 variance-sum APIs, V391-V410 first-crossing/block-tail/
-oscillation/pathwise-Cauchy/a.s.-convergence/Kronecker infrastructure, and
-local `Martingale.lean` Exercise 4.4.11 deterministic theorem shapes only when
-they shorten proof search.  Do not route back to Theorem 2.4.9, 2.5.5, or
-2.5.8 source packaging unless search proves a concrete missing source display.
+in `StatInference/ProbabilityTheory/Basic.lean`.  Theorem 2.5.10 now has the
+compiled Kronecker/Cesaro/random-series assembly spine: convergence of
+`sum (Y_k - m_k) / k` plus `m_k -> mu` gives one-based averages of `Y_k`
+converging to `mu`, and Theorem 2.5.6 supplies the almost-sure version from
+summable variances of the scaled centered variables.  Next aggressive target:
+discharge the actual Durrett 2.5.10 truncation source obligations for
+`Y_k = X_k 1_{|X_k| <= k}`: moving-truncation measurability/independence,
+`L^2` and mean-zero support for `(Y_k - E Y_k) / k`, summability of
+`Var(Y_k - E Y_k) / k^2` from the integrability tail estimate, dominated
+convergence `E Y_k -> mu`, and transfer from `T_n/n` to `S_n/n`.
+Reuse the compiled Chapter 2.1 independence/product-expectation bridges,
+Theorem 2.2.1 variance-sum APIs, V391-V411 first-crossing/block-tail/
+oscillation/pathwise-Cauchy/a.s.-convergence/Kronecker/Cesaro infrastructure,
+and mathlib `Probability.StrongLaw` truncation lemmas only when they shorten
+the source route.  Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, or 2.5.9
+unless search proves a concrete missing source display.
 
-Latest verified target V410 packages Durrett Theorem 2.5.9 deterministic
+Latest verified target V411 packages the first Durrett Theorem 2.5.10
+random-series strong-law assembly layer.  New compiled anchors:
+`durrett2019_theorem_2_5_10_centered_average_tendsto_zero_of_scaled_series`,
+`durrett2019_theorem_2_5_10_centered_average_difference_tendsto_zero_of_scaled_series`,
+`durrett2019_theorem_2_5_10_mean_average_tendsto_of_tendsto`,
+`durrett2019_theorem_2_5_10_average_tendsto_of_scaled_centered_series_and_mean_tendsto`,
+`durrett2019_theorem_2_5_10_ae_average_tendsto_of_scaled_centered_series_and_mean_tendsto`,
+and
+`durrett2019_theorem_2_5_10_ae_average_tendsto_of_scaled_centered_summable_variance_and_mean_tendsto`.
+This moves the theorem frontier past pure Kronecker plumbing: the remaining
+work is the genuine moving-truncation probability estimates from Durrett's
+proof, not the deterministic normalization or Cesaro algebra.
+
+V410 packages Durrett Theorem 2.5.9 deterministic
 Kronecker support in `Basic.lean`.  New compiled anchors:
 `durrett2019_theorem_2_5_9_kronecker_summation_by_parts`,
 `durrett2019_theorem_2_5_9_kronecker_ratio_eq`,

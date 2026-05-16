@@ -32,12 +32,31 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V410` in
+Route from `Live In-Thread Goal Prompt V411` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`,
-with Theorem 2.5.10 SLLN next.  V410 packages the deterministic Chapter 2.5
-Kronecker lemma route.  New compiled anchors:
+with Theorem 2.5.10 SLLN moving-truncation source obligations next.  V411
+packages the Kronecker/Cesaro/random-series assembly spine.  New compiled
+anchors:
+`durrett2019_theorem_2_5_10_centered_average_tendsto_zero_of_scaled_series`,
+`durrett2019_theorem_2_5_10_centered_average_difference_tendsto_zero_of_scaled_series`,
+`durrett2019_theorem_2_5_10_mean_average_tendsto_of_tendsto`,
+`durrett2019_theorem_2_5_10_average_tendsto_of_scaled_centered_series_and_mean_tendsto`,
+`durrett2019_theorem_2_5_10_ae_average_tendsto_of_scaled_centered_series_and_mean_tendsto`,
+and
+`durrett2019_theorem_2_5_10_ae_average_tendsto_of_scaled_centered_summable_variance_and_mean_tendsto`.
+These theorems say that pathwise convergence of
+`sum (Y_k - m_k) / k`, plus `m_k -> mu`, gives convergence of the one-based
+averages of `Y_k` to `mu`, and that Theorem 2.5.6 supplies the a.s. version
+from summable variances of the scaled centered variables.  Next work should
+discharge the actual source proof obligations for
+`Y_k = X_k 1_{|X_k| <= k}`: moving truncation, variance summability,
+dominated-convergence mean convergence, and transfer from `T_n/n` to `S_n/n`.
+
+Verified route history below is provenance, not live prompt text.  V410
+packages the deterministic Chapter 2.5 Kronecker lemma route.  Compiled
+anchors:
 `durrett2019_theorem_2_5_9_kronecker_summation_by_parts`,
 `durrett2019_theorem_2_5_9_kronecker_ratio_eq`,
 `durrett2019_theorem_2_5_9_weight_increment_sum_eq`,
@@ -58,8 +77,7 @@ mathlib one-line Kronecker theorem was found for the exact Durrett display.
 Next work should use V410 Kronecker plus V406-V409 random-series convergence
 to start Durrett Theorem 2.5.10 SLLN via the random-series route.
 
-Verified route history below is provenance, not live prompt text.  V409
-packages the source-facing one-based sufficiency direction of Durrett
+V409 packages the source-facing one-based sufficiency direction of Durrett
 Theorem 2.5.8.  New compiled anchors:
 `durrett2019_theorem_2_5_8_integral_centered_truncated_eq_zero`,
 `durrett2019_theorem_2_5_8_variance_centered_truncated_eq_variance`,

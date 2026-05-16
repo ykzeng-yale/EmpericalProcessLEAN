@@ -27,15 +27,31 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V410`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V411`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
 consequences in `StatInference/ProbabilityTheory/Basic.lean`, with Theorem
-2.5.10 SLLN next.  V410 packages Durrett Theorem 2.5.9 deterministic
-Kronecker support.  New compiled anchors:
+2.5.10 SLLN moving-truncation source obligations next.  V411 packages the
+Kronecker/Cesaro/random-series assembly spine.  New compiled anchors:
+`durrett2019_theorem_2_5_10_centered_average_tendsto_zero_of_scaled_series`,
+`durrett2019_theorem_2_5_10_centered_average_difference_tendsto_zero_of_scaled_series`,
+`durrett2019_theorem_2_5_10_mean_average_tendsto_of_tendsto`,
+`durrett2019_theorem_2_5_10_average_tendsto_of_scaled_centered_series_and_mean_tendsto`,
+`durrett2019_theorem_2_5_10_ae_average_tendsto_of_scaled_centered_series_and_mean_tendsto`,
+and
+`durrett2019_theorem_2_5_10_ae_average_tendsto_of_scaled_centered_summable_variance_and_mean_tendsto`.
+This gives the exact proof skeleton from scaled centered random-series
+convergence to a.s. convergence of one-based averages.  Next work should define
+and instantiate Durrett's moving truncation `Y_k = X_k 1_{|X_k| <= k}`, prove
+the scaled centered hypotheses, prove `E Y_k -> mu`, and transfer from
+`T_n/n` back to `S_n/n`.
+
+Verified route history below is provenance, not live prompt text.  V410
+packages Durrett Theorem 2.5.9 deterministic Kronecker support.  Compiled
+anchors:
 `durrett2019_theorem_2_5_9_kronecker_summation_by_parts`,
 `durrett2019_theorem_2_5_9_kronecker_ratio_eq`,
 `durrett2019_theorem_2_5_9_weight_increment_sum_eq`,
@@ -53,8 +69,7 @@ telescoping/asymptotics APIs and the local Exercise 4.4.11 deterministic proof
 shape.  Next work should instantiate `a_n = n`, get convergence of the scaled
 random series from V406-V409, and assemble Durrett Theorem 2.5.10.
 
-Verified route history below is provenance, not live prompt text.  V409
-packages the source-facing one-based
+V409 packages the source-facing one-based
 sufficiency direction of Durrett Theorem 2.5.8.  New compiled anchors:
 `durrett2019_theorem_2_5_8_integral_centered_truncated_eq_zero`,
 `durrett2019_theorem_2_5_8_variance_centered_truncated_eq_variance`,

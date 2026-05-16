@@ -5503,6 +5503,200 @@ theorem durrett2019_theorem_2_5_9_normalized_sum_tendsto_zero
               field_simp [ha_nonzero k]
     simp [hsum]
 
+/-! ## Durrett, Theorem 2.5.10 -/
+
+/--
+Durrett 2019, Theorem 2.5.10 deterministic Kronecker step: pathwise
+convergence of `sum (Y_k - m_k) / k` implies the centered one-based averages
+converge to zero.
+-/
+theorem durrett2019_theorem_2_5_10_centered_average_tendsto_zero_of_scaled_series
+    {Ω : Type u} {Y : ℕ -> Ω -> ℝ} {m : ℕ -> ℝ} {ω : Ω}
+    (hscaled :
+      durrett2019_theorem_2_5_6_randomSeriesConverges
+        (fun k ω => (Y k ω - m k) / (k : ℝ)) ω) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1), (Y (k + 1) ω - m (k + 1))) /
+          ((n + 1 : ℕ) : ℝ))
+      atTop (𝓝 0) := by
+  rcases hscaled with ⟨L, hL⟩
+  have hscaled_tendsto :
+      Tendsto
+        (fun n : ℕ =>
+          ∑ k ∈ Finset.range (n + 1),
+            (Y (k + 1) ω - m (k + 1)) / ((k + 1 : ℕ) : ℝ))
+        atTop (𝓝 L) := by
+    have hL_shift := hL.comp (tendsto_add_atTop_nat 1)
+    simpa [durrett2019_theorem_2_5_6_partialSum] using hL_shift
+  have ha_nonzero : ∀ k : ℕ, ((k + 1 : ℕ) : ℝ) ≠ 0 := by
+    intro k
+    exact_mod_cast Nat.succ_ne_zero k
+  have ha_increment_nonneg :
+      ∀ k : ℕ, 0 ≤ ((k + 2 : ℕ) : ℝ) - ((k + 1 : ℕ) : ℝ) := by
+    intro k
+    norm_num
+  have ha_atTop :
+      Tendsto (fun n : ℕ => ((n + 1 : ℕ) : ℝ)) atTop atTop := by
+    have hnat : Tendsto (fun n : ℕ => (n : ℝ)) atTop atTop :=
+      tendsto_natCast_atTop_atTop
+    simpa [Function.comp_def] using (hnat.comp (tendsto_add_atTop_nat 1))
+  simpa using
+    durrett2019_theorem_2_5_9_normalized_sum_tendsto_zero
+      (x := fun k : ℕ => Y k ω - m k)
+      (a := fun k : ℕ => (k : ℝ))
+      (L := L) ha_nonzero hscaled_tendsto ha_increment_nonneg ha_atTop
+
+/--
+Durrett 2019, Theorem 2.5.10 deterministic Kronecker step in the textbook
+difference-of-averages display.
+-/
+theorem durrett2019_theorem_2_5_10_centered_average_difference_tendsto_zero_of_scaled_series
+    {Ω : Type u} {Y : ℕ -> Ω -> ℝ} {m : ℕ -> ℝ} {ω : Ω}
+    (hscaled :
+      durrett2019_theorem_2_5_6_randomSeriesConverges
+        (fun k ω => (Y k ω - m k) / (k : ℝ)) ω) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1), Y (k + 1) ω) / ((n + 1 : ℕ) : ℝ) -
+          (∑ k ∈ Finset.range (n + 1), m (k + 1)) / ((n + 1 : ℕ) : ℝ))
+      atTop (𝓝 0) := by
+  have hcenter :=
+    durrett2019_theorem_2_5_10_centered_average_tendsto_zero_of_scaled_series
+      (Y := Y) (m := m) (ω := ω) hscaled
+  refine hcenter.congr' ?_
+  exact Eventually.of_forall fun n => by
+    change
+      (∑ k ∈ Finset.range (n + 1), (Y (k + 1) ω - m (k + 1))) /
+          ((n + 1 : ℕ) : ℝ) =
+        (∑ k ∈ Finset.range (n + 1), Y (k + 1) ω) / ((n + 1 : ℕ) : ℝ) -
+          (∑ k ∈ Finset.range (n + 1), m (k + 1)) / ((n + 1 : ℕ) : ℝ)
+    rw [Finset.sum_sub_distrib]
+    ring
+
+/--
+Durrett 2019, Theorem 2.5.10 deterministic support: Cesaro averaging in the
+one-based notation used by the textbook proof.
+-/
+theorem durrett2019_theorem_2_5_10_mean_average_tendsto_of_tendsto
+    {m : ℕ -> ℝ} {μ : ℝ}
+    (hm : Tendsto (fun n : ℕ => m (n + 1)) atTop (𝓝 μ)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1), m (k + 1)) / ((n + 1 : ℕ) : ℝ))
+      atTop (𝓝 μ) := by
+  have hcesaro :=
+    (Filter.Tendsto.cesaro hm).comp (tendsto_add_atTop_nat 1)
+  simpa [Function.comp_def, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc]
+    using hcesaro
+
+/--
+Durrett 2019, Theorem 2.5.10 deterministic assembly: the Kronecker-centered
+average step plus convergence of the means gives convergence of the truncated
+averages.
+-/
+theorem durrett2019_theorem_2_5_10_average_tendsto_of_scaled_centered_series_and_mean_tendsto
+    {Ω : Type u} {Y : ℕ -> Ω -> ℝ} {m : ℕ -> ℝ} {ω : Ω} {μ : ℝ}
+    (hscaled :
+      durrett2019_theorem_2_5_6_randomSeriesConverges
+        (fun k ω => (Y k ω - m k) / (k : ℝ)) ω)
+    (hm : Tendsto (fun n : ℕ => m (n + 1)) atTop (𝓝 μ)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1), Y (k + 1) ω) / ((n + 1 : ℕ) : ℝ))
+      atTop (𝓝 μ) := by
+  have hcenter :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), Y (k + 1) ω) / ((n + 1 : ℕ) : ℝ) -
+            (∑ k ∈ Finset.range (n + 1), m (k + 1)) / ((n + 1 : ℕ) : ℝ))
+        atTop (𝓝 0) :=
+    durrett2019_theorem_2_5_10_centered_average_difference_tendsto_zero_of_scaled_series
+      (Y := Y) (m := m) (ω := ω) hscaled
+  have hmean :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), m (k + 1)) / ((n + 1 : ℕ) : ℝ))
+        atTop (𝓝 μ) :=
+    durrett2019_theorem_2_5_10_mean_average_tendsto_of_tendsto
+      (m := m) (μ := μ) hm
+  have hsum := hcenter.add hmean
+  have hsum_mu :
+      Tendsto
+        (fun n : ℕ =>
+          ((∑ k ∈ Finset.range (n + 1), Y (k + 1) ω) / ((n + 1 : ℕ) : ℝ) -
+              (∑ k ∈ Finset.range (n + 1), m (k + 1)) / ((n + 1 : ℕ) : ℝ)) +
+            (∑ k ∈ Finset.range (n + 1), m (k + 1)) / ((n + 1 : ℕ) : ℝ))
+        atTop (𝓝 μ) := by
+    simpa using hsum
+  refine hsum_mu.congr' ?_
+  exact Eventually.of_forall fun n => by
+    ring
+
+/--
+Durrett 2019, Theorem 2.5.10 almost-sure deterministic assembly: if the
+scaled centered series converges almost surely and the means converge to `μ`,
+then the one-based averages converge almost surely to `μ`.
+-/
+theorem durrett2019_theorem_2_5_10_ae_average_tendsto_of_scaled_centered_series_and_mean_tendsto
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y : ℕ -> Ω -> ℝ} {m : ℕ -> ℝ} {μ : ℝ}
+    (hscaled :
+      ∀ᵐ ω ∂P,
+        durrett2019_theorem_2_5_6_randomSeriesConverges
+          (fun k ω => (Y k ω - m k) / (k : ℝ)) ω)
+    (hm : Tendsto (fun n : ℕ => m (n + 1)) atTop (𝓝 μ)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), Y (k + 1) ω) / ((n + 1 : ℕ) : ℝ))
+        atTop (𝓝 μ) := by
+  filter_upwards [hscaled] with ω hω
+  exact
+    durrett2019_theorem_2_5_10_average_tendsto_of_scaled_centered_series_and_mean_tendsto
+      (Y := Y) (m := m) (ω := ω) (μ := μ) hω hm
+
+/--
+Durrett 2019, Theorem 2.5.10 random-series route: Theorem 2.5.6 applied to
+the scaled centered variables supplies the almost-sure average convergence
+needed for the strong law proof.
+-/
+theorem durrett2019_theorem_2_5_10_ae_average_tendsto_of_scaled_centered_summable_variance_and_mean_tendsto
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {Y : ℕ -> Ω -> ℝ} {m : ℕ -> ℝ} {μ : ℝ}
+    (hscaled_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun k : ℕ => fun ω : Ω => (Y k ω - m k) / (k : ℝ)))
+    (hscaled_meas :
+      ∀ k : ℕ, Measurable
+        (fun ω : Ω => (Y k ω - m k) / (k : ℝ)))
+    (hscaled_mem :
+      ∀ k : ℕ, MemLp
+        (fun ω : Ω => (Y k ω - m k) / (k : ℝ)) 2 P)
+    (hscaled_zero :
+      ∀ k : ℕ, ∫ ω, (Y k ω - m k) / (k : ℝ) ∂P = 0)
+    (hscaled_var_summable :
+      Summable fun k : ℕ =>
+        _root_.ProbabilityTheory.variance
+          (fun ω : Ω => (Y (k + 1) ω - m (k + 1)) / ((k + 1 : ℕ) : ℝ)) P)
+    (hm : Tendsto (fun n : ℕ => m (n + 1)) atTop (𝓝 μ)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), Y (k + 1) ω) / ((n + 1 : ℕ) : ℝ))
+        atTop (𝓝 μ) := by
+  have hscaled_series :
+      ∀ᵐ ω ∂P,
+        durrett2019_theorem_2_5_6_randomSeriesConverges
+          (fun k ω => (Y k ω - m k) / (k : ℝ)) ω :=
+    durrett2019_theorem_2_5_6_random_series_converges_ae_of_summable_variance
+      (P := P)
+      (X := fun k : ℕ => fun ω : Ω => (Y k ω - m k) / (k : ℝ))
+      hscaled_indep hscaled_meas hscaled_mem hscaled_zero hscaled_var_summable
+  exact
+    durrett2019_theorem_2_5_10_ae_average_tendsto_of_scaled_centered_series_and_mean_tendsto
+      (P := P) (Y := Y) (m := m) (μ := μ) hscaled_series hm
+
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
