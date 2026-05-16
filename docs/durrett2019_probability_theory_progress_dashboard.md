@@ -32,22 +32,27 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V395` in
+Route from `Live In-Thread Goal Prompt V396` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.5.5
 Kolmogorov maximal inequality in `StatInference/ProbabilityTheory/Basic.lean`.
-V395 adds the square-expansion upper-comparison layer:
+V396 adds the terminal-square finite-union bound and core chained maximal
+integral inequality:
+`durrett2019_theorem_2_5_5_sum_firstCrossing_terminalSq_integrals_le_integral`
+and `durrett2019_theorem_2_5_5_kolmogorov_maximal_integral_bound`, plus
+one-based wrappers.  Next work should package the textbook display
+`P(max_{1 <= k <= n} |S_k| >= x) <= x^{-2} * Var(S_n)` via positive division
+and a variance/second-moment wrapper under zero means, while reducing the
+remaining explicit integrability side conditions where immediate.
+
+Verified route history below is provenance, not live prompt text.  V395 adds
+the square-expansion upper-comparison layer:
 `durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_add_mixed_le_terminalSq`,
 `durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral_of_mixed_zero`,
 `durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral`,
 and
 `durrett2019_theorem_2_5_5_sum_firstCrossing_stoppedSq_integrals_le_sum_terminalSq_integrals`,
-plus one-based wrappers.  Next work should prove
-`sum_m integral_{A_m} S_n^2 <= integral S_n^2` via finite disjoint integral
-splitting / monotonicity, then chain V394 and V395 into the full Theorem
-2.5.5 display.
-
-Verified route history below is provenance, not live prompt text.  V394 adds
+plus one-based wrappers.  V394 adds
 the maximal-crossing event decomposition and summed first-crossing lower bound:
 `durrett2019_theorem_2_5_5_maxCrossingEvent`,
 `durrett2019_theorem_2_5_5_firstCrossing_biUnion_eq_maxCrossingEvent`,

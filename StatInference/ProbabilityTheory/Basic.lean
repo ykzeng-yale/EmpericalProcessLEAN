@@ -2345,6 +2345,207 @@ theorem durrett2019_theorem_2_5_5_sum_firstCrossing_stoppedSq_integrals_le_sum_t
       hX_int hzero hstopped_int hmixed_int hterminal_int
 
 /--
+Durrett 2019, Theorem 2.5.5 support: by disjointness of first-crossing
+events, the sum of terminal-square integrals over those events is bounded by
+the full terminal-square integral.
+-/
+theorem durrett2019_theorem_2_5_5_sum_firstCrossing_terminalSq_integrals_le_integral
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i)) {n : ℕ} (x : ℝ)
+    (hSn_sq_int : Integrable (fun ω => (∑ k ∈ Finset.range n, X k ω) ^ 2) P) :
+    ∑ m ∈ Finset.Icc 1 n,
+        ∫ ω,
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X i ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ k ∈ Finset.range n, X k ω') ^ 2) ω ∂P ≤
+      ∫ ω, (∑ k ∈ Finset.range n, X k ω) ^ 2 ∂P := by
+  classical
+  let s : Finset ℕ := Finset.Icc 1 n
+  let A : ℕ -> Set Ω := fun m =>
+    {ω : Ω |
+      (fun i : Finset.range m => X i ω) ∈
+        durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+  let f : Ω -> ℝ := fun ω => (∑ k ∈ Finset.range n, X k ω) ^ 2
+  have hA_meas : ∀ m ∈ s, MeasurableSet (A m) := by
+    intro m _hm
+    exact durrett2019_theorem_2_5_5_measurableSet_firstCrossingEvent
+      (X := X) hX_meas m x
+  have hdisj : Set.PairwiseDisjoint (↑s) A :=
+    durrett2019_theorem_2_5_5_firstCrossing_events_pairwiseDisjoint
+      (X := X) x s
+  have hsetIntegral :
+      ∫ ω in ⋃ m ∈ s, A m, f ω ∂P =
+        ∑ m ∈ s, ∫ ω in A m, f ω ∂P :=
+    integral_biUnion_finset (μ := P) (f := f) s hA_meas hdisj
+      (fun m _hm => hSn_sq_int.integrableOn)
+  have hsum_indicator :
+      (∑ m ∈ s,
+        ∫ ω, Set.indicator (A m) f ω ∂P) =
+        ∑ m ∈ s, ∫ ω in A m, f ω ∂P := by
+    refine Finset.sum_congr rfl ?_
+    intro m hm
+    exact integral_indicator (μ := P) (f := f) (hA_meas m hm)
+  have hnonneg : 0 ≤ᵐ[P] f := by
+    exact Eventually.of_forall fun ω => sq_nonneg (∑ k ∈ Finset.range n, X k ω)
+  have hunion_le :
+      ∫ ω in ⋃ m ∈ s, A m, f ω ∂P ≤ ∫ ω, f ω ∂P :=
+    setIntegral_le_integral hSn_sq_int hnonneg
+  calc
+    ∑ m ∈ Finset.Icc 1 n,
+        ∫ ω,
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X i ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ k ∈ Finset.range n, X k ω') ^ 2) ω ∂P =
+        ∑ m ∈ s, ∫ ω, Set.indicator (A m) f ω ∂P := by
+          simp [s, A, f]
+    _ = ∑ m ∈ s, ∫ ω in A m, f ω ∂P := hsum_indicator
+    _ = ∫ ω in ⋃ m ∈ s, A m, f ω ∂P := hsetIntegral.symm
+    _ ≤ ∫ ω, f ω ∂P := hunion_le
+    _ = ∫ ω, (∑ k ∈ Finset.range n, X k ω) ^ 2 ∂P := by
+      simp [f]
+
+/--
+Durrett 2019, Theorem 2.5.5 support in one-based textbook notation: the sum
+of terminal-square integrals over first-crossing events for `X_1, X_2, ...`
+is bounded by the full terminal-square integral.
+-/
+theorem durrett2019_theorem_2_5_5_sum_firstCrossing_terminalSq_integrals_le_integral_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i)) {n : ℕ} (x : ℝ)
+    (hSn_sq_int :
+      Integrable (fun ω => (∑ k ∈ Finset.range n, X (k + 1) ω) ^ 2) P) :
+    ∑ m ∈ Finset.Icc 1 n,
+        ∫ ω,
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X (i + 1) ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ k ∈ Finset.range n, X (k + 1) ω') ^ 2) ω ∂P ≤
+      ∫ ω, (∑ k ∈ Finset.range n, X (k + 1) ω) ^ 2 ∂P :=
+  durrett2019_theorem_2_5_5_sum_firstCrossing_terminalSq_integrals_le_integral
+    (P := P) (X := fun i => fun ω => X (i + 1) ω)
+    (fun i => hX_meas (i + 1)) (n := n) x hSn_sq_int
+
+/--
+Durrett 2019, Theorem 2.5.5 core integral inequality: the probability of the
+maximal first `n` partial sums crossing `x` is bounded by the terminal
+second-moment integral after multiplying by `x^2`.
+-/
+theorem durrett2019_theorem_2_5_5_kolmogorov_maximal_integral_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {n : ℕ} {x : ℝ} (hx_pos : 0 < x)
+    (hpartial_sq_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable (fun ω => (∑ i : Finset.range m, X i ω) ^ 2) P)
+    (hX_int :
+      ∀ m ∈ Finset.Icc 1 n, ∀ i ∈ Finset.Ico m n, Integrable (X i) P)
+    (hzero :
+      ∀ m ∈ Finset.Icc 1 n, ∀ i ∈ Finset.Ico m n, ∫ ω, X i ω ∂P = 0)
+    (hmixed_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable
+          (fun ω =>
+            ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+                Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+                  (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+                  (fun i : Finset.range m => X i ω)) *
+              ((∑ k ∈ Finset.range n, X k ω) -
+                ∑ k ∈ Finset.range m, X k ω)) P)
+    (hSn_sq_int : Integrable (fun ω => (∑ k ∈ Finset.range n, X k ω) ^ 2) P) :
+    x ^ 2 * P.real (durrett2019_theorem_2_5_5_maxCrossingEvent X n x) ≤
+      ∫ ω, (∑ k ∈ Finset.range n, X k ω) ^ 2 ∂P := by
+  have hstopped_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable
+          (fun ω =>
+            Set.indicator
+              {ω' : Ω |
+                (fun i : Finset.range m => X i ω') ∈
+                  durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+              (fun ω' : Ω => (∑ i : Finset.range m, X i ω') ^ 2) ω) P := by
+    intro m hm
+    exact (hpartial_sq_int m hm).indicator
+      (durrett2019_theorem_2_5_5_measurableSet_firstCrossingEvent
+        (X := X) hX_meas m x)
+  have hterminal_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable
+          (fun ω =>
+            Set.indicator
+              {ω' : Ω |
+                (fun i : Finset.range m => X i ω') ∈
+                  durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+              (fun ω' : Ω => (∑ k ∈ Finset.range n, X k ω') ^ 2) ω) P := by
+    intro m _hm
+    exact hSn_sq_int.indicator
+      (durrett2019_theorem_2_5_5_measurableSet_firstCrossingEvent
+        (X := X) hX_meas m x)
+  exact
+    le_trans
+      (durrett2019_theorem_2_5_5_sq_mul_measureReal_maxCrossingEvent_le_sum_firstCrossing_integrals
+        (P := P) (X := X) hX_meas (n := n) (x := x) hx_pos hpartial_sq_int)
+      (le_trans
+        (durrett2019_theorem_2_5_5_sum_firstCrossing_stoppedSq_integrals_le_sum_terminalSq_integrals
+          (P := P) (X := X) hX_indep hX_meas x hX_int hzero
+          hstopped_int hmixed_int hterminal_int)
+        (durrett2019_theorem_2_5_5_sum_firstCrossing_terminalSq_integrals_le_integral
+          (P := P) (X := X) hX_meas x hSn_sq_int))
+
+/--
+Durrett 2019, Theorem 2.5.5 core integral inequality in one-based textbook
+notation for `X_1, X_2, ...`.
+-/
+theorem durrett2019_theorem_2_5_5_kolmogorov_maximal_integral_bound_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {n : ℕ} {x : ℝ} (hx_pos : 0 < x)
+    (hpartial_sq_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable (fun ω => (∑ i : Finset.range m, X (i + 1) ω) ^ 2) P)
+    (hX_int :
+      ∀ m ∈ Finset.Icc 1 n, ∀ i ∈ Finset.Ico m n, Integrable (X (i + 1)) P)
+    (hzero :
+      ∀ m ∈ Finset.Icc 1 n, ∀ i ∈ Finset.Ico m n, ∫ ω, X (i + 1) ω ∂P = 0)
+    (hmixed_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable
+          (fun ω =>
+            ((2 : ℝ) * (∑ i : Finset.range m, X (i + 1) ω) *
+                Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+                  (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+                  (fun i : Finset.range m => X (i + 1) ω)) *
+              ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+                ∑ k ∈ Finset.range m, X (k + 1) ω)) P)
+    (hSn_sq_int :
+      Integrable (fun ω => (∑ k ∈ Finset.range n, X (k + 1) ω) ^ 2) P) :
+    x ^ 2 *
+        P.real
+          (durrett2019_theorem_2_5_5_maxCrossingEvent
+            (fun i => fun ω => X (i + 1) ω) n x) ≤
+      ∫ ω, (∑ k ∈ Finset.range n, X (k + 1) ω) ^ 2 ∂P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  exact
+    durrett2019_theorem_2_5_5_kolmogorov_maximal_integral_bound
+      (P := P) (X := fun i => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => hX_meas (i + 1)) (n := n) (x := x)
+      hx_pos hpartial_sq_int hX_int hzero hmixed_int hSn_sq_int
+
+/--
 Durrett 2019, Theorem 2.1.15, product-space CDF convolution form.
 
 For independent coordinates with laws `μ` and `ν`, the distribution function
