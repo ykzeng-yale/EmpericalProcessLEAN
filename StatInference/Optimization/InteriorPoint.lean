@@ -33238,6 +33238,180 @@ theorem chewi1316_sourceMainStageObjectiveGapHandoff_of_preliminaryInit
     (xpre := xpre) hpre
 
 /--
+The standard increasing main-stage parameter sequence used after the
+preliminary §13.16 initializer selects `tStart`.
+-/
+noncomputable def chewi1316_standardSourceMainStageTSeq
+    (m : ℕ) (c0 tStart : ℝ) : ℕ -> ℝ
+  | 0 => tStart
+  | n + 1 =>
+      (1 + c0 / Real.sqrt (m : ℝ)) *
+        chewi1316_standardSourceMainStageTSeq m c0 tStart n
+
+@[simp] theorem chewi1316_standardSourceMainStageTSeq_zero
+    (m : ℕ) (c0 tStart : ℝ) :
+    chewi1316_standardSourceMainStageTSeq m c0 tStart 0 = tStart :=
+  rfl
+
+@[simp] theorem chewi1316_standardSourceMainStageTSeq_succ
+    (m n : ℕ) (c0 tStart : ℝ) :
+    chewi1316_standardSourceMainStageTSeq m c0 tStart (n + 1) =
+      (1 + c0 / Real.sqrt (m : ℝ)) *
+        chewi1316_standardSourceMainStageTSeq m c0 tStart n :=
+  rfl
+
+/--
+The concrete source-coordinate main-stage Newton sequence obtained by starting
+from a selected preliminary point and following the increasing central-path
+parameter schedule.
+-/
+noncomputable def chewi1316_standardSourceMainStageXSeq
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range) (xStart : F)
+    (tStart c0 : ℝ) : ℕ -> F
+  | 0 => xStart
+  | n + 1 =>
+      newtonStep
+        (centralPathGrad
+          (chewi1316_standardSourceMainStageTSeq m c0 tStart (n + 1))
+          (ContinuousLinearMap.adjoint
+            (polytopeSlackCLM aRow).rangeRestrict aObj)
+          (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad))
+        (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+        (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj xStart tStart c0 n)
+
+@[simp] theorem chewi1316_standardSourceMainStageXSeq_zero
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range) (xStart : F)
+    (tStart c0 : ℝ) :
+    chewi1316_standardSourceMainStageXSeq aRow bSlack aObj xStart tStart c0 0 =
+      xStart :=
+  rfl
+
+@[simp] theorem chewi1316_standardSourceMainStageXSeq_succ
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range) (xStart : F)
+    (tStart c0 : ℝ) (n : ℕ) :
+    chewi1316_standardSourceMainStageXSeq aRow bSlack aObj xStart tStart c0 (n + 1) =
+      newtonStep
+        (centralPathGrad
+          (chewi1316_standardSourceMainStageTSeq m c0 tStart (n + 1))
+          (ContinuousLinearMap.adjoint
+            (polytopeSlackCLM aRow).rangeRestrict aObj)
+          (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad))
+        (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+        (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj xStart tStart c0 n) :=
+  rfl
+
+/--
+Concrete standard-main-stage version of the §13.16 objective-gap handoff.  The
+preliminary stage still selects `Npre` and `tMain`, but the following
+main-stage `t_n` and `x_n` recursions are fixed internally; callers only supply
+range membership and the terminal centrality/lower-model/stopping
+certificates.
+-/
+def Chewi1316StandardSourceMainStageObjectiveGapHandoff
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj center optimum : (polytopeSlackCLM aRow).range)
+    (xpre : ℕ -> F) : Prop :=
+  ∃ tailBound : ℝ, ∃ Midx Npre : ℕ, ∃ tMain : ℝ,
+    0 ≤ tailBound ∧
+    0 < tMain ∧
+    Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+      (Midx : ℝ) * Real.log (2 : ℝ) ∧
+    (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+      (Npre : ℝ) * (1 / 200 : ℝ) ∧
+    (∀ {eps c0 : ℝ} {Nmain : ℕ},
+      (∀ n : ℕ,
+        (polytopeSlackCLM aRow).rangeRestrict
+            (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+              (xpre Npre) tMain c0 n) ∈
+          barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m))) ->
+      0 ≤ c0 ->
+      c0 ≤ 1 / 16 ->
+      0 < eps ->
+      chewi1316_standardSourceMainStageTSeq m c0 tMain Nmain • aObj +
+          barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad center = 0 ->
+      inner ℝ
+          (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad center)
+          (optimum - center) ≤ (m : ℝ) ->
+      (localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          ((polytopeSlackCLM aRow).rangeRestrict
+            (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+              (xpre Npre) tMain c0 Nmain))
+          ((polytopeSlackCLM aRow).rangeRestrict
+            (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+              (xpre Npre) tMain c0 Nmain) - center)) ^ (2 : ℕ) /
+          (1 + localNorm
+            (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM)
+            ((polytopeSlackCLM aRow).rangeRestrict
+              (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                (xpre Npre) tMain c0 Nmain))
+            ((polytopeSlackCLM aRow).rangeRestrict
+              (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                (xpre Npre) tMain c0 Nmain) - center)) ≤
+        inner ℝ
+          (chewi1316_standardSourceMainStageTSeq m c0 tMain Nmain • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad
+              ((polytopeSlackCLM aRow).rangeRestrict
+                (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                  (xpre Npre) tMain c0 Nmain)))
+          ((polytopeSlackCLM aRow).rangeRestrict
+            (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+              (xpre Npre) tMain c0 Nmain) - center) ->
+      2 * (m : ℝ) ≤
+        eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ Nmain * tMain) ->
+      inner ℝ aObj
+          ((polytopeSlackCLM aRow).rangeRestrict
+            (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+              (xpre Npre) tMain c0 Nmain)) -
+          inner ℝ aObj optimum ≤ eps)
+
+set_option maxHeartbeats 4000000 in
+theorem chewi1316_standardSourceMainStageObjectiveGapHandoff_of_sourceMainStageObjectiveGapHandoff
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {aObj center optimum : (polytopeSlackCLM aRow).range}
+    {xpre : ℕ -> F}
+    (hhand :
+      Chewi1316SourceMainStageObjectiveGapHandoff aRow bSlack aObj center optimum xpre) :
+    Chewi1316StandardSourceMainStageObjectiveGapHandoff
+      aRow bSlack aObj center optimum xpre := by
+  rcases hhand with
+    ⟨tailBound, Midx, Npre, tMain, htail_nonneg, htMain_pos, hlog, hcount,
+      hmain⟩
+  refine ⟨tailBound, Midx, Npre, tMain, htail_nonneg, htMain_pos, hlog, hcount, ?_⟩
+  intro eps c0 Nmain hxmem hc0_nonneg hc0_le heps_pos hcentral hbarrier_step
+    hlower hlarge
+  exact
+    hmain
+      (xmain := chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+        (xpre Npre) tMain c0)
+      (tmain := chewi1316_standardSourceMainStageTSeq m c0 tMain)
+      (eps := eps) (c0 := c0) (Nmain := Nmain)
+      (by simp)
+      (by simp)
+      hxmem
+      (by intro n; simp)
+      (by intro n; simp)
+      hc0_nonneg hc0_le heps_pos hcentral hbarrier_step hlower hlarge
+
+/--
 Finite-row range-space preliminary one-step invariant from a domain-wide
 square-root-coordinate model.  The range Newton recurrence and summable
 pre-decrement budget provide the range membership needed along each Newton
@@ -47072,6 +47246,97 @@ theorem chewi1316_sourceMainStageObjectiveGapHandoff_compactClosedPolytope_stand
       (aObj := ContinuousLinearMap.adjoint
         (polytopeSlackCLM aRow).rangeRestrict aObj)
       hxbar0Set hcompact_closed)
+
+/--
+Concrete bounded feasible-range preliminary initializer followed by the
+standard source-coordinate main-stage Newton recursion.
+-/
+theorem chewi1316_standardSourceMainStageObjectiveGapHandoff_boundedFeasibleRange_standardPath
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj center optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hbounded :
+      Bornology.IsBounded
+        (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))) :
+    Chewi1316StandardSourceMainStageObjectiveGapHandoff aRow bSlack aObj center optimum
+      (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0) :=
+  chewi1316_standardSourceMainStageObjectiveGapHandoff_of_sourceMainStageObjectiveGapHandoff
+    (aRow := aRow) (bSlack := bSlack)
+    (aObj := aObj) (center := center) (optimum := optimum)
+    (xpre := chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+    (chewi1316_sourceMainStageObjectiveGapHandoff_boundedFeasibleRange_standardPath
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0) (aObj := aObj) (center := center)
+      (optimum := optimum) hxbar0Set hbounded)
+
+/--
+Concrete bounded strict source-polytope preliminary initializer followed by the
+standard source-coordinate main-stage Newton recursion.
+-/
+theorem chewi1316_standardSourceMainStageObjectiveGapHandoff_boundedPolytope_standardPath
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj center optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hbounded_source : Bornology.IsBounded (polytopeSlackSet aRow bSlack)) :
+    Chewi1316StandardSourceMainStageObjectiveGapHandoff aRow bSlack aObj center optimum
+      (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0) :=
+  chewi1316_standardSourceMainStageObjectiveGapHandoff_of_sourceMainStageObjectiveGapHandoff
+    (aRow := aRow) (bSlack := bSlack)
+    (aObj := aObj) (center := center) (optimum := optimum)
+    (xpre := chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+    (chewi1316_sourceMainStageObjectiveGapHandoff_boundedPolytope_standardPath
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0) (aObj := aObj) (center := center)
+      (optimum := optimum) hxbar0Set hbounded_source)
+
+/--
+Concrete bounded closed-polytope preliminary initializer followed by the
+standard source-coordinate main-stage Newton recursion.
+-/
+theorem chewi1316_standardSourceMainStageObjectiveGapHandoff_boundedClosedPolytope_standardPath
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj center optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hbounded_closed : Bornology.IsBounded (closedPolytopeSlackSet aRow bSlack)) :
+    Chewi1316StandardSourceMainStageObjectiveGapHandoff aRow bSlack aObj center optimum
+      (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0) :=
+  chewi1316_standardSourceMainStageObjectiveGapHandoff_of_sourceMainStageObjectiveGapHandoff
+    (aRow := aRow) (bSlack := bSlack)
+    (aObj := aObj) (center := center) (optimum := optimum)
+    (xpre := chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+    (chewi1316_sourceMainStageObjectiveGapHandoff_boundedClosedPolytope_standardPath
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0) (aObj := aObj) (center := center)
+      (optimum := optimum) hxbar0Set hbounded_closed)
+
+/--
+Concrete compact closed-polytope preliminary initializer followed by the
+standard source-coordinate main-stage Newton recursion.
+-/
+theorem chewi1316_standardSourceMainStageObjectiveGapHandoff_compactClosedPolytope_standardPath
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj center optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hcompact_closed : IsCompact (closedPolytopeSlackSet aRow bSlack)) :
+    Chewi1316StandardSourceMainStageObjectiveGapHandoff aRow bSlack aObj center optimum
+      (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0) :=
+  chewi1316_standardSourceMainStageObjectiveGapHandoff_of_sourceMainStageObjectiveGapHandoff
+    (aRow := aRow) (bSlack := bSlack)
+    (aObj := aObj) (center := center) (optimum := optimum)
+    (xpre := chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+    (chewi1316_sourceMainStageObjectiveGapHandoff_compactClosedPolytope_standardPath
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0) (aObj := aObj) (center := center)
+      (optimum := optimum) hxbar0Set hcompact_closed)
 
 /--
 Bounded feasible translated slack ranges yield a source-shaped finite tail

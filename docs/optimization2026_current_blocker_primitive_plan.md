@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V14`, this file's top
+   the full book is complete, route from `Live Goal Prompt V15`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,42 +132,51 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V14
+## Live Goal Prompt V15
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: the concrete standard preliminary stage now feeds the
-source-coordinate §13.16 main-stage objective-gap wrapper.  New compiled
-declarations:
+Current active frontier: the concrete standard preliminary stage now feeds a
+concrete source-coordinate standard main-stage Newton recursion for §13.16
+objective-gap accuracy.  New compiled declarations:
 `Chewi1316SourceMainStageObjectiveGapHandoff`,
 `chewi1316_sourceMainStageObjectiveGapHandoff_of_preliminaryInit`,
 `chewi1316_sourceMainStageObjectiveGapHandoff_boundedFeasibleRange_standardPath`,
 `chewi1316_sourceMainStageObjectiveGapHandoff_boundedPolytope_standardPath`,
 `chewi1316_sourceMainStageObjectiveGapHandoff_boundedClosedPolytope_standardPath`,
 and
-`chewi1316_sourceMainStageObjectiveGapHandoff_compactClosedPolytope_standardPath`.
-These instantiate the preliminary source objective as
-`ContinuousLinearMap.adjoint (polytopeSlackCLM aRow).rangeRestrict aObj` and
-reuse the compiled standard recursive preliminary endpoints instead of
-rethreading preliminary budgets, range sqrt-coordinate models, or
-source-to-range Newton transport.
+`chewi1316_sourceMainStageObjectiveGapHandoff_compactClosedPolytope_standardPath`,
+plus the concrete main-stage layer
+`chewi1316_standardSourceMainStageTSeq`,
+`chewi1316_standardSourceMainStageXSeq`,
+`Chewi1316StandardSourceMainStageObjectiveGapHandoff`,
+`chewi1316_standardSourceMainStageObjectiveGapHandoff_of_sourceMainStageObjectiveGapHandoff`,
+`chewi1316_standardSourceMainStageObjectiveGapHandoff_boundedFeasibleRange_standardPath`,
+`chewi1316_standardSourceMainStageObjectiveGapHandoff_boundedPolytope_standardPath`,
+`chewi1316_standardSourceMainStageObjectiveGapHandoff_boundedClosedPolytope_standardPath`,
+and
+`chewi1316_standardSourceMainStageObjectiveGapHandoff_compactClosedPolytope_standardPath`.
+These fix both the standard preliminary recursion and the standard increasing
+main-stage `t_n`/source-Newton `x_n` recursion internally.  The only remaining
+assumptions around the final handoff are the genuine analytic certificates:
+main-stage range membership, central-path optimality at the terminal
+parameter, barrier-step/lower-model inequalities, and the large-parameter
+stopping condition.
 
-Next theorem-sized target: close the finite-row textbook-facing §13.16 final
-accuracy theorem for the standard algorithm by discharging the remaining
-supplied main-stage assumptions around the new
-`Chewi1316SourceMainStageObjectiveGapHandoff` endpoint.  Search first for
-existing local central-path optimality, barrier-step, lower-model,
-range-membership, and large-parameter stopping lemmas in
-`StatInference/Optimization/InteriorPoint.lean` and for Mathlib inner-product,
-convexity, and finite-dimensional compactness APIs before adding any new
-primitive.  Preferred first packet: package the standard source main-stage
-recurrence and membership assumptions the same way
-`Chewi1316StandardSourcePreliminaryPath` packages the preliminary path, then
-compose it with one of the four new standard-path handoff endpoints.  Do not
-redo the preliminary initializer or the V13 source/range transport layer.
-Older paragraphs below are cached route history and must not override this V14
-target.
+Next theorem-sized target: discharge the concrete main-stage range-membership
+certificate for `chewi1316_standardSourceMainStageXSeq`, preferably by reusing
+the already compiled self-concordant main-stage decrement invariants and local
+range Cauchy/Hessian calculus (`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton`,
+`chewi1316_objective_gap_le_eps_of_mainStage_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`,
+`chewi1314_polytopeSlackNegLog_range_componentCauchy`, and the
+`barrierAffineRange_*` central-path transport lemmas).  Bounded search result:
+local `InteriorPoint.lean` has the Chewi-specific Cauchy, parameter, and
+self-concordance APIs; pinned mathlib has generic convex/min/compact APIs but
+no direct replacement for this Chewi standard main-stage membership theorem.
+Do not redo preliminary initialization, source/range Newton transport, or the
+standard main-stage recursion now compiled in V15.  Older paragraphs below are
+cached route history and must not override this V15 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
 slack-range §13.16 handoff now

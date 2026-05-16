@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V14` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V15` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -31,14 +31,15 @@ one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
 Current live route supersedes the older paragraphs below: the concrete
-standard preliminary stage now hands off to source-coordinate §13.16
-main-stage objective-gap accuracy through
-`Chewi1316SourceMainStageObjectiveGapHandoff` and the bounded/compact
-`chewi1316_sourceMainStageObjectiveGapHandoff_*_standardPath` endpoints.
-The next endpoint-moving theorem should package the standard source main-stage
-recurrence, range membership, centrality, barrier-step/lower-model, and
-large-parameter stopping assumptions around this handoff; do not redo the
-preliminary initializer or source/range Newton transport.
+standard preliminary stage now hands off to a concrete standard source
+main-stage recursion through `Chewi1316StandardSourceMainStageObjectiveGapHandoff`
+and the bounded/compact
+`chewi1316_standardSourceMainStageObjectiveGapHandoff_*_standardPath`
+endpoints.  The next endpoint-moving theorem should prove the range-membership
+certificate for `chewi1316_standardSourceMainStageXSeq` and then discharge the
+terminal centrality, barrier-step/lower-model, and large-parameter stopping
+certificates; do not redo preliminary initialization, source/range Newton
+transport, or the standard main-stage recursion.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the
@@ -352,6 +353,20 @@ objective-gap theorem by using the adjoint pullback of the range objective, so
 future work should focus on packaging/discharging the remaining main-stage
 centrality, barrier-step, lower-model, membership, and stopping-condition
 assumptions.
+The concrete standard-main-stage packet now compiles as
+`chewi1316_standardSourceMainStageTSeq`,
+`chewi1316_standardSourceMainStageXSeq`,
+`Chewi1316StandardSourceMainStageObjectiveGapHandoff`,
+`chewi1316_standardSourceMainStageObjectiveGapHandoff_of_sourceMainStageObjectiveGapHandoff`,
+`chewi1316_standardSourceMainStageObjectiveGapHandoff_boundedFeasibleRange_standardPath`,
+`chewi1316_standardSourceMainStageObjectiveGapHandoff_boundedPolytope_standardPath`,
+`chewi1316_standardSourceMainStageObjectiveGapHandoff_boundedClosedPolytope_standardPath`,
+and
+`chewi1316_standardSourceMainStageObjectiveGapHandoff_compactClosedPolytope_standardPath`.
+Use this as the current §13.16 final-accuracy interface: the preliminary
+selection and standard increasing main-stage Newton recursion are fixed
+internally, leaving range membership and terminal analytic certificates as the
+remaining proof work.
 The coordinate-upper-bound specialization now compiles as
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_slackCoordinateUpperBound`
 and
