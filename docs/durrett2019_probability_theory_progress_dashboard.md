@@ -32,12 +32,29 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V401` in
+Route from `Live In-Thread Goal Prompt V402` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.5.6
 convergence of random series in `StatInference/ProbabilityTheory/Basic.lean`.
-V401 lifts the finite Theorem 2.5.6 block estimate to the increasing-union tail
-event.  New compiled anchors:
+V402 derives the textbook variance-tail probability limit from one-based
+summability of `fun i => Var(X_{i+1})`.  New compiled anchors:
+`durrett2019_theorem_2_5_6_sum_range_shift_tendsto_tsum_of_summable`,
+`durrett2019_theorem_2_5_6_tsum_tail_tendsto_zero_of_summable`,
+`durrett2019_theorem_2_5_6_variance_tail_partial_tendsto_tsum_of_summable`,
+`durrett2019_theorem_2_5_6_variance_tsum_tail_tendsto_zero_of_summable`,
+`durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_summable_variance`,
+and
+`durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_tendsto_zero_of_summable_variance`.
+The line
+`P(sup_{m >= M} |S_m - S_M| > eps) <= eps^{-2} *
+sum_{i=M+1}^\infty Var(X_i) -> 0`
+is now represented for the shifted tail-maximal event.  Next work should
+connect this tail event to Durrett's oscillation event
+`w_M = sup_{m,n >= M} |S_m - S_n|`, prove the `2 eps` triangle/probability
+handoff, and package the Cauchy/a.s. convergence endpoint.
+
+Verified route history below is provenance, not live prompt text.  V401 lifts
+the finite Theorem 2.5.6 block estimate to the increasing-union tail event:
 `durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent`,
 `durrett2019_theorem_2_5_6_tailMaxCrossingEvent`,
 `durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent_mono`,
@@ -47,11 +64,7 @@ and
 `durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_variance_tail_limit`.
 The finite-to-infinite probability passage now reuses mathlib's
 `tendsto_measure_iUnion_atTop`; do not rebuild countable-union measure
-machinery.  Next work should derive the variance-tail convergence from a
-summability hypothesis on `fun i => Var(X i)` and then connect the tail event
-to Durrett's oscillation/Cauchy almost-sure convergence endpoint.
-
-Verified route history below is provenance, not live prompt text.  V400 adds
+machinery.  V400 adds
 the final source-style statement of Kolmogorov's maximal inequality and the
 first Theorem 2.5.6 block estimate:
 `durrett2019_theorem_2_5_5_kolmogorov_maximal_inequality` and

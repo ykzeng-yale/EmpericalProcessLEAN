@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V401
+## Live In-Thread Goal Prompt V402
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -14,12 +14,30 @@ Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Theorem 2.5.6 convergence of random
 series in `StatInference/ProbabilityTheory/Basic.lean`.  Reuse the compiled
 Chapter 2.1 independence/product-expectation bridges, Theorem 2.2.1
-variance-sum APIs, and V391-V401 first-crossing/block-tail infrastructure; do not route
+variance-sum APIs, and V391-V402 first-crossing/block-tail infrastructure; do not route
 back to Theorem 2.4.9 or 2.5.5 source packaging
 unless search proves a concrete missing source display.
 
-Latest verified target V401 lifts the finite Theorem 2.5.6 block estimate to
-the increasing-union tail event.  New compiled anchors:
+Latest verified target V402 derives the textbook variance-tail probability
+limit from one-based summability of `fun i => Var(X_{i+1})`.  New compiled
+anchors:
+`durrett2019_theorem_2_5_6_sum_range_shift_tendsto_tsum_of_summable`,
+`durrett2019_theorem_2_5_6_tsum_tail_tendsto_zero_of_summable`,
+`durrett2019_theorem_2_5_6_variance_tail_partial_tendsto_tsum_of_summable`,
+`durrett2019_theorem_2_5_6_variance_tsum_tail_tendsto_zero_of_summable`,
+`durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_summable_variance`,
+and
+`durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_tendsto_zero_of_summable_variance`.
+The line
+`P(sup_{m >= M} |S_m - S_M| > eps) <= eps^{-2} *
+sum_{i=M+1}^\infty Var(X_i) -> 0`
+is now represented for the shifted tail-maximal event.  Next aggressive target:
+connect this tail event to Durrett's oscillation event
+`w_M = sup_{m,n >= M} |S_m - S_n|`, prove the `2 eps` triangle/probability
+handoff, and package the Cauchy/a.s. convergence endpoint.
+
+V401 lifts the finite Theorem 2.5.6 block estimate to the increasing-union tail
+event.  Compiled anchors:
 `durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent`,
 `durrett2019_theorem_2_5_6_tailMaxCrossingEvent`,
 `durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent_mono`,
@@ -29,10 +47,7 @@ and
 `durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_variance_tail_limit`.
 The finite-to-infinite probability passage now reuses mathlib's
 `tendsto_measure_iUnion_atTop` through the local Durrett 1.1.1 continuity
-pattern; do not rebuild countable-union measure machinery.  Next aggressive
-target: derive the required variance-tail convergence from a summability
-hypothesis on `fun i => Var(X i)`, then connect the tail event to Durrett's
-oscillation/Cauchy almost-sure convergence endpoint.
+pattern; do not rebuild countable-union measure machinery.
 
 V400 adds the final source-style statement of Kolmogorov's maximal inequality
 and the first Theorem 2.5.6 block estimate:

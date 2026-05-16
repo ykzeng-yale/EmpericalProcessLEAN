@@ -3825,6 +3825,143 @@ theorem durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_varianc
   · exact tendsto_const_nhds.mul htail
 
 /--
+Durrett 2019, Theorem 2.5.6 support: partial sums of a shifted summable real
+series converge to the shifted tail sum.
+-/
+theorem durrett2019_theorem_2_5_6_sum_range_shift_tendsto_tsum_of_summable
+    {q : ℕ -> ℝ} (hq_summable : Summable q) (M : ℕ) :
+    Tendsto (fun n : ℕ => ∑ i ∈ Finset.range n, q (M + i))
+      atTop (𝓝 (∑' i : ℕ, q (M + i))) := by
+  have hshift : Summable fun i : ℕ => q (M + i) := by
+    have hshift' : Summable fun i : ℕ => q (i + M) :=
+      (summable_nat_add_iff (f := q) M).2 hq_summable
+    simpa [Nat.add_comm] using hshift'
+  exact hshift.tendsto_sum_tsum_nat
+
+/--
+Durrett 2019, Theorem 2.5.6 support: shifted tails of a summable real series
+tend to zero.
+-/
+theorem durrett2019_theorem_2_5_6_tsum_tail_tendsto_zero_of_summable
+    {q : ℕ -> ℝ} (_hq_summable : Summable q) :
+    Tendsto (fun M : ℕ => ∑' j : ℕ, q (M + j)) atTop (𝓝 (0 : ℝ)) := by
+  simpa [Nat.add_comm] using (tendsto_sum_nat_add (f := q))
+
+/--
+Durrett 2019, Theorem 2.5.6 support: one-based summability of the variance
+series supplies the finite-to-infinite variance-tail limit needed by the
+Kolmogorov block estimate.
+-/
+theorem durrett2019_theorem_2_5_6_variance_tail_partial_tendsto_tsum_of_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} (M : ℕ)
+    (hvar_summable :
+      Summable fun i : ℕ =>
+        _root_.ProbabilityTheory.variance (X (i + 1)) P) :
+    Tendsto
+      (fun n : ℕ =>
+        ∑ i ∈ Finset.range n,
+          _root_.ProbabilityTheory.variance (X (M + (i + 1))) P)
+      atTop
+      (𝓝 (∑' i : ℕ,
+        _root_.ProbabilityTheory.variance (X (M + (i + 1))) P)) := by
+  have htail :=
+    durrett2019_theorem_2_5_6_sum_range_shift_tendsto_tsum_of_summable
+      (q := fun i : ℕ => _root_.ProbabilityTheory.variance (X (i + 1)) P)
+      hvar_summable M
+  simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htail
+
+/--
+Durrett 2019, Theorem 2.5.6 support: one-based summability of the variance
+series makes the shifted infinite variance tail tend to zero.
+-/
+theorem durrett2019_theorem_2_5_6_variance_tsum_tail_tendsto_zero_of_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hvar_summable :
+      Summable fun i : ℕ =>
+        _root_.ProbabilityTheory.variance (X (i + 1)) P) :
+    Tendsto
+      (fun M : ℕ =>
+        ∑' i : ℕ,
+          _root_.ProbabilityTheory.variance (X (M + (i + 1))) P)
+      atTop (𝓝 (0 : ℝ)) := by
+  have htail :=
+    durrett2019_theorem_2_5_6_tsum_tail_tendsto_zero_of_summable
+      (q := fun i : ℕ => _root_.ProbabilityTheory.variance (X (i + 1)) P)
+      hvar_summable
+  simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htail
+
+/--
+Durrett 2019, Theorem 2.5.6 support: the textbook infinite-tail maximal
+probability bound obtained from Kolmogorov's inequality and summability of
+`sum var(X_n)`.
+-/
+theorem durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_summable_variance
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {M : ℕ} {eps : ℝ} (heps_pos : 0 < eps)
+    (hX_mem : ∀ i, MemLp (X i) 2 P)
+    (hX_zero : ∀ i, ∫ ω, X i ω ∂P = 0)
+    (hvar_summable :
+      Summable fun i : ℕ =>
+        _root_.ProbabilityTheory.variance (X (i + 1)) P) :
+    P.real (durrett2019_theorem_2_5_6_tailMaxCrossingEvent X M eps) ≤
+      (eps ^ 2)⁻¹ *
+        ∑' i : ℕ,
+          _root_.ProbabilityTheory.variance (X (M + (i + 1))) P := by
+  exact
+    durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_variance_tail_limit
+      (P := P) (X := X) hX_indep hX_meas
+      (M := M) (eps := eps)
+      (tail := ∑' i : ℕ,
+        _root_.ProbabilityTheory.variance (X (M + (i + 1))) P)
+      heps_pos hX_mem hX_zero
+      (durrett2019_theorem_2_5_6_variance_tail_partial_tendsto_tsum_of_summable
+        (P := P) (X := X) M hvar_summable)
+
+/--
+Durrett 2019, Theorem 2.5.6 support: under the textbook summable-variance
+hypothesis, the tail maximal crossing probability tends to zero as the starting
+index `M` tends to infinity.
+-/
+theorem durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_tendsto_zero_of_summable_variance
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {eps : ℝ} (heps_pos : 0 < eps)
+    (hX_mem : ∀ i, MemLp (X i) 2 P)
+    (hX_zero : ∀ i, ∫ ω, X i ω ∂P = 0)
+    (hvar_summable :
+      Summable fun i : ℕ =>
+        _root_.ProbabilityTheory.variance (X (i + 1)) P) :
+    Tendsto
+      (fun M : ℕ =>
+        P.real (durrett2019_theorem_2_5_6_tailMaxCrossingEvent X M eps))
+      atTop (𝓝 (0 : ℝ)) := by
+  have htail :
+      Tendsto
+        (fun M : ℕ =>
+          (eps ^ 2)⁻¹ *
+            ∑' i : ℕ,
+              _root_.ProbabilityTheory.variance (X (M + (i + 1))) P)
+        atTop (𝓝 (0 : ℝ)) := by
+    have hvar_tail :=
+      durrett2019_theorem_2_5_6_variance_tsum_tail_tendsto_zero_of_summable
+        (P := P) (X := X) hvar_summable
+    simpa using tendsto_const_nhds.mul hvar_tail
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds htail
+    (fun M => measureReal_nonneg) ?_
+  intro M
+  exact
+    durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_le_of_summable_variance
+      (P := P) (X := X) hX_indep hX_meas
+      (M := M) (eps := eps) heps_pos hX_mem hX_zero hvar_summable
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
