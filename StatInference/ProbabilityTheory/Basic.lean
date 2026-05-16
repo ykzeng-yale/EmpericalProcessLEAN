@@ -5279,6 +5279,193 @@ theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_ran
       (fun _ _ hij => hShift.2.indepFun hij)
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step in exact textbook notation:
+`n^{-1} * sum_{i < n} 1{X_i < c} -> F(c-)` almost surely.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X i ω) -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) := by
+  simpa [div_eq_mul_inv, mul_comm] using
+    durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae
+      X c hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in range-sum notation under
+`iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X i ω)) /
+            (n : ℝ) -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae
+    X c hLaw (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in exact textbook notation under
+`iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X i ω) -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae
+    X c hLaw (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in one-based exact textbook notation
+under `iIndepFun`: `n^{-1} * sum_{m=1}^n 1{X_m < c} -> F(c-)` almost surely.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_inv_mul_range_sum_tendsto_leftLim_ae_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X (i + 1) ω) -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) := by
+  simpa [div_eq_mul_inv, mul_comm] using
+    durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_range_sum_tendsto_leftLim_ae_of_iIndepFun
+      X c hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from a full infinite-product joint law,
+in one-based exact textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_inv_mul_range_sum_tendsto_leftLim_ae_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X (i + 1) ω) -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_inv_mul_range_sum_tendsto_leftLim_ae_of_iIndepFun
+      X c hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from identically distributed
+coordinates plus `iIndepFun`, in one-based exact textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_inv_mul_range_sum_tendsto_leftLim_ae_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X (i + 1) ω) -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_inv_mul_range_sum_tendsto_leftLim_ae_of_iIndepFun
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from pairwise-identically distributed
+coordinates, in one-based exact textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_inv_mul_range_sum_tendsto_leftLim_ae_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X (i + 1) ω) -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) := by
+  have hLawAll :
+      ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) P μ :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  have hLawShift : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) P μ := by
+    intro i
+    exact hLawAll (i + 1)
+  have hIndepShift :
+      Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on
+        (fun i : ℕ => fun ω => X (i + 1) ω)) := by
+    intro i j hij
+    have hne : Nat.succ i ≠ Nat.succ j := by
+      intro h
+      exact hij (Nat.succ.inj h)
+    simpa [Function.onFun, Nat.succ_eq_add_one] using hindep hne
+  exact
+    durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae
+      (fun i => fun ω => X (i + 1) ω) c hLawShift hIndepShift
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+one-based exact textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_inv_mul_range_sum_tendsto_leftLim_ae_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (c : ℝ) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n,
+              realOpenHalfLineIndicator c (sample (i + 1)) -
+            Function.leftLim (ProbabilityTheory.cdf (P : Measure ℝ)) c)
+        atTop (𝓝 0) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased P
+  exact
+    durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae
+      (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) c
+      hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
 Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem under the
 standard iid-source independence assumption `iIndepFun`.
 -/
