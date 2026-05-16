@@ -4758,6 +4758,252 @@ theorem durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_tsum_mismatch_ne_t
     hY
 
 /--
+Durrett 2019, Theorem 2.5.8, fixed-level truncation notation.
+
+The textbook writes `Y_i = X_i 1_{|X_i| <= A}`.
+-/
+noncomputable def durrett2019_theorem_2_5_8_truncated
+    {Ω : Type u} (X : ℕ -> Ω -> ℝ) (A : ℝ) (n : ℕ) : Ω -> ℝ :=
+  Set.indicator {ω : Ω | |X n ω| ≤ A} (fun ω : Ω => X n ω)
+
+/--
+Durrett 2019, Theorem 2.5.8 support: the fixed-level truncation map on real
+values is measurable.
+-/
+theorem durrett2019_theorem_2_5_8_measurable_truncationMap
+    {A : ℝ} :
+    Measurable (fun x : ℝ => Set.indicator {y : ℝ | |y| ≤ A} (fun y => y) x) := by
+  exact measurable_id.indicator (measurableSet_le measurable_abs measurable_const)
+
+/--
+Durrett 2019, Theorem 2.5.8 support: each fixed-level truncation is measurable
+when the original random variable is measurable.
+-/
+theorem durrett2019_theorem_2_5_8_measurable_truncated
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X : ℕ -> Ω -> ℝ} {A : ℝ} {n : ℕ}
+    (hX : Measurable (X n)) :
+    Measurable (durrett2019_theorem_2_5_8_truncated X A n) := by
+  have hcomp :
+      Measurable
+        ((fun x : ℝ => Set.indicator {y : ℝ | |y| ≤ A} (fun y => y) x) ∘
+          X n) :=
+    durrett2019_theorem_2_5_8_measurable_truncationMap.comp hX
+  simpa [durrett2019_theorem_2_5_8_truncated, Function.comp_def] using hcomp
+
+/--
+Durrett 2019, Theorem 2.5.8 support: independence is preserved by the
+fixed-level truncation operation.
+-/
+theorem durrett2019_theorem_2_5_8_iIndepFun_truncated_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {A : ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P) :
+    _root_.ProbabilityTheory.iIndepFun
+      (fun n : ℕ => durrett2019_theorem_2_5_8_truncated X A n) P := by
+  have hcomp :=
+    durrett2019_theorem_2_1_10_iIndepFun_comp
+      (P := P) (X := X) hX_indep
+      (f := fun _ : ℕ =>
+        fun x : ℝ => Set.indicator {y : ℝ | |y| ≤ A} (fun y => y) x)
+      (fun _ => durrett2019_theorem_2_5_8_measurable_truncationMap)
+  simpa [durrett2019_theorem_2_5_8_truncated, Function.comp_def] using hcomp
+
+/--
+Durrett 2019, Theorem 2.5.8 support: centered truncated variables remain
+independent.
+-/
+theorem durrett2019_theorem_2_5_8_iIndepFun_centered_truncated_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {A : ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun X P) :
+    _root_.ProbabilityTheory.iIndepFun
+      (fun n : ℕ => fun ω : Ω =>
+        durrett2019_theorem_2_5_8_truncated X A n ω - a n) P := by
+  have htrunc_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun n : ℕ => durrett2019_theorem_2_5_8_truncated X A n) P :=
+    durrett2019_theorem_2_5_8_iIndepFun_truncated_of_iIndepFun
+      (P := P) (X := X) (A := A) hX_indep
+  have hcomp :=
+    durrett2019_theorem_2_1_10_iIndepFun_comp
+      (P := P)
+      (X := fun n : ℕ => durrett2019_theorem_2_5_8_truncated X A n)
+      htrunc_indep
+      (f := fun n : ℕ => fun x : ℝ => x - a n)
+      (fun _ => measurable_id.sub measurable_const)
+  simpa [Function.comp_def] using hcomp
+
+/--
+Durrett 2019, Theorem 2.5.8 support: on the truncation set, the truncated
+variable equals the original variable.
+-/
+theorem durrett2019_theorem_2_5_8_truncated_eq_self_of_abs_le
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {A : ℝ} {n : ℕ} {ω : Ω}
+    (hsmall : |X n ω| ≤ A) :
+    durrett2019_theorem_2_5_8_truncated X A n ω = X n ω := by
+  simp [durrett2019_theorem_2_5_8_truncated, hsmall]
+
+/--
+Durrett 2019, Theorem 2.5.8 support: off the truncation set, the truncated
+variable is zero.
+-/
+theorem durrett2019_theorem_2_5_8_truncated_eq_zero_of_lt_abs
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {A : ℝ} {n : ℕ} {ω : Ω}
+    (hlarge : A < |X n ω|) :
+    durrett2019_theorem_2_5_8_truncated X A n ω = 0 := by
+  have hnot : ¬ |X n ω| ≤ A := not_le_of_gt hlarge
+  simp [durrett2019_theorem_2_5_8_truncated, hnot]
+
+/--
+Durrett 2019, Theorem 2.5.8 support: truncation cannot increase absolute
+value.
+-/
+theorem durrett2019_theorem_2_5_8_abs_truncated_le_abs
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {A : ℝ} (n : ℕ) (ω : Ω) :
+    |durrett2019_theorem_2_5_8_truncated X A n ω| ≤ |X n ω| := by
+  by_cases hsmall : |X n ω| ≤ A
+  · simp [durrett2019_theorem_2_5_8_truncated, hsmall]
+  · simp [durrett2019_theorem_2_5_8_truncated, hsmall]
+
+/--
+Durrett 2019, Theorem 2.5.8 support: the fixed-level truncation is bounded by
+`|A|`.
+-/
+theorem durrett2019_theorem_2_5_8_norm_truncated_le_abs_bound
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {A : ℝ} (n : ℕ) (ω : Ω) :
+    ‖durrett2019_theorem_2_5_8_truncated X A n ω‖ ≤ |A| := by
+  by_cases hsmall : |X n ω| ≤ A
+  · have hA_nonneg : 0 ≤ A := le_trans (abs_nonneg _) hsmall
+    simp [durrett2019_theorem_2_5_8_truncated, hsmall, Real.norm_eq_abs,
+      abs_of_nonneg hA_nonneg]
+  · simp [durrett2019_theorem_2_5_8_truncated, hsmall]
+
+/--
+Durrett 2019, Theorem 2.5.8 support: measurable truncated variables are in
+`L^2` on finite measure spaces.
+-/
+theorem durrett2019_theorem_2_5_8_truncated_memLp_two_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {A : ℝ} {n : ℕ}
+    (hX : Measurable (X n)) :
+    MemLp (durrett2019_theorem_2_5_8_truncated X A n) (2 : ℝ≥0∞) P := by
+  exact MemLp.of_bound
+    (durrett2019_theorem_2_5_8_measurable_truncated
+      (X := X) (A := A) (n := n) hX).aestronglyMeasurable
+    |A| (Eventually.of_forall fun ω =>
+      durrett2019_theorem_2_5_8_norm_truncated_le_abs_bound
+        (X := X) (A := A) n ω)
+
+/--
+Durrett 2019, Theorem 2.5.8 support: centered truncated variables are in
+`L^2` on finite measure spaces.
+-/
+theorem durrett2019_theorem_2_5_8_centered_truncated_memLp_two_of_measurable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {A : ℝ} {a : ℕ -> ℝ} {n : ℕ}
+    (hX : Measurable (X n)) :
+    MemLp (fun ω : Ω => durrett2019_theorem_2_5_8_truncated X A n ω - a n)
+      (2 : ℝ≥0∞) P := by
+  exact
+    (durrett2019_theorem_2_5_8_truncated_memLp_two_of_measurable
+      (P := P) (X := X) (A := A) (n := n) hX).sub (memLp_const (a n))
+
+/--
+Durrett 2019, Theorem 2.5.8 support: the event where the original variable and
+its fixed-level truncation differ is contained in the corresponding large-jump
+event.
+-/
+theorem durrett2019_theorem_2_5_8_truncation_mismatch_subset_tail
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {A : ℝ} (n : ℕ) :
+    {ω : Ω | X n ω ≠ durrett2019_theorem_2_5_8_truncated X A n ω} ⊆
+      {ω : Ω | A < |X n ω|} := by
+  intro ω hneq
+  by_contra hnot_tail
+  have hsmall : |X n ω| ≤ A := le_of_not_gt hnot_tail
+  exact hneq
+    (durrett2019_theorem_2_5_8_truncated_eq_self_of_abs_le
+      (X := X) (A := A) (n := n) (ω := ω) hsmall).symm
+
+/--
+Durrett 2019, Theorem 2.5.8 support: the mismatch probability is bounded by
+the large-jump probability.
+-/
+theorem durrett2019_theorem_2_5_8_measure_mismatch_le_tail
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {A : ℝ} (n : ℕ) :
+    P {ω : Ω | X n ω ≠ durrett2019_theorem_2_5_8_truncated X A n ω} ≤
+      P {ω : Ω | A < |X n ω|} :=
+  measure_mono
+    (durrett2019_theorem_2_5_8_truncation_mismatch_subset_tail
+      (X := X) (A := A) n)
+
+/--
+Durrett 2019, Theorem 2.5.8 support: summable large-jump probabilities imply
+summable mismatch probabilities for the fixed-level truncation.
+-/
+theorem durrett2019_theorem_2_5_8_tsum_mismatch_ne_top_of_tsum_tail_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {A : ℝ}
+    (htail : (∑' n : ℕ, P {ω : Ω | A < |X n ω|}) ≠ ∞) :
+    (∑' n : ℕ,
+      P {ω : Ω | X n ω ≠ durrett2019_theorem_2_5_8_truncated X A n ω}) ≠ ∞ := by
+  refine ne_top_of_le_ne_top htail ?_
+  exact ENNReal.tsum_le_tsum fun n =>
+    durrett2019_theorem_2_5_8_measure_mismatch_le_tail
+      (P := P) (X := X) (A := A) n
+
+/--
+Durrett 2019, Theorem 2.5.8 support: summable large-jump probabilities give
+eventual equality between `X_n` and its fixed-level truncation.
+-/
+theorem durrett2019_theorem_2_5_8_ae_eventuallyEq_truncated_of_tsum_tail_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {A : ℝ}
+    (htail : (∑' n : ℕ, P {ω : Ω | A < |X n ω|}) ≠ ∞) :
+    ∀ᵐ ω ∂P,
+      ∀ᶠ n in atTop,
+        X n ω = durrett2019_theorem_2_5_8_truncated X A n ω :=
+  durrett2019_theorem_2_5_8_ae_eventuallyEq_of_tsum_measure_ne_top
+    (P := P) (X := X)
+    (Y := fun n : ℕ => durrett2019_theorem_2_5_8_truncated X A n)
+    (durrett2019_theorem_2_5_8_tsum_mismatch_ne_top_of_tsum_tail_ne_top
+      (P := P) (X := X) (A := A) htail)
+
+/--
+Durrett 2019, Theorem 2.5.8 sufficiency scaffold: if the centered truncated
+series converges a.s., the deterministic centering series converges, and the
+large-jump probabilities are summable, then the original random series
+converges a.s.
+-/
+theorem durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_truncated_centered_of_realSeriesConverges_of_tsum_tail_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {A : ℝ} {a : ℕ -> ℝ}
+    (htail : (∑' n : ℕ, P {ω : Ω | A < |X n ω|}) ≠ ∞)
+    (hcenter :
+      ∀ᵐ ω ∂P,
+        durrett2019_theorem_2_5_6_randomSeriesConverges
+          (fun i ω =>
+            durrett2019_theorem_2_5_8_truncated X A i ω - a i) ω)
+    (ha : durrett2019_theorem_2_5_8_realSeriesConverges a) :
+    ∀ᵐ ω ∂P, durrett2019_theorem_2_5_6_randomSeriesConverges X ω := by
+  have htrunc :
+      ∀ᵐ ω ∂P,
+        durrett2019_theorem_2_5_6_randomSeriesConverges
+          (fun i : ℕ => durrett2019_theorem_2_5_8_truncated X A i) ω :=
+    durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_ae_centered_of_realSeriesConverges
+      (P := P)
+      (Y := fun i : ℕ => durrett2019_theorem_2_5_8_truncated X A i)
+      (a := a) hcenter ha
+  exact
+    durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_tsum_mismatch_ne_top_of_ae_randomSeriesConverges
+      (P := P) (X := X)
+      (Y := fun i : ℕ => durrett2019_theorem_2_5_8_truncated X A i)
+      (durrett2019_theorem_2_5_8_tsum_mismatch_ne_top_of_tsum_tail_ne_top
+        (P := P) (X := X) (A := A) htail)
+      htrunc
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

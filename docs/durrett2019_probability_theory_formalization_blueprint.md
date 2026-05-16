@@ -27,15 +27,44 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V407`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V408`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.5.8 Kolmogorov
-three-series theorem in `StatInference/ProbabilityTheory/Basic.lean`.  V407 starts
-Durrett Theorem 2.5.8 Kolmogorov three-series sufficiency.  New compiled
-anchors: `durrett2019_theorem_2_5_8_realPartialSum`,
+three-series theorem in `StatInference/ProbabilityTheory/Basic.lean`.  V408
+adds Durrett Theorem 2.5.8 fixed-level truncation and large-jump mismatch
+support.  New compiled anchors: `durrett2019_theorem_2_5_8_truncated`,
+`durrett2019_theorem_2_5_8_measurable_truncationMap`,
+`durrett2019_theorem_2_5_8_measurable_truncated`,
+`durrett2019_theorem_2_5_8_iIndepFun_truncated_of_iIndepFun`,
+`durrett2019_theorem_2_5_8_iIndepFun_centered_truncated_of_iIndepFun`,
+`durrett2019_theorem_2_5_8_truncated_eq_self_of_abs_le`,
+`durrett2019_theorem_2_5_8_truncated_eq_zero_of_lt_abs`,
+`durrett2019_theorem_2_5_8_abs_truncated_le_abs`,
+`durrett2019_theorem_2_5_8_norm_truncated_le_abs_bound`,
+`durrett2019_theorem_2_5_8_truncated_memLp_two_of_measurable`,
+`durrett2019_theorem_2_5_8_centered_truncated_memLp_two_of_measurable`,
+`durrett2019_theorem_2_5_8_truncation_mismatch_subset_tail`,
+`durrett2019_theorem_2_5_8_measure_mismatch_le_tail`,
+`durrett2019_theorem_2_5_8_tsum_mismatch_ne_top_of_tsum_tail_ne_top`,
+`durrett2019_theorem_2_5_8_ae_eventuallyEq_truncated_of_tsum_tail_ne_top`,
+and
+`durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_truncated_centered_of_realSeriesConverges_of_tsum_tail_ne_top`.
+This proves the source scaffold
+`Y_i = X_i 1_{|X_i| <= A}`, `{X_i != Y_i} subset {|X_i| > A}`, summable
+large-jump probabilities imply eventual equality by Borel-Cantelli, and the
+abstract sufficiency assembly from centered truncated convergence plus
+deterministic centering convergence to convergence of `sum X_i`.  Next work
+should package the one-based source-facing sufficiency theorem by applying V406
+to `Y_i - E Y_i`, using the V408 centered-truncation independence and `L^2`
+support, proving the centered variables have zero integral, and aligning the
+textbook tail condition with the V408 large-jump input.
+
+Verified route history below is provenance, not live prompt text.  V407 starts
+Durrett Theorem 2.5.8 Kolmogorov three-series sufficiency.  Compiled anchors:
+`durrett2019_theorem_2_5_8_realPartialSum`,
 `durrett2019_theorem_2_5_8_realSeriesConverges`,
 `durrett2019_theorem_2_5_8_randomSeriesConverges_add_of_randomSeriesConverges_of_realSeriesConverges`,
 `durrett2019_theorem_2_5_8_randomSeriesConverges_of_centered_of_realSeriesConverges`,
@@ -45,12 +74,7 @@ anchors: `durrett2019_theorem_2_5_8_realPartialSum`,
 `durrett2019_theorem_2_5_8_ae_eventuallyEq_of_tsum_measure_ne_top`, and
 `durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_tsum_mismatch_ne_top_of_ae_randomSeriesConverges`.
 This packages the centered-plus-mean and eventual-equality/Borel-Cantelli
-assembly needed for the sufficiency direction.  Next work should instantiate
-Durrett's truncation `Y_i = X_i * 1_{|X_i| <= A}` by proving the mismatch event
-is contained in `{|X_i| > A}`, packaging `Y_i - E Y_i`, and feeding V406/V407
-into the first source-facing Theorem 2.5.8 sufficiency theorem.
-
-Verified route history below is provenance, not live prompt text.  V406 adds
+assembly needed for the sufficiency direction.  V406 adds
 the exact textbook series-convergence display wrapper for Durrett Theorem
 2.5.6.  New compiled anchors:
 `durrett2019_theorem_2_5_6_randomSeriesConverges` and
