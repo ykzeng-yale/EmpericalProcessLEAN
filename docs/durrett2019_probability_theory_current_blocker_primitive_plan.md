@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V415
+## Live In-Thread Goal Prompt V416
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,18 +12,33 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  Theorem 2.5.10 SLLN now has
-the source-facing one-based average endpoint under iid/integrable hypotheses:
-moving truncation, mean convergence, scaled variance summability, Borel-
-Cantelli eventual equality, and transfer from `T_n/n` to `S_n/n` all compile.
-Next aggressive target: Durrett Theorem 2.5.11 logarithmic rate of convergence.
-Package the theorem-shaped route from `E X_i = 0`, finite second moment, and
-the summability of `1 / (n * (log n)^(1 + 2 epsilon))` to convergence of
-`S_n / (n^(1/2) * (log n)^(1/2 + epsilon)) -> 0` a.s.  Reuse V406 random-
-series convergence, V410 Kronecker normalization, local variance scaling APIs,
-and mathlib p-series/log-series results before adding any new real-analysis
-lemmas.  Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, or any
-solved 2.5.10 layer unless search proves a concrete missing source display.
+in `StatInference/ProbabilityTheory/Basic.lean`.  Theorem 2.5.11 now has the
+random-series/Kronecker bridge and variance-bound abstraction: a.s. convergence
+of `sum X_k/a_k`, or summable variances of `X_k/a_k`, gives
+`sum_{k <= n} X_k / a_n -> 0` for any nonzero monotone divergent normalizer;
+a uniform variance bound reduces the variance hypothesis to summability of
+`a_k^{-2}`.  Next aggressive target: instantiate Durrett's exact logarithmic
+normalizer `a_n = n^(1/2) * (log n)^(1/2 + epsilon)` for `n >= 2`.  Prove the
+nonzero, monotone, and `atTop` normalizer obligations; prove summability of
+`1 / (n * (log n)^(1 + 2 epsilon))` by reusing mathlib p-series/log-series
+APIs; then package the source-facing iid finite-second-moment statement
+`S_n / (n^(1/2) * (log n)^(1/2 + epsilon)) -> 0` a.s.  Do not route back to
+Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10, or the abstract V416 bridge unless
+search proves a concrete missing source display.
+
+Latest verified target V416 packages Durrett Theorem 2.5.11's abstract
+random-series/Kronecker and variance-bound bridge.  New compiled anchors:
+`durrett2019_theorem_2_5_11_normalized_sum_tendsto_zero_of_scaled_series`,
+`durrett2019_theorem_2_5_11_ae_normalized_sum_tendsto_zero_of_summable_scaled_variance`,
+`durrett2019_theorem_2_5_11_variance_div_le_inv_sq_mul_of_variance_le`,
+`durrett2019_theorem_2_5_11_scaled_variance_summable_of_variance_bound`,
+and
+`durrett2019_theorem_2_5_11_ae_normalized_sum_tendsto_zero_of_variance_bound`.
+The proof reuses V406 random-series convergence, V410 Kronecker
+normalization, local independence-under-composition support, and mathlib
+variance scaling.  The remaining 2.5.11 blocker is the exact logarithmic
+normalizer and source-facing finite-variance packaging, not random-series
+plumbing.
 
 Latest verified target V415 packages Durrett Theorem 2.5.10 truncated-to-
 original transfer and the full source-facing SLLN average endpoint.  New

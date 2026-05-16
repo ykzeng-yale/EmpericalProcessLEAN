@@ -27,16 +27,29 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V415`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V416`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`, with Durrett
-Theorem 2.5.11 logarithmic rate of convergence next.  V415 packages the
-truncated-to-original transfer and full source-facing one-based SLLN endpoint
-for Theorem 2.5.10.  New compiled anchors:
+consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V416 packages
+Durrett Theorem 2.5.11's abstract random-series/Kronecker bridge and
+variance-bound normalizer reduction.  New compiled anchors:
+`durrett2019_theorem_2_5_11_normalized_sum_tendsto_zero_of_scaled_series`,
+`durrett2019_theorem_2_5_11_ae_normalized_sum_tendsto_zero_of_summable_scaled_variance`,
+`durrett2019_theorem_2_5_11_variance_div_le_inv_sq_mul_of_variance_le`,
+`durrett2019_theorem_2_5_11_scaled_variance_summable_of_variance_bound`,
+and
+`durrett2019_theorem_2_5_11_ae_normalized_sum_tendsto_zero_of_variance_bound`.
+The next source work is the exact logarithmic normalizer
+`a_n = n^(1/2) * (log n)^(1/2 + epsilon)` for `n >= 2`: discharge nonzero,
+monotone, `atTop`, and inverse-square summability obligations using mathlib
+analysis APIs, then state the iid finite-second-moment source endpoint.
+
+Verified route history below is provenance, not live prompt text.  V415
+packages the truncated-to-original transfer and full source-facing one-based
+SLLN endpoint for Theorem 2.5.10.  New compiled anchors:
 `durrett2019_theorem_2_5_10_truncation_mismatch_subset_tail`,
 `durrett2019_theorem_2_5_10_measure_mismatch_le_tail`,
 `durrett2019_theorem_2_5_10_tsum_tail_ne_top_of_integrable_identDistrib`,
@@ -45,10 +58,7 @@ for Theorem 2.5.10.  New compiled anchors:
 `durrett2019_theorem_2_5_10_average_tendsto_of_eventuallyEq`,
 and
 `durrett2019_theorem_2_5_10_ae_average_tendsto_of_integrable_identDistrib`.
-The next source work is Theorem 2.5.11: finite-second-moment logarithmic rate,
-using random-series convergence plus Kronecker.
-
-Verified route history below is provenance, not live prompt text.  V414
+V414
 packages the scaled-centered variance-summability layer and the source-facing
 truncated-average endpoint.  Compiled anchors:
 `durrett2019_theorem_2_5_10_variance_scaledCenteredTruncated_le_truncated_sq`,

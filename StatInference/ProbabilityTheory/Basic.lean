@@ -6423,6 +6423,174 @@ theorem durrett2019_theorem_2_5_10_ae_average_tendsto_of_integrable_identDistrib
       (X := X) (Y := durrett2019_theorem_2_5_10_truncated X)
       (ω := ω) (μ := μ) heq htrunc
 
+/-! ## Durrett, Theorem 2.5.11 -/
+
+/--
+Durrett 2019, Theorem 2.5.11 support: pathwise convergence of the normalized
+random series `sum X_k / a_k` implies the normalized partial sums
+`sum X_k / a_n -> 0`, by Kronecker's lemma.
+-/
+theorem durrett2019_theorem_2_5_11_normalized_sum_tendsto_zero_of_scaled_series
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ} {ω : Ω}
+    (hscaled :
+      durrett2019_theorem_2_5_6_randomSeriesConverges
+        (fun k ω => X k ω / a k) ω)
+    (ha_nonzero : ∀ k : ℕ, a (k + 1) ≠ 0)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) / a (n + 1))
+      atTop (𝓝 0) := by
+  rcases hscaled with ⟨L, hL⟩
+  have hscaled_tendsto :
+      Tendsto
+        (fun n : ℕ =>
+          ∑ k ∈ Finset.range (n + 1), X (k + 1) ω / a (k + 1))
+        atTop (𝓝 L) := by
+    have hL_shift := hL.comp (tendsto_add_atTop_nat 1)
+    simpa [durrett2019_theorem_2_5_6_partialSum] using hL_shift
+  exact
+    durrett2019_theorem_2_5_9_normalized_sum_tendsto_zero
+      (x := fun k : ℕ => X k ω) (a := a) (L := L)
+      ha_nonzero hscaled_tendsto ha_increment_nonneg ha_atTop
+
+/--
+Durrett 2019, Theorem 2.5.11 support: if the scaled variables have summable
+variances, then the normalized partial sums converge to zero almost surely.
+-/
+theorem durrett2019_theorem_2_5_11_ae_normalized_sum_tendsto_zero_of_summable_scaled_variance
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_mem : ∀ k : ℕ, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hX_zero : ∀ k : ℕ, ∫ ω, X k ω ∂P = 0)
+    (hscaled_var_summable :
+      Summable fun k : ℕ =>
+        _root_.ProbabilityTheory.variance
+          (fun ω : Ω => X (k + 1) ω / a (k + 1)) P)
+    (ha_nonzero : ∀ k : ℕ, a (k + 1) ≠ 0)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) / a (n + 1))
+        atTop (𝓝 0) := by
+  have hscaled_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun k : ℕ => fun ω : Ω => X k ω / a k) := by
+    have hcomp :=
+      durrett2019_theorem_2_1_10_iIndepFun_comp
+        (P := P) (X := X) hX_indep
+        (f := fun k : ℕ => fun x : ℝ => x / a k)
+        (fun k => measurable_id.div_const (a k))
+    simpa [Function.comp_def] using hcomp
+  have hscaled_meas :
+      ∀ k : ℕ, Measurable ((fun k : ℕ => fun ω : Ω => X k ω / a k) k) := by
+    intro k
+    exact (hX_meas k).div_const (a k)
+  have hscaled_mem :
+      ∀ k : ℕ, MemLp ((fun k : ℕ => fun ω : Ω => X k ω / a k) k)
+        (2 : ℝ≥0∞) P := by
+    intro k
+    simpa [div_eq_mul_inv] using (hX_mem k).mul_const ((a k)⁻¹)
+  have hscaled_zero :
+      ∀ k : ℕ,
+        ∫ ω, ((fun k : ℕ => fun ω : Ω => X k ω / a k) k) ω ∂P = 0 := by
+    intro k
+    rw [integral_div, hX_zero k]
+    simp
+  have hscaled_series :
+      ∀ᵐ ω ∂P,
+        durrett2019_theorem_2_5_6_randomSeriesConverges
+          (fun k ω => X k ω / a k) ω :=
+    durrett2019_theorem_2_5_6_random_series_converges_ae_of_summable_variance
+      (P := P) (X := fun k : ℕ => fun ω : Ω => X k ω / a k)
+      hscaled_indep hscaled_meas hscaled_mem hscaled_zero hscaled_var_summable
+  filter_upwards [hscaled_series] with ω hω
+  exact
+    durrett2019_theorem_2_5_11_normalized_sum_tendsto_zero_of_scaled_series
+      (X := X) (a := a) (ω := ω) hω
+      ha_nonzero ha_increment_nonneg ha_atTop
+
+/--
+Durrett 2019, Theorem 2.5.11 support: scaling by a deterministic normalizer
+bounds the variance by the original variance times `a_k^{-2}`.
+-/
+theorem durrett2019_theorem_2_5_11_variance_div_le_inv_sq_mul_of_variance_le
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : Ω -> ℝ} {a C : ℝ}
+    (hvar : _root_.ProbabilityTheory.variance X P ≤ C) :
+    _root_.ProbabilityTheory.variance (fun ω : Ω => X ω / a) P ≤
+      (a ^ 2)⁻¹ * C := by
+  calc
+    _root_.ProbabilityTheory.variance (fun ω : Ω => X ω / a) P =
+        (a⁻¹) ^ 2 * _root_.ProbabilityTheory.variance X P := by
+          rw [show (fun ω : Ω => X ω / a) = fun ω : Ω => a⁻¹ * X ω by
+            ext ω
+            ring]
+          rw [_root_.ProbabilityTheory.variance_const_mul]
+    _ ≤ (a⁻¹) ^ 2 * C := by
+          exact mul_le_mul_of_nonneg_left hvar (sq_nonneg _)
+    _ = (a ^ 2)⁻¹ * C := by
+          rw [inv_pow]
+
+/--
+Durrett 2019, Theorem 2.5.11 support: a uniform variance bound plus
+summability of the inverse-square normalizer weights gives summability of the
+scaled variances.
+-/
+theorem durrett2019_theorem_2_5_11_scaled_variance_summable_of_variance_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ} {C : ℝ}
+    (hvar_bound :
+      ∀ k : ℕ, _root_.ProbabilityTheory.variance (X k) P ≤ C)
+    (hweight_summable : Summable fun k : ℕ => ((a (k + 1)) ^ 2)⁻¹) :
+    Summable fun k : ℕ =>
+      _root_.ProbabilityTheory.variance
+        (fun ω : Ω => X (k + 1) ω / a (k + 1)) P := by
+  refine Summable.of_nonneg_of_le
+    (fun k => _root_.ProbabilityTheory.variance_nonneg _ _) ?_
+    (hweight_summable.mul_right C)
+  intro k
+  exact
+    durrett2019_theorem_2_5_11_variance_div_le_inv_sq_mul_of_variance_le
+      (P := P) (X := X (k + 1)) (a := a (k + 1)) (C := C)
+      (hvar_bound (k + 1))
+
+/--
+Durrett 2019, Theorem 2.5.11 bridge: the random-series/Kronecker proof gives
+the normalized strong-law rate from a uniform variance bound and summable
+inverse-square normalizer weights.
+-/
+theorem durrett2019_theorem_2_5_11_ae_normalized_sum_tendsto_zero_of_variance_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ} {C : ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_mem : ∀ k : ℕ, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hX_zero : ∀ k : ℕ, ∫ ω, X k ω ∂P = 0)
+    (hvar_bound :
+      ∀ k : ℕ, _root_.ProbabilityTheory.variance (X k) P ≤ C)
+    (hweight_summable : Summable fun k : ℕ => ((a (k + 1)) ^ 2)⁻¹)
+    (ha_nonzero : ∀ k : ℕ, a (k + 1) ≠ 0)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) / a (n + 1))
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_11_ae_normalized_sum_tendsto_zero_of_summable_scaled_variance
+    (P := P) (X := X) (a := a)
+    hX_indep hX_meas hX_mem hX_zero
+    (durrett2019_theorem_2_5_11_scaled_variance_summable_of_variance_bound
+      (P := P) (X := X) (a := a) (C := C)
+      hvar_bound hweight_summable)
+    ha_nonzero ha_increment_nonneg ha_atTop
+
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.

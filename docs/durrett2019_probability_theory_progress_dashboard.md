@@ -32,13 +32,29 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V415` in
+Route from `Live In-Thread Goal Prompt V416` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
-random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`,
-with Theorem 2.5.11 logarithmic rate of convergence next.  V415 packages the
-truncated-to-original transfer and full source-facing one-based SLLN endpoint
-for Theorem 2.5.10.  New compiled anchors:
+random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
+V416 packages the abstract Theorem 2.5.11 route from random-series convergence
+or summable scaled variances to the normalized rate endpoint, plus the uniform
+variance-bound reduction to summability of inverse-square normalizer weights.
+New compiled anchors:
+`durrett2019_theorem_2_5_11_normalized_sum_tendsto_zero_of_scaled_series`,
+`durrett2019_theorem_2_5_11_ae_normalized_sum_tendsto_zero_of_summable_scaled_variance`,
+`durrett2019_theorem_2_5_11_variance_div_le_inv_sq_mul_of_variance_le`,
+`durrett2019_theorem_2_5_11_scaled_variance_summable_of_variance_bound`,
+and
+`durrett2019_theorem_2_5_11_ae_normalized_sum_tendsto_zero_of_variance_bound`.
+The next blocker is the exact logarithmic normalizer
+`a_n = n^(1/2) * (log n)^(1/2 + epsilon)` for `n >= 2`: prove its nonzero,
+monotone, and `atTop` obligations, prove summability of
+`1 / (n * (log n)^(1 + 2 epsilon))` from mathlib p-series/log-series APIs, and
+then package the source-facing iid finite-second-moment statement.
+
+Verified route history below is provenance, not live prompt text.  V415
+packages the truncated-to-original transfer and full source-facing one-based
+SLLN endpoint for Theorem 2.5.10.  New compiled anchors:
 `durrett2019_theorem_2_5_10_truncation_mismatch_subset_tail`,
 `durrett2019_theorem_2_5_10_measure_mismatch_le_tail`,
 `durrett2019_theorem_2_5_10_tsum_tail_ne_top_of_integrable_identDistrib`,
@@ -48,11 +64,7 @@ for Theorem 2.5.10.  New compiled anchors:
 and
 `durrett2019_theorem_2_5_10_ae_average_tendsto_of_integrable_identDistrib`.
 This proves the source display `S_n/n -> mu` a.s. from iid, integrability, and
-common mean hypotheses.  Next work should start Durrett Theorem 2.5.11 by
-packaging the random-series/Kronecker route for
-`S_n / (n^(1/2) * (log n)^(1/2 + epsilon)) -> 0` under finite second moment.
-
-Verified route history below is provenance, not live prompt text.  V414
+common mean hypotheses.  V414
 packages the scaled-centered variance-summability layer and the source-facing
 truncated-average endpoint.  Compiled anchors:
 `durrett2019_theorem_2_5_10_variance_scaledCenteredTruncated_le_truncated_sq`,
