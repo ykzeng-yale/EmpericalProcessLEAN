@@ -8342,6 +8342,218 @@ theorem durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_ba
       (P := P) (X := X) (p := p) hp_pos hmean_abs_scaled_summable)
 
 /--
+Durrett 2019, Theorem 2.5.12 mean-tail bridge: for a zero-mean integrable
+variable, the absolute mean of its moving truncation is bounded by the
+corresponding large-tail first moment.
+-/
+theorem durrett2019_theorem_2_5_12_abs_truncatedMean_le_tail_integral_of_mean_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p : ℝ} {k : ℕ}
+    (hX_meas : Measurable (X k))
+    (hX_int : Integrable (X k) P)
+    (hX_mean_zero : ∫ ω, X k ω ∂P = 0) :
+    |durrett2019_theorem_2_5_12_truncatedMean P X p k| ≤
+      ∫ ω,
+        Set.indicator
+          {ω : Ω | durrett2019_theorem_2_5_12_truncationLevel p k < |X k ω|}
+          (fun ω => |X k ω|) ω ∂P := by
+  let A : ℝ := durrett2019_theorem_2_5_12_truncationLevel p k
+  let tailSigned : Ω -> ℝ :=
+    Set.indicator {ω : Ω | A < |X k ω|} (fun ω => X k ω)
+  have hsmall_meas : MeasurableSet {ω : Ω | |X k ω| ≤ A} :=
+    measurableSet_le (hX_meas.abs) measurable_const
+  have htail_meas : MeasurableSet {ω : Ω | A < |X k ω|} :=
+    measurableSet_lt measurable_const (hX_meas.abs)
+  have htrunc_int :
+      Integrable (durrett2019_theorem_2_5_12_truncated X p k) P := by
+    simpa [durrett2019_theorem_2_5_12_truncated,
+      durrett2019_theorem_2_5_8_truncated, A] using
+      hX_int.indicator hsmall_meas
+  have htail_int : Integrable tailSigned P := by
+    simpa [tailSigned] using hX_int.indicator htail_meas
+  have hdecomp :
+      (fun ω : Ω => X k ω) =
+        fun ω : Ω =>
+          durrett2019_theorem_2_5_12_truncated X p k ω + tailSigned ω := by
+    ext ω
+    by_cases hsmall : |X k ω| ≤ A
+    · have hnot_tail : ¬ A < |X k ω| := not_lt.mpr hsmall
+      simp [durrett2019_theorem_2_5_12_truncated,
+        durrett2019_theorem_2_5_8_truncated, tailSigned, A, hsmall,
+        hnot_tail]
+    · have htail : A < |X k ω| := lt_of_not_ge hsmall
+      simp [durrett2019_theorem_2_5_12_truncated,
+        durrett2019_theorem_2_5_8_truncated, tailSigned, A, hsmall,
+        htail]
+  have hintegral_decomp :
+      ∫ ω, X k ω ∂P =
+        ∫ ω, durrett2019_theorem_2_5_12_truncated X p k ω ∂P +
+          ∫ ω, tailSigned ω ∂P := by
+    rw [hdecomp]
+    exact integral_add htrunc_int htail_int
+  have htrunc_eq_neg :
+      ∫ ω, durrett2019_theorem_2_5_12_truncated X p k ω ∂P =
+        -∫ ω, tailSigned ω ∂P := by
+    have hzero :
+        ∫ ω, durrett2019_theorem_2_5_12_truncated X p k ω ∂P +
+          ∫ ω, tailSigned ω ∂P = 0 := by
+      rw [← hintegral_decomp, hX_mean_zero]
+    linarith
+  have htail_abs_integral :
+      ∫ ω, |tailSigned ω| ∂P =
+        ∫ ω,
+          Set.indicator {ω : Ω | A < |X k ω|} (fun ω => |X k ω|) ω ∂P := by
+    apply integral_congr_ae
+    exact Eventually.of_forall fun ω => by
+      by_cases htail : A < |X k ω|
+      · simp [tailSigned, htail]
+      · simp [tailSigned, htail]
+  calc
+    |durrett2019_theorem_2_5_12_truncatedMean P X p k| =
+        |∫ ω, durrett2019_theorem_2_5_12_truncated X p k ω ∂P| := by
+          simp [durrett2019_theorem_2_5_12_truncatedMean]
+    _ = |∫ ω, tailSigned ω ∂P| := by
+          rw [htrunc_eq_neg, abs_neg]
+    _ ≤ ∫ ω, |tailSigned ω| ∂P := abs_integral_le_integral_abs
+    _ =
+        ∫ ω,
+          Set.indicator
+            {ω : Ω | durrett2019_theorem_2_5_12_truncationLevel p k < |X k ω|}
+            (fun ω => |X k ω|) ω ∂P := by
+          simpa [A] using htail_abs_integral
+
+/--
+Durrett 2019, Theorem 2.5.12 mean-tail bridge: identical distribution moves
+the large-tail first-moment bound for the truncated mean back to the base
+variable `X_0`.
+-/
+theorem durrett2019_theorem_2_5_12_abs_truncatedMean_le_base_tail_integral_of_identDistrib_mean_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p : ℝ} {k : ℕ}
+    (hX_meas : ∀ j : ℕ, Measurable (X j))
+    (hX_int0 : Integrable (X 0) P)
+    (hX_mean_zero0 : ∫ ω, X 0 ω ∂P = 0)
+    (hX_ident : ∀ j : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X j) (X 0) P P) :
+    |durrett2019_theorem_2_5_12_truncatedMean P X p k| ≤
+      ∫ ω,
+        Set.indicator
+          {ω : Ω | durrett2019_theorem_2_5_12_truncationLevel p k < |X 0 ω|}
+          (fun ω => |X 0 ω|) ω ∂P := by
+  let A : ℝ := durrett2019_theorem_2_5_12_truncationLevel p k
+  let tailMap : ℝ -> ℝ :=
+    fun x => Set.indicator {y : ℝ | A < |y|} (fun y => |y|) x
+  have hX_intk : Integrable (X k) P :=
+    (hX_ident k).integrable_iff.2 hX_int0
+  have hX_mean_zerok : ∫ ω, X k ω ∂P = 0 := by
+    rw [(hX_ident k).integral_eq, hX_mean_zero0]
+  have htail_meas : Measurable tailMap :=
+    measurable_abs.indicator (measurableSet_lt measurable_const measurable_abs)
+  have htail_ident :
+      _root_.ProbabilityTheory.IdentDistrib
+        (tailMap ∘ X k) (tailMap ∘ X 0) P P :=
+    (hX_ident k).comp htail_meas
+  have htail_integral_eq :
+      (∫ ω,
+        Set.indicator {ω : Ω | A < |X k ω|} (fun ω => |X k ω|) ω ∂P) =
+        ∫ ω,
+          Set.indicator {ω : Ω | A < |X 0 ω|} (fun ω => |X 0 ω|) ω ∂P := by
+    simpa [tailMap, Function.comp_def] using htail_ident.integral_eq
+  calc
+    |durrett2019_theorem_2_5_12_truncatedMean P X p k| ≤
+        ∫ ω,
+          Set.indicator {ω : Ω | A < |X k ω|} (fun ω => |X k ω|) ω ∂P := by
+          simpa [A] using
+            durrett2019_theorem_2_5_12_abs_truncatedMean_le_tail_integral_of_mean_zero
+              (P := P) (X := X) (p := p) (k := k) (hX_meas k) hX_intk
+              hX_mean_zerok
+    _ =
+        ∫ ω,
+          Set.indicator
+            {ω : Ω | durrett2019_theorem_2_5_12_truncationLevel p k < |X 0 ω|}
+            (fun ω => |X 0 ω|) ω ∂P := by
+          simpa [A] using htail_integral_eq
+
+/--
+Durrett 2019, Theorem 2.5.12 mean-tail bridge: a summable sequence of base
+large-tail first moments supplies the absolute scaled truncated-mean
+summability needed by the V425 Kronecker layer.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedMean_abs_scaled_summable_of_base_tail_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hX_meas : ∀ j : ℕ, Measurable (X j))
+    (hX_int0 : Integrable (X 0) P)
+    (hX_mean_zero0 : ∫ ω, X 0 ω ∂P = 0)
+    (hX_ident : ∀ j : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X j) (X 0) P P)
+    (hbase_tail_scaled_summable :
+      Summable fun k : ℕ =>
+        (∫ ω,
+          Set.indicator
+            {ω : Ω |
+              durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < |X 0 ω|}
+            (fun ω => |X 0 ω|) ω ∂P) /
+          durrett2019_theorem_2_5_12_normalizer p (k + 1)) :
+    Summable fun k : ℕ =>
+      |durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)| /
+        durrett2019_theorem_2_5_12_normalizer p (k + 1) := by
+  refine Summable.of_nonneg_of_le ?_ ?_ hbase_tail_scaled_summable
+  · intro k
+    exact div_nonneg (abs_nonneg _)
+      (durrett2019_theorem_2_5_12_normalizer_pos hp_pos (Nat.succ_pos k)).le
+  · intro k
+    exact div_le_div_of_nonneg_right
+      (durrett2019_theorem_2_5_12_abs_truncatedMean_le_base_tail_integral_of_identDistrib_mean_zero
+        (P := P) (X := X) (p := p) (k := k + 1)
+        hX_meas hX_int0 hX_mean_zero0 hX_ident)
+      (durrett2019_theorem_2_5_12_normalizer_pos hp_pos (Nat.succ_pos k)).le
+
+/--
+Durrett 2019, Theorem 2.5.12 original endpoint with the mean estimate reduced
+to base large-tail first-moment summability.
+-/
+theorem durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_base_tail_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hX_int0 : Integrable (X 0) P)
+    (hX_mean_zero0 : ∫ ω, X 0 ω ∂P = 0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hbase_weighted_summable :
+      Summable fun k : ℕ =>
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_8_truncated
+              (fun _ : ℕ => X 0)
+              (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P)
+    (hbase_tail_scaled_summable :
+      Summable fun k : ℕ =>
+        (∫ ω,
+          Set.indicator
+            {ω : Ω |
+              durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < |X 0 ω|}
+            (fun ω => |X 0 ω|) ω ∂P) /
+          durrett2019_theorem_2_5_12_normalizer p (k + 1)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_abs_scaled_summable
+    (P := P) (X := X) (p := p) hp_pos hX_indep hX_meas hX_pow_int0 hX_ident
+    hbase_weighted_summable
+    (durrett2019_theorem_2_5_12_truncatedMean_abs_scaled_summable_of_base_tail_scaled_summable
+      (P := P) (X := X) (p := p) hp_pos hX_meas hX_int0 hX_mean_zero0 hX_ident
+      hbase_tail_scaled_summable)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

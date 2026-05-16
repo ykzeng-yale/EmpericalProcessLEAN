@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V425
+## Live In-Thread Goal Prompt V426
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,21 +12,32 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V425 advances Durrett
+in `StatInference/ProbabilityTheory/Basic.lean`.  V426 advances Durrett
 Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the V421-V422
 normalizer/truncation/Kronecker/Borel-Cantelli spine now has compiled reducer
-theorems turning the exact weighted base truncated second-moment summability
-and absolute scaled truncated-mean summability into the original normalized
+theorems turning exact weighted base truncated second-moment summability and
+base large-tail first-moment scaled summability into the original normalized
 sum endpoint.  Next aggressive
 target: prove the actual analytic estimates from iid finite `p`-moment:
-weighted base truncated second-moment summability and normalized truncated
-mean absolute scaled summability for the full `S_n / n^(1/p) -> 0` endpoint.
+weighted base truncated second-moment summability and base large-tail
+first-moment scaled summability for the full `S_n / n^(1/p) -> 0` endpoint.
 Reuse V406 random-series convergence, V410 Kronecker normalization, V412-V415
-moving truncation/eventual-equality support, V421-V425 2.5.12 spine, mathlib
+moving truncation/eventual-equality support, V421-V426 2.5.12 spine, mathlib
 strong-law tail APIs, and p-series/integral-tail APIs before adding local
 analysis lemmas.  Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9,
 2.5.10, V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts
 unless search proves a concrete missing source display.
+
+Latest verified target V426 adds the Theorem 2.5.12 mean-tail reduction layer.
+New compiled anchors:
+`durrett2019_theorem_2_5_12_abs_truncatedMean_le_tail_integral_of_mean_zero`,
+`durrett2019_theorem_2_5_12_abs_truncatedMean_le_base_tail_integral_of_identDistrib_mean_zero`,
+`durrett2019_theorem_2_5_12_truncatedMean_abs_scaled_summable_of_base_tail_scaled_summable`,
+and
+`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_base_tail_scaled_summable`.
+The remaining 2.5.12 blocker is now pure finite-`p` tail analysis: prove
+weighted base truncated second-moment summability and base large-tail
+first-moment scaled summability from the iid finite `p`-moment hypotheses.
 
 Latest verified target V425 adds the Theorem 2.5.12 truncated-mean Kronecker
 layer.  New compiled anchors:
