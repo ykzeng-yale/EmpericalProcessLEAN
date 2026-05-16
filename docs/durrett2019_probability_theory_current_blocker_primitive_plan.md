@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V426
+## Live In-Thread Goal Prompt V427
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,21 +12,29 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V426 advances Durrett
-Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the V421-V422
-normalizer/truncation/Kronecker/Borel-Cantelli spine now has compiled reducer
-theorems turning exact weighted base truncated second-moment summability and
-base large-tail first-moment scaled summability into the original normalized
-sum endpoint.  Next aggressive
-target: prove the actual analytic estimates from iid finite `p`-moment:
-weighted base truncated second-moment summability and base large-tail
-first-moment scaled summability for the full `S_n / n^(1/p) -> 0` endpoint.
-Reuse V406 random-series convergence, V410 Kronecker normalization, V412-V415
-moving truncation/eventual-equality support, V421-V426 2.5.12 spine, mathlib
-strong-law tail APIs, and p-series/integral-tail APIs before adding local
-analysis lemmas.  Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9,
-2.5.10, V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts
-unless search proves a concrete missing source display.
+in `StatInference/ProbabilityTheory/Basic.lean`.  V427 advances Durrett
+Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the endpoint now
+has compiled reducers through the original normalized sum, and both remaining
+finite-`p` tail estimates have Tonelli/Fubini kernel wrappers.  Next aggressive
+target: prove the two scalar kernel inequalities and feed them into
+`durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_kernel_bound` and
+`durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_kernel_bound`.
+The exact scalar goals are
+`sum_k x 1_{(k+1)^(1/p) < x} / (k+1)^(1/p) <= C x^p` for `1 < p`, and
+`sum_k x^2 1_{x <= (k+1)^(1/p)} / (k+1)^(2/p) <= C x^p` for `p < 2`, with
+`x >= 0`; use mathlib p-series/integral-comparison APIs first.  Do not route
+back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10, V416-V420 Theorem 2.5.11
+plumbing, or old app-level stale prompts unless search proves a concrete
+missing source display.
+
+Latest verified target V427 adds the Theorem 2.5.12 finite-`p` kernel-wrapper
+layer.  New compiled anchors:
+`durrett2019_theorem_2_5_12_summable_integral_of_lintegral_tsum_bound`,
+`durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_kernel_bound`, and
+`durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_kernel_bound`.
+The remaining 2.5.12 blocker is now exactly scalar real analysis: prove the
+two p-series kernel inequalities above, then compose them with V426 to close
+the `1 < p < 2` endpoint.
 
 Latest verified target V426 adds the Theorem 2.5.12 mean-tail reduction layer.
 New compiled anchors:

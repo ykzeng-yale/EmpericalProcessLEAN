@@ -8554,6 +8554,179 @@ theorem durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_ba
       hbase_tail_scaled_summable)
 
 /--
+Durrett 2019, Theorem 2.5.12 tail-analysis support: a Tonelli/Fubini
+criterion for turning a pointwise extended-nonnegative series bound into
+ordinary summability of nonnegative integrals.
+
+This is the reusable bridge for the remaining `1 < p < 2` estimates: after
+the scalar kernel bound has been proved pointwise, this lemma converts it to
+the real summability hypothesis consumed by the Kronecker layer.
+-/
+theorem durrett2019_theorem_2_5_12_summable_integral_of_lintegral_tsum_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {F : ℕ -> Ω -> ℝ} {G : Ω -> ℝ}
+    (hF_int : ∀ k : ℕ, Integrable (F k) P)
+    (hF_nonneg : ∀ k : ℕ, 0 ≤ᵐ[P] F k)
+    (hG_int : Integrable G P)
+    (hG_nonneg : 0 ≤ᵐ[P] G)
+    (hbound : ∀ᵐ ω ∂P,
+      (∑' k : ℕ, ENNReal.ofReal (F k ω)) ≤ ENNReal.ofReal (G ω)) :
+    Summable fun k : ℕ => ∫ ω, F k ω ∂P := by
+  have hterm_nonneg : ∀ k : ℕ, 0 ≤ ∫ ω, F k ω ∂P := fun k =>
+    integral_nonneg_of_ae (hF_nonneg k)
+  let A : ℕ -> NNReal := fun k => ⟨∫ ω, F k ω ∂P, hterm_nonneg k⟩
+  have hA_summable : Summable A := by
+    rw [← ENNReal.tsum_coe_ne_top_iff_summable]
+    apply ne_of_lt
+    have hA_eq_lintegral :
+        ∀ k : ℕ,
+          (A k : ℝ≥0∞) = ∫⁻ ω, ENNReal.ofReal (F k ω) ∂P := by
+      intro k
+      have hA_coe :
+          (A k : ℝ≥0∞) = ENNReal.ofReal (∫ ω, F k ω ∂P) :=
+        (ENNReal.ofReal_eq_coe_nnreal (hterm_nonneg k)).symm
+      rw [hA_coe]
+      exact ofReal_integral_eq_lintegral_ofReal (hF_int k) (hF_nonneg k)
+    calc
+      (∑' k : ℕ, (A k : ℝ≥0∞)) =
+          ∑' k : ℕ, ∫⁻ ω, ENNReal.ofReal (F k ω) ∂P := by
+            exact tsum_congr hA_eq_lintegral
+      _ = ∫⁻ ω, ∑' k : ℕ, ENNReal.ofReal (F k ω) ∂P := by
+            rw [lintegral_tsum]
+            intro k
+            exact (hF_int k).aemeasurable.ennreal_ofReal
+      _ ≤ ∫⁻ ω, ENNReal.ofReal (G ω) ∂P := lintegral_mono_ae hbound
+      _ = ENNReal.ofReal (∫ ω, G ω ∂P) := by
+            exact (ofReal_integral_eq_lintegral_ofReal hG_int hG_nonneg).symm
+      _ < ∞ := ENNReal.ofReal_lt_top
+  simpa [A] using (NNReal.summable_coe).2 hA_summable
+
+/--
+Durrett 2019, Theorem 2.5.12 tail-analysis support: a pointwise scalar kernel
+bound for the base large-tail first-moment terms implies the scaled
+large-tail summability required by V426.
+
+The remaining mathematical work is the scalar `1 < p` kernel estimate
+`sum_k x 1_{(k+1)^(1/p) < x} / (k+1)^(1/p) <= C x^p`.
+-/
+theorem durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_kernel_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p C : ℝ}
+    (hp_pos : 0 < p)
+    (hC_nonneg : 0 ≤ C)
+    (hX_meas0 : Measurable (X 0))
+    (hX_int0 : Integrable (X 0) P)
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hkernel_bound : ∀ᵐ ω ∂P,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (Set.indicator
+            {ω' : Ω |
+              durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < |X 0 ω'|}
+            (fun ω' => |X 0 ω'|) ω /
+            durrett2019_theorem_2_5_12_normalizer p (k + 1))) ≤
+        ENNReal.ofReal (C * |X 0 ω| ^ p)) :
+    Summable fun k : ℕ =>
+      (∫ ω,
+        Set.indicator
+          {ω : Ω |
+            durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < |X 0 ω|}
+          (fun ω => |X 0 ω|) ω ∂P) /
+        durrett2019_theorem_2_5_12_normalizer p (k + 1) := by
+  let F : ℕ -> Ω -> ℝ := fun k ω =>
+    Set.indicator
+      {ω' : Ω |
+        durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < |X 0 ω'|}
+      (fun ω' => |X 0 ω'|) ω /
+      durrett2019_theorem_2_5_12_normalizer p (k + 1)
+  let G : Ω -> ℝ := fun ω => C * |X 0 ω| ^ p
+  have hF_int : ∀ k : ℕ, Integrable (F k) P := by
+    intro k
+    have htail_meas :
+        MeasurableSet
+          {ω : Ω |
+            durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < |X 0 ω|} :=
+      measurableSet_lt measurable_const hX_meas0.abs
+    exact (hX_int0.norm.indicator htail_meas).div_const _
+  have hF_nonneg : ∀ k : ℕ, 0 ≤ᵐ[P] F k := by
+    intro k
+    refine ae_of_all P fun ω => ?_
+    have hden_nonneg :
+        0 ≤ durrett2019_theorem_2_5_12_normalizer p (k + 1) :=
+      (durrett2019_theorem_2_5_12_normalizer_pos hp_pos (Nat.succ_pos k)).le
+    refine div_nonneg ?_ hden_nonneg
+    by_cases htail :
+        durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < |X 0 ω|
+    · simp [htail, abs_nonneg]
+    · simp [htail]
+  have hG_int : Integrable G P := hX_pow_int0.const_mul C
+  have hG_nonneg : 0 ≤ᵐ[P] G :=
+    ae_of_all P fun ω => mul_nonneg hC_nonneg
+      (Real.rpow_nonneg (abs_nonneg (X 0 ω)) p)
+  have hsummable :
+      Summable fun k : ℕ => ∫ ω, F k ω ∂P :=
+    durrett2019_theorem_2_5_12_summable_integral_of_lintegral_tsum_bound
+      (P := P) (F := F) (G := G) hF_int hF_nonneg hG_int hG_nonneg
+      (by simpa [F, G] using hkernel_bound)
+  simpa [F, integral_div] using hsummable
+
+/--
+Durrett 2019, Theorem 2.5.12 tail-analysis support: a pointwise scalar kernel
+bound for the weighted truncated-square terms implies the weighted base
+truncated second-moment summability required by the variance/Kronecker layer.
+
+The remaining mathematical work is the scalar `p < 2` kernel estimate
+`sum_k x^2 1_{x <= (k+1)^(1/p)} / (k+1)^(2/p) <= C x^p`.
+-/
+theorem durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_kernel_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p C : ℝ}
+    (hC_nonneg : 0 ≤ C)
+    (hX_meas0 : Measurable (X 0))
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hkernel_bound : ∀ᵐ ω ∂P,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          ((((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+            (durrett2019_theorem_2_5_8_truncated
+              (fun _ : ℕ => X 0)
+              (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2)) ≤
+        ENNReal.ofReal (C * |X 0 ω| ^ p)) :
+    Summable fun k : ℕ =>
+      (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+        ∫ ω,
+          (durrett2019_theorem_2_5_8_truncated
+            (fun _ : ℕ => X 0)
+            (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P := by
+  let F : ℕ -> Ω -> ℝ := fun k ω =>
+    (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+      (durrett2019_theorem_2_5_8_truncated
+        (fun _ : ℕ => X 0)
+        (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2
+  let G : Ω -> ℝ := fun ω => C * |X 0 ω| ^ p
+  have hF_int : ∀ k : ℕ, Integrable (F k) P := by
+    intro k
+    exact
+      ((durrett2019_theorem_2_5_8_truncated_memLp_two_of_measurable
+        (P := P) (X := fun _ : ℕ => X 0)
+        (A := durrett2019_theorem_2_5_12_truncationLevel p (k + 1))
+        (n := 0) hX_meas0).integrable_sq).const_mul _
+  have hF_nonneg : ∀ k : ℕ, 0 ≤ᵐ[P] F k := by
+    intro k
+    refine ae_of_all P fun ω => ?_
+    exact mul_nonneg (inv_nonneg.2 (sq_nonneg _)) (sq_nonneg _)
+  have hG_int : Integrable G P := hX_pow_int0.const_mul C
+  have hG_nonneg : 0 ≤ᵐ[P] G :=
+    ae_of_all P fun ω => mul_nonneg hC_nonneg
+      (Real.rpow_nonneg (abs_nonneg (X 0 ω)) p)
+  have hsummable :
+      Summable fun k : ℕ => ∫ ω, F k ω ∂P :=
+    durrett2019_theorem_2_5_12_summable_integral_of_lintegral_tsum_bound
+      (P := P) (F := F) (G := G) hF_int hF_nonneg hG_int hG_nonneg
+      (by simpa [F, G] using hkernel_bound)
+  simpa [F, integral_const_mul] using hsummable
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

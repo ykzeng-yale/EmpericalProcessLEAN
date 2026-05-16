@@ -32,16 +32,14 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V426` in
+Route from `Live In-Thread Goal Prompt V427` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
-V426 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
-`1 < p < 2`.  In addition to the V421-V422 normalizer/truncation/Kronecker/
-Borel-Cantelli spine, compiled reducer theorems now turn exact weighted base
-truncated second-moment summability and base large-tail first-moment scaled
-summability into the original normalized-sum endpoint.  New compiled anchors
-through V426:
+V427 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
+`1 < p < 2`.  In addition to the V421-V426 endpoint reducers, both remaining
+finite-`p` tail estimates now have Tonelli/Fubini kernel wrappers.  New
+compiled anchors through V427:
 `durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
@@ -64,9 +62,13 @@ and
 `durrett2019_theorem_2_5_12_abs_truncatedMean_le_base_tail_integral_of_identDistrib_mean_zero`,
 `durrett2019_theorem_2_5_12_truncatedMean_abs_scaled_summable_of_base_tail_scaled_summable`,
 and
-`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_base_tail_scaled_summable`.
-The current blocker is now pure finite-`p` tail analysis: weighted base
-truncated second moments and base large-tail first-moment scaled summability.
+`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_base_tail_scaled_summable`,
+`durrett2019_theorem_2_5_12_summable_integral_of_lintegral_tsum_bound`,
+`durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_kernel_bound`, and
+`durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_kernel_bound`.
+The current blocker is now exactly scalar real analysis: prove the two
+p-series kernel inequalities for `x >= 0`, `1 < p`, and `p < 2`, then feed
+them into the V427 wrappers.
 
 Verified route history below is provenance, not live prompt text.  V425 added
 the truncated-mean Kronecker layer reducing normalized mean convergence to
