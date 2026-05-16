@@ -132,28 +132,34 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V11
+## Live Goal Prompt V12
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: the generic Chewi §13.16 main-stage sequence and
-objective-gap composition now compiles.  New declarations:
-`chewi1316_mainStage_decrement_step_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`,
-`chewi1316_mainStage_decrement_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`,
-and
-`chewi1316_objective_gap_le_eps_of_mainStage_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`.
-These turn the one-step increasing-parameter Newton invariant into a full
-`lambda_n <= 1/4` sequence invariant, then feed the compiled closed-form
-main-stage parameter growth and objective-gap stopping rule.  The next
-theorem-sized target is the finite-row/polytope specialization that composes
-the concrete standard preliminary initializer with this main-stage accuracy
-consumer: instantiate the main-stage path for the slack-range/source-pullback
-barrier, discharge the segment derivative/right-inverse/sqrt-coordinate model
-from existing range APIs, and conclude a source-facing LP objective gap
-`<= eps` under the textbook large-parameter stopping condition.  Do not add
-another preliminary path wrapper unless it removes a real supplied assumption
-needed by this final accuracy composition.
+Current active frontier: the finite-row slack-range specialization of the
+Chewi §13.16 main-stage accuracy consumer now compiles as
+`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton`.
+It instantiates the generic main-stage objective-gap theorem with the concrete
+finite-row logarithmic barrier on `(polytopeSlackCLM aRow).range`, discharging
+range convexity, self-concordance, Hessian continuity/derivative calculus, the
+domain-wide sqrt-coordinate Hessian/inverse-Hessian family, the barrier
+gradient bound, and the local Cauchy bridge from existing APIs.  Callers now
+supply only the actual increasing-parameter range Newton path, its main-stage
+initial decrement, central-path optimality, the barrier step inequality, the
+final lower-model inequality, and the large-parameter stopping condition.
+
+Next theorem-sized target: build the source-facing finite-row LP objective-gap
+wrapper by composing the concrete standard preliminary initializer/source
+pullback path with this range main-stage accuracy theorem.  Search first for
+existing source-to-range transport declarations near the standard preliminary
+path endpoints, especially the `sourcePullbackPreliminaryNextNewtonSteps`,
+`rangePreliminaryNextNewtonSteps`, `sourcePreDecrement...standardConstants`,
+and concrete `standardPath`/bounded-polytope §13.16 wrappers.  Only add a new
+transport theorem if no existing compiled endpoint can provide the actual
+range `xseq`, `tseq`, `hnewton_next`, and `hinit` assumptions for the new
+range accuracy theorem.  Older paragraphs below are cached route history and
+must not override this V12 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
 slack-range §13.16 handoff now

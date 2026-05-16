@@ -32397,6 +32397,223 @@ theorem chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel
   exact continuousLinearMap_exists_adjointSqrt_of_isPositive_finiteDim
     (chewi1314_polytopeSlackNegLog_rangeHess_isPositive aRow bSlack hz)
 
+set_option maxHeartbeats 4000000 in
+/--
+Finite-row slack-range specialization of the Chewi §13.16 main-stage accuracy
+consumer.  The theorem discharges the range logarithmic-barrier structure,
+Hessian calculus, gradient bound, local Cauchy bridge, and pointwise
+sqrt-coordinate model; callers supply the actual increasing-parameter Newton
+path, central-path optimality data, and the large-parameter stopping
+condition.
+-/
+theorem chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {aObj center optimum : (polytopeSlackCLM aRow).range}
+    {xseq : ℕ -> (polytopeSlackCLM aRow).range} {tseq : ℕ -> ℝ}
+    {t0 c0 eps : ℝ} {N : ℕ}
+    (hxseq_mem : ∀ n : ℕ,
+      xseq n ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (h0 : tseq 0 = t0)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) =
+        (1 + c0 / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (centralPathGrad (tseq (n + 1)) aObj
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          (xseq n))
+    (hc0_nonneg : 0 ≤ c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (hinit :
+      newtonDecrement
+          (centralPathGrad (tseq 0) aObj
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          (xseq 0) ≤ 1 / 4)
+    (ht0_pos : 0 < t0)
+    (heps_pos : 0 < eps)
+    (hcentral :
+      tseq N • aObj +
+        barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad center = 0)
+    (hbarrier_step :
+      inner ℝ
+          (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad center)
+          (optimum - center) ≤ (m : ℝ))
+    (hlower :
+      (localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          (xseq N) (xseq N - center)) ^ (2 : ℕ) /
+          (1 + localNorm
+            (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM)
+            (xseq N) (xseq N - center)) ≤
+        inner ℝ
+          (tseq N • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad (xseq N))
+          (xseq N - center))
+    (hlarge :
+      2 * (m : ℝ) ≤
+        eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ N * t0)) :
+    inner ℝ aObj (xseq N) - inner ℝ aObj optimum ≤ eps := by
+  let sRange : Set (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+      (positiveOrthant (d := m))
+  let rangeHess :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range →L[ℝ]
+          (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogHessCLM
+  let rangeGrad :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogGrad
+  let rangeInvHess :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range →L[ℝ]
+          (polytopeSlackCLM aRow).range :=
+    chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack
+  let rangeThird :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range ->
+          (polytopeSlackCLM aRow).range -> ℝ :=
+    barrierAffineRangeThirdMixed (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogThirdMixed
+  obtain ⟨sqrtCoordRange, hhess_model, hinv_model⟩ :=
+    chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel aRow bSlack
+  have hsRange : Convex ℝ sRange := by
+    simpa [sRange] using
+      convex_barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        convex_positiveOrthant
+  have hbarRange :
+      SelfConcordantBarrierOn sRange rangeHess rangeGrad rangeInvHess
+        rangeThird (1 : ℝ) (m : ℝ) := by
+    simpa [sRange, rangeHess, rangeGrad, rangeInvHess, rangeThird] using
+      chewi1314_polytopeSlackNegLog_range_selfConcordantBarrierOn aRow bSlack
+  have hhess_cont : ContinuousOn rangeHess sRange := by
+    simpa [sRange, rangeHess] using
+      chewi1314_polytopeSlackNegLog_rangeHess_continuousOn aRow bSlack
+  have hhess_global : ∀ z, z ∈ sRange ->
+      HasFDerivAt rangeHess
+        (chewi1314_polytopeSlackNegLog_rangeHessDeriv aRow bSlack z) z := by
+    intro z hz
+    simpa [sRange, rangeHess] using
+      chewi1314_polytopeSlackNegLog_rangeHess_hasFDerivAt aRow bSlack
+        (by simpa [sRange] using hz)
+  have hmixed_global : ∀ z, z ∈ sRange ->
+      ∀ a v : (polytopeSlackCLM aRow).range,
+        inner ℝ v
+            ((chewi1314_polytopeSlackNegLog_rangeHessDeriv aRow bSlack z a) v) =
+          rangeThird z a v := by
+    intro z hz a v
+    simpa [rangeThird] using
+      chewi1314_polytopeSlackNegLog_rangeHessDeriv_mixed_inner
+        aRow bSlack z a v
+  have hgrad_segment : ∀ n τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (centralPathGrad (tseq (n + 1)) aObj rangeGrad)
+        (rangeHess (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+        (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ) := by
+    intro n τ hτ
+    have hτIcc : τ ∈ Set.Icc (0 : ℝ) 1 := by
+      simpa [Set.uIcc_of_le (show (0 : ℝ) ≤ 1 by norm_num)] using hτ
+    have hseg :
+        hessianSegmentPoint (xseq n) (xseq (n + 1)) τ ∈ sRange :=
+      hessianSegmentPoint_mem_of_convex hsRange
+        (by simpa [sRange] using hxseq_mem n)
+        (by simpa [sRange] using hxseq_mem (n + 1)) hτIcc
+    have hphi : HasFDerivAt rangeGrad
+        (rangeHess (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ))
+        (hessianSegmentPoint (xseq n) (xseq (n + 1)) τ) := by
+      simpa [sRange, rangeGrad, rangeHess] using
+        barrierAffineRangeGrad_hasFDerivAt (polytopeSlackCLM aRow) bSlack
+          (grad := positiveOrthantNegLogGrad)
+          (hess := positiveOrthantNegLogHessCLM)
+          (y := hessianSegmentPoint (xseq n) (xseq (n + 1)) τ)
+          (positiveOrthantNegLogGrad_hasFDerivAt
+            (by simpa [sRange] using hseg))
+    exact
+      centralPathGrad_hasFDerivAt
+        (t := tseq (n + 1)) (a := aObj) (hphi := hphi)
+  have hdelta_nonneg : 0 ≤ c0 / Real.sqrt (m : ℝ) := by
+    have hsqrt_pos : 0 < Real.sqrt (m : ℝ) :=
+      Real.sqrt_pos.2 (by exact_mod_cast hm)
+    exact div_nonneg hc0_nonneg hsqrt_pos.le
+  have hdelta_le_c0 : c0 / Real.sqrt (m : ℝ) ≤ c0 := by
+    have hm_real_one : (1 : ℝ) ≤ (m : ℝ) := by
+      exact_mod_cast hm
+    have hsqrt_pos : 0 < Real.sqrt (m : ℝ) :=
+      Real.sqrt_pos.2 (by exact_mod_cast hm)
+    have hsqrt_one : 1 ≤ Real.sqrt (m : ℝ) :=
+      Real.one_le_sqrt.mpr hm_real_one
+    rw [div_le_iff₀ hsqrt_pos]
+    nlinarith
+  have hdelta_sqrt_le_c0 :
+      (c0 / Real.sqrt (m : ℝ)) * Real.sqrt (m : ℝ) ≤ c0 := by
+    have hsqrt_pos : 0 < Real.sqrt (m : ℝ) :=
+      Real.sqrt_pos.2 (by exact_mod_cast hm)
+    have hsqrt_ne : Real.sqrt (m : ℝ) ≠ 0 := hsqrt_pos.ne'
+    have hmul :
+        (c0 / Real.sqrt (m : ℝ)) * Real.sqrt (m : ℝ) = c0 := by
+      field_simp [hsqrt_ne]
+    exact le_of_eq hmul
+  have hr_pos : 0 < 1 + c0 / Real.sqrt (m : ℝ) := by
+    nlinarith
+  have hnu_one : (1 : ℝ) ≤ (m : ℝ) := by
+    exact_mod_cast hm
+  have hphi_bound : ∀ n : ℕ,
+      dualLocalNorm rangeInvHess (xseq n) (rangeGrad (xseq n)) ≤
+        Real.sqrt (m : ℝ) := by
+    intro n
+    exact hbarRange.gradient_bound (by simpa [sRange] using hxseq_mem n)
+  have hcauchy : ∀ v w : (polytopeSlackCLM aRow).range,
+      inner ℝ v w ≤ dualLocalNorm rangeInvHess (xseq N) v *
+        localNorm rangeHess (xseq N) w := by
+    intro v w
+    exact
+      chewi1314_polytopeSlackNegLog_range_sourceCauchy
+        aRow bSlack (by simpa [sRange] using hxseq_mem N) v w
+  exact
+    chewi1316_objective_gap_le_eps_of_mainStage_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment
+      (s := sRange) (hess := rangeHess)
+      (hessDeriv := chewi1314_polytopeSlackNegLog_rangeHessDeriv aRow bSlack)
+      (thirdMixed := rangeThird) (phiGrad := rangeGrad)
+      (invHess := rangeInvHess) (sqrtCoord := sqrtCoordRange)
+      (a := aObj) (center := center) (optimum := optimum)
+      (xseq := xseq) (tseq := tseq)
+      (t0 := t0) (c0 := c0) (nu := (m : ℝ)) (eps := eps) (N := N)
+      hsRange (by intro n; simpa [sRange] using hxseq_mem n)
+      hbarRange.self_concordant hhess_cont hhess_global hmixed_global
+      hgrad_segment
+      (by
+        intro z hz
+        simpa [sRange, rangeHess] using hhess_model (by simpa [sRange] using hz))
+      (by
+        intro z hz
+        simpa [sRange, rangeInvHess] using hinv_model (by simpa [sRange] using hz))
+      (by simpa [rangeGrad, rangeInvHess] using h0)
+      (by intro n; simpa [rangeGrad, rangeInvHess] using htstep n)
+      (by intro n; simpa [rangeGrad, rangeInvHess] using hnewton_next n)
+      hdelta_nonneg hdelta_le_c0 hdelta_sqrt_le_c0 hphi_bound hc0_le
+      (by simpa [rangeGrad, rangeInvHess] using hinit)
+      hr_pos ht0_pos heps_pos hnu_one
+      (by simpa [rangeGrad] using hcentral)
+      (by simpa [rangeGrad] using hbarrier_step)
+      hcauchy
+      (by simpa [rangeHess, rangeGrad] using hlower)
+      hlarge
+
 /--
 Finite-row range-space preliminary one-step invariant from a domain-wide
 square-root-coordinate model.  The range Newton recurrence and summable
