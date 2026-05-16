@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V385
+## Live In-Thread Goal Prompt V386
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,21 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V385 consumes the shifted infinite-product law bridge
+Latest verified target V386 adds zero-based product-law consumers for the
+pointwise Theorem 2.4.9 proof steps:
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae_of_hasLaw_infinitePi`,
+and
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae_of_hasLaw_infinitePi`.
+These consume `HasLaw (fun omega => fun i => X i omega) (P^N) mu` via the
+compiled Chapter 2.1.11 product-law extraction.  Next work should not rebuild
+these pointwise product-law consumers; move to another genuine Chapter
+2.1/2.4.9 source wrapper or a missing theorem-sized consumer.
+
+V385 consumes the shifted infinite-product law bridge
 in the pointwise Theorem 2.4.9 proof steps:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul_range_sum_tendsto_cdf_ae_of_shift_hasLaw_infinitePi`
 and

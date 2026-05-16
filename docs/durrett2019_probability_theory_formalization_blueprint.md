@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V385`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V386`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -37,7 +37,13 @@ independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V385 consumes the
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V386 adds zero-based
+product-law consumers for the pointwise Theorem 2.4.9 empirical CDF and left
+empirical CDF proof steps.  They consume
+`HasLaw (fun omega => fun i => X i omega) (P^N) mu` through the compiled
+Chapter 2.1.11 product-law extraction.  Next work should not rebuild these
+pointwise product-law consumers; move to another genuine Chapter 2.1/2.4.9
+source wrapper or a missing theorem-sized consumer.  V385 consumes the
 shifted infinite-product law bridge in the pointwise Theorem 2.4.9 proof
 steps for the one-based empirical CDF and left empirical CDF displays.  Next
 work should not rebuild these pointwise shifted joint-law displays; move to

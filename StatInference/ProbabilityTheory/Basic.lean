@@ -5511,6 +5511,77 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_su
     X c hLaw (fun _ _ hij => hindep.indepFun hij)
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step from a full infinite-product joint
+law for the observation sequence.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          empiricalDistributionFunction (samplePath X ω n) c -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae_of_iIndepFun
+      X c hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in range-sum notation from a full
+infinite-product joint law for the observation sequence.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ i ∈ Finset.range n, realHalfLineIndicator c (X i ω)) /
+            (n : ℝ) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae_of_iIndepFun
+      X c hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in exact textbook notation from a full
+infinite-product joint law for the observation sequence.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realHalfLineIndicator c (X i ω) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae_of_iIndepFun
+      X c hSource.1 hSource.2
+
+/--
 Durrett 2019, Theorem 2.4.9 proof step in one-based exact textbook notation
 under `iIndepFun`: `n^{-1} * sum_{m=1}^n 1{X_m <= c} -> F(c)` almost surely.
 -/
@@ -5814,6 +5885,77 @@ theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_rang
         atTop (𝓝 0) :=
   durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae
     X c hLaw (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for the left empirical CDF from a full
+infinite-product joint law for the observation sequence.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          empiricalLeftDistributionFunction (samplePath X ω n) c -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae_of_iIndepFun
+      X c hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in left range-sum notation from a full
+infinite-product joint law for the observation sequence.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X i ω)) /
+            (n : ℝ) -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae_of_iIndepFun
+      X c hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in exact left empirical-CDF notation
+from a full infinite-product joint law for the observation sequence.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X i ω) -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae_of_iIndepFun
+      X c hSource.1 hSource.2
 
 /--
 Durrett 2019, Theorem 2.4.9 proof step in one-based exact textbook notation
