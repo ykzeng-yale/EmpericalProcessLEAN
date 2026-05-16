@@ -44038,6 +44038,95 @@ theorem chewi1316_polytopeSlackNegLog_exists_pos_sourceSlackFloor
     exact (hne ⟨i, Finset.mem_univ i⟩).elim
 
 /--
+Bounded feasible translated slack ranges yield a source-shaped finite tail
+budget for the actual preliminary Newton initializer.  The boundedness
+certificate supplies a source-centered closed-ball radius; the positive source
+slack floor turns that radius into a scalar relative-slack budget
+`rho = R / sFloor`.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedFeasibleRange_autoFloor_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hbounded :
+      Bornology.IsBounded
+        (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))) :
+    ∃ sFloor rho tailBound : ℝ, ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < sFloor ∧
+      0 ≤ rho ∧
+      Real.sqrt (m : ℝ) * (1 + rho) ≤ tailBound ∧
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 := by
+  rcases chewi1316_polytopeSlackNegLog_exists_pos_sourceSlackFloor
+      (aRow := aRow) (bSlack := bSlack) hxbar0Range with
+    ⟨sFloor, hsFloor_pos, hsourceSlack_floor⟩
+  let source : (polytopeSlackCLM aRow).range :=
+    (polytopeSlackCLM aRow).rangeRestrict xbar0
+  rcases hbounded.subset_closedBall source with ⟨R0, hR0⟩
+  let R : ℝ := max R0 0
+  have hR_nonneg : 0 ≤ R := by
+    exact le_max_right R0 0
+  have hradius : ∀ y : (polytopeSlackCLM aRow).range,
+      y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ->
+        dist y source ≤ R := by
+    intro y hy
+    have hy_closed : y ∈ Metric.closedBall source R0 := hR0 hy
+    have hdist_R0 : dist y source ≤ R0 := by
+      simpa [Metric.mem_closedBall] using hy_closed
+    exact hdist_R0.trans (le_max_left R0 0)
+  let rho : ℝ := R / sFloor
+  have hrho : 0 ≤ rho := by
+    exact div_nonneg hR_nonneg hsFloor_pos.le
+  have hR_floor : R ≤ rho * sFloor := by
+    have hmul : rho * sFloor = R := by
+      change (R / sFloor) * sFloor = R
+      exact div_mul_cancel₀ R hsFloor_pos.ne'
+    exact le_of_eq hmul.symm
+  let tailBound : ℝ := Real.sqrt (m : ℝ) * (1 + rho)
+  rcases
+    chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0) (aObj := aObj) (xseq := xseq) (tseq := tseq)
+      (R := R) (rho := rho) (sFloor := sFloor)
+      (tailBound := tailBound)
+      hxbar0Range hx0 ht0 htstep hnewton_next_source hrho le_rfl
+      (by simpa [source] using hradius) hR_floor hsourceSlack_floor with
+    ⟨Midx, Nout, tMain, htMain, hlog, hN, hdec⟩
+  exact
+    ⟨sFloor, rho, tailBound, Midx, Nout, tMain,
+      hsFloor_pos, hrho, le_rfl, htMain, hlog, hN, hdec⟩
+
+/--
 Post-threshold source-centered radius handoff using a single source slack floor.
 Instead of proving `R <= rho * slack_i(xbar0)` separately for every row, it is
 enough to lower-bound all source slacks by `sFloor` and prove

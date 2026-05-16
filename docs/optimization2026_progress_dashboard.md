@@ -563,6 +563,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `sqrt(m) * (1 + rho) <= tailBound`.  The finite floor itself is automatic
   from `hxbar0Range` by Mathlib `Finset.inf'`, `Finset.lt_inf'_iff`, and
   `Finset.inf'_le`.
+  The bounded feasible-range specialization now compiles as
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedFeasibleRange_autoFloor_succ_noFactor_standardConstants`.
+  It turns `Bornology.IsBounded` of the translated feasible slack range into a
+  source-centered closed-ball radius via Mathlib
+  `Bornology.IsBounded.subset_closedBall`, chooses `rho = R / sFloor`, and
+  returns existential `sFloor`, `rho`, and `tailBound` with the verified
+  main-stage decrement conclusion.
   This is the direct entrypoint for compact/bounded feasible-range arguments
   that naturally produce least-upper-bound data; the Mathlib reuse is
   `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,

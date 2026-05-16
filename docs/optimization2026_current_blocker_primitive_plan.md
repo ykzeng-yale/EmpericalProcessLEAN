@@ -854,6 +854,15 @@ range radius bound, `R <= rho * sFloor`, the finite floor comparison, and the
 scalar tail budget `sqrt(m) * (1 + rho) <= tailBound`.  The floor existence
 lemma uses Mathlib `Finset.inf'`, `Finset.lt_inf'_iff`, and `Finset.inf'_le`
 to extract a positive finite lower bound directly from `hxbar0Range`.
+The bounded feasible-range specialization now adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedFeasibleRange_autoFloor_succ_noFactor_standardConstants`.
+It consumes `Bornology.IsBounded` for the translated feasible slack range,
+uses Mathlib `Bornology.IsBounded.subset_closedBall` to obtain a
+source-centered radius, chooses `rho = R / sFloor`, and returns existential
+`sFloor`, `rho`, and `tailBound` together with the main-stage initializer.
+This is now the preferred bounded-polytope route when the remaining geometry
+proves boundedness of the feasible slack range rather than a hand-picked
+radius.
 This lets compactness or boundedness proofs feed Mathlib least-upper-bound
 data directly: prove the feasible translated slack range is compact (or show
 it sits inside a compact closure/envelope, or show each coordinate image is
