@@ -131,10 +131,14 @@ preliminary-to-main route no longer needs supplied `hlower` or barrier-step
 premises.  The V30 packet packages this route into
 `Chewi1316StandardSourceMainStageObjectiveGapMixedThirdAutoHandoff` and its
 bounded feasible-range, bounded source-polytope, bounded closed-polytope, and
-compact closed-polytope standard-path constructors.  Next finite-row work
-should use V20 large-parameter selection where an existential terminal
-main-stage index is needed; centrality of the selected terminal center remains
-the real mathematical certificate.
+compact closed-polytope standard-path constructors.  The V31 packet adds
+`chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_exists_mainStageIndex_objective_gap_le_eps`,
+which reuses V20 `chewi1316_exists_mainStageIndex_large_parameter` to choose
+the terminal `Nmain` automatically.  Next finite-row work should either lift
+this existential-index consumer through the bounded/closed/compact
+standard-path constructors or prove the central-path existence/selection layer;
+centrality of the selected terminal center remains the real mathematical
+certificate.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

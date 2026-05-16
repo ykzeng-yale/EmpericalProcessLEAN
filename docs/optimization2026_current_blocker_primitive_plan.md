@@ -358,13 +358,22 @@ main-stage handoff surface.  The mixed-third auto-handoff stores terminal
 feasibility of `center` and `optimum`, then exposes only centrality and the
 large-parameter stopping inequality at the terminal main-stage call.
 
-Next theorem-sized target: use the V20 large-parameter index-selection lemmas
-to build an existential terminal-main-stage wrapper for the V30 handoff, so a
-caller supplying terminal centrality can obtain some `Nmain` with the displayed
-`eps` objective gap without separately proving the large-parameter inequality.
-The remaining genuine terminal mathematical certificate is centrality of the
-selected `center` for the terminal parameter; do not obscure it behind another
-supplied lower-model interface.
+Current V31 packet closes that large-parameter selection handoff.  New compiled
+declaration:
+`chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_exists_mainStageIndex_objective_gap_le_eps`.
+Search-first result: reuse V20
+`chewi1316_exists_mainStageIndex_large_parameter` directly; no new geometric or
+logarithmic scalar algebra was needed.  This wrapper chooses an existential
+terminal `Nmain` from `m > 0`, `c0 > 0`, `tMain > 0`, and `eps > 0`, then calls
+the V30 handoff, so the caller no longer supplies the large-parameter stopping
+inequality.  The remaining genuine terminal mathematical certificate is
+centrality of the selected `center` for the selected terminal parameter.
+
+Next theorem-sized target: either thread the V31 existential `Nmain` consumer
+through the bounded feasible-range/source-polytope/closed/compact standard-path
+constructors, or prove the central-path existence/selection wrapper that
+supplies the terminal centrality premise.  Prefer the centrality selection route
+if the bounded wrappers are shallow constructor copies.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model

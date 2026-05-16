@@ -167,12 +167,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   `optimum` are feasible: the call surface has centrality and the
   large-parameter stopping inequality, but no supplied `hlower`,
   barrier-step, membership, or decrement premise.
+  The V31 selection packet adds
+  `chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_exists_mainStageIndex_objective_gap_le_eps`,
+  reusing V20 `chewi1316_exists_mainStageIndex_large_parameter` to choose the
+  terminal `Nmain` automatically from positive `eps`, `c0`, and `tMain`.
+  The live standard-path call surface now keeps only the terminal centrality
+  premise as the real remaining certificate.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: use the V20
-  large-parameter selection lemmas to build an existential terminal-main-stage
-  wrapper for the V30 handoff; centrality of the selected terminal center
-  remains the real mathematical certificate.
+  `hxseq_mem` or per-step decrement premise.  Next proof target: thread this
+  V31 existential-index consumer through the bounded/closed/compact
+  standard-path constructors if shallow, otherwise attack the central-path
+  existence/selection wrapper that supplies terminal centrality.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge
