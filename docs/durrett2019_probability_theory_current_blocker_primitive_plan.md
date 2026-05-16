@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V423
+## Live In-Thread Goal Prompt V424
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,22 +12,33 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V423 advances Durrett
+in `StatInference/ProbabilityTheory/Basic.lean`.  V424 advances Durrett
 Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the V421-V422
 normalizer/truncation/Kronecker/Borel-Cantelli spine now has compiled reducer
 theorems turning the exact weighted base truncated second-moment summability
 and the normalized truncated-mean estimate into the truncated normalized-sum
-endpoint, together with the existing eventual equality.  Next aggressive
+endpoint, and V424 transfers that endpoint through eventual equality to the
+original normalized sums.  Next aggressive
 target: prove the actual analytic estimates from iid finite `p`-moment:
 weighted base truncated second-moment summability and normalized truncated
-mean contribution; then prove the finite-prefix normalized-sum transfer from
-truncated sums to original sums for the full `S_n / n^(1/p) -> 0` endpoint.
+mean contribution for the full `S_n / n^(1/p) -> 0` endpoint.
 Reuse V406 random-series convergence, V410 Kronecker normalization, V412-V415
-moving truncation/eventual-equality support, V421-V423 2.5.12 spine, mathlib
+moving truncation/eventual-equality support, V421-V424 2.5.12 spine, mathlib
 strong-law tail APIs, and p-series/integral-tail APIs before adding local
 analysis lemmas.  Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9,
 2.5.10, V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts
 unless search proves a concrete missing source display.
+
+Latest verified target V424 adds the Theorem 2.5.12 finite-prefix transfer from
+truncated normalized sums to original normalized sums under eventual equality.
+New compiled anchors:
+`durrett2019_theorem_2_5_12_normalized_sum_tendsto_zero_of_eventuallyEq`,
+`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_truncated_and_eventuallyEq`,
+and
+`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto`.
+The remaining 2.5.12 blocker is now purely analytic: derive the weighted base
+truncated second-moment summability and normalized truncated-mean convergence
+from iid finite `p`-moment source hypotheses.
 
 Latest verified target V423 adds the Theorem 2.5.12 variance/mean assembly
 reducers.  New compiled anchors:
@@ -38,10 +49,10 @@ reducers.  New compiled anchors:
 `durrett2019_theorem_2_5_12_centered_endpoint_and_eventuallyEq_of_base_truncated_sq_summable`,
 and
 `durrett2019_theorem_2_5_12_truncated_endpoint_and_eventuallyEq_of_base_truncated_sq_summable_and_mean_tendsto`.
-The remaining 2.5.12 blocker is now sharply analytic plus one deterministic
-transfer: prove the weighted base truncated second-moment summability from
-finite `p`-moment, prove the normalized truncated-mean estimate, and transfer
-eventual equality across the `n^(1/p)` normalizer.
+The remaining 2.5.12 blocker after V423 was sharply analytic plus one
+deterministic transfer: prove the weighted base truncated second-moment
+summability from finite `p`-moment, prove the normalized truncated-mean
+estimate, and transfer eventual equality across the `n^(1/p)` normalizer.
 
 Latest verified target V422 adds the first source-probability and variance
 landing-pad layer for Durrett Theorem 2.5.12.  New compiled anchors:

@@ -32,29 +32,36 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V423` in
+Route from `Live In-Thread Goal Prompt V424` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
-V423 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
+V424 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
 `1 < p < 2`.  In addition to the V421-V422 normalizer/truncation/Kronecker/
 Borel-Cantelli spine, compiled reducer theorems now turn exact weighted base
 truncated second-moment summability and normalized truncated-mean convergence
-into the truncated normalized-sum endpoint, paired with the existing eventual
-equality.  New compiled anchors through V423:
+into the truncated normalized-sum endpoint, and V424 transfers that endpoint
+through eventual equality to the original normalized sums.  New compiled anchors
+through V424:
 `durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
 `durrett2019_theorem_2_5_12_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto`,
 `durrett2019_theorem_2_5_12_centered_endpoint_and_eventuallyEq_of_base_truncated_sq_summable`,
 and
-`durrett2019_theorem_2_5_12_truncated_endpoint_and_eventuallyEq_of_base_truncated_sq_summable_and_mean_tendsto`.
-The current blocker is now the actual analytic work from finite `p`-moment:
+`durrett2019_theorem_2_5_12_truncated_endpoint_and_eventuallyEq_of_base_truncated_sq_summable_and_mean_tendsto`,
+`durrett2019_theorem_2_5_12_normalized_sum_tendsto_zero_of_eventuallyEq`,
+`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_truncated_and_eventuallyEq`,
+and
+`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto`.
+The current blocker is now purely the actual analytic work from finite
+`p`-moment:
 weighted base truncated second-moment summability and normalized truncated-mean
-contribution, followed by finite-prefix normalized-sum transfer from the
-truncated endpoint plus eventual equality to the original endpoint.
+contribution.
 
-Verified route history below is provenance, not live prompt text.  V422
+Verified route history below is provenance, not live prompt text.  V423 added
+the variance/mean assembly reducers and left the finite-prefix transfer plus
+analytic estimates as the next frontier.  V422
 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`.
 In addition to the V421 normalizer/truncation/Kronecker spine, the
 Borel-Cantelli eventual-equality transfer from `X_k` to

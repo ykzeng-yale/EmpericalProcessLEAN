@@ -7987,6 +7987,159 @@ theorem durrett2019_theorem_2_5_12_truncated_endpoint_and_eventuallyEq_of_base_t
       (P := P) (X := X) (p := p) hp_pos hX_pow_int0 hX_ident⟩
 
 /--
+Durrett 2019, Theorem 2.5.12 deterministic transfer: eventual sample-path
+equality transfers a zero limit across the Marcinkiewicz-Zygmund normalizer.
+-/
+theorem durrett2019_theorem_2_5_12_normalized_sum_tendsto_zero_of_eventuallyEq
+    {Ω : Type u} {X Y : ℕ -> Ω -> ℝ} {ω : Ω} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hXY : ∀ᶠ k in atTop, X k ω = Y k ω)
+    (hY :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), Y (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+          durrett2019_theorem_2_5_12_normalizer p (n + 1))
+      atTop (𝓝 0) := by
+  let Z : ℕ -> ℝ := fun k => X (k + 1) ω - Y (k + 1) ω
+  have hZ_zero : ∀ᶠ k in atTop, Z k = 0 := by
+    rcases eventually_atTop.1 hXY with ⟨M, hM⟩
+    refine eventually_atTop.2 ⟨M, ?_⟩
+    intro k hk
+    have heq : X (k + 1) ω = Y (k + 1) ω :=
+      hM (k + 1) (le_trans hk (Nat.le_succ k))
+    simp [Z, heq]
+  rcases eventually_atTop.1 hZ_zero with ⟨M, hM⟩
+  let C : ℝ := ∑ k ∈ Finset.range M, Z k
+  have hdiff_sum_const :
+      ∀ᶠ n in atTop,
+        (∑ k ∈ Finset.range (n + 1), Z k) = C := by
+    refine eventually_atTop.2 ⟨M, ?_⟩
+    intro n hn
+    have hMn : M ≤ n + 1 := le_trans hn (Nat.le_succ n)
+    have hsplit :
+        (∑ k ∈ Finset.range (n + 1), Z k) =
+          (∑ k ∈ Finset.range M, Z k) +
+            ∑ k ∈ Finset.range (n + 1 - M), Z (M + k) := by
+      have hsum :=
+        Finset.sum_range_add (fun k : ℕ => Z k) M (n + 1 - M)
+      have hMadd : M + (n + 1 - M) = n + 1 := Nat.add_sub_of_le hMn
+      simpa [hMadd, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hsum
+    have htail :
+        (∑ k ∈ Finset.range (n + 1 - M), Z (M + k)) = 0 := by
+      refine Finset.sum_eq_zero fun k _hk => ?_
+      exact hM (M + k) (Nat.le_add_right M k)
+    simp [C, hsplit, htail]
+  have hdiff :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), Z k) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0) := by
+    have hconst :
+        Tendsto
+          (fun n : ℕ =>
+            C / durrett2019_theorem_2_5_12_normalizer p (n + 1))
+          atTop (𝓝 0) := by
+      simpa using
+        tendsto_const_nhds.div_atTop
+          (durrett2019_theorem_2_5_12_normalizer_atTop hp_pos)
+    refine hconst.congr' ?_
+    exact hdiff_sum_const.mono fun n hn => by
+      simp [hn]
+  have hsum :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), Y (k + 1) ω) /
+              durrett2019_theorem_2_5_12_normalizer p (n + 1) +
+            (∑ k ∈ Finset.range (n + 1), Z k) /
+              durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0) := by
+    simpa using hY.add hdiff
+  refine hsum.congr' ?_
+  exact Eventually.of_forall fun n => by
+    dsimp [Z]
+    rw [Finset.sum_sub_distrib]
+    ring_nf
+
+/--
+Durrett 2019, Theorem 2.5.12 deterministic transfer, almost-sure form:
+truncated normalized sums plus eventual equality give original normalized
+sums.
+-/
+theorem durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_truncated_and_eventuallyEq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X Y : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hY :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun n : ℕ =>
+            (∑ k ∈ Finset.range (n + 1), Y (k + 1) ω) /
+              durrett2019_theorem_2_5_12_normalizer p (n + 1))
+          atTop (𝓝 0))
+    (hXY : ∀ᵐ ω ∂P, ∀ᶠ k in atTop, X k ω = Y k ω) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0) := by
+  filter_upwards [hY, hXY] with ω hYω hXYω
+  exact
+    durrett2019_theorem_2_5_12_normalized_sum_tendsto_zero_of_eventuallyEq
+      (X := X) (Y := Y) (ω := ω) (p := p) hp_pos hXYω hYω
+
+/--
+Durrett 2019, Theorem 2.5.12 source constructor: once the weighted base
+truncated second moments and truncated means have the textbook estimates, the
+large-jump eventual equality transfers the truncated endpoint to the original
+Marcinkiewicz-Zygmund endpoint.
+-/
+theorem durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hbase_weighted_summable :
+      Summable fun k : ℕ =>
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_8_truncated
+              (fun _ : ℕ => X 0)
+              (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P)
+    (hmean :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_12_truncatedMean P X p (k + 1)) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_truncated_and_eventuallyEq
+    (P := P) (X := X)
+    (Y := fun k : ℕ => durrett2019_theorem_2_5_12_truncated X p k)
+    (p := p) hp_pos
+    (durrett2019_theorem_2_5_12_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto
+      (P := P) (X := X) (p := p) hp_pos hX_indep hX_meas hX_ident
+      hbase_weighted_summable hmean)
+    (durrett2019_theorem_2_5_12_ae_eventuallyEq_truncated_of_integrable_power_identDistrib
+      (P := P) (X := X) (p := p) hp_pos hX_pow_int0 hX_ident)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
