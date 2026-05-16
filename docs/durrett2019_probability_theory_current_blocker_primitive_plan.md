@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V382
+## Live In-Thread Goal Prompt V383
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,21 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V382 adds the one-based Durrett indexing bridge for
+Latest verified target V383 adds the Theorem 2.1.10/2.1.13 mixed-term bridge
+used by the Kolmogorov maximal inequality proof:
+`durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integral_Ico_eq_zero`,
+`durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_integral_Ico_eq_zero`,
+and
+`durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero`.
+These package the textbook move that a centered future increment `S_n - S_m`
+is orthogonal in expectation to measurable functions of the early block.
+Next work should either consume this bridge in a real later source theorem
+when entering the Kolmogorov maximal-inequality lane, or return to the active
+2.4.9/Chapter 2.1 source-facing frontier; do not reprove this mixed-term
+factorization.
+
+V382 adds the one-based Durrett indexing bridge for
 Theorem 2.1.11 infinite product laws:
 `durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi`,
 `durrett2019_theorem_2_1_11_iid_shift_iff_hasLaw_infinitePi`, and

@@ -32,14 +32,24 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V382` in
+Route from `Live In-Thread Goal Prompt V383` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Chapter 2.1
 independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V382 adds the
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V383 adds the
+Theorem 2.1.10/2.1.13 mixed-term bridge used by the Kolmogorov maximal
+inequality proof:
+`durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integral_Ico_eq_zero`,
+`durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_integral_Ico_eq_zero`,
+and
+`durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero`.
+Next work should consume this bridge only in a real later source theorem, or
+return to the active 2.4.9/Chapter 2.1 source-facing frontier; do not reprove
+this mixed-term factorization.  V382 adds the
 one-based Theorem 2.1.11 infinite product-law bridge:
 `durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi`,
 `durrett2019_theorem_2_1_11_iid_shift_iff_hasLaw_infinitePi`, and

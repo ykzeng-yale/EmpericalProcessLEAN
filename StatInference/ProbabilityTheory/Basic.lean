@@ -1224,6 +1224,134 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_zero_of_integr
     (P := P) (X := X) hX mX hi hzero
 
 /--
+Durrett 2019, Theorem 2.1.13 support: a centered future partial-sum
+increment is orthogonal in expectation to any measurable statistic of the
+earlier block.
+
+This packages the textbook move used in Kolmogorov's maximal inequality:
+`S_n - S_m` is independent of functions of `X_0, ..., X_{m-1}` by Theorem
+2.1.10, so Theorem 2.1.13 and a zero future mean make the mixed term vanish.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    {ψ : ((i : Finset.range m) -> ℝ) -> ℝ} (hψ : Measurable ψ)
+    (hmeanDiff :
+      ∫ ω, ((∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω) ∂P = 0) :
+    ∫ ω, ψ (fun i : Finset.range m => X i ω) *
+      ((∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω) ∂P = 0 := by
+  let future : Ω -> ℝ := fun ω =>
+    (∑ k ∈ Finset.range n, X k ω) - ∑ k ∈ Finset.range m, X k ω
+  let early : Ω -> ℝ := fun ω => ψ (fun i : Finset.range m => X i ω)
+  have hindep :
+      _root_.ProbabilityTheory.IndepFun (μ := P) future early :=
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction
+      (P := P) (X := X) hX_indep hX_meas hmn hψ
+  have hfuture_meas : AEStronglyMeasurable future P := by
+    have hsum_n : Measurable (fun ω => ∑ k ∈ Finset.range n, X k ω) :=
+      Finset.measurable_fun_sum (Finset.range n) fun k _ => hX_meas k
+    have hsum_m : Measurable (fun ω => ∑ k ∈ Finset.range m, X k ω) :=
+      Finset.measurable_fun_sum (Finset.range m) fun k _ => hX_meas k
+    exact (hsum_n.sub hsum_m).aestronglyMeasurable
+  have hearly_meas : AEStronglyMeasurable early P := by
+    have hcoords : Measurable (fun ω => fun i : Finset.range m => X i ω) :=
+      measurable_pi_lambda _ fun i => hX_meas i
+    exact (hψ.comp hcoords).aestronglyMeasurable
+  have hfactor :
+      ∫ ω, future ω * early ω ∂P =
+        (∫ ω, future ω ∂P) * ∫ ω, early ω ∂P :=
+    durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral
+      (P := P) (X := future) (Y := early) hindep hfuture_meas hearly_meas
+  calc
+    ∫ ω, ψ (fun i : Finset.range m => X i ω) *
+        ((∑ k ∈ Finset.range n, X k ω) -
+          ∑ k ∈ Finset.range m, X k ω) ∂P =
+        ∫ ω, future ω * early ω ∂P := by
+      simp [future, early, mul_comm]
+    _ = 0 := by
+      rw [hfactor]
+      simp [future, hmeanDiff]
+
+/--
+Durrett 2019, Theorem 2.1.13 support: if each summand in the future interval
+has mean zero, then the future partial-sum increment has mean zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integral_Ico_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    {m n : ℕ} (hmn : m ≤ n)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X i) P)
+    (hzero : ∀ i ∈ Finset.Ico m n, ∫ ω, X i ω ∂P = 0) :
+    ∫ ω, ((∑ k ∈ Finset.range n, X k ω) -
+      ∑ k ∈ Finset.range m, X k ω) ∂P = 0 := by
+  have hfuture :
+      (fun ω => ((∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω)) =
+        fun ω => ∑ k ∈ Finset.Ico m n, X k ω := by
+    ext ω
+    exact (Finset.sum_Ico_eq_sub (fun k => X k ω) hmn).symm
+  rw [hfuture]
+  rw [integral_finsetSum (s := Finset.Ico m n)
+    (f := fun i ω => X i ω) hX_int]
+  exact Finset.sum_eq_zero fun i hi => hzero i hi
+
+/--
+Durrett 2019, Theorem 2.1.13 support: source-shaped zero mixed term when the
+future interval variables have mean zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_integral_Ico_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X i) P)
+    (hzero : ∀ i ∈ Finset.Ico m n, ∫ ω, X i ω ∂P = 0)
+    {ψ : ((i : Finset.range m) -> ℝ) -> ℝ} (hψ : Measurable ψ) :
+    ∫ ω, ψ (fun i : Finset.range m => X i ω) *
+      ((∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero
+    (P := P) (X := X) hX_indep hX_meas hmn hψ
+    (durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integral_Ico_eq_zero
+      (P := P) (X := X) hmn hX_int hzero)
+
+/--
+Durrett 2019, Theorem 2.1.13 support: the concrete mixed term
+`2 S_m 1_A (S_n - S_m)` vanishes for any measurable early-block event `A`
+when the future interval has mean zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X i) P)
+    (hzero : ∀ i ∈ Finset.Ico m n, ∫ ω, X i ω ∂P = 0)
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    ∫ ω, ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X i ω)) *
+      ((∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω) ∂P = 0 := by
+  let ψ : ((i : Finset.range m) -> ℝ) -> ℝ := fun z =>
+    (2 : ℝ) * (∑ i, z i) *
+      Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ)) z
+  have hsum : Measurable (fun z : ((i : Finset.range m) -> ℝ) => ∑ i, z i) :=
+    Finset.measurable_fun_sum Finset.univ fun i _ => measurable_pi_apply i
+  have hψ : Measurable ψ :=
+    ((measurable_const.mul hsum).mul (measurable_const.indicator hA))
+  simpa [ψ] using
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_integral_Ico_eq_zero
+      (P := P) (X := X) hX_indep hX_meas hmn hX_int hzero hψ
+
+/--
 Durrett 2019, Theorem 2.1.15, product-space CDF convolution form.
 
 For independent coordinates with laws `μ` and `ν`, the distribution function
