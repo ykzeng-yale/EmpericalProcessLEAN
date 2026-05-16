@@ -29617,6 +29617,30 @@ theorem chewi1315_polytopeSlackNegLog_range_gradient_segment_inner_le
     exact chewi1315_polytopeSlackNegLog_range_gradient_inner_sq_le
       a b hz (y - x)
 
+/--
+Chewi §13.16 terminal barrier-step certificate for the finite-row slack-range
+barrier.  If the central path point and the target optimum are both feasible
+range points, Lemma 13.15 supplies the required
+`<grad phi(center), optimum - center> <= m` terminal assumption.
+-/
+theorem chewi1316_polytopeSlackNegLog_range_barrier_step_le_of_mem
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m) (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {center optimum : (polytopeSlackCLM a).range}
+    (hcenter :
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+        (positiveOrthant (d := m)))
+    (hoptimum :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM a) b
+        (positiveOrthant (d := m))) :
+    inner ℝ
+        (barrierAffineRangeGrad (polytopeSlackCLM a) b
+          positiveOrthantNegLogGrad center)
+        (optimum - center) ≤
+      (m : ℝ) :=
+  chewi1315_polytopeSlackNegLog_range_gradient_segment_inner_le
+    hm a b hcenter hoptimum
+
 theorem chewi1315_polytopeSlackNegLog_gradient_segment_inner_le
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
     {m : ℕ} (hm : 0 < m) (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
@@ -32935,6 +32959,85 @@ theorem chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_ne
       hcauchy
       (by simpa [rangeHess, rangeGrad] using hlower)
       hlarge
+
+set_option maxHeartbeats 4000000 in
+/--
+Finite-row slack-range §13.16 main-stage accuracy with the terminal
+barrier-step certificate discharged from terminal range feasibility.  This is
+the preferred consumer when `center` and `optimum` are known feasible; callers
+no longer pass the Lemma 13.15 inequality separately.
+-/
+theorem chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton_of_terminal_mem
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {aObj center optimum : (polytopeSlackCLM aRow).range}
+    {xseq : ℕ -> (polytopeSlackCLM aRow).range} {tseq : ℕ -> ℝ}
+    {t0 c0 eps : ℝ} {N : ℕ}
+    (hxseq_mem : ∀ n : ℕ,
+      xseq n ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (h0 : tseq 0 = t0)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) =
+        (1 + c0 / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (centralPathGrad (tseq (n + 1)) aObj
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          (xseq n))
+    (hc0_nonneg : 0 ≤ c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (hinit :
+      newtonDecrement
+          (centralPathGrad (tseq 0) aObj
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          (xseq 0) ≤ 1 / 4)
+    (ht0_pos : 0 < t0)
+    (heps_pos : 0 < eps)
+    (hcenter_mem :
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hcentral :
+      tseq N • aObj +
+        barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad center = 0)
+    (hlower :
+      (localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          (xseq N) (xseq N - center)) ^ (2 : ℕ) /
+          (1 + localNorm
+            (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM)
+            (xseq N) (xseq N - center)) ≤
+        inner ℝ
+          (tseq N • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad (xseq N))
+          (xseq N - center))
+    (hlarge :
+      2 * (m : ℝ) ≤
+        eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ N * t0)) :
+    inner ℝ aObj (xseq N) - inner ℝ aObj optimum ≤ eps :=
+  chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (aObj := aObj) (center := center) (optimum := optimum)
+    (xseq := xseq) (tseq := tseq) (t0 := t0) (c0 := c0)
+    (eps := eps) (N := N)
+    hxseq_mem h0 htstep hnewton_next hc0_nonneg hc0_le hinit
+    ht0_pos heps_pos hcentral
+    (chewi1316_polytopeSlackNegLog_range_barrier_step_le_of_mem
+      (hm := hm) (a := aRow) (b := bSlack) hcenter_mem hoptimum_mem)
+    hlower hlarge
 
 set_option maxHeartbeats 4000000 in
 /--

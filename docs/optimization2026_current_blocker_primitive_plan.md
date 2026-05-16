@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V20`, this file's top
+   the full book is complete, route from `Live Goal Prompt V21`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V20
+## Live Goal Prompt V21
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -211,16 +211,25 @@ right reuse is the local scalar Archimedean lemma
 `Real.log_pos`, `Real.log_pow`, and `Real.log_le_log_iff`; no tendsto/geometric
 series API is needed for this terminal count certificate.
 
-Next theorem-sized target: discharge one of the remaining genuine terminal
-certificate families for the V19/V20 auto handoff: terminal central-path
-optimality at the selected parameter, the barrier-step inequality, or the
-lower-model inequality.  Do not redo large-parameter stopping/count,
-preliminary initialization, main-stage feasibility/decrement induction, or
-standard-path auto packaging.  Search first near existing `*_standardPath`
-wrappers, `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
-definitions, and finite-row slack-range objective-gap lemmas; then formalize
-only the genuinely missing terminal certificate.  Older paragraphs below are
-cached route history and must not override this V20 target.
+Current V21 packet discharges the finite-row range terminal barrier-step
+certificate from terminal feasibility.  New compiled declarations:
+`chewi1316_polytopeSlackNegLog_range_barrier_step_le_of_mem` and
+`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton_of_terminal_mem`.
+Search-first result: reuse the already compiled Chewi Lemma 13.15 finite-row
+range theorem `chewi1315_polytopeSlackNegLog_range_gradient_segment_inner_le`;
+no new self-concordance/Riccati proof is needed for this certificate.
+
+Next theorem-sized target: discharge one of the two remaining genuine terminal
+certificate families for the V19/V21 auto handoff: terminal central-path
+optimality at the selected parameter or the Lemma 13.6 lower-model inequality.
+Do not redo large-parameter stopping/count, barrier-step from terminal
+feasibility, preliminary initialization, main-stage feasibility/decrement
+induction, or standard-path auto packaging.  Search first near existing
+`*_standardPath` wrappers, `chewi1316_objective_gap_le_eps_*` consumers,
+central-path gradient definitions, and Lemma 13.6 local-norm/lower-model
+wrappers; then formalize only the genuinely missing terminal certificate.
+Older paragraphs below are cached route history and must not override this V21
+target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
 slack-range §13.16 handoff now
