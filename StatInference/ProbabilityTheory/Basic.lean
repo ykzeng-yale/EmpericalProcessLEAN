@@ -8727,6 +8727,251 @@ theorem durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_kernel
   simpa [F, integral_const_mul] using hsummable
 
 /--
+Durrett 2019, Theorem 2.5.12 scalar tail-first-moment kernel.
+
+For `x >= 0`, this is
+`x * 1_{(k+1)^(1/p) < x} / (k+1)^(1/p)`.
+-/
+noncomputable def durrett2019_theorem_2_5_12_tailFirstKernel
+    (p x : ℝ) (k : ℕ) : ℝ :=
+  Set.indicator
+    {y : ℝ | durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < y}
+    (fun y => y) x /
+    durrett2019_theorem_2_5_12_normalizer p (k + 1)
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar moving truncation.
+-/
+noncomputable def durrett2019_theorem_2_5_12_scalarTruncated
+    (p : ℝ) (k : ℕ) (x : ℝ) : ℝ :=
+  Set.indicator
+    {y : ℝ | |y| ≤ durrett2019_theorem_2_5_12_truncationLevel p k}
+    (fun y => y) x
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar weighted truncated-square kernel.
+
+For `x >= 0`, this is
+`x^2 * 1_{x <= (k+1)^(1/p)} / (k+1)^(2/p)`.
+-/
+noncomputable def durrett2019_theorem_2_5_12_truncatedSqKernel
+    (p x : ℝ) (k : ℕ) : ℝ :=
+  (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+    (durrett2019_theorem_2_5_12_scalarTruncated p (k + 1) x) ^ 2
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar tail-first-moment kernel is nonnegative
+for nonnegative inputs.
+-/
+theorem durrett2019_theorem_2_5_12_tailFirstKernel_nonneg
+    {p x : ℝ} (hp_pos : 0 < p) (hx_nonneg : 0 ≤ x) (k : ℕ) :
+    0 ≤ durrett2019_theorem_2_5_12_tailFirstKernel p x k := by
+  have hden_nonneg :
+      0 ≤ durrett2019_theorem_2_5_12_normalizer p (k + 1) :=
+    (durrett2019_theorem_2_5_12_normalizer_pos hp_pos (Nat.succ_pos k)).le
+  refine div_nonneg ?_ hden_nonneg
+  by_cases htail :
+      durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < x
+  · simp [htail, hx_nonneg]
+  · simp [htail]
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar weighted truncated-square kernel is
+nonnegative.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedSqKernel_nonneg
+    {p x : ℝ} (k : ℕ) :
+    0 ≤ durrett2019_theorem_2_5_12_truncatedSqKernel p x k := by
+  exact mul_nonneg (inv_nonneg.2 (sq_nonneg _)) (sq_nonneg _)
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar tail-first-moment kernel bound in
+extended nonnegative form, derived from the natural real `tsum` statement.
+-/
+theorem durrett2019_theorem_2_5_12_tailFirstKernel_ennreal_tsum_le_of_real_tsum_le
+    {p C x : ℝ}
+    (hp_pos : 0 < p)
+    (hx_nonneg : 0 ≤ x)
+    (hsummable :
+      Summable fun k : ℕ =>
+        durrett2019_theorem_2_5_12_tailFirstKernel p x k)
+    (hbound :
+      (∑' k : ℕ, durrett2019_theorem_2_5_12_tailFirstKernel p x k) ≤
+        C * x ^ p) :
+    (∑' k : ℕ,
+      ENNReal.ofReal (durrett2019_theorem_2_5_12_tailFirstKernel p x k)) ≤
+        ENNReal.ofReal (C * x ^ p) := by
+  calc
+    (∑' k : ℕ,
+      ENNReal.ofReal (durrett2019_theorem_2_5_12_tailFirstKernel p x k)) =
+        ENNReal.ofReal
+          (∑' k : ℕ, durrett2019_theorem_2_5_12_tailFirstKernel p x k) := by
+          exact
+            (ENNReal.ofReal_tsum_of_nonneg
+              (fun k =>
+                durrett2019_theorem_2_5_12_tailFirstKernel_nonneg
+                  hp_pos hx_nonneg k)
+              hsummable).symm
+    _ ≤ ENNReal.ofReal (C * x ^ p) := ENNReal.ofReal_le_ofReal hbound
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar weighted truncated-square kernel bound in
+extended nonnegative form, derived from the natural real `tsum` statement.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedSqKernel_ennreal_tsum_le_of_real_tsum_le
+    {p C x : ℝ}
+    (hsummable :
+      Summable fun k : ℕ =>
+        durrett2019_theorem_2_5_12_truncatedSqKernel p x k)
+    (hbound :
+      (∑' k : ℕ, durrett2019_theorem_2_5_12_truncatedSqKernel p x k) ≤
+        C * |x| ^ p) :
+    (∑' k : ℕ,
+      ENNReal.ofReal (durrett2019_theorem_2_5_12_truncatedSqKernel p x k)) ≤
+        ENNReal.ofReal (C * |x| ^ p) := by
+  calc
+    (∑' k : ℕ,
+      ENNReal.ofReal (durrett2019_theorem_2_5_12_truncatedSqKernel p x k)) =
+        ENNReal.ofReal
+          (∑' k : ℕ, durrett2019_theorem_2_5_12_truncatedSqKernel p x k) := by
+          exact
+            (ENNReal.ofReal_tsum_of_nonneg
+              (fun k =>
+                durrett2019_theorem_2_5_12_truncatedSqKernel_nonneg
+                  (p := p) (x := x) k)
+              hsummable).symm
+    _ ≤ ENNReal.ofReal (C * |x| ^ p) := ENNReal.ofReal_le_ofReal hbound
+
+/--
+Durrett 2019, Theorem 2.5.12 tail-analysis support: a scalar kernel bound for
+all nonnegative real inputs supplies the base large-tail first-moment scaled
+summability hypothesis.
+-/
+theorem durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_scalar_kernel_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p C : ℝ}
+    (hp_pos : 0 < p)
+    (hC_nonneg : 0 ≤ C)
+    (hX_meas0 : Measurable (X 0))
+    (hX_int0 : Integrable (X 0) P)
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hkernel_bound : ∀ x : ℝ, 0 ≤ x ->
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_12_tailFirstKernel p x k)) ≤
+        ENNReal.ofReal (C * x ^ p)) :
+    Summable fun k : ℕ =>
+      (∫ ω,
+        Set.indicator
+          {ω : Ω |
+            durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < |X 0 ω|}
+          (fun ω => |X 0 ω|) ω ∂P) /
+        durrett2019_theorem_2_5_12_normalizer p (k + 1) := by
+  refine
+    durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_kernel_bound
+      (P := P) (X := X) (p := p) (C := C)
+      hp_pos hC_nonneg hX_meas0 hX_int0 hX_pow_int0 ?_
+  exact ae_of_all P fun ω => by
+    simpa [durrett2019_theorem_2_5_12_tailFirstKernel] using
+      hkernel_bound |X 0 ω| (abs_nonneg (X 0 ω))
+
+/--
+Durrett 2019, Theorem 2.5.12 tail-analysis support: real scalar tail-first
+kernel summability and its real `tsum` estimate supply the base large-tail
+first-moment scaled summability hypothesis.
+-/
+theorem durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_real_scalar_kernel_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p C : ℝ}
+    (hp_pos : 0 < p)
+    (hC_nonneg : 0 ≤ C)
+    (hX_meas0 : Measurable (X 0))
+    (hX_int0 : Integrable (X 0) P)
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hkernel_summable : ∀ x : ℝ, 0 ≤ x ->
+      Summable fun k : ℕ =>
+        durrett2019_theorem_2_5_12_tailFirstKernel p x k)
+    (hkernel_bound : ∀ x : ℝ, 0 ≤ x ->
+      (∑' k : ℕ, durrett2019_theorem_2_5_12_tailFirstKernel p x k) ≤
+        C * x ^ p) :
+    Summable fun k : ℕ =>
+      (∫ ω,
+        Set.indicator
+          {ω : Ω |
+            durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < |X 0 ω|}
+          (fun ω => |X 0 ω|) ω ∂P) /
+        durrett2019_theorem_2_5_12_normalizer p (k + 1) :=
+  durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_scalar_kernel_bound
+    (P := P) (X := X) (p := p) (C := C)
+    hp_pos hC_nonneg hX_meas0 hX_int0 hX_pow_int0
+    (fun x hx_nonneg =>
+      durrett2019_theorem_2_5_12_tailFirstKernel_ennreal_tsum_le_of_real_tsum_le
+        hp_pos hx_nonneg (hkernel_summable x hx_nonneg)
+        (hkernel_bound x hx_nonneg))
+
+/--
+Durrett 2019, Theorem 2.5.12 tail-analysis support: a scalar kernel bound for
+all real inputs supplies the weighted base truncated second-moment summability
+hypothesis.
+-/
+theorem durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_scalar_kernel_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p C : ℝ}
+    (hC_nonneg : 0 ≤ C)
+    (hX_meas0 : Measurable (X 0))
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_12_truncatedSqKernel p x k)) ≤
+        ENNReal.ofReal (C * |x| ^ p)) :
+    Summable fun k : ℕ =>
+      (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+        ∫ ω,
+          (durrett2019_theorem_2_5_8_truncated
+            (fun _ : ℕ => X 0)
+            (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P := by
+  refine
+    durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_kernel_bound
+      (P := P) (X := X) (p := p) (C := C)
+      hC_nonneg hX_meas0 hX_pow_int0 ?_
+  exact ae_of_all P fun ω => by
+    simpa [durrett2019_theorem_2_5_12_truncatedSqKernel,
+      durrett2019_theorem_2_5_12_scalarTruncated,
+      durrett2019_theorem_2_5_8_truncated] using
+      hkernel_bound (X 0 ω)
+
+/--
+Durrett 2019, Theorem 2.5.12 tail-analysis support: real scalar truncated
+square kernel summability and its real `tsum` estimate supply the weighted base
+truncated second-moment summability hypothesis.
+-/
+theorem durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_real_scalar_kernel_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p C : ℝ}
+    (hC_nonneg : 0 ≤ C)
+    (hX_meas0 : Measurable (X 0))
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hkernel_summable : ∀ x : ℝ,
+      Summable fun k : ℕ =>
+        durrett2019_theorem_2_5_12_truncatedSqKernel p x k)
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ, durrett2019_theorem_2_5_12_truncatedSqKernel p x k) ≤
+        C * |x| ^ p) :
+    Summable fun k : ℕ =>
+      (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+        ∫ ω,
+          (durrett2019_theorem_2_5_8_truncated
+            (fun _ : ℕ => X 0)
+            (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P :=
+  durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_scalar_kernel_bound
+    (P := P) (X := X) (p := p) (C := C)
+    hC_nonneg hX_meas0 hX_pow_int0
+    (fun x =>
+      durrett2019_theorem_2_5_12_truncatedSqKernel_ennreal_tsum_le_of_real_tsum_le
+        (hkernel_summable x) (hkernel_bound x))
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

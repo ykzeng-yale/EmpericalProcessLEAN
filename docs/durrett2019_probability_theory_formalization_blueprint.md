@@ -27,17 +27,17 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V427`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V428`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V427 advances
+consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V428 advances
 Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the endpoint
-reducers through V426 are compiled, and both remaining finite-`p` tail
-estimates now have Tonelli/Fubini kernel wrappers.  New compiled anchors
-through V427:
+reducers through V427 are compiled, and scalar kernel definitions now bridge
+ordinary real `Summable`/`tsum` estimates into the endpoint.  New compiled
+anchors through V428:
 `durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
@@ -63,10 +63,21 @@ and
 `durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_base_tail_scaled_summable`,
 `durrett2019_theorem_2_5_12_summable_integral_of_lintegral_tsum_bound`,
 `durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_kernel_bound`, and
-`durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_kernel_bound`.
-The next source work is exactly scalar real analysis: prove the two p-series
-kernel inequalities for `x >= 0`, `1 < p`, and `p < 2`, then feed them into the
-V427 wrappers.
+`durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_kernel_bound`,
+`durrett2019_theorem_2_5_12_tailFirstKernel`,
+`durrett2019_theorem_2_5_12_scalarTruncated`,
+`durrett2019_theorem_2_5_12_truncatedSqKernel`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_nonneg`,
+`durrett2019_theorem_2_5_12_truncatedSqKernel_nonneg`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_ennreal_tsum_le_of_real_tsum_le`,
+`durrett2019_theorem_2_5_12_truncatedSqKernel_ennreal_tsum_le_of_real_tsum_le`,
+`durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_scalar_kernel_bound`,
+`durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_real_scalar_kernel_bound`,
+`durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_scalar_kernel_bound`,
+and
+`durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_real_scalar_kernel_bound`.
+The next source work is ordinary real p-series/integral comparison for
+`tailFirstKernel` and `truncatedSqKernel`.
 
 Verified route history below is provenance, not live prompt text.  V425 added
 the truncated-mean Kronecker layer reducing normalized mean convergence to
