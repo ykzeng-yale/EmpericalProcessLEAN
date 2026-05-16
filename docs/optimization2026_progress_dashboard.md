@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V12` near the top of
+  `Live Goal Prompt V13` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -43,18 +43,22 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current proof worktree: use `/private/tmp/chewi-dual-seminorm` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
-- Latest Chapter 13 frontier: the finite-row slack-range §13.16 main-stage
-  accuracy specialization now compiles in
-  `StatInference/Optimization/InteriorPoint.lean` as
-  `chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton`.
-  It composes the generic main-stage objective-gap consumer with the concrete
-  finite-row logarithmic-barrier range APIs, discharging convexity,
-  self-concordance, Hessian calculus, gradient bound, Cauchy, and the
-  domain-wide sqrt-coordinate Hessian/inverse-Hessian model.  Next proof
-  target: compose the concrete standard preliminary initializer/source
-  pullback path with this range theorem to obtain a source-facing finite-row
-  LP objective-gap wrapper under the textbook large-parameter stopping
-  condition.
+- Latest Chapter 13 frontier: the source-coordinate main-stage handoff for
+  the finite-row slack-range §13.16 objective-gap theorem now compiles in
+  `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations
+  are `barrierAffineRange_centralPathGrad_dualLocalNorm_surjective_eq`,
+  `barrierAffineRange_centralPathGrad_adjoint_rightInverse_eq`,
+  `barrierAffineRange_centralPath_newtonStep_rangeRestrict_eq`,
+  `chewi1314_polytopeSlackNegLog_centralPath_newtonDecrement_rangePull_eq`,
+  `chewi1316_polytopeSlackNegLog_rangeMainStageNextNewtonSteps_of_sourcePullbackMainStageNextNewtonSteps`,
+  `chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton_sourceInitial`,
+  and
+  `chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_sourceMainStage_nextNewton_sourceInitial`.
+  This lets callers supply the actual main-stage Newton path and the initial
+  `lambda <= 1/4` certificate in source coordinates, as long as the source
+  objective is `adjoint rangeRestrict` applied to the range objective.  Next
+  proof target: connect the existing concrete standard preliminary initializer
+  endpoints to this source-main-stage objective-gap wrapper.
 - Cached Chapter 13 frontier history: the finite-row slack-range §13.16 handoff now
   compiles through source-pullback decrement transport and a point-dependent
   range sqrt-coordinate one-step wrapper.  New reusable declarations are

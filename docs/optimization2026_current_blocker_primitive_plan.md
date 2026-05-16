@@ -132,34 +132,42 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V12
+## Live Goal Prompt V13
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: the finite-row slack-range specialization of the
-Chewi §13.16 main-stage accuracy consumer now compiles as
-`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton`.
-It instantiates the generic main-stage objective-gap theorem with the concrete
-finite-row logarithmic barrier on `(polytopeSlackCLM aRow).range`, discharging
-range convexity, self-concordance, Hessian continuity/derivative calculus, the
-domain-wide sqrt-coordinate Hessian/inverse-Hessian family, the barrier
-gradient bound, and the local Cauchy bridge from existing APIs.  Callers now
-supply only the actual increasing-parameter range Newton path, its main-stage
-initial decrement, central-path optimality, the barrier step inequality, the
-final lower-model inequality, and the large-parameter stopping condition.
+Current active frontier: the finite-row §13.16 main-stage accuracy consumer
+now accepts the actual main-stage Newton path in source coordinates when the
+source objective is the adjoint pullback of a slack-range objective.  New
+compiled declarations:
+`barrierAffineRange_centralPathGrad_dualLocalNorm_surjective_eq`,
+`barrierAffineRange_centralPathGrad_adjoint_rightInverse_eq`,
+`barrierAffineRange_centralPath_newtonStep_rangeRestrict_eq`,
+`chewi1314_polytopeSlackNegLog_centralPath_newtonDecrement_rangePull_eq`,
+`chewi1316_polytopeSlackNegLog_rangeMainStageNextNewtonSteps_of_sourcePullbackMainStageNextNewtonSteps`,
+`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton_sourceInitial`,
+and
+`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_sourceMainStage_nextNewton_sourceInitial`.
+These compose the V12 range objective-gap theorem with source-coordinate
+initial decrement certificates and source-coordinate main-stage Newton
+recurrences via `rangeRestrict`; the remaining final assumptions are now the
+standard central-path optimality equation, barrier step inequality, final
+lower-model inequality, feasible range membership of the source main-stage
+path, and the large-parameter stopping condition.
 
-Next theorem-sized target: build the source-facing finite-row LP objective-gap
-wrapper by composing the concrete standard preliminary initializer/source
-pullback path with this range main-stage accuracy theorem.  Search first for
-existing source-to-range transport declarations near the standard preliminary
-path endpoints, especially the `sourcePullbackPreliminaryNextNewtonSteps`,
-`rangePreliminaryNextNewtonSteps`, `sourcePreDecrement...standardConstants`,
-and concrete `standardPath`/bounded-polytope §13.16 wrappers.  Only add a new
-transport theorem if no existing compiled endpoint can provide the actual
-range `xseq`, `tseq`, `hnewton_next`, and `hinit` assumptions for the new
-range accuracy theorem.  Older paragraphs below are cached route history and
-must not override this V12 target.
+Next theorem-sized target: connect the existing concrete standard preliminary
+initializer endpoints to the new source-main-stage objective-gap wrapper.
+Search first for the compiled `standardPath`/bounded-polytope §13.16
+initialization endpoints returning a source `tMain` and source initial
+decrement, then instantiate their source objective with
+`ContinuousLinearMap.adjoint (polytopeSlackCLM aRow).rangeRestrict aObj`.
+Do not redo preliminary budget, range sqrt-coordinate, or source-to-range
+Newton transport algebra.  If composition with the existential preliminary
+initializer is awkward, add one endpoint-moving wrapper that packages the
+preliminary output and the supplied main-stage source path under the textbook
+large-parameter stopping condition.  Older paragraphs below are cached route
+history and must not override this V13 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
 slack-range §13.16 handoff now

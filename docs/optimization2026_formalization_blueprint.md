@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V12` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V13` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -31,16 +31,16 @@ one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
 Current live route supersedes the older paragraphs below: the finite-row
-slack-range §13.16 main-stage accuracy specialization now compiles as
-`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton`.
-It instantiates the generic main-stage objective-gap theorem with the concrete
-finite-row logarithmic barrier on `(polytopeSlackCLM aRow).range`, reusing the
-range convexity, self-concordance, Hessian calculus, gradient bound, Cauchy,
-and domain-wide sqrt-coordinate model APIs.  The next endpoint-moving theorem
-is the source-facing finite-row LP objective-gap wrapper: compose the concrete
-standard preliminary initializer/source-pullback path with this range theorem,
-then discharge the remaining supplied assumptions using already compiled
-standard-path and bounded-polytope §13.16 endpoints where possible.
+slack-range §13.16 main-stage objective-gap theorem now has a source-coordinate
+main-stage handoff through
+`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_sourceMainStage_nextNewton_sourceInitial`.
+The bridge transports source central-path gradients, source main-stage Newton
+steps, and source initial decrement certificates to the translated slack range
+when the source objective is the adjoint pullback of a range objective.  The
+next endpoint-moving theorem is the concrete standard-preliminary-to-main-stage
+composition: instantiate the existing bounded/standard-path preliminary
+initializer with `adjoint rangeRestrict aObj`, then feed its `tMain` and
+source decrement certificate into the source-main-stage objective-gap wrapper.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

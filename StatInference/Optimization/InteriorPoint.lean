@@ -13653,6 +13653,156 @@ theorem barrierAffineRange_preliminaryPathGrad_dualLocalNorm_surjective_eq
       (x := x))
 
 /--
+Dual-local-norm transport for a central-path gradient through the translated
+range-restriction construction.  The source objective is the adjoint pullback
+of the range objective, so applying the right-inverse adjoint recovers the
+range central-path gradient exactly.
+-/
+theorem barrierAffineRange_centralPathGrad_dualLocalNorm_surjective_eq
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    [CompleteSpace E] [CompleteSpace F]
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    (invHessRange : A.range -> A.range →L[ℝ] A.range)
+    (grad : E -> E) (aRange : A.range) (x : F) (t : ℝ) :
+    dualLocalNorm
+        (barrierAffinePreimageInvHessSurjective A.rangeRestrict 0 invHessRange
+          (barrierAffinePreimageRangeRestrict_range_eq_top A))
+        x
+        (centralPathGrad t (ContinuousLinearMap.adjoint A.rangeRestrict aRange)
+          (barrierAffinePreimageGrad A b grad) x) =
+      dualLocalNorm invHessRange (A.rangeRestrict x)
+        (centralPathGrad t aRange (barrierAffineRangeGrad A b grad)
+          (A.rangeRestrict x)) := by
+  let R : F →L[ℝ] A.range := A.rangeRestrict
+  let hR : R.range = ⊤ := barrierAffinePreimageRangeRestrict_range_eq_top A
+  let B : A.range →L[ℝ] F :=
+    barrierAffinePreimageRightInverseOfSurjective R hR
+  have hRB : R.comp B = ContinuousLinearMap.id ℝ A.range :=
+    barrierAffinePreimageRightInverseOfSurjective_spec R hR
+  let rangeGrad : A.range -> A.range := barrierAffineRangeGrad A b grad
+  have hgrad_eq := barrierAffineRange_preimageGrad_eq A b grad
+  have hsource_grad :
+      centralPathGrad t (ContinuousLinearMap.adjoint A.rangeRestrict aRange)
+          (barrierAffinePreimageGrad A b grad) x =
+        barrierAffinePreimageGrad R 0
+          (centralPathGrad t aRange rangeGrad) x := by
+    change
+      t • (ContinuousLinearMap.adjoint A.rangeRestrict aRange) +
+          barrierAffinePreimageGrad A b grad x =
+        barrierAffinePreimageGrad R 0
+          (centralPathGrad t aRange rangeGrad) x
+    rw [← congr_fun hgrad_eq x]
+    simp [centralPathGrad, barrierAffinePreimageGrad, R, rangeGrad]
+  rw [hsource_grad]
+  simpa [barrierAffinePreimageInvHessSurjective, R, hR, B, rangeGrad] using
+    (barrierAffinePreimageGradientDualLocalNorm_rightInverse_eq
+      (A := R) (B := B) (b := (0 : A.range))
+      (invHess := invHessRange)
+      (grad := centralPathGrad t aRange rangeGrad)
+      (hAB := hRB) (x := x))
+
+/--
+Adjoint transport for a central-path gradient through a chosen right inverse of
+the range restriction.  This is the vector identity behind the main-stage
+Newton-step transport.
+-/
+theorem barrierAffineRange_centralPathGrad_adjoint_rightInverse_eq
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    [CompleteSpace E] [CompleteSpace F]
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    (B : A.range →L[ℝ] F)
+    (hAB : A.rangeRestrict.comp B = ContinuousLinearMap.id ℝ A.range)
+    (grad : E -> E) (aRange : A.range) (x : F) (t : ℝ) :
+    ContinuousLinearMap.adjoint B
+        (centralPathGrad t (ContinuousLinearMap.adjoint A.rangeRestrict aRange)
+          (barrierAffinePreimageGrad A b grad) x) =
+      centralPathGrad t aRange (barrierAffineRangeGrad A b grad)
+        (A.rangeRestrict x) := by
+  let R : F →L[ℝ] A.range := A.rangeRestrict
+  let rangeGrad : A.range -> A.range := barrierAffineRangeGrad A b grad
+  have hgrad_eq := barrierAffineRange_preimageGrad_eq A b grad
+  have hsource_grad :
+      centralPathGrad t (ContinuousLinearMap.adjoint A.rangeRestrict aRange)
+          (barrierAffinePreimageGrad A b grad) x =
+        barrierAffinePreimageGrad R 0
+          (centralPathGrad t aRange rangeGrad) x := by
+    change
+      t • (ContinuousLinearMap.adjoint A.rangeRestrict aRange) +
+          barrierAffinePreimageGrad A b grad x =
+        barrierAffinePreimageGrad R 0
+          (centralPathGrad t aRange rangeGrad) x
+    rw [← congr_fun hgrad_eq x]
+    simp [centralPathGrad, barrierAffinePreimageGrad, R, rangeGrad]
+  rw [hsource_grad]
+  simpa [R, rangeGrad] using
+    barrierAffinePreimageGrad_rightInverse_adjoint R B 0
+      (centralPathGrad t aRange rangeGrad) hAB x
+
+/--
+Newton-step transport for a central-path source objective obtained as the
+adjoint pullback of a range objective.  A source-space Newton step maps exactly
+to the corresponding translated slack-range Newton step.
+-/
+theorem barrierAffineRange_centralPath_newtonStep_rangeRestrict_eq
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    [CompleteSpace E] [CompleteSpace F]
+    (A : F →L[ℝ] E) (b : E) [FiniteDimensional ℝ A.range]
+    (invHessRange : A.range -> A.range →L[ℝ] A.range)
+    (grad : E -> E) (aRange : A.range) (x : F) (t : ℝ) :
+    A.rangeRestrict
+        (newtonStep
+          (centralPathGrad t (ContinuousLinearMap.adjoint A.rangeRestrict aRange)
+            (barrierAffinePreimageGrad A b grad))
+          (barrierAffinePreimageInvHessSurjective A.rangeRestrict 0
+            invHessRange (barrierAffinePreimageRangeRestrict_range_eq_top A))
+          x) =
+      newtonStep
+        (centralPathGrad t aRange (barrierAffineRangeGrad A b grad))
+        invHessRange (A.rangeRestrict x) := by
+  let R : F →L[ℝ] A.range := A.rangeRestrict
+  let hR : R.range = ⊤ := barrierAffinePreimageRangeRestrict_range_eq_top A
+  let B : A.range →L[ℝ] F :=
+    barrierAffinePreimageRightInverseOfSurjective R hR
+  have hRB : R.comp B = ContinuousLinearMap.id ℝ A.range :=
+    barrierAffinePreimageRightInverseOfSurjective_spec R hR
+  have hB_apply : ∀ y : A.range, R (B y) = y := by
+    intro y
+    simpa [ContinuousLinearMap.comp_apply] using
+      congrArg (fun L : A.range →L[ℝ] A.range => L y) hRB
+  let sourceGrad : F -> F :=
+    centralPathGrad t (ContinuousLinearMap.adjoint A.rangeRestrict aRange)
+      (barrierAffinePreimageGrad A b grad)
+  let rangeGrad : A.range -> A.range :=
+    centralPathGrad t aRange (barrierAffineRangeGrad A b grad)
+  have hadj :
+      ContinuousLinearMap.adjoint B (sourceGrad x) = rangeGrad (R x) := by
+    simpa [sourceGrad, rangeGrad, R] using
+      barrierAffineRange_centralPathGrad_adjoint_rightInverse_eq
+        (A := A) (b := b) B hRB grad aRange x t
+  have hstep_map :
+      R
+          ((barrierAffinePreimageInvHessSurjective R 0 invHessRange hR)
+            x (sourceGrad x)) =
+        invHessRange (R x) (rangeGrad (R x)) := by
+    change
+      R ((barrierAffinePreimageInvHessRightInverse R B 0 invHessRange)
+          x (sourceGrad x)) =
+        invHessRange (R x) (rangeGrad (R x))
+    simp [barrierAffinePreimageInvHessRightInverse,
+      ContinuousLinearMap.comp_apply, hB_apply, hadj]
+  calc
+    R (newtonStep sourceGrad
+        (barrierAffinePreimageInvHessSurjective R 0 invHessRange hR) x) =
+      R x -
+        R ((barrierAffinePreimageInvHessSurjective R 0 invHessRange hR)
+          x (sourceGrad x)) := by
+        simp [newtonStep, map_sub]
+    _ = R x - invHessRange (R x) (rangeGrad (R x)) := by
+        rw [hstep_map]
+    _ = newtonStep rangeGrad invHessRange (R x) := by
+        simp [newtonStep]
+
+/--
 Adjoint transport for the preliminary-path gradient through a chosen right
 inverse of the range restriction.  This is the vector identity behind the
 dual-local-norm transport above.
@@ -29678,6 +29828,71 @@ theorem chewi1314_polytopeSlackNegLog_preliminaryPath_newtonDecrement_rangePull_
       (invHessRange := chewi1314_polytopeSlackNegLog_rangeInvHess a b)
       (grad := positiveOrthantNegLogGrad) (x := x) (xbar0 := xbar0) (t := t))
 
+/--
+Finite-row polytope central-path Newton decrements are unchanged by passing
+from a source objective that is the adjoint pullback of a range objective to
+the translated slack-range objective itself.
+-/
+theorem chewi1314_polytopeSlackNegLog_centralPath_newtonDecrement_rangePull_eq
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (x : F) (aRange : (polytopeSlackCLM a).range) (t : ℝ) :
+    newtonDecrement
+        (centralPathGrad t
+          (ContinuousLinearMap.adjoint (polytopeSlackCLM a).rangeRestrict aRange)
+          (barrierAffinePreimageGrad (polytopeSlackCLM a) b
+            positiveOrthantNegLogGrad))
+        (chewi1314_polytopeSlackNegLog_rangePullInvHess a b) x =
+      newtonDecrement
+        (centralPathGrad t aRange
+          (barrierAffineRangeGrad (polytopeSlackCLM a) b
+            positiveOrthantNegLogGrad))
+        (chewi1314_polytopeSlackNegLog_rangeInvHess a b)
+        ((polytopeSlackCLM a).rangeRestrict x) := by
+  simpa [newtonDecrement, chewi1314_polytopeSlackNegLog_rangePullInvHess] using
+    (barrierAffineRange_centralPathGrad_dualLocalNorm_surjective_eq
+      (A := polytopeSlackCLM a) (b := b)
+      (invHessRange := chewi1314_polytopeSlackNegLog_rangeInvHess a b)
+      (grad := positiveOrthantNegLogGrad) (aRange := aRange)
+      (x := x) (t := t))
+
+/--
+Finite-row source-coordinate main-stage Newton recurrences transport exactly
+to the translated slack-range recurrence when the source objective is the
+adjoint pullback of the range objective.
+-/
+theorem chewi1316_polytopeSlackNegLog_rangeMainStageNextNewtonSteps_of_sourcePullbackMainStageNextNewtonSteps
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {aObj : (polytopeSlackCLM aRow).range}
+    {xseq : ℕ -> F} {tseq : ℕ -> ℝ}
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (centralPathGrad (tseq (n + 1))
+            (ContinuousLinearMap.adjoint
+              (polytopeSlackCLM aRow).rangeRestrict aObj)
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n)) :
+    ∀ n : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq (n + 1)) =
+        newtonStep
+          (centralPathGrad (tseq (n + 1)) aObj
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq n)) := by
+  intro n
+  rw [hnewton_next_source n]
+  simpa [chewi1314_polytopeSlackNegLog_rangePullInvHess] using
+    barrierAffineRange_centralPath_newtonStep_rangeRestrict_eq
+      (A := polytopeSlackCLM aRow) (b := bSlack)
+      (invHessRange := chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+      (grad := positiveOrthantNegLogGrad) (aRange := aObj)
+      (x := xseq n) (t := tseq (n + 1))
+
 theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_rangeTailBudget
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
     {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
@@ -32613,6 +32828,199 @@ theorem chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_ne
       hcauchy
       (by simpa [rangeHess, rangeGrad] using hlower)
       hlarge
+
+set_option maxHeartbeats 4000000 in
+/--
+Source-initialized version of the finite-row slack-range Chewi §13.16
+main-stage accuracy consumer.  The initial `lambda <= 1/4` certificate may be
+proved in the original source coordinates, provided the source objective is
+the adjoint pullback of the range objective used by the main stage.
+-/
+theorem chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton_sourceInitial
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {aObj center optimum : (polytopeSlackCLM aRow).range}
+    {x0Source : F}
+    {xseq : ℕ -> (polytopeSlackCLM aRow).range} {tseq : ℕ -> ℝ}
+    {t0 c0 eps : ℝ} {N : ℕ}
+    (hxseq_mem : ∀ n : ℕ,
+      xseq n ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = (polytopeSlackCLM aRow).rangeRestrict x0Source)
+    (h0 : tseq 0 = t0)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) =
+        (1 + c0 / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (centralPathGrad (tseq (n + 1)) aObj
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          (xseq n))
+    (hc0_nonneg : 0 ≤ c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (hinit_source :
+      newtonDecrement
+          (centralPathGrad (tseq 0)
+            (ContinuousLinearMap.adjoint
+              (polytopeSlackCLM aRow).rangeRestrict aObj)
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          x0Source ≤ 1 / 4)
+    (ht0_pos : 0 < t0)
+    (heps_pos : 0 < eps)
+    (hcentral :
+      tseq N • aObj +
+        barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad center = 0)
+    (hbarrier_step :
+      inner ℝ
+          (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad center)
+          (optimum - center) ≤ (m : ℝ))
+    (hlower :
+      (localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          (xseq N) (xseq N - center)) ^ (2 : ℕ) /
+          (1 + localNorm
+            (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM)
+            (xseq N) (xseq N - center)) ≤
+        inner ℝ
+          (tseq N • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad (xseq N))
+          (xseq N - center))
+    (hlarge :
+      2 * (m : ℝ) ≤
+        eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ N * t0)) :
+    inner ℝ aObj (xseq N) - inner ℝ aObj optimum ≤ eps := by
+  have hinit_range :
+      newtonDecrement
+          (centralPathGrad (tseq 0) aObj
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          (xseq 0) ≤ 1 / 4 := by
+    rw [hx0]
+    simpa [chewi1314_polytopeSlackNegLog_centralPath_newtonDecrement_rangePull_eq]
+      using hinit_source
+  exact
+    chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (aObj := aObj) (center := center) (optimum := optimum)
+      (xseq := xseq) (tseq := tseq) (t0 := t0) (c0 := c0)
+      (eps := eps) (N := N) hxseq_mem h0 htstep hnewton_next
+      hc0_nonneg hc0_le hinit_range ht0_pos heps_pos hcentral
+      hbarrier_step hlower hlarge
+
+set_option maxHeartbeats 4000000 in
+/--
+Source-sequence version of the finite-row slack-range Chewi §13.16 main-stage
+accuracy consumer.  The actual main-stage Newton path may be supplied in the
+original source coordinates; its range restriction is transported internally
+to the range recurrence used by the verified slack-range theorem.
+-/
+theorem chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_sourceMainStage_nextNewton_sourceInitial
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {aObj center optimum : (polytopeSlackCLM aRow).range}
+    {xseq : ℕ -> F} {tseq : ℕ -> ℝ}
+    {t0 c0 eps : ℝ} {N : ℕ}
+    (hxseq_mem : ∀ n : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq n) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (h0 : tseq 0 = t0)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) =
+        (1 + c0 / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (centralPathGrad (tseq (n + 1))
+            (ContinuousLinearMap.adjoint
+              (polytopeSlackCLM aRow).rangeRestrict aObj)
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hc0_nonneg : 0 ≤ c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (hinit_source :
+      newtonDecrement
+          (centralPathGrad (tseq 0)
+            (ContinuousLinearMap.adjoint
+              (polytopeSlackCLM aRow).rangeRestrict aObj)
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq 0) ≤ 1 / 4)
+    (ht0_pos : 0 < t0)
+    (heps_pos : 0 < eps)
+    (hcentral :
+      tseq N • aObj +
+        barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad center = 0)
+    (hbarrier_step :
+      inner ℝ
+          (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad center)
+          (optimum - center) ≤ (m : ℝ))
+    (hlower :
+      (localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq N))
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq N) - center)) ^ (2 : ℕ) /
+          (1 + localNorm
+            (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM)
+            ((polytopeSlackCLM aRow).rangeRestrict (xseq N))
+            ((polytopeSlackCLM aRow).rangeRestrict (xseq N) - center)) ≤
+        inner ℝ
+          (tseq N • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad
+              ((polytopeSlackCLM aRow).rangeRestrict (xseq N)))
+          ((polytopeSlackCLM aRow).rangeRestrict (xseq N) - center))
+    (hlarge :
+      2 * (m : ℝ) ≤
+        eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ N * t0)) :
+    inner ℝ aObj ((polytopeSlackCLM aRow).rangeRestrict (xseq N)) -
+        inner ℝ aObj optimum ≤ eps := by
+  let xseqRange : ℕ -> (polytopeSlackCLM aRow).range :=
+    fun n => (polytopeSlackCLM aRow).rangeRestrict (xseq n)
+  have hnewton_next_range : ∀ n : ℕ,
+      xseqRange (n + 1) =
+        newtonStep
+          (centralPathGrad (tseq (n + 1)) aObj
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          (xseqRange n) := by
+    intro n
+    simpa [xseqRange] using
+      chewi1316_polytopeSlackNegLog_rangeMainStageNextNewtonSteps_of_sourcePullbackMainStageNextNewtonSteps
+        (aRow := aRow) (bSlack := bSlack) (aObj := aObj)
+        (xseq := xseq) (tseq := tseq) hnewton_next_source n
+  simpa [xseqRange] using
+    chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton_sourceInitial
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (aObj := aObj) (center := center) (optimum := optimum)
+      (x0Source := xseq 0) (xseq := xseqRange) (tseq := tseq)
+      (t0 := t0) (c0 := c0) (eps := eps) (N := N)
+      (by intro n; simpa [xseqRange] using hxseq_mem n)
+      (by simp [xseqRange])
+      h0 htstep hnewton_next_range hc0_nonneg hc0_le hinit_source
+      ht0_pos heps_pos hcentral hbarrier_step
+      (by simpa [xseqRange] using hlower) hlarge
 
 /--
 Finite-row range-space preliminary one-step invariant from a domain-wide
