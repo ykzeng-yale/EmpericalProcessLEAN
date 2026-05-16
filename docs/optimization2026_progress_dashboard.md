@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V27` near the top of
+  `Live Goal Prompt V28` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -137,14 +137,22 @@ This dashboard tracks the Chewi optimization formalization lane for
   These are the preferred generic endpoints when a caller has mixed-third
   self-concordance and central-path derivative data; do not route through a
   supplied weighted `hquad_lower` premise unless deliberately testing an older
-  interface.
+  interface.  The V28 finite-row specialization adds
+  `chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStageParameter_large_of_terminal_mem_and_mixedThird`,
+  which instantiates the V27 mixed-third endpoint for the slack range,
+  discharges the terminal barrier-step certificate from feasibility, and
+  removes the supplied `hlower` premise at a terminal range point.  It reuses
+  local finite-row range Hessian derivative/mixed-third APIs,
+  `hessianSegmentPsi_continuousOn_of_convex_continuousOn`, and
+  `centralPathGrad_hasFDerivAt`.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: discharge one
-  remaining terminal certificate family for the V19/V21/V22/V23/V24/V25/V26/V27
-  handoff, preferably the finite-row slack-range specialization that replaces
-  the handoff's supplied `hlower` premise by the new mixed-third main-stage
-  objective-gap endpoint.  Do not repeat
+  `hxseq_mem` or per-step decrement premise.  Next proof target: connect the
+  V18 standard terminal feasibility/decrement and V20 large-parameter
+  stopping certificates to the V28 endpoint.  First remove the temporary
+  nonzero side condition by proving a zero-safe branch for `center = x`; then
+  package the standard-path objective-gap wrapper without supplied `hlower`.
+  Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge
   consumer wrappers, or the generic mixed-third objective-gap consumers.

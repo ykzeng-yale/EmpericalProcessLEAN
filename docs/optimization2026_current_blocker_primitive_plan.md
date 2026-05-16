@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V27`, this file's top
+   the full book is complete, route from `Live Goal Prompt V28`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V27
+## Live Goal Prompt V28
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -313,16 +313,30 @@ only the composition from V26
 consumers.  Do not add more supplied lower-model wrappers before using these
 mixed-third endpoints.
 
-Next theorem-sized target: finish one remaining genuine terminal certificate
-family for the V19/V21/V22/V23/V24/V25/V26/V27 auto handoff.  Prefer a
-finite-row slack-range specialization that replaces the handoff's supplied
-`hlower` premise by the new
-`chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_mixedThirdSelfConcordantOn`,
-using the already available range self-concordance, Hessian derivative,
-mixed-third, Hessian positivity, central-path gradient derivative, and
-interval-integrability APIs.  If that balloons, prove the smaller terminal
-centrality/Hessian-derivative wrapper that exposes exactly which finite-row
-hypothesis remains.
+Current V28 packet specializes the V27 mixed-third objective-gap endpoint to
+the finite-row slack range at a terminal iterate and removes the supplied
+`hlower` premise from that range handoff.  New compiled declaration:
+`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStageParameter_large_of_terminal_mem_and_mixedThird`.
+The proof reuses the finite-row range self-concordant barrier package,
+`chewi1314_polytopeSlackNegLog_rangeHess_hasFDerivAt`,
+`chewi1314_polytopeSlackNegLog_rangeHessDeriv_mixed_inner`,
+`chewi1314_polytopeSlackNegLog_rangeHess_quadratic_pos`,
+`chewi1314_polytopeSlackNegLog_range_sourceCauchy`,
+`hessianSegmentPsi_continuousOn_of_convex_continuousOn`, and
+`centralPathGrad_hasFDerivAt`.  Search-first result: arbitrary-sequence
+terminal decrement is not the right next primitive; existing V18 standard
+main-stage declarations already prove terminal range/source decrement for the
+standard path, so the next packet should connect that standard-path decrement
+to the V28 terminal endpoint rather than redoing a generic induction.
+
+Next theorem-sized target: prove a standard-path finite-row wrapper that feeds
+V18 terminal feasibility/decrement and V20 large-parameter stopping into the
+V28 mixed-third endpoint.  First add a zero-safe terminal branch or wrapper
+that removes the temporary `hdiff_ne : center - x != 0` side condition: when
+`center = x`, use centrality plus the V21 barrier-step estimate directly; when
+`center != x`, call the V28 theorem.  Then package the standard source
+main-stage endpoint so the active handoff no longer carries a supplied
+`hlower` premise.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
@@ -333,7 +347,7 @@ consumers.  Search first near existing `*_standardPath` wrappers,
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers; then
 formalize only the genuinely missing terminal analytic certificate.
-Older paragraphs below are cached route history and must not override this V27
+Older paragraphs below are cached route history and must not override this V28
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

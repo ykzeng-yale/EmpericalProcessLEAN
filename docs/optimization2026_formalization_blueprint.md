@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V27` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V28` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -116,9 +116,15 @@ and
 `chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_mixedThirdSelfConcordantOn`,
 so the generic §13.16 objective-gap layer now consumes mixed-third
 self-concordance directly rather than a supplied weighted `hquad_lower`
-premise.  Next finite-row work should specialize this mixed-third main-stage
-endpoint to the slack-range/polytope setting and remove the `hlower` premise
-from the active standard-path handoff.
+premise.  The V28 finite-row specialization adds
+`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStageParameter_large_of_terminal_mem_and_mixedThird`,
+which instantiates the V27 endpoint for the slack range, discharges the
+terminal barrier-step certificate from feasibility, and removes the supplied
+`hlower` premise at a terminal range point.  Next finite-row work should
+connect this theorem to the standard-path handoff by reusing V18 terminal
+feasibility/decrement and V20 large-parameter stopping, after adding a
+zero-safe branch for the temporary nonzero terminal displacement side
+condition.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the
