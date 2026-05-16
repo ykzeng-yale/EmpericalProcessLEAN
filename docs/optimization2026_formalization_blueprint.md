@@ -134,11 +134,11 @@ bounded feasible-range, bounded source-polytope, bounded closed-polytope, and
 compact closed-polytope standard-path constructors.  The V31 packet adds
 `chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_exists_mainStageIndex_objective_gap_le_eps`,
 which reuses V20 `chewi1316_exists_mainStageIndex_large_parameter` to choose
-the terminal `Nmain` automatically.  Next finite-row work should either lift
-this existential-index consumer through the bounded/closed/compact
-standard-path constructors or prove the central-path existence/selection layer;
-centrality of the selected terminal center remains the real mathematical
-certificate.
+the terminal `Nmain` automatically.  The V32 packet lifts this consumer through
+the bounded feasible-range, bounded source-polytope, bounded closed-polytope,
+and compact closed-polytope standard-path endpoints.  Next finite-row work
+should prove the central-path existence/selection layer; centrality of the
+selected terminal center remains the real mathematical certificate.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

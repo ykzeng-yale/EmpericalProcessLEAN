@@ -171,14 +171,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_exists_mainStageIndex_objective_gap_le_eps`,
   reusing V20 `chewi1316_exists_mainStageIndex_large_parameter` to choose the
   terminal `Nmain` automatically from positive `eps`, `c0`, and `tMain`.
-  The live standard-path call surface now keeps only the terminal centrality
-  premise as the real remaining certificate.
+  The V32 wrapper packet adds the bounded feasible-range, bounded
+  source-polytope, bounded closed-polytope, and compact closed-polytope
+  `*_exists_mainStageIndex_objective_gap_le_eps` endpoints by composing the
+  V30 standard-path constructors with the V31 index selector.  The live
+  standard-path call surface now keeps only the terminal centrality premise as
+  the real remaining certificate.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: thread this
-  V31 existential-index consumer through the bounded/closed/compact
-  standard-path constructors if shallow, otherwise attack the central-path
-  existence/selection wrapper that supplies terminal centrality.
+  `hxseq_mem` or per-step decrement premise.  Next proof target: attack the
+  central-path existence/selection wrapper that supplies terminal centrality.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge

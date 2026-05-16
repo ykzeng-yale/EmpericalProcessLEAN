@@ -369,11 +369,20 @@ the V30 handoff, so the caller no longer supplies the large-parameter stopping
 inequality.  The remaining genuine terminal mathematical certificate is
 centrality of the selected `center` for the selected terminal parameter.
 
-Next theorem-sized target: either thread the V31 existential `Nmain` consumer
-through the bounded feasible-range/source-polytope/closed/compact standard-path
-constructors, or prove the central-path existence/selection wrapper that
-supplies the terminal centrality premise.  Prefer the centrality selection route
-if the bounded wrappers are shallow constructor copies.
+Current V32 packet threads that V31 existential terminal-index consumer through
+the four concrete standard-path endpoints.  New compiled declarations:
+`chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_boundedFeasibleRange_exists_mainStageIndex_objective_gap_le_eps`,
+`chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_boundedPolytope_exists_mainStageIndex_objective_gap_le_eps`,
+`chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_boundedClosedPolytope_exists_mainStageIndex_objective_gap_le_eps`, and
+`chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_compactClosedPolytope_exists_mainStageIndex_objective_gap_le_eps`.
+Search-first result: the V30 bounded/closed/compact constructors were shallow,
+so the new wrappers simply compose those constructors with the V31 index
+selection theorem.  No new scalar, barrier-step, lower-model, or decrement
+proof was introduced.
+
+Next theorem-sized target: prove or package the central-path
+existence/selection wrapper that supplies the terminal centrality premise for
+the selected terminal parameter.  Shallow bounded wrappers are now done.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
