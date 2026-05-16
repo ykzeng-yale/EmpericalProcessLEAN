@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V371`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V372`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -37,7 +37,18 @@ independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V371 adds one-based
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V372 adds the
+strict-left empirical-CDF support used in Durrett's proof:
+`realOpenHalfLineIndicator_integral_eq_cdf_leftLim`,
+`empiricalLeftDistributionFunction`,
+`realOpenHalfLine_empiricalAverage_sub_cdfLeftLim_tendsto_zero_ae_of_iid`,
+and the Durrett wrappers
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae`,
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae`,
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae_of_iIndepFun`,
+and
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_range_sum_tendsto_leftLim_ae_of_iIndepFun`.
+V371 adds one-based
 Theorem 2.4.9 consumers for full infinite-product joint laws
 (`*_of_hasLaw_infinitePi_oneBased`), identically distributed coordinates plus
 `iIndepFun` (`*_of_iIndepFun_identDistrib_oneBased`), and pairwise-identically

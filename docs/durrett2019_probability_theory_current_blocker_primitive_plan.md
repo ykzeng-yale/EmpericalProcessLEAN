@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V371
+## Live In-Thread Goal Prompt V372
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,25 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V371 adds one-based Theorem 2.4.9 consumers for the
+Latest verified target V372 adds the strict-left empirical-CDF support used in
+Durrett's Theorem 2.4.9 proof: reusable open-half-line CDF-left-limit bridges
+in `StatInference/EmpiricalProcess/RealHalfLineGC.lean`
+(`realOpenHalfLineIndicator_integral_eq_cdf_leftLim`,
+`empiricalLeftDistributionFunction`,
+`empiricalLeftDistributionFunction_samplePath_eq_range_sum`,
+`realOpenHalfLine_empiricalAverage_sub_cdfLeftLim_tendsto_zero_ae_of_iid`,
+`realOpenHalfLine_empiricalAverage_sub_cdfLeftLim_tendstoInMeasure_zero_of_iid`,
+and
+`realOpenHalfLine_empiricalAverage_sub_cdfLeftLim_convergesInOuterProbability_of_iid`)
+plus Durrett wrappers in `StatInference/ProbabilityTheory/Basic.lean`
+(`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae`,
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae`,
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae_of_iIndepFun`,
+and
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_range_sum_tendsto_leftLim_ae_of_iIndepFun`).
+These package the textbook line `Z_n = 1{X_n < x}` and
+`F_n(x-) -> F(x-)` before the uniform cutpoint argument.  V371 adds one-based
+Theorem 2.4.9 consumers for the
 other already-compiled source entrances: full infinite-product joint law
 (`*_of_hasLaw_infinitePi_oneBased`), identically distributed coordinates plus
 `iIndepFun` (`*_of_iIndepFun_identDistrib_oneBased`), and pairwise-identically
@@ -488,8 +506,9 @@ wrappers, the V367 vector/common-law centered-product normalized-sum
 projected-characteristic wrappers, or the V368 canonical iid product-space
 half-line Glivenko-Cantelli wrappers, the V369 one-based canonical iid
 product-space Glivenko-Cantelli wrappers, or the V370 arbitrary-source
-one-based iid / empirical-CDF wrappers, or the V371 one-based full-joint-law,
-identDistrib+iIndepFun, and pairwise-identDistrib source wrappers.  Next
+one-based iid / empirical-CDF wrappers, the V371 one-based full-joint-law,
+identDistrib+iIndepFun, and pairwise-identDistrib source wrappers, or the V372
+strict-left empirical-CDF pointwise SLLN wrappers.  Next
 aggressive packet:
 continue Chapter 2.1 / Theorem 2.4.9 only by closing a concrete missing
 source-facing shape around independence, product laws, canonical iid
@@ -2984,6 +3003,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V371` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V372` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
