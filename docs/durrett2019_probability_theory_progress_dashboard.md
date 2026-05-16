@@ -32,14 +32,23 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V381` in
+Route from `Live In-Thread Goal Prompt V382` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Chapter 2.1
 independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V381 routes the
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V382 adds the
+one-based Theorem 2.1.11 infinite product-law bridge:
+`durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_11_iid_shift_iff_hasLaw_infinitePi`, and
+`durrett2019_theorem_2_1_11_iid_shift_hasLaw_infinitePi_of_identDistrib`.
+The shifted Durrett process `X (i + 1)` now has direct product-law extraction,
+criterion, and standard `X_0` identical-distribution source packaging.  Next
+work should consume these wrappers in real source-display endpoints or move to
+Chapter 2.1.12/2.1.13 product-expectation support; do not rebuild this
+one-based product-law bridge.  V381 routes the
 pairwise-identically-distributed empirical-CDF outer-a.s. source entrances
 through the V379 textbook middle/tail proof.  The zero-based and one-based
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_*_of_pairwise_identDistrib`

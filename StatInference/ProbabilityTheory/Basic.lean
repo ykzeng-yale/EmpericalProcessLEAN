@@ -928,6 +928,75 @@ theorem durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi_of_identDistrib
     (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
 
 /--
+Durrett 2019, Theorem 2.1.11, one-based iid extraction from a shifted
+infinite product law.
+
+If the Durrett-indexed process `X_1, X_2, ...`, represented in Lean by
+`X (i + 1)`, has joint law `ν^ℕ`, then those shifted coordinates have common
+law `ν` and are independent.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ) :
+    (∀ i : ℕ, _root_.ProbabilityTheory.HasLaw
+      (fun ω => X (i + 1) ω) ν μ) ∧
+      _root_.ProbabilityTheory.iIndepFun
+        (μ := μ) (fun i : ℕ => fun ω => X (i + 1) ω) :=
+  durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi
+    (X := fun i : ℕ => fun ω => X (i + 1) ω) hJoint
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based iid product-law criterion.
+
+For the shifted Durrett-indexed process `X (i + 1)`, independence together
+with common marginal law `ν` is equivalent to joint law `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_iff_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} [IsProbabilityMeasure μ] {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw
+      (fun ω => X (i + 1) ω) ν μ) :
+    _root_.ProbabilityTheory.iIndepFun
+        (μ := μ) (fun i : ℕ => fun ω => X (i + 1) ω) ↔
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω => fun i : ℕ => X (i + 1) ω)
+        (Measure.infinitePi fun _ : ℕ => ν) μ :=
+  durrett2019_theorem_2_1_11_iid_iff_hasLaw_infinitePi
+    (X := fun i : ℕ => fun ω => X (i + 1) ω) hLaw
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based iid product law from the standard
+identical-distribution source shape.
+
+A base law for `X_0`, identical distribution of all coordinates with `X_0`,
+and independence of the full zero-based process imply joint law `ν^ℕ` for the
+Durrett-indexed shifted process `X_1, X_2, ...`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_hasLaw_infinitePi_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ :=
+  durrett2019_theorem_2_1_11_iid_shift_hasLaw_infinitePi_of_iIndepFun
+    (X := X)
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
 Durrett 2019, Theorem 2.1.12 product-measure/Fubini form.
 
 This is the reusable product-measure integral identity behind the independent

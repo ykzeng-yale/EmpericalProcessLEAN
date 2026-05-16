@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V381
+## Live In-Thread Goal Prompt V382
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,18 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V381 routes the pairwise-identically-distributed
+Latest verified target V382 adds the one-based Durrett indexing bridge for
+Theorem 2.1.11 infinite product laws:
+`durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_11_iid_shift_iff_hasLaw_infinitePi`, and
+`durrett2019_theorem_2_1_11_iid_shift_hasLaw_infinitePi_of_identDistrib`.
+The shifted process `X (i + 1)` now has direct extraction, criterion, and
+standard `X_0` identical-distribution source packaging for joint law `ν^ℕ`.
+Next work should either consume these shifted product-law wrappers in genuine
+source-display endpoints, or move forward to Chapter 2.1.12/2.1.13
+product-expectation support; do not rebuild this one-based product-law bridge.
+
+V381 routes the pairwise-identically-distributed
 empirical-CDF outer-a.s. source entrances through the V379 textbook
 middle/tail proof.  The zero-based and one-based
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_*_of_pairwise_identDistrib`
