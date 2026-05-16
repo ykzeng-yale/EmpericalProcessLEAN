@@ -32,12 +32,27 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V405` in
+Route from `Live In-Thread Goal Prompt V406` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.5.6
 convergence of random series in `StatInference/ProbabilityTheory/Basic.lean`.
-V405 packages the a.s. convergence endpoint for Durrett Theorem 2.5.6.  New
-compiled anchors:
+V406 adds the exact textbook series-convergence display wrapper for Durrett
+Theorem 2.5.6.  New compiled anchors:
+`durrett2019_theorem_2_5_6_randomSeriesConverges` and
+`durrett2019_theorem_2_5_6_random_series_converges_ae_of_summable_variance`.
+This matches Durrett's definition that `sum_{n=1}^infty X_n(omega)` converges
+iff the one-based partial sums have a finite limit, and restates V405 in that
+wording.  Next work should start Durrett Theorem 2.5.8 Kolmogorov
+three-series theorem by proving the sufficiency assembly: Borel-Cantelli gives
+`X_n = Y_n` eventually from condition (i), V406 applied to `Y_n - E Y_n` gives
+centered convergence from condition (iii), deterministic convergence of
+`sum E Y_n` gives convergence of `sum Y_n`, and eventual equality gives
+convergence of `sum X_n`.  Reuse the existing
+`durrett2019_theorem_2_3_1_eventually_notMem` wrapper.
+
+Verified route history below is provenance, not live prompt text.  V405
+packages the a.s. convergence endpoint for Durrett Theorem 2.5.6.  Compiled
+anchors:
 `durrett2019_theorem_2_5_6_tailBlockSum_add_eq_tailBlockSum_add_tailBlockSum`,
 `durrett2019_theorem_2_5_6_tailPairOscillationEvent_threshold_mono`,
 `durrett2019_theorem_2_5_6_tailPairOscillationEvent_base_mono`,
@@ -55,12 +70,7 @@ This closes the main source-facing Theorem 2.5.6 random-series convergence
 statement for one-based partial sums under independent mean-zero increments
 with finite second moments and summable variances.  The proof uses a countable
 inverse-natural threshold grid plus `ae_all_iff`; do not replace it with an
-uncountable a.e. intersection over all real epsilons.  Next work should either
-add a thin source-display wrapper matching Durrett's exact `sum X_n converges
-a.s.` wording if needed, or move forward to the next Chapter 2 result after
-checking the local textbook anchors.
-
-Verified route history below is provenance, not live prompt text.  V404
+uncountable a.e. intersection over all real epsilons.  V404
 packages Durrett's pathwise Cauchy endpoint from eventual absence of shifted
 tail-pair oscillation events.  Compiled anchors:
 `durrett2019_theorem_2_5_6_partialSum`,

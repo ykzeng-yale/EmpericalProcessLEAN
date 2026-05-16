@@ -3970,6 +3970,17 @@ noncomputable def durrett2019_theorem_2_5_6_partialSum
   ∑ i ∈ Finset.range n, X (i + 1) ω
 
 /--
+Durrett 2019, Theorem 2.5.6 source definition: the one-based random series
+`sum_{n=1}^infty X_n(omega)` converges when its one-based partial sums have a
+finite real limit.
+-/
+def durrett2019_theorem_2_5_6_randomSeriesConverges
+    {Ω : Type u} (X : ℕ -> Ω -> ℝ) (ω : Ω) : Prop :=
+  ∃ s : ℝ,
+    Tendsto (fun n : ℕ => durrett2019_theorem_2_5_6_partialSum X n ω)
+      atTop (𝓝 s)
+
+/--
 Durrett 2019, Theorem 2.5.6 support: shifted tail-block sums
 `sum_{i=1}^n X_{M+i}`.
 -/
@@ -4565,6 +4576,26 @@ theorem durrett2019_theorem_2_5_6_random_series_partialSum_converges_ae_of_summa
   exact
     durrett2019_theorem_2_5_6_tailPairOscillationEvent_measureReal_tendsto_zero_of_summable_variance_threshold
       (P := P) (X := X) hX_indep hX_meas hpos hX_mem hX_zero hvar_summable
+
+/--
+Durrett 2019, Theorem 2.5.6 in the textbook series-convergence wording: under
+the summable-variance hypotheses, `sum_{n=1}^infty X_n(omega)` converges with
+probability one.
+-/
+theorem durrett2019_theorem_2_5_6_random_series_converges_ae_of_summable_variance
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hX_mem : ∀ i, MemLp (X i) 2 P)
+    (hX_zero : ∀ i, ∫ ω, X i ω ∂P = 0)
+    (hvar_summable :
+      Summable fun i : ℕ =>
+        _root_.ProbabilityTheory.variance (X (i + 1)) P) :
+    ∀ᵐ ω ∂P, durrett2019_theorem_2_5_6_randomSeriesConverges X ω := by
+  simpa [durrett2019_theorem_2_5_6_randomSeriesConverges] using
+    durrett2019_theorem_2_5_6_random_series_partialSum_converges_ae_of_summable_variance
+      (P := P) (X := X) hX_indep hX_meas hX_mem hX_zero hvar_summable
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the

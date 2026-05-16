@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V405
+## Live In-Thread Goal Prompt V406
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -14,12 +14,27 @@ Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Theorem 2.5.6 convergence of random
 series in `StatInference/ProbabilityTheory/Basic.lean`.  Reuse the compiled
 Chapter 2.1 independence/product-expectation bridges, Theorem 2.2.1
-variance-sum APIs, and V391-V405 first-crossing/block-tail/oscillation/pathwise-Cauchy/a.s.-convergence infrastructure; do not route
+variance-sum APIs, and V391-V406 first-crossing/block-tail/oscillation/pathwise-Cauchy/a.s.-convergence infrastructure; do not route
 back to Theorem 2.4.9 or 2.5.5 source packaging
 unless search proves a concrete missing source display.
 
-Latest verified target V405 packages the a.s. convergence endpoint for Durrett
-Theorem 2.5.6.  New compiled anchors:
+Latest verified target V406 adds the exact textbook series-convergence display
+wrapper for Durrett Theorem 2.5.6.  New compiled anchors:
+`durrett2019_theorem_2_5_6_randomSeriesConverges` and
+`durrett2019_theorem_2_5_6_random_series_converges_ae_of_summable_variance`.
+This matches Durrett's definition that `sum_{n=1}^infty X_n(omega)` converges
+iff the one-based partial sums have a finite limit, and restates V405 in that
+wording.  Next aggressive target: start Durrett Theorem 2.5.8
+Kolmogorov three-series theorem, first by proving the sufficiency assembly:
+Borel-Cantelli gives `X_n = Y_n` eventually from condition (i), V406 applied
+to `Y_n - E Y_n` gives centered convergence from condition (iii), deterministic
+convergence of `sum E Y_n` gives convergence of `sum Y_n`, and eventual
+equality gives convergence of `sum X_n`.  Use the existing
+`durrett2019_theorem_2_3_1_eventually_notMem` Borel-Cantelli wrapper and do
+not rebuild first Borel-Cantelli.
+
+V405 packages the a.s. convergence endpoint for Durrett Theorem 2.5.6.
+Compiled anchors:
 `durrett2019_theorem_2_5_6_tailBlockSum_add_eq_tailBlockSum_add_tailBlockSum`,
 `durrett2019_theorem_2_5_6_tailPairOscillationEvent_threshold_mono`,
 `durrett2019_theorem_2_5_6_tailPairOscillationEvent_base_mono`,
@@ -37,11 +52,7 @@ This closes the main source-facing Theorem 2.5.6 random-series convergence
 statement for one-based partial sums under independent mean-zero increments
 with finite second moments and summable variances.  It deliberately uses a
 countable inverse-natural threshold grid plus `ae_all_iff`; do not replace it
-with an invalid uncountable a.e. intersection over all real epsilons.  Next
-aggressive target: either add a thin source-display wrapper matching Durrett's
-exact `sum X_n converges a.s.` wording if the textbook crosswalk demands it, or
-move forward to the next Chapter 2 result after checking the local Markdown/PDF
-anchors.
+with an invalid uncountable a.e. intersection over all real epsilons.
 
 V404 packages Durrett's pathwise Cauchy endpoint from eventual absence of
 shifted tail-pair oscillation events.  Compiled
