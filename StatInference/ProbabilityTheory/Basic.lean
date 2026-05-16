@@ -6852,6 +6852,70 @@ theorem durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_varianc
       (epsilon := epsilon) hepsilon_pos)
 
 /--
+Durrett 2019, Theorem 2.5.11 support: identical distribution propagates the
+single finite second-moment hypothesis to the whole sequence.
+-/
+theorem durrett2019_theorem_2_5_11_memLp_of_identDistrib_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p : ℝ≥0∞}
+    (hX0_mem : MemLp (X 0) p P)
+    (hident :
+      ∀ k : ℕ, _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P) :
+    ∀ k : ℕ, MemLp (X k) p P := by
+  intro k
+  exact ((hident k).memLp_iff).2 hX0_mem
+
+/--
+Durrett 2019, Theorem 2.5.11 support: identical distribution gives the uniform
+variance bound consumed by the logarithmic-rate bridge.
+-/
+theorem durrett2019_theorem_2_5_11_variance_bound_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hident :
+      ∀ k : ℕ, _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P) :
+    ∀ k : ℕ,
+      _root_.ProbabilityTheory.variance (X k) P ≤
+        _root_.ProbabilityTheory.variance (X 0) P := by
+  intro k
+  rw [(hident k).variance_eq]
+
+/--
+Durrett 2019, Theorem 2.5.11 source-shaped bridge: iid finite-variance
+variables reduce the logarithmic-rate theorem to the single logarithmic-series
+summability display.
+-/
+theorem durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {epsilon : ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_mem : MemLp (X 0) (2 : ℝ≥0∞) P)
+    (hX_zero : ∀ k : ℕ, ∫ ω, X k ω ∂P = 0)
+    (hident :
+      ∀ k : ℕ, _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hepsilon_pos : 0 < epsilon)
+    (hlog_weight_summable :
+      Summable (durrett2019_theorem_2_5_11_logWeight epsilon)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+            durrett2019_theorem_2_5_11_logNormalizer epsilon (n + 1))
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound
+    (P := P) (X := X)
+    (C := _root_.ProbabilityTheory.variance (X 0) P)
+    (epsilon := epsilon)
+    hX_indep hX_meas
+    (durrett2019_theorem_2_5_11_memLp_of_identDistrib_zero
+      (P := P) (X := X) hX0_mem hident)
+    hX_zero
+    (durrett2019_theorem_2_5_11_variance_bound_of_identDistrib
+      (P := P) (X := X) hident)
+    hepsilon_pos hlog_weight_summable
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

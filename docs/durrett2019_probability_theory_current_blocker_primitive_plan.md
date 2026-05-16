@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V417
+## Live In-Thread Goal Prompt V418
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -16,15 +16,27 @@ in `StatInference/ProbabilityTheory/Basic.lean`.  Theorem 2.5.11 now has the
 exact logarithmic normalizer layer: `a_n = sqrt n * (log n)^(1/2 + epsilon)`
 for `n >= 2`, with `a_1 = a_2`; positivity, nonzero, monotone-increment,
 `atTop`, inverse-square algebra, shifted log-weight summability transfer, and
-the source-shaped finite-variance bridge all compile.  Next aggressive target:
-prove the remaining textbook log-series summability
+the source-shaped finite-variance and iid finite-second-moment bridges all
+compile.  Next aggressive target: prove the remaining textbook log-series
+summability
 `sum_{n >= 2} 1 / (n * (log n)^(1 + 2 epsilon)) < infinity` for
 `epsilon > 0`, preferably via mathlib integral-test/sum-integral APIs before
-adding local real-analysis lemmas; then package the iid finite-second-moment
-source theorem by deriving a uniform variance bound from identical
-distribution and `MemLp 2`.  Do not route back to Theorem 2.4.9, 2.5.5,
-2.5.8, 2.5.9, 2.5.10, V416 abstract plumbing, or V417 normalizer plumbing
-unless search proves a concrete missing source display.
+adding local real-analysis lemmas; then remove the explicit
+`Summable (durrett2019_theorem_2_5_11_logWeight epsilon)` assumption from the
+front-facing iid source theorem.  Do not route back to Theorem 2.4.9, 2.5.5,
+2.5.8, 2.5.9, 2.5.10, V416 abstract plumbing, V417 normalizer plumbing, or
+V418 iid variance/source packaging unless search proves a concrete missing
+source display.
+
+Latest verified target V418 packages the iid finite-second-moment source layer
+for Durrett Theorem 2.5.11.  New compiled anchors:
+`durrett2019_theorem_2_5_11_memLp_of_identDistrib_zero`,
+`durrett2019_theorem_2_5_11_variance_bound_of_identDistrib`, and
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance`.
+The proof reuses mathlib `IdentDistrib.memLp_iff` and
+`IdentDistrib.variance_eq`.  The remaining 2.5.11 blocker is now exactly the
+real-analysis logarithmic-series summability proof; after that, the explicit
+summability assumption can be discharged in the iid source theorem.
 
 Latest verified target V417 packages Durrett Theorem 2.5.11's exact
 logarithmic normalizer and the source-shaped bridge.  New compiled anchors:
@@ -40,8 +52,8 @@ logarithmic normalizer and the source-shaped bridge.  New compiled anchors:
 `durrett2019_theorem_2_5_11_logNormalizer_weight_summable`, and
 `durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound`.
 This removes the normalizer side-condition blocker.  The remaining 2.5.11
-blocker is the real-analysis logarithmic-series summability proof and the
-finite-second-moment iid variance-bound source packaging.
+blocker after V417 was the real-analysis logarithmic-series summability proof
+and the finite-second-moment iid variance-bound source packaging.
 
 Latest verified target V416 packages Durrett Theorem 2.5.11's abstract
 random-series/Kronecker and variance-bound bridge.  New compiled anchors:

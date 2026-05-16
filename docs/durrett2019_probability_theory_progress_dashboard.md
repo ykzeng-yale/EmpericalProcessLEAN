@@ -32,14 +32,15 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V417` in
+Route from `Live In-Thread Goal Prompt V418` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
-V417 packages the exact Theorem 2.5.11 logarithmic normalizer, its nonzero,
+V418 packages the exact Theorem 2.5.11 logarithmic normalizer, its nonzero,
 monotone-increment, and `atTop` obligations, the inverse-square algebra
-matching Durrett's log summand, and the source-shaped finite-variance bridge.
-New compiled anchors:
+matching Durrett's log summand, the source-shaped finite-variance bridge, and
+the iid finite-second-moment source wrapper.  New compiled anchors through
+V418:
 `durrett2019_theorem_2_5_11_logNormalizer`,
 `durrett2019_theorem_2_5_11_logNormalizer_pos`,
 `durrett2019_theorem_2_5_11_logNormalizer_ne_zero`,
@@ -50,14 +51,20 @@ New compiled anchors:
 `durrett2019_theorem_2_5_11_logNormalizer_inv_sq_eq`,
 `durrett2019_theorem_2_5_11_logWeight`,
 `durrett2019_theorem_2_5_11_logNormalizer_weight_summable`, and
-`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound`.
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound`,
+`durrett2019_theorem_2_5_11_memLp_of_identDistrib_zero`,
+`durrett2019_theorem_2_5_11_variance_bound_of_identDistrib`, and
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance`.
 The next blocker is no longer normalizer plumbing: prove the log-series
 summability of `durrett2019_theorem_2_5_11_logWeight epsilon` for
 `epsilon > 0`, preferably through mathlib integral-test/sum-integral APIs, then
-derive the uniform variance bound from iid finite second moment and package the
-source theorem.
+remove the explicit summability assumption from the iid source theorem.
 
-Verified route history below is provenance, not live prompt text.  V416
+Verified route history below is provenance, not live prompt text.  V417
+packages the exact Theorem 2.5.11 logarithmic normalizer, its nonzero,
+monotone-increment, and `atTop` obligations, the inverse-square algebra
+matching Durrett's log summand, and the source-shaped finite-variance bridge.
+V416
 packages the abstract Theorem 2.5.11 route from random-series convergence or
 summable scaled variances to the normalized rate endpoint, plus the uniform
 variance-bound reduction to summability of inverse-square normalizer weights.

@@ -27,15 +27,16 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V417`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V418`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V417 packages
-Durrett Theorem 2.5.11's exact logarithmic normalizer layer and the
-source-shaped finite-variance bridge.  New compiled anchors:
+consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V418 packages
+Durrett Theorem 2.5.11's exact logarithmic normalizer layer, the
+source-shaped finite-variance bridge, and the iid finite-second-moment source
+wrapper.  New compiled anchors through V418:
 `durrett2019_theorem_2_5_11_logNormalizer`,
 `durrett2019_theorem_2_5_11_logNormalizer_pos`,
 `durrett2019_theorem_2_5_11_logNormalizer_ne_zero`,
@@ -46,12 +47,18 @@ source-shaped finite-variance bridge.  New compiled anchors:
 `durrett2019_theorem_2_5_11_logNormalizer_inv_sq_eq`,
 `durrett2019_theorem_2_5_11_logWeight`,
 `durrett2019_theorem_2_5_11_logNormalizer_weight_summable`, and
-`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound`.
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound`,
+`durrett2019_theorem_2_5_11_memLp_of_identDistrib_zero`,
+`durrett2019_theorem_2_5_11_variance_bound_of_identDistrib`, and
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance`.
 The next source work is the remaining log-series summability theorem for
-`durrett2019_theorem_2_5_11_logWeight epsilon` under `epsilon > 0`, followed
-by the iid finite-second-moment variance-bound wrapper.
+`durrett2019_theorem_2_5_11_logWeight epsilon` under `epsilon > 0`; once it
+is compiled, remove the explicit summability hypothesis from the iid source
+theorem.
 
-Verified route history below is provenance, not live prompt text.  V416
+Verified route history below is provenance, not live prompt text.  V417
+packages Durrett Theorem 2.5.11's exact logarithmic normalizer layer and the
+source-shaped finite-variance bridge.  V416
 packages Durrett Theorem 2.5.11's abstract random-series/Kronecker bridge and
 variance-bound normalizer reduction.  Compiled anchors:
 `durrett2019_theorem_2_5_11_normalized_sum_tendsto_zero_of_scaled_series`,
