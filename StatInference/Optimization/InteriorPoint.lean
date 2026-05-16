@@ -26637,6 +26637,32 @@ def halfspaceSlackSet
     (a : F) (b : ℝ) : Set F :=
   {x | 0 < b - inner ℝ a x}
 
+/--
+The closed halfspace underlying the logarithmic-barrier slack convention:
+`b - ⟪a, x⟫ >= 0`, equivalently `⟪a, x⟫ <= b`.
+-/
+def closedHalfspaceSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (a : F) (b : ℝ) : Set F :=
+  {x | inner ℝ a x ≤ b}
+
+/-- The open slack halfspace is contained in its closed halfspace. -/
+theorem halfspaceSlackSet_subset_closedHalfspaceSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (a : F) (b : ℝ) :
+    halfspaceSlackSet a b ⊆ closedHalfspaceSlackSet a b := by
+  intro x hx
+  dsimp [halfspaceSlackSet, closedHalfspaceSlackSet] at hx ⊢
+  nlinarith
+
+/-- The closed halfspace is topologically closed. -/
+theorem isClosed_closedHalfspaceSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (a : F) (b : ℝ) :
+    IsClosed (closedHalfspaceSlackSet a b) := by
+  simpa [closedHalfspaceSlackSet] using
+    (isClosed_Iic.preimage (innerSL ℝ a).continuous)
+
 theorem mem_barrierAffinePreimageSet_halfspaceSlackCLM_iff
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
     (a : F) (b : ℝ) (x : F) :
@@ -26752,6 +26778,16 @@ def polytopeSlackSet
     {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) : Set F :=
   {x | ∀ i : Fin m, 0 < b i - inner ℝ (a i) x}
 
+/--
+The closed polytope corresponding to the logarithmic-barrier slack domain:
+`⟪a_i, x⟫ <= b_i` for every row.  This is the textbook set
+`C = {x : A x <= b}` whose strict interior is `polytopeSlackSet`.
+-/
+def closedPolytopeSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) : Set F :=
+  {x | ∀ i : Fin m, inner ℝ (a i) x ≤ b i}
+
 theorem mem_polytopeSlackSet_iff_forall_halfspaceSlackSet
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
     {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) (x : F) :
@@ -26759,12 +26795,44 @@ theorem mem_polytopeSlackSet_iff_forall_halfspaceSlackSet
       ∀ i : Fin m, x ∈ halfspaceSlackSet (a i) (b i) := by
   rfl
 
+theorem mem_closedPolytopeSlackSet_iff_forall_closedHalfspaceSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) (x : F) :
+    x ∈ closedPolytopeSlackSet a b ↔
+      ∀ i : Fin m, x ∈ closedHalfspaceSlackSet (a i) (b i) := by
+  rfl
+
+/-- The strict slack domain is contained in the corresponding closed polytope. -/
+theorem polytopeSlackSet_subset_closedPolytopeSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) :
+    polytopeSlackSet a b ⊆ closedPolytopeSlackSet a b := by
+  intro x hx i
+  exact halfspaceSlackSet_subset_closedHalfspaceSlackSet (a i) (b i) (hx i)
+
 theorem polytopeSlackSet_eq_iInter_halfspaceSlackSet
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
     {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) :
     polytopeSlackSet a b = ⋂ i : Fin m, halfspaceSlackSet (a i) (b i) := by
   ext x
   simp [polytopeSlackSet, halfspaceSlackSet]
+
+theorem closedPolytopeSlackSet_eq_iInter_closedHalfspaceSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) :
+    closedPolytopeSlackSet a b =
+      ⋂ i : Fin m, closedHalfspaceSlackSet (a i) (b i) := by
+  ext x
+  simp [closedPolytopeSlackSet, closedHalfspaceSlackSet]
+
+/-- The closed polytope slack set is topologically closed. -/
+theorem isClosed_closedPolytopeSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m)) :
+    IsClosed (closedPolytopeSlackSet a b) := by
+  rw [closedPolytopeSlackSet_eq_iInter_closedHalfspaceSlackSet]
+  exact isClosed_iInter fun i =>
+    isClosed_closedHalfspaceSlackSet (a i) (b i)
 
 /-- Tail offset vector for splitting a `Fin (m+1)` polytope slack system. -/
 noncomputable def polytopeSlackTailOffset
@@ -26933,6 +27001,19 @@ theorem chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_closure_isComp
     (hcompact : IsCompact (closure (polytopeSlackSet a b))) :
     Bornology.IsBounded (polytopeSlackSet a b) :=
   hcompact.isBounded.subset subset_closure
+
+/--
+Compact closed-polytope certificate for boundedness of the strict source
+slack domain.  This is the textbook bounded-polytope shape:
+the strict barrier domain is contained in the compact closed set
+`{x | ⟪a_i,x⟫ <= b_i}`.
+-/
+theorem chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_closedPolytope_isCompact
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (hcompact : IsCompact (closedPolytopeSlackSet a b)) :
+    Bornology.IsBounded (polytopeSlackSet a b) :=
+  hcompact.isBounded.subset (polytopeSlackSet_subset_closedPolytopeSlackSet a b)
 
 /--
 Chewi Example 13.14, finite-row logarithmic barrier in supplied right-inverse
@@ -44590,6 +44671,60 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
     hxbar0Range hx0 ht0 htstep hnewton_next_source
     (chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_closure_isCompact
       aRow bSlack hcompact_closure)
+
+/--
+Compact closed-polytope version of the actual preliminary Newton initializer.
+This is the source-facing bounded-polytope assumption closest to Chewi's
+linear-program notation `C = {x : A x <= b}`: compactness of that closed
+polytope bounds the strict logarithmic-barrier domain and feeds the §13.16
+auto-floor handoff.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactClosedPolytope_autoFloor_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hcompact_closed :
+      IsCompact (closedPolytopeSlackSet aRow bSlack)) :
+    ∃ sFloor rho tailBound : ℝ, ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < sFloor ∧
+      0 ≤ rho ∧
+      Real.sqrt (m : ℝ) * (1 + rho) ≤ tailBound ∧
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 :=
+  chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_autoFloor_succ_noFactor_standardConstants
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (xseq := xseq) (tseq := tseq)
+    hxbar0Range hx0 ht0 htstep hnewton_next_source
+    (chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_closedPolytope_isCompact
+      aRow bSlack hcompact_closed)
 
 /--
 Post-threshold source-centered radius handoff using a single source slack floor.
