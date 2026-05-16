@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V16`, this file's top
+   the full book is complete, route from `Live Goal Prompt V17`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V16
+## Live Goal Prompt V17
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -178,17 +178,34 @@ start feasibility for the preliminary sequence and a concrete source-coordinate
 `lambda < 1` certificate for every standard main-stage step, instead of an
 opaque all-iterate range-membership assumption.
 
-Next theorem-sized target: prove the concrete standard main-stage
-source-decrement `< 1` certificate from the existing `lambda <= 1/4`
-main-stage decrement invariant, or at least package the invariant so it feeds
-`chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_lt_one`.
-Search first in `InteriorPoint.lean` around the compiled
-`chewi1316_mainStage_decrement_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`,
-`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton`,
-range Cauchy/Hessian calculus, and the V13/V15 transport lemmas.  Do not redo
-preliminary initialization, source/range Newton transport, or the standard
-main-stage recursion now compiled in V15/V16.  Older paragraphs below are
-cached route history and must not override this V16 target.
+Current V17 packet packages the existing `lambda <= 1/4` main-stage invariant
+shape into the V16 final handoff.  New compiled declarations:
+`chewi1316_standardSourceMainStage_rangeRestrict_mem_of_range_decrement_le_quarter`,
+`chewi1316_standardSourceMainStage_rangeRestrict_mem_of_source_decrement_le_quarter`,
+and
+`chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_le_quarter`.
+These are simple but important route reducers: the final handoff now accepts
+the same `lambda <= 1/4` source-decrement shape as the self-concordant
+main-stage invariant theorem, and internally converts it to the `< 1`
+membership condition.
+
+Next theorem-sized target: prove a paired concrete standard main-stage
+successor theorem that simultaneously gives successor range membership and
+successor source/range decrement `<= 1/4`, avoiding the current global
+`hxseq_mem` premise in
+`chewi1316_mainStage_decrement_step_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`.
+Search first around
+`chewi1316_mainStage_newtonDecrement_le_quarter_of_centralPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`,
+`chewi1316_preNewtonDecrement_le_update_bound_of_centralPathGradient_adjointSqrt_right_inverse`,
+`chewi1314_polytopeSlackNegLog_range_newtonStep_mem_of_decrement_lt_one`,
+and the V16 membership lemmas.  The likely proof route is: from current
+membership and current `lambda <= 1/4`, derive the pre-Newton decrement for
+the next parameter is `< 1`; use that to prove successor range membership; then
+feed the same data to the existing Newton decrement theorem to get successor
+`lambda <= 1/4`.  Do not redo preliminary initialization, source/range Newton
+transport, standard recursions, or the V16/V17 handoff packaging.  Older
+paragraphs below are cached route history and must not override this V17
+target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
 slack-range §13.16 handoff now

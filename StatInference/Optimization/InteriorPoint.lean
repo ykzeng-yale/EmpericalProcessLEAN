@@ -33413,6 +33413,82 @@ theorem chewi1316_standardSourceMainStage_rangeRestrict_mem_of_source_decrement_
         using hdecrement_lt n)
 
 /--
+Range-membership induction for the concrete standard source main-stage
+sequence when each range Newton decrement is bounded by `1/4`.
+-/
+theorem chewi1316_standardSourceMainStage_rangeRestrict_mem_of_range_decrement_le_quarter
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {aObj : (polytopeSlackCLM aRow).range} {xStart : F}
+    {tStart c0 : ℝ}
+    (hxStart :
+      (polytopeSlackCLM aRow).rangeRestrict xStart ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hdecrement_le : ∀ n : ℕ,
+      newtonDecrement
+          (centralPathGrad
+            (chewi1316_standardSourceMainStageTSeq m c0 tStart (n + 1))
+            aObj
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          ((polytopeSlackCLM aRow).rangeRestrict
+            (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+              xStart tStart c0 n)) ≤ 1 / 4) :
+    ∀ n : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict
+          (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+            xStart tStart c0 n) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) :=
+  chewi1316_standardSourceMainStage_rangeRestrict_mem_of_range_decrement_lt_one
+    (aRow := aRow) (bSlack := bSlack) (aObj := aObj)
+    (xStart := xStart) (tStart := tStart) (c0 := c0) hxStart
+    (by
+      intro n
+      have hle := hdecrement_le n
+      nlinarith)
+
+/--
+Source-coordinate version of the concrete standard main-stage membership
+induction when each source Newton decrement is bounded by `1/4`.
+-/
+theorem chewi1316_standardSourceMainStage_rangeRestrict_mem_of_source_decrement_le_quarter
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {aObj : (polytopeSlackCLM aRow).range} {xStart : F}
+    {tStart c0 : ℝ}
+    (hxStart :
+      (polytopeSlackCLM aRow).rangeRestrict xStart ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hdecrement_le : ∀ n : ℕ,
+      newtonDecrement
+          (centralPathGrad
+            (chewi1316_standardSourceMainStageTSeq m c0 tStart (n + 1))
+            (ContinuousLinearMap.adjoint
+              (polytopeSlackCLM aRow).rangeRestrict aObj)
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+            xStart tStart c0 n) ≤ 1 / 4) :
+    ∀ n : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict
+          (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+            xStart tStart c0 n) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) :=
+  chewi1316_standardSourceMainStage_rangeRestrict_mem_of_source_decrement_lt_one
+    (aRow := aRow) (bSlack := bSlack) (aObj := aObj)
+    (xStart := xStart) (tStart := tStart) (c0 := c0) hxStart
+    (by
+      intro n
+      have hle := hdecrement_le n
+      nlinarith)
+
+/--
 Concrete standard-main-stage version of the §13.16 objective-gap handoff.  The
 preliminary stage still selects `Npre` and `tMain`, but the following
 main-stage `t_n` and `x_n` recursions are fixed internally; callers only supply
@@ -33618,6 +33694,108 @@ theorem chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decreme
       (hxpre_mem Npre) hdecrement_lt
   exact
     hmain hxmem hc0_nonneg hc0_le heps_pos hcentral hbarrier_step hlower hlarge
+
+set_option maxHeartbeats 4000000 in
+/--
+Objective-gap handoff with concrete main-stage membership discharged from a
+source-coordinate `lambda <= 1/4` Newton-decrement certificate at every
+standard main-stage step.  This matches the main-stage decrement invariant
+proved by the self-concordant Newton machinery.
+-/
+theorem chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_le_quarter
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {aObj center optimum : (polytopeSlackCLM aRow).range}
+    {xpre : ℕ -> F}
+    (hhand :
+      Chewi1316StandardSourceMainStageObjectiveGapHandoff
+        aRow bSlack aObj center optimum xpre)
+    (hxpre_mem : ∀ n : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xpre n) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m))) :
+    ∃ tailBound : ℝ, ∃ Midx Npre : ℕ, ∃ tMain : ℝ,
+      0 ≤ tailBound ∧
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Npre : ℝ) * (1 / 200 : ℝ) ∧
+      (∀ {eps c0 : ℝ} {Nmain : ℕ},
+        (∀ n : ℕ,
+          newtonDecrement
+              (centralPathGrad
+                (chewi1316_standardSourceMainStageTSeq m c0 tMain (n + 1))
+                (ContinuousLinearMap.adjoint
+                  (polytopeSlackCLM aRow).rangeRestrict aObj)
+                (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+                  positiveOrthantNegLogGrad))
+              (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+              (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                (xpre Npre) tMain c0 n) ≤ 1 / 4) ->
+        0 ≤ c0 ->
+        c0 ≤ 1 / 16 ->
+        0 < eps ->
+        chewi1316_standardSourceMainStageTSeq m c0 tMain Nmain • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad center = 0 ->
+        inner ℝ
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad center)
+            (optimum - center) ≤ (m : ℝ) ->
+        (localNorm
+            (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM)
+            ((polytopeSlackCLM aRow).rangeRestrict
+              (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                (xpre Npre) tMain c0 Nmain))
+            ((polytopeSlackCLM aRow).rangeRestrict
+              (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                (xpre Npre) tMain c0 Nmain) - center)) ^ (2 : ℕ) /
+            (1 + localNorm
+              (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+                positiveOrthantNegLogHessCLM)
+              ((polytopeSlackCLM aRow).rangeRestrict
+                (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                  (xpre Npre) tMain c0 Nmain))
+              ((polytopeSlackCLM aRow).rangeRestrict
+                (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                  (xpre Npre) tMain c0 Nmain) - center)) ≤
+          inner ℝ
+            (chewi1316_standardSourceMainStageTSeq m c0 tMain Nmain • aObj +
+              barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+                positiveOrthantNegLogGrad
+                ((polytopeSlackCLM aRow).rangeRestrict
+                  (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                    (xpre Npre) tMain c0 Nmain)))
+            ((polytopeSlackCLM aRow).rangeRestrict
+              (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                (xpre Npre) tMain c0 Nmain) - center) ->
+        2 * (m : ℝ) ≤
+          eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ Nmain * tMain) ->
+        inner ℝ aObj
+            ((polytopeSlackCLM aRow).rangeRestrict
+              (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                (xpre Npre) tMain c0 Nmain)) -
+            inner ℝ aObj optimum ≤ eps) := by
+  rcases
+      chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_lt_one
+        (aRow := aRow) (bSlack := bSlack) (aObj := aObj)
+        (center := center) (optimum := optimum) (xpre := xpre)
+        hhand hxpre_mem with
+    ⟨tailBound, Midx, Npre, tMain, htail_nonneg, htMain_pos, hlog, hcount,
+      hmain⟩
+  refine ⟨tailBound, Midx, Npre, tMain, htail_nonneg, htMain_pos, hlog, hcount, ?_⟩
+  intro eps c0 Nmain hdecrement_le hc0_nonneg hc0_le heps_pos hcentral
+    hbarrier_step hlower hlarge
+  exact
+    hmain
+      (by
+        intro n
+        have hle := hdecrement_le n
+        nlinarith)
+      hc0_nonneg hc0_le heps_pos hcentral hbarrier_step hlower hlarge
 
 /--
 Finite-row range-space preliminary one-step invariant from a domain-wide
