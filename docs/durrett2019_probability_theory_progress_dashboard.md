@@ -32,14 +32,22 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V380` in
+Route from `Live In-Thread Goal Prompt V381` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Chapter 2.1
 independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V380 rewires the main
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V381 routes the
+pairwise-identically-distributed empirical-CDF outer-a.s. source entrances
+through the V379 textbook middle/tail proof.  The zero-based and one-based
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_*_of_pairwise_identDistrib`
+wrappers, including range-sum and inverse-multiply display forms, now consume
+the compiled middle/tail route after extracting the common law and pairwise
+independence.  Next work should move to a new Durrett source-display wrapper
+or Chapter 2.1 product-law support; do not reroute these pairwise
+empirical-CDF endpoints again.  V380 rewires the main
 source-facing iid and canonical empirical-CDF outer-a.s. endpoints to consume
 the V379 textbook middle/tail route directly.  The affected endpoints include
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun`,

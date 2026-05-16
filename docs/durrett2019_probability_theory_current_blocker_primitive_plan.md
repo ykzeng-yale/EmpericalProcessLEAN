@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V380
+## Live In-Thread Goal Prompt V381
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,17 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V380 rewires the main source-facing iid and canonical
+Latest verified target V381 routes the pairwise-identically-distributed
+empirical-CDF outer-a.s. source entrances through the V379 textbook
+middle/tail proof.  The zero-based and one-based
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_*_of_pairwise_identDistrib`
+wrappers, including range-sum and inverse-multiply display forms, now consume
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation`
+after extracting the common law and pairwise independence.  Next work should
+move to a new Durrett source-display wrapper or Chapter 2.1 product-law
+support; do not reroute these pairwise empirical-CDF endpoints again.
+
+V380 rewires the main source-facing iid and canonical
 empirical-CDF outer-a.s. endpoints to consume the V379 textbook middle/tail
 route directly.  In particular,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun`,

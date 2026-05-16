@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V380`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V381`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -37,7 +37,15 @@ independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V380 rewires the main
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V381 routes the
+pairwise-identically-distributed empirical-CDF outer-a.s. source entrances
+through the V379 textbook middle/tail proof.  The zero-based and one-based
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_*_of_pairwise_identDistrib`
+wrappers, including range-sum and inverse-multiply display forms, now consume
+the compiled middle/tail route after extracting the common law and pairwise
+independence.  Next work should move to a new Durrett source-display wrapper
+or Chapter 2.1 product-law support; do not reroute these pairwise
+empirical-CDF endpoints again.  V380 rewires the main
 source-facing iid and canonical empirical-CDF outer-a.s. endpoints to consume
 the V379 textbook middle/tail route directly.  The affected endpoints include
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun`,

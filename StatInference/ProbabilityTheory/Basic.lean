@@ -7188,9 +7188,11 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
     VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
       (fun c => ProbabilityTheory.cdf P c)
       (fun ω sampleSize c =>
-        empiricalDistributionFunction (samplePath X ω sampleSize) c) :=
-  durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure
-    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) := by
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
+      X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+      hindep
 
 /--
 Durrett 2019, Theorem 2.4.9, exact outer-a.s. empirical-CDF range-sum display
@@ -7208,9 +7210,10 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
       (fun c => ProbabilityTheory.cdf P c)
       (fun ω sampleSize c =>
         (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) /
-          (sampleSize : ℝ)) :=
-  durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum
-    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+          (sampleSize : ℝ)) := by
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_pairwise_identDistrib
+      X hBase hident hindep
 
 /--
 Durrett 2019, Theorem 2.4.9, exact outer-a.s. empirical-CDF display in
@@ -7228,9 +7231,10 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
       (fun c => ProbabilityTheory.cdf P c)
       (fun ω sampleSize c =>
         (sampleSize : ℝ)⁻¹ *
-          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) :=
-  durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum
-    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) := by
+  simpa [div_eq_mul_inv, mul_comm] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_pairwise_identDistrib
+      X hBase hident hindep
 
 /--
 Durrett 2019, Theorem 2.4.9, one-based source extraction from the
@@ -7344,7 +7348,7 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
     durrett2019_theorem_2_4_9_pairwise_identDistrib_oneBased_source
       (X := X) hBase hident hindep
   exact
-    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
       (fun i => fun ω => X (i + 1) ω) hSource.1 hSource.2
 
 /--
@@ -7364,12 +7368,9 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
       (fun ω sampleSize c =>
         (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) /
           (sampleSize : ℝ)) := by
-  have hSource :=
-    durrett2019_theorem_2_4_9_pairwise_identDistrib_oneBased_source
-      (X := X) hBase hident hindep
-  exact
-    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum
-      (fun i => fun ω => X (i + 1) ω) hSource.1 hSource.2
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_pairwise_identDistrib_oneBased
+      X hBase hident hindep
 
 /--
 Durrett 2019, Theorem 2.4.9, one-based exact outer-a.s. empirical-CDF display
@@ -7388,12 +7389,9 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
       (fun ω sampleSize c =>
         (sampleSize : ℝ)⁻¹ *
           ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) := by
-  have hSource :=
-    durrett2019_theorem_2_4_9_pairwise_identDistrib_oneBased_source
-      (X := X) hBase hident hindep
-  exact
-    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum
-      (fun i => fun ω => X (i + 1) ω) hSource.1 hSource.2
+  simpa [div_eq_mul_inv, mul_comm] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_pairwise_identDistrib_oneBased
+      X hBase hident hindep
 
 /--
 Durrett 2019, Theorem 2.4.9, canonical iid product-space half-line
