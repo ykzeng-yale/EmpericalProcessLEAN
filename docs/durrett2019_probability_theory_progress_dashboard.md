@@ -32,11 +32,30 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V403` in
+Route from `Live In-Thread Goal Prompt V404` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.5.6
 convergence of random series in `StatInference/ProbabilityTheory/Basic.lean`.
-V403 packages Durrett's oscillation step in shifted block form.  New compiled
+V404 packages Durrett's pathwise Cauchy endpoint from eventual absence of
+shifted tail-pair oscillation events.  New compiled anchors:
+`durrett2019_theorem_2_5_6_partialSum`,
+`durrett2019_theorem_2_5_6_tailBlockSum`,
+`durrett2019_theorem_2_5_6_partialSum_add_eq_partialSum_add_tailBlockSum`,
+`durrett2019_theorem_2_5_6_partialSum_sub_eq_tailBlockSum_sub`,
+`durrett2019_theorem_2_5_6_tailBlockCauchy`,
+`durrett2019_theorem_2_5_6_tailBlock_bound_of_not_tailPairOscillationEvent`,
+`durrett2019_theorem_2_5_6_tailBlockCauchy_of_eventually_not_tailPairOscillationEvent`,
+`durrett2019_theorem_2_5_6_cauchySeq_partialSum_of_tailBlockCauchy`,
+`durrett2019_theorem_2_5_6_cauchySeq_partialSum_of_eventually_not_tailPairOscillationEvent`,
+and
+`durrett2019_theorem_2_5_6_exists_tendsto_partialSum_of_eventually_not_tailPairOscillationEvent`.
+This deterministic endpoint reuses mathlib's `Metric.cauchySeq_iff` and
+`CauchySeq.tendsto_limUnder`.  Next work should turn probability convergence
+of the oscillation events into an a.s. eventual non-oscillation statement and
+then state the front-facing Theorem 2.5.6 a.s. convergence wrapper.
+
+Verified route history below is provenance, not live prompt text.  V403
+packages Durrett's oscillation step in shifted block form.  Compiled
 anchors:
 `durrett2019_theorem_2_5_6_tailPairOscillationEvent`,
 `durrett2019_theorem_2_5_6_measurableSet_tailPairOscillationEvent`,
@@ -45,12 +64,7 @@ anchors:
 and
 `durrett2019_theorem_2_5_6_tailPairOscillationEvent_measureReal_tendsto_zero_of_summable_variance`.
 This is the formal `P(w_M > 2 eps) <= P(sup_{m >= M} |S_m - S_M| > eps)
--> 0` bridge, represented by shifted tail-block partial sums.  Next work
-should package the pathwise Cauchy endpoint from eventual absence of the
-tail-pair oscillation events and then state the front-facing Theorem 2.5.6
-a.s. convergence wrapper.
-
-Verified route history below is provenance, not live prompt text.  V402 derives
+-> 0` bridge, represented by shifted tail-block partial sums.  V402 derives
 the textbook variance-tail probability limit from one-based
 summability of `fun i => Var(X_{i+1})`.  New compiled anchors:
 `durrett2019_theorem_2_5_6_sum_range_shift_tendsto_tsum_of_summable`,

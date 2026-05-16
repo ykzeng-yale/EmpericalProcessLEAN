@@ -3962,6 +3962,63 @@ theorem durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_tendsto_zero_
       (M := M) (eps := eps) heps_pos hX_mem hX_zero hvar_summable
 
 /--
+Durrett 2019, Theorem 2.5.6 support: one-based partial sums
+`S_n = sum_{i=1}^n X_i`.
+-/
+noncomputable def durrett2019_theorem_2_5_6_partialSum
+    {Ω : Type u} (X : ℕ -> Ω -> ℝ) (n : ℕ) (ω : Ω) : ℝ :=
+  ∑ i ∈ Finset.range n, X (i + 1) ω
+
+/--
+Durrett 2019, Theorem 2.5.6 support: shifted tail-block sums
+`sum_{i=1}^n X_{M+i}`.
+-/
+noncomputable def durrett2019_theorem_2_5_6_tailBlockSum
+    {Ω : Type u} (X : ℕ -> Ω -> ℝ) (M n : ℕ) (ω : Ω) : ℝ :=
+  ∑ i ∈ Finset.range n, X (M + (i + 1)) ω
+
+/--
+Durrett 2019, Theorem 2.5.6 support: splitting the one-based partial sum at
+time `M` into its initial part and shifted tail block.
+-/
+theorem durrett2019_theorem_2_5_6_partialSum_add_eq_partialSum_add_tailBlockSum
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} (M n : ℕ) (ω : Ω) :
+    durrett2019_theorem_2_5_6_partialSum X (M + n) ω =
+      durrett2019_theorem_2_5_6_partialSum X M ω +
+        durrett2019_theorem_2_5_6_tailBlockSum X M n ω := by
+  simpa [durrett2019_theorem_2_5_6_partialSum,
+    durrett2019_theorem_2_5_6_tailBlockSum, Nat.add_assoc, Nat.add_comm,
+    Nat.add_left_comm] using
+    (Finset.sum_range_add (fun i : ℕ => X (i + 1) ω) M n)
+
+/--
+Durrett 2019, Theorem 2.5.6 support: differences of late one-based partial
+sums equal differences of shifted tail-block sums.
+-/
+theorem durrett2019_theorem_2_5_6_partialSum_sub_eq_tailBlockSum_sub
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} (M m n : ℕ) (ω : Ω) :
+    durrett2019_theorem_2_5_6_partialSum X (M + m) ω -
+        durrett2019_theorem_2_5_6_partialSum X (M + n) ω =
+      durrett2019_theorem_2_5_6_tailBlockSum X M m ω -
+        durrett2019_theorem_2_5_6_tailBlockSum X M n ω := by
+  rw [durrett2019_theorem_2_5_6_partialSum_add_eq_partialSum_add_tailBlockSum
+      (X := X) M m ω,
+    durrett2019_theorem_2_5_6_partialSum_add_eq_partialSum_add_tailBlockSum
+      (X := X) M n ω]
+  ring
+
+/--
+Durrett 2019, Theorem 2.5.6 support: pathwise Cauchy control expressed in the
+same shifted tail-block coordinates as the Kolmogorov maximal estimate.
+-/
+def durrett2019_theorem_2_5_6_tailBlockCauchy
+    {Ω : Type u} (X : ℕ -> Ω -> ℝ) (ω : Ω) : Prop :=
+  ∀ eps : ℝ, 0 < eps ->
+    ∃ M : ℕ, ∀ m n : ℕ,
+      |durrett2019_theorem_2_5_6_tailBlockSum X M m ω -
+        durrett2019_theorem_2_5_6_tailBlockSum X M n ω| ≤ eps
+
+/--
 Durrett 2019, Theorem 2.5.6 support: the shifted-block version of the
 oscillation event `sup_{m,n >= M} |S_m - S_n| > x`.  The block lengths are
 zero-based, so length `0` represents the anchor `S_M`.
@@ -3970,8 +4027,8 @@ def durrett2019_theorem_2_5_6_tailPairOscillationEvent
     {Ω : Type u} (X : ℕ -> Ω -> ℝ) (M : ℕ) (x : ℝ) : Set Ω :=
   {ω | ∃ m n : ℕ,
     x <
-      |(∑ i : Finset.range m, X (M + (i + 1)) ω) -
-        ∑ i : Finset.range n, X (M + (i + 1)) ω|}
+      |durrett2019_theorem_2_5_6_tailBlockSum X M m ω -
+        durrett2019_theorem_2_5_6_tailBlockSum X M n ω|}
 
 /--
 Durrett 2019, Theorem 2.5.6 support: the shifted pair-oscillation event is
@@ -3989,12 +4046,14 @@ theorem durrett2019_theorem_2_5_6_measurableSet_tailPairOscillationEvent
     MeasurableSet.iUnion fun (n : ℕ) => by
       have hm :
           Measurable fun ω : Ω =>
-            ∑ i : Finset.range m, X (M + (i + 1)) ω :=
-        Finset.measurable_sum Finset.univ fun i _hi => hX_meas (M + (i + 1))
+            durrett2019_theorem_2_5_6_tailBlockSum X M m ω := by
+        dsimp [durrett2019_theorem_2_5_6_tailBlockSum]
+        exact Finset.measurable_sum (Finset.range m) fun i _hi => hX_meas (M + (i + 1))
       have hn :
           Measurable fun ω : Ω =>
-            ∑ i : Finset.range n, X (M + (i + 1)) ω :=
-        Finset.measurable_sum Finset.univ fun i _hi => hX_meas (M + (i + 1))
+            durrett2019_theorem_2_5_6_tailBlockSum X M n ω := by
+        dsimp [durrett2019_theorem_2_5_6_tailBlockSum]
+        exact Finset.measurable_sum (Finset.range n) fun i _hi => hX_meas (M + (i + 1))
       exact measurableSet_lt measurable_const ((hm.sub hn).abs)
 
 /--
@@ -4010,8 +4069,8 @@ theorem durrett2019_theorem_2_5_6_tailPairOscillationEvent_subset_tailMaxCrossin
       durrett2019_theorem_2_5_6_tailMaxCrossingEvent X M eps := by
   intro ω hω
   rcases hω with ⟨m, n, hmn⟩
-  let Sm : ℝ := ∑ i : Finset.range m, X (M + (i + 1)) ω
-  let Sn : ℝ := ∑ i : Finset.range n, X (M + (i + 1)) ω
+  let Sm : ℝ := durrett2019_theorem_2_5_6_tailBlockSum X M m ω
+  let Sn : ℝ := durrett2019_theorem_2_5_6_tailBlockSum X M n ω
   have hlarge : 2 * eps < |Sm - Sn| := by
     simpa [durrett2019_theorem_2_5_6_tailPairOscillationEvent, Sm, Sn] using hmn
   have htri : |Sm - Sn| ≤ |Sm| + |Sn| := by
@@ -4023,7 +4082,7 @@ theorem durrett2019_theorem_2_5_6_tailPairOscillationEvent_subset_tailMaxCrossin
   · have hm_pos : 0 < m := by
       by_cases hm_zero : m = 0
       · subst m
-        simp [Sm] at hm
+        simp [Sm, durrett2019_theorem_2_5_6_tailBlockSum] at hm
         exact False.elim ((not_lt_of_ge heps_pos.le) hm)
       · exact Nat.pos_of_ne_zero hm_zero
     rw [durrett2019_theorem_2_5_6_tailMaxCrossingEvent]
@@ -4031,12 +4090,22 @@ theorem durrett2019_theorem_2_5_6_tailPairOscillationEvent_subset_tailMaxCrossin
     rw [durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent,
       Nat.add_sub_cancel_left]
     refine ⟨m, Finset.mem_Icc.mpr ⟨Nat.succ_le_iff.mpr hm_pos, le_rfl⟩, ?_⟩
-    simpa [Sm] using le_of_lt hm
+    have hsumAttach :
+        (∑ i : Finset.range m, X (M + (i + 1)) ω) =
+          ∑ i ∈ Finset.range m, X (M + (i + 1)) ω := by
+      exact Finset.sum_attach (Finset.range m)
+        (fun i : ℕ => X (M + (i + 1)) ω)
+    have hsum :
+        (∑ i : Finset.range m, X (M + (i + 1)) ω) = Sm := by
+      rw [hsumAttach]
+      rfl
+    rw [hsum]
+    exact le_of_lt hm
   · by_cases hn : eps < |Sn|
     · have hn_pos : 0 < n := by
         by_cases hn_zero : n = 0
         · subst n
-          simp [Sn] at hn
+          simp [Sn, durrett2019_theorem_2_5_6_tailBlockSum] at hn
           exact False.elim ((not_lt_of_ge heps_pos.le) hn)
         · exact Nat.pos_of_ne_zero hn_zero
       rw [durrett2019_theorem_2_5_6_tailMaxCrossingEvent]
@@ -4044,7 +4113,17 @@ theorem durrett2019_theorem_2_5_6_tailPairOscillationEvent_subset_tailMaxCrossin
       rw [durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent,
         Nat.add_sub_cancel_left]
       refine ⟨n, Finset.mem_Icc.mpr ⟨Nat.succ_le_iff.mpr hn_pos, le_rfl⟩, ?_⟩
-      simpa [Sn] using le_of_lt hn
+      have hsumAttach :
+          (∑ i : Finset.range n, X (M + (i + 1)) ω) =
+            ∑ i ∈ Finset.range n, X (M + (i + 1)) ω := by
+        exact Finset.sum_attach (Finset.range n)
+          (fun i : ℕ => X (M + (i + 1)) ω)
+      have hsum :
+          (∑ i : Finset.range n, X (M + (i + 1)) ω) = Sn := by
+        rw [hsumAttach]
+        rfl
+      rw [hsum]
+      exact le_of_lt hn
     · have hm_le : |Sm| ≤ eps := le_of_not_gt hm
       have hn_le : |Sn| ≤ eps := le_of_not_gt hn
       have hsmall : |Sm - Sn| ≤ 2 * eps := by
@@ -4096,6 +4175,109 @@ theorem durrett2019_theorem_2_5_6_tailPairOscillationEvent_measureReal_tendsto_z
   exact
     durrett2019_theorem_2_5_6_tailPairOscillationEvent_measureReal_le_tailMaxCrossingEvent
       (P := P) (X := X) (M := M) heps_pos
+
+/--
+Durrett 2019, Theorem 2.5.6 support: absence of the tail-pair oscillation event
+at a fixed base `M` is exactly the corresponding uniform shifted-tail bound.
+-/
+theorem durrett2019_theorem_2_5_6_tailBlock_bound_of_not_tailPairOscillationEvent
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {ω : Ω} {M : ℕ} {eps : ℝ}
+    (hω :
+      ω ∉ durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps) :
+    ∀ m n : ℕ,
+      |durrett2019_theorem_2_5_6_tailBlockSum X M m ω -
+        durrett2019_theorem_2_5_6_tailBlockSum X M n ω| ≤ eps := by
+  intro m n
+  exact le_of_not_gt fun hlt => hω ⟨m, n, hlt⟩
+
+/--
+Durrett 2019, Theorem 2.5.6 support: eventual absence of the shifted
+tail-pair oscillation events gives the pathwise shifted-tail Cauchy criterion.
+-/
+theorem durrett2019_theorem_2_5_6_tailBlockCauchy_of_eventually_not_tailPairOscillationEvent
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {ω : Ω}
+    (h :
+      ∀ eps : ℝ, 0 < eps ->
+        ∃ M : ℕ, ω ∉ durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps) :
+    durrett2019_theorem_2_5_6_tailBlockCauchy X ω := by
+  intro eps heps
+  rcases h eps heps with ⟨M, hM⟩
+  exact ⟨M,
+    durrett2019_theorem_2_5_6_tailBlock_bound_of_not_tailPairOscillationEvent
+      (X := X) (ω := ω) hM⟩
+
+/--
+Durrett 2019, Theorem 2.5.6 support: the shifted-tail Cauchy criterion implies
+that the one-based partial sums form a Cauchy sequence.
+-/
+theorem durrett2019_theorem_2_5_6_cauchySeq_partialSum_of_tailBlockCauchy
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {ω : Ω}
+    (h : durrett2019_theorem_2_5_6_tailBlockCauchy X ω) :
+    CauchySeq fun n : ℕ => durrett2019_theorem_2_5_6_partialSum X n ω := by
+  rw [Metric.cauchySeq_iff]
+  intro eps heps
+  have hhalf : 0 < eps / 2 := half_pos heps
+  rcases h (eps / 2) hhalf with ⟨M, hM⟩
+  refine ⟨M, ?_⟩
+  intro m hm n hn
+  have hbound := hM (m - M) (n - M)
+  have hm_eq : M + (m - M) = m := Nat.add_sub_of_le hm
+  have hn_eq : M + (n - M) = n := Nat.add_sub_of_le hn
+  have hdist :
+      dist (durrett2019_theorem_2_5_6_partialSum X m ω)
+          (durrett2019_theorem_2_5_6_partialSum X n ω) =
+        |durrett2019_theorem_2_5_6_tailBlockSum X M (m - M) ω -
+          durrett2019_theorem_2_5_6_tailBlockSum X M (n - M) ω| := by
+    calc
+      dist (durrett2019_theorem_2_5_6_partialSum X m ω)
+          (durrett2019_theorem_2_5_6_partialSum X n ω) =
+        dist (durrett2019_theorem_2_5_6_partialSum X (M + (m - M)) ω)
+          (durrett2019_theorem_2_5_6_partialSum X (M + (n - M)) ω) := by
+            rw [hm_eq, hn_eq]
+      _ =
+        |durrett2019_theorem_2_5_6_tailBlockSum X M (m - M) ω -
+          durrett2019_theorem_2_5_6_tailBlockSum X M (n - M) ω| := by
+            rw [Real.dist_eq]
+            exact congrArg abs
+              (durrett2019_theorem_2_5_6_partialSum_sub_eq_tailBlockSum_sub
+                (X := X) M (m - M) (n - M) ω)
+  rw [hdist]
+  exact lt_of_le_of_lt hbound (half_lt_self heps)
+
+/--
+Durrett 2019, Theorem 2.5.6 support: eventual absence of the shifted
+tail-pair oscillation events makes the one-based partial sums Cauchy.
+-/
+theorem durrett2019_theorem_2_5_6_cauchySeq_partialSum_of_eventually_not_tailPairOscillationEvent
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {ω : Ω}
+    (h :
+      ∀ eps : ℝ, 0 < eps ->
+        ∃ M : ℕ, ω ∉ durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps) :
+    CauchySeq fun n : ℕ => durrett2019_theorem_2_5_6_partialSum X n ω :=
+  durrett2019_theorem_2_5_6_cauchySeq_partialSum_of_tailBlockCauchy
+    (X := X) (ω := ω)
+    (durrett2019_theorem_2_5_6_tailBlockCauchy_of_eventually_not_tailPairOscillationEvent
+      (X := X) (ω := ω) h)
+
+/--
+Durrett 2019, Theorem 2.5.6 support: eventual absence of the shifted
+tail-pair oscillation events gives a pointwise limit of the one-based partial
+sums.
+-/
+theorem durrett2019_theorem_2_5_6_exists_tendsto_partialSum_of_eventually_not_tailPairOscillationEvent
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {ω : Ω}
+    (h :
+      ∀ eps : ℝ, 0 < eps ->
+        ∃ M : ℕ, ω ∉ durrett2019_theorem_2_5_6_tailPairOscillationEvent X M eps) :
+    ∃ s : ℝ,
+      Tendsto (fun n : ℕ => durrett2019_theorem_2_5_6_partialSum X n ω)
+        atTop (𝓝 s) := by
+  have hc :
+      CauchySeq fun n : ℕ => durrett2019_theorem_2_5_6_partialSum X n ω :=
+    durrett2019_theorem_2_5_6_cauchySeq_partialSum_of_eventually_not_tailPairOscillationEvent
+      (X := X) (ω := ω) h
+  exact ⟨atTop.limUnder (fun n : ℕ => durrett2019_theorem_2_5_6_partialSum X n ω),
+    hc.tendsto_limUnder⟩
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
