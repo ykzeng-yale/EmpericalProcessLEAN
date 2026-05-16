@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V19` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V20` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -50,6 +50,14 @@ The V19 packaging layer adds
 `Chewi1316StandardSourceMainStageObjectiveGapAutoHandoff` and its
 bounded/closed/compact `*_standardPath` endpoints, so future work should go
 straight to the terminal certificates consumed by that handoff.
+The V20 terminal count packet adds
+`chewi1316_large_parameter_condition_of_log_le`,
+`chewi1316_exists_large_parameter_condition_of_one_lt`,
+`chewi1316_exists_mainStageIndex_large_parameter_of_pos`, and
+`chewi1316_exists_mainStageIndex_large_parameter`, so large-parameter
+stopping/count is closed.  The remaining §13.16 terminal work is central-path
+optimality at the selected parameter and the barrier-step/lower-model
+certificates.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

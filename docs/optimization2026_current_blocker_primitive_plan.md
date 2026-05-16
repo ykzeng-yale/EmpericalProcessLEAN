@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V17`, this file's top
+   the full book is complete, route from `Live Goal Prompt V20`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V19
+## Live Goal Prompt V20
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -200,17 +200,27 @@ result: the local `chewi1316_objective_gap_le_eps_of_mainStageParameter_large`
 family already contains the main-stage closed-form/large-parameter API; no
 new mathlib geometric-series work was needed for this packet.
 
-Next theorem-sized target: discharge one genuine terminal certificate family
-for the V19 auto handoff rather than adding another wrapper.  Search first for
-already compiled terminal certificates:
-central-path optimality at the terminal parameter, barrier-step inequality,
-lower-model inequality, and large-parameter stopping/count lemmas near the
-existing `*_standardPath` wrappers, `chewi1316_objective_gap_le_eps_*`
-consumers, and finite-row slack-range objective-gap lemmas.  Formalize only the
-genuinely missing terminal certificates; the preliminary initializer,
-main-stage feasibility/decrement induction, and standard-path auto packaging
-are now closed.  Older paragraphs below are cached route history and must not
-override this V19 target.
+Current V20 packet discharges the large-parameter stopping/count terminal
+certificate family.  New compiled declarations:
+`chewi1316_large_parameter_condition_of_log_le`,
+`chewi1316_exists_large_parameter_condition_of_one_lt`,
+`chewi1316_exists_mainStageIndex_large_parameter_of_pos`, and
+`chewi1316_exists_mainStageIndex_large_parameter`.  Search-first result: the
+right reuse is the local scalar Archimedean lemma
+`chewi1316_exists_nat_mul_pos_ge` plus mathlib
+`Real.log_pos`, `Real.log_pow`, and `Real.log_le_log_iff`; no tendsto/geometric
+series API is needed for this terminal count certificate.
+
+Next theorem-sized target: discharge one of the remaining genuine terminal
+certificate families for the V19/V20 auto handoff: terminal central-path
+optimality at the selected parameter, the barrier-step inequality, or the
+lower-model inequality.  Do not redo large-parameter stopping/count,
+preliminary initialization, main-stage feasibility/decrement induction, or
+standard-path auto packaging.  Search first near existing `*_standardPath`
+wrappers, `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
+definitions, and finite-row slack-range objective-gap lemmas; then formalize
+only the genuinely missing terminal certificate.  Older paragraphs below are
+cached route history and must not override this V20 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
 slack-range §13.16 handoff now

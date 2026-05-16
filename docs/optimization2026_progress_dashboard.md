@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V19` near the top of
+  `Live Goal Prompt V20` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -64,11 +64,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_standardSourceMainStageObjectiveGapAutoHandoff_boundedClosedPolytope_standardPath`,
   and
   `chewi1316_standardSourceMainStageObjectiveGapAutoHandoff_compactClosedPolytope_standardPath`.
+  The V20 terminal count packet adds
+  `chewi1316_large_parameter_condition_of_log_le`,
+  `chewi1316_exists_large_parameter_condition_of_one_lt`,
+  `chewi1316_exists_mainStageIndex_large_parameter_of_pos`, and
+  `chewi1316_exists_mainStageIndex_large_parameter`, closing the
+  large-parameter stopping/count certificate by reusing
+  `chewi1316_exists_nat_mul_pos_ge` and mathlib log monotonicity/power APIs.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
   `hxseq_mem` or per-step decrement premise.  Next proof target: discharge one
-  genuine terminal certificate family for the V19 handoff: terminal centrality,
-  barrier-step/lower-model, or large-parameter stopping/count.
+  remaining terminal certificate family for the V19/V20 handoff: terminal
+  centrality or barrier-step/lower-model.  Do not repeat large-parameter
+  stopping/count.
 - Cached Chapter 13 frontier history: the finite-row slack-range §13.16 handoff now
   compiles through source-pullback decrement transport and a point-dependent
   range sqrt-coordinate one-step wrapper.  New reusable declarations are

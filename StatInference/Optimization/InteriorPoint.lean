@@ -15117,6 +15117,113 @@ theorem chewi1316_exists_nat_mul_pos_ge {A scale : ℝ}
   exact (div_le_iff₀ hscale_pos).mp hN
 
 /--
+Turning the source logarithmic stopping certificate
+`log (target / (eps * tMain)) ≤ N log r` into the large-parameter
+inequality used by the final objective-gap bound.
+-/
+theorem chewi1316_large_parameter_condition_of_log_le
+    {r tMain eps target : ℝ} {N : ℕ}
+    (hr_pos : 0 < r)
+    (htMain_pos : 0 < tMain)
+    (heps_pos : 0 < eps)
+    (htarget_pos : 0 < target)
+    (hlog :
+      Real.log (target / (eps * tMain)) ≤
+        (N : ℝ) * Real.log r) :
+    target ≤ eps * (r ^ N * tMain) := by
+  have hden_pos : 0 < eps * tMain := mul_pos heps_pos htMain_pos
+  have hratio_pos : 0 < target / (eps * tMain) :=
+    div_pos htarget_pos hden_pos
+  have hrpow_pos : 0 < r ^ N := pow_pos hr_pos N
+  have hlogpow :
+      Real.log (target / (eps * tMain)) ≤ Real.log (r ^ N) := by
+    calc
+      Real.log (target / (eps * tMain))
+          ≤ (N : ℝ) * Real.log r := hlog
+      _ = Real.log (r ^ N) := by
+        rw [Real.log_pow]
+  have hratio_le : target / (eps * tMain) ≤ r ^ N :=
+    (Real.log_le_log_iff hratio_pos hrpow_pos).mp hlogpow
+  have hmul :=
+    mul_le_mul_of_nonneg_right hratio_le hden_pos.le
+  have hleft :
+      target / (eps * tMain) * (eps * tMain) = target := by
+    field_simp [hden_pos.ne']
+  have hright :
+      r ^ N * (eps * tMain) = eps * (r ^ N * tMain) := by
+    ring
+  simpa [hleft, hright] using hmul
+
+/--
+For any growth factor `r > 1`, a positive start parameter eventually satisfies
+the large-parameter stopping inequality.
+-/
+theorem chewi1316_exists_large_parameter_condition_of_one_lt
+    {r tMain eps target : ℝ}
+    (hone_lt_r : 1 < r)
+    (htMain_pos : 0 < tMain)
+    (heps_pos : 0 < eps)
+    (htarget_pos : 0 < target) :
+    ∃ N : ℕ, target ≤ eps * (r ^ N * tMain) := by
+  have hr_pos : 0 < r := zero_lt_one.trans hone_lt_r
+  have hlog_pos : 0 < Real.log r := Real.log_pos hone_lt_r
+  obtain ⟨N, hN⟩ :=
+    chewi1316_exists_nat_mul_pos_ge
+      (A := Real.log (target / (eps * tMain)))
+      (scale := Real.log r) hlog_pos
+  exact
+    ⟨N,
+      chewi1316_large_parameter_condition_of_log_le
+        (r := r) (tMain := tMain) (eps := eps) (target := target)
+        (N := N) hr_pos htMain_pos heps_pos htarget_pos hN⟩
+
+/--
+Chewi 13.16 main-stage large-parameter stopping certificate for a positive
+self-concordance parameter `nu`.
+-/
+theorem chewi1316_exists_mainStageIndex_large_parameter_of_pos
+    {nu c0 tMain eps : ℝ}
+    (hnu_pos : 0 < nu)
+    (hc0_pos : 0 < c0)
+    (htMain_pos : 0 < tMain)
+    (heps_pos : 0 < eps) :
+    ∃ Nmain : ℕ,
+      2 * nu ≤
+        eps * ((1 + c0 / Real.sqrt nu) ^ Nmain * tMain) := by
+  have hsqrt_pos : 0 < Real.sqrt nu := Real.sqrt_pos.2 hnu_pos
+  have hdelta_pos : 0 < c0 / Real.sqrt nu :=
+    div_pos hc0_pos hsqrt_pos
+  have hone_lt : 1 < 1 + c0 / Real.sqrt nu := by
+    linarith
+  have htarget_pos : 0 < 2 * nu := by
+    nlinarith
+  exact
+    chewi1316_exists_large_parameter_condition_of_one_lt
+      (r := 1 + c0 / Real.sqrt nu) (tMain := tMain)
+      (eps := eps) (target := 2 * nu)
+      hone_lt htMain_pos heps_pos htarget_pos
+
+/--
+Specialized Chewi 13.16 large-parameter stopping certificate with `nu = m`
+for a nonempty polytope constraint count.
+-/
+theorem chewi1316_exists_mainStageIndex_large_parameter
+    {m : ℕ} (hm : 0 < m) {c0 tMain eps : ℝ}
+    (hc0_pos : 0 < c0)
+    (htMain_pos : 0 < tMain)
+    (heps_pos : 0 < eps) :
+    ∃ Nmain : ℕ,
+      2 * (m : ℝ) ≤
+        eps *
+          ((1 + c0 / Real.sqrt (m : ℝ)) ^ Nmain * tMain) := by
+  have hm_real_pos : 0 < (m : ℝ) := by
+    exact_mod_cast hm
+  exact
+    chewi1316_exists_mainStageIndex_large_parameter_of_pos
+      (nu := (m : ℝ)) (c0 := c0) (tMain := tMain) (eps := eps)
+      hm_real_pos hc0_pos htMain_pos heps_pos
+
+/--
 There is always a natural `M` satisfying the source-shaped preliminary
 tail-bound logarithmic choice.
 -/
