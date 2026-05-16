@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V29` near the top of
+  `Live Goal Prompt V30` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -155,14 +155,24 @@ This dashboard tracks the Chewi optimization formalization lane for
   for terminal standard-path feasibility/decrement, so the concrete
   preliminary-to-main-stage wrapper no longer needs supplied `hlower` or a
   manually supplied barrier-step premise.
+  The V30 packaging packet adds
+  `Chewi1316StandardSourceMainStageObjectiveGapMixedThirdAutoHandoff`,
+  `chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_of_preliminaryInit`,
+  `chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_boundedFeasibleRange_standardPath`,
+  `chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_boundedPolytope_standardPath`,
+  `chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_boundedClosedPolytope_standardPath`,
+  and
+  `chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_compactClosedPolytope_standardPath`.
+  This is now the preferred Chapter 13 standard-path handoff when `center` and
+  `optimum` are feasible: the call surface has centrality and the
+  large-parameter stopping inequality, but no supplied `hlower`,
+  barrier-step, membership, or decrement premise.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: package this
-  mixed-third/no-`hlower` theorem into a named standard auto-handoff and push
-  it through the bounded/closed/compact standard-path endpoint family.  Then
-  use the V20 large-parameter selection lemmas where an existential terminal
-  index is needed; centrality of the selected terminal center remains the real
-  mathematical certificate.
+  `hxseq_mem` or per-step decrement premise.  Next proof target: use the V20
+  large-parameter selection lemmas to build an existential terminal-main-stage
+  wrapper for the V30 handoff; centrality of the selected terminal center
+  remains the real mathematical certificate.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge

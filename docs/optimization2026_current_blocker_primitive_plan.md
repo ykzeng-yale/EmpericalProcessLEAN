@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V29`, this file's top
+   the full book is complete, route from `Live Goal Prompt V30`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V29
+## Live Goal Prompt V30
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -343,10 +343,25 @@ to supply terminal range feasibility and decrement, then calls the V29
 zero-safe endpoint; the active standard preliminary-to-main handoff no longer
 needs a supplied `hlower` or a manually supplied barrier-step premise.
 
-Next theorem-sized target: package the V29 theorem into a named
-mixed-third/no-`hlower` standard auto-handoff and propagate it through the
-bounded/closed/compact standard-path endpoint family.  After that, use the V20
-large-parameter index-selection lemmas to choose `Nmain` where appropriate.
+Current V30 packet packages the V29 theorem into the named no-`hlower`
+standard auto-handoff family.  New compiled declarations:
+`Chewi1316StandardSourceMainStageObjectiveGapMixedThirdAutoHandoff`,
+`chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_of_preliminaryInit`,
+`chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_boundedFeasibleRange_standardPath`,
+`chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_boundedPolytope_standardPath`,
+`chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_boundedClosedPolytope_standardPath`, and
+`chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_compactClosedPolytope_standardPath`.
+Search-first result: the existing V19 bounded/closed/compact standard-path
+endpoint shapes are shallow constructors over the preliminary initializer, so
+the new packet reuses those exact initializer theorems and changes only the
+main-stage handoff surface.  The mixed-third auto-handoff stores terminal
+feasibility of `center` and `optimum`, then exposes only centrality and the
+large-parameter stopping inequality at the terminal main-stage call.
+
+Next theorem-sized target: use the V20 large-parameter index-selection lemmas
+to build an existential terminal-main-stage wrapper for the V30 handoff, so a
+caller supplying terminal centrality can obtain some `Nmain` with the displayed
+`eps` objective gap without separately proving the large-parameter inequality.
 The remaining genuine terminal mathematical certificate is centrality of the
 selected `center` for the terminal parameter; do not obscure it behind another
 supplied lower-model interface.

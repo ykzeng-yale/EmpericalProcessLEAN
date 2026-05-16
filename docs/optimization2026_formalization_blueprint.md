@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V29` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V30` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -128,9 +128,13 @@ and the standard-main-stage wrapper
 It reuses `chewi1316_central_objective_gap_le` for the `center = x` branch and
 V18 standard-path terminal feasibility/decrement, so the concrete standard
 preliminary-to-main route no longer needs supplied `hlower` or barrier-step
-premises.  Next finite-row work should package this no-`hlower` route into the
-standard auto-handoff endpoint family and then use V20 large-parameter
-selection where an existential terminal main-stage index is needed.
+premises.  The V30 packet packages this route into
+`Chewi1316StandardSourceMainStageObjectiveGapMixedThirdAutoHandoff` and its
+bounded feasible-range, bounded source-polytope, bounded closed-polytope, and
+compact closed-polytope standard-path constructors.  Next finite-row work
+should use V20 large-parameter selection where an existential terminal
+main-stage index is needed; centrality of the selected terminal center remains
+the real mathematical certificate.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the
