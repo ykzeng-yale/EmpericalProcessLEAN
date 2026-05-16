@@ -6893,6 +6893,101 @@ theorem durrett2019_theorem_2_5_11_logWeight_summable_of_condensed_pseries_bound
       (hpseries.of_norm_bounded_eventually_nat hbound)
 
 /--
+Durrett 2019, Theorem 2.5.11 support: the dyadic condensed logarithmic
+weights are eventually bounded by the `p`-series majorant obtained from
+`log (2^k + 2) >= k log 2`.
+-/
+theorem durrett2019_theorem_2_5_11_logWeight_condensed_pseries_bound
+    {epsilon : ℝ} (hepsilon_pos : 0 < epsilon) :
+    ∀ᶠ k : ℕ in atTop,
+      ‖(2 : ℝ) ^ k *
+          durrett2019_theorem_2_5_11_logWeight epsilon ((2 : ℕ) ^ k)‖ ≤
+        ((Real.log (2 : ℝ)) ^ (-(1 + 2 * epsilon))) *
+          ((k : ℝ) ^ (-(1 + 2 * epsilon))) := by
+  filter_upwards [eventually_ge_atTop 1] with k hk
+  set p : ℝ := 1 + 2 * epsilon
+  have hp_pos : 0 < p := by
+    dsimp [p]
+    nlinarith
+  have hp_nonneg : 0 ≤ p := le_of_lt hp_pos
+  have hneg_nonpos : -p ≤ 0 := by nlinarith
+  have hk_pos_nat : 0 < k := by omega
+  have hk_pos : 0 < (k : ℝ) := by exact_mod_cast hk_pos_nat
+  have hlog_two_pos : 0 < Real.log (2 : ℝ) :=
+    Real.log_pos (by norm_num : (1 : ℝ) < 2)
+  have htwo_pow_pos : 0 < (2 : ℝ) ^ k :=
+    pow_pos (by norm_num : (0 : ℝ) < 2) k
+  let N : ℝ := (((2 : ℕ) ^ k + 2 : ℕ) : ℝ)
+  have hN_pos : 0 < N := by
+    dsimp [N]
+    positivity
+  have hN_ge_pow : (2 : ℝ) ^ k ≤ N := by
+    dsimp [N]
+    rw [Nat.cast_add, Nat.cast_pow]
+    norm_num
+  have hlog_pow :
+      Real.log ((2 : ℝ) ^ k) = (k : ℝ) * Real.log (2 : ℝ) := by
+    exact Real.log_pow (2 : ℝ) k
+  have hlog_lower :
+      (k : ℝ) * Real.log (2 : ℝ) ≤ Real.log N := by
+    rw [← hlog_pow]
+    exact Real.log_le_log htwo_pow_pos hN_ge_pow
+  have hbase_pos : 0 < (k : ℝ) * Real.log (2 : ℝ) :=
+    mul_pos hk_pos hlog_two_pos
+  have hlogN_pos : 0 < Real.log N :=
+    lt_of_lt_of_le hbase_pos hlog_lower
+  have hlogWeight_eq :
+      durrett2019_theorem_2_5_11_logWeight epsilon ((2 : ℕ) ^ k) =
+        N⁻¹ * (Real.log N) ^ (-p) := by
+    rw [durrett2019_theorem_2_5_11_logWeight]
+    have hlog_nonneg : 0 ≤ Real.log N := le_of_lt hlogN_pos
+    rw [Real.rpow_neg hlog_nonneg p]
+    dsimp [N, p]
+    ring
+  have hfactor_le_one : (2 : ℝ) ^ k / N ≤ 1 := by
+    rw [div_le_one₀ hN_pos]
+    exact hN_ge_pow
+  have hlog_rpow_nonneg : 0 ≤ (Real.log N) ^ (-p) :=
+    Real.rpow_nonneg (le_of_lt hlogN_pos) (-p)
+  have hterm_nonneg :
+      0 ≤ (2 : ℝ) ^ k *
+        durrett2019_theorem_2_5_11_logWeight epsilon ((2 : ℕ) ^ k) := by
+    exact
+      mul_nonneg (le_of_lt htwo_pow_pos)
+        (le_of_lt
+          (durrett2019_theorem_2_5_11_logWeight_pos epsilon ((2 : ℕ) ^ k)))
+  calc
+    ‖(2 : ℝ) ^ k *
+        durrett2019_theorem_2_5_11_logWeight epsilon ((2 : ℕ) ^ k)‖
+        = (2 : ℝ) ^ k *
+            durrett2019_theorem_2_5_11_logWeight epsilon ((2 : ℕ) ^ k) := by
+          exact Real.norm_of_nonneg hterm_nonneg
+    _ = ((2 : ℝ) ^ k / N) * (Real.log N) ^ (-p) := by
+          rw [hlogWeight_eq]
+          ring
+    _ ≤ 1 * (Real.log N) ^ (-p) := by
+          exact mul_le_mul_of_nonneg_right hfactor_le_one hlog_rpow_nonneg
+    _ = (Real.log N) ^ (-p) := by ring
+    _ ≤ ((k : ℝ) * Real.log (2 : ℝ)) ^ (-p) := by
+          exact Real.rpow_le_rpow_of_nonpos hbase_pos hlog_lower hneg_nonpos
+    _ = ((Real.log (2 : ℝ)) ^ (-(1 + 2 * epsilon))) *
+          ((k : ℝ) ^ (-(1 + 2 * epsilon))) := by
+          rw [Real.mul_rpow (le_of_lt hk_pos) (le_of_lt hlog_two_pos)]
+          simp [p, mul_comm]
+
+/--
+Durrett 2019, Theorem 2.5.11 support: the logarithmic weight series is
+summable for every positive `epsilon`.
+-/
+theorem durrett2019_theorem_2_5_11_logWeight_summable
+    {epsilon : ℝ} (hepsilon_pos : 0 < epsilon) :
+    Summable (durrett2019_theorem_2_5_11_logWeight epsilon) :=
+  durrett2019_theorem_2_5_11_logWeight_summable_of_condensed_pseries_bound
+    hepsilon_pos
+    (durrett2019_theorem_2_5_11_logWeight_condensed_pseries_bound
+      hepsilon_pos)
+
+/--
 Durrett 2019, Theorem 2.5.11 support: the textbook logarithmic summability
 display gives summability of the inverse-square normalizer weights used by the
 random-series bridge.
@@ -6952,6 +7047,32 @@ theorem durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_varianc
       (epsilon := epsilon) hepsilon_pos)
     (durrett2019_theorem_2_5_11_logNormalizer_atTop
       (epsilon := epsilon) hepsilon_pos)
+
+/--
+Durrett 2019, Theorem 2.5.11 source-shaped bridge: the exact logarithmic
+normalizer and a uniform finite-variance bound imply the logarithmic a.s. rate
+for every positive `epsilon`.
+-/
+theorem durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound_of_pos_epsilon
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {C epsilon : ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_mem : ∀ k : ℕ, MemLp (X k) (2 : ℝ≥0∞) P)
+    (hX_zero : ∀ k : ℕ, ∫ ω, X k ω ∂P = 0)
+    (hvar_bound :
+      ∀ k : ℕ, _root_.ProbabilityTheory.variance (X k) P ≤ C)
+    (hepsilon_pos : 0 < epsilon) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+            durrett2019_theorem_2_5_11_logNormalizer epsilon (n + 1))
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound
+    (P := P) (X := X) (C := C) (epsilon := epsilon)
+    hX_indep hX_meas hX_mem hX_zero hvar_bound hepsilon_pos
+    (durrett2019_theorem_2_5_11_logWeight_summable hepsilon_pos)
 
 /--
 Durrett 2019, Theorem 2.5.11 support: identical distribution propagates the
@@ -7016,6 +7137,32 @@ theorem durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_fin
     (durrett2019_theorem_2_5_11_variance_bound_of_identDistrib
       (P := P) (X := X) hident)
     hepsilon_pos hlog_weight_summable
+
+/--
+Durrett 2019, Theorem 2.5.11 source-shaped bridge: iid mean-zero variables
+with one finite second moment satisfy the logarithmic a.s. rate for every
+positive `epsilon`.
+-/
+theorem durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance_of_pos_epsilon
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {epsilon : ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_mem : MemLp (X 0) (2 : ℝ≥0∞) P)
+    (hX_zero : ∀ k : ℕ, ∫ ω, X k ω ∂P = 0)
+    (hident :
+      ∀ k : ℕ, _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hepsilon_pos : 0 < epsilon) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+            durrett2019_theorem_2_5_11_logNormalizer epsilon (n + 1))
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance
+    (P := P) (X := X) (epsilon := epsilon)
+    hX_indep hX_meas hX0_mem hX_zero hident hepsilon_pos
+    (durrett2019_theorem_2_5_11_logWeight_summable hepsilon_pos)
 
 /--
 Durrett 2019, Theorem 2.5.11 source-shaped bridge: the iid finite-variance

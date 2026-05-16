@@ -27,17 +27,18 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V419`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V420`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V419 packages
-Durrett Theorem 2.5.11's exact logarithmic normalizer layer, the
-source-shaped finite-variance bridge, and the iid finite-second-moment source
-wrapper, plus the Cauchy-condensation and p-series reduction for the remaining
-logarithmic-series proof.  New compiled anchors through V419:
+consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V420 closes the
+current source-shaped Durrett Theorem 2.5.11 route: exact logarithmic
+normalizer, source finite-variance bridge, iid finite-second-moment wrapper,
+Cauchy-condensation/p-series comparison, and the final positive-`epsilon`
+theorems without an external logarithmic-series summability hypothesis all
+compile.  New compiled anchors through V420:
 `durrett2019_theorem_2_5_11_logNormalizer`,
 `durrett2019_theorem_2_5_11_logNormalizer_pos`,
 `durrett2019_theorem_2_5_11_logNormalizer_ne_zero`,
@@ -58,14 +59,21 @@ logarithmic-series proof.  New compiled anchors through V419:
 `durrett2019_theorem_2_5_11_logWeight_summable_of_condensed`,
 `durrett2019_theorem_2_5_11_logWeight_summable_of_condensed_pseries_bound`,
 and
-`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance_condensed`.
-The next source work is the remaining log-series summability theorem for
-`durrett2019_theorem_2_5_11_logWeight epsilon` under `epsilon > 0`, now
-reduced to the eventual dyadic p-series bound displayed in the current blocker
-plan; once it is compiled, remove the explicit summability hypothesis from the
-iid source theorem.
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance_condensed`,
+`durrett2019_theorem_2_5_11_logWeight_condensed_pseries_bound`,
+`durrett2019_theorem_2_5_11_logWeight_summable`,
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound_of_pos_epsilon`,
+and
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance_of_pos_epsilon`.
+The next source work is Durrett Theorem 2.5.12: start the
+Marcinkiewicz-Zygmund `1 < p < 2` rate by defining the moving truncation at
+`k^(1/p)` and proving the reusable measurability, independence,
+Borel-Cantelli/eventual-equality, and Kronecker-normalizer support before the
+heavier variance-tail integral estimate.
 
-Verified route history below is provenance, not live prompt text.  V418
+Verified route history below is provenance, not live prompt text.  V419
+packages the Cauchy-condensation and p-series reduction for Theorem 2.5.11's
+logarithmic-series proof.  V418
 packages the iid finite-second-moment source layer for Theorem 2.5.11.  V417
 packages Durrett Theorem 2.5.11's exact logarithmic normalizer layer and the
 source-shaped finite-variance bridge.  V416

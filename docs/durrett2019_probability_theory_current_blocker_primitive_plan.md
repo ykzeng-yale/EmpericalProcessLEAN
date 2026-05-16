@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V419
+## Live In-Thread Goal Prompt V420
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -13,21 +13,34 @@ below are provenance, not prompt text.
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
 in `StatInference/ProbabilityTheory/Basic.lean`.  Theorem 2.5.11 now has the
-exact logarithmic normalizer layer: `a_n = sqrt n * (log n)^(1/2 + epsilon)`
-for `n >= 2`, with `a_1 = a_2`; positivity, nonzero, monotone-increment,
-`atTop`, inverse-square algebra, shifted log-weight summability transfer,
-source-shaped finite-variance and iid finite-second-moment bridges, and the
-Cauchy-condensation reduction all compile.  Next aggressive target: prove the
-eventual dyadic p-series bound
-`‖2^k * logWeight epsilon (2^k)‖ <= (log 2)^(-(1+2 epsilon)) *
-k^(-(1+2 epsilon))` for `epsilon > 0`, using the algebra
-`2^k / (2^k + 2) <= 1` and `log(2^k + 2) >= k * log 2`; then call
-`durrett2019_theorem_2_5_11_logWeight_summable_of_condensed_pseries_bound`
-to remove the explicit `Summable (durrett2019_theorem_2_5_11_logWeight
-epsilon)` assumption from the front-facing iid source theorem.  Do not route
-back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10, V416 abstract plumbing,
-V417 normalizer plumbing, V418 iid variance/source packaging, or V419
-condensation plumbing unless search proves a concrete missing source display.
+full source-shaped logarithmic-rate theorem for iid mean-zero variables with
+one finite second moment and every `epsilon > 0`; the logarithmic summability
+display is proved, so no separate summability assumption remains in the final
+source theorem.  Next aggressive target: start Durrett Theorem 2.5.12
+Marcinkiewicz-Zygmund rate for `1 < p < 2`, first by defining the moving
+truncation `Y_k = X_k 1_{|X_k| <= k^(1/p)}` and proving the reusable source
+plumbing: fixed/base identical-distribution tail mismatch via
+Borel-Cantelli, measurability/independence of the truncations, and the
+deterministic Kronecker endpoint with normalizer `a_n = n^(1/p)`.  Reuse V406
+random-series convergence, V410 Kronecker normalization, V412-V415 moving
+truncation/eventual-equality infrastructure, and mathlib p-series/integral
+tail APIs before adding local real-analysis lemmas.  Do not route back to
+Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10, V416-V420 Theorem 2.5.11
+plumbing, or old app-level stale prompts unless search proves a concrete
+missing source display.
+
+Latest verified target V420 closes the Durrett Theorem 2.5.11 logarithmic
+series and packages source theorems without a separate summability hypothesis.
+New compiled anchors:
+`durrett2019_theorem_2_5_11_logWeight_condensed_pseries_bound`,
+`durrett2019_theorem_2_5_11_logWeight_summable`,
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound_of_pos_epsilon`,
+and
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance_of_pos_epsilon`.
+The proof uses mathlib Cauchy condensation and p-series results from V419,
+plus the dyadic comparison
+`log(2^k + 2) >= k * log 2`.  Theorem 2.5.11 is now closed at the source
+wrapper level currently targeted by this lane.
 
 Latest verified target V419 packages the Cauchy-condensation route for Durrett
 Theorem 2.5.11's logarithmic series.  New compiled anchors:
