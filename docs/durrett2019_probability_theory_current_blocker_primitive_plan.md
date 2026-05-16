@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V394
+## Live In-Thread Goal Prompt V395
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -14,11 +14,26 @@ Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Theorem 2.5.5 Kolmogorov maximal
 inequality in `StatInference/ProbabilityTheory/Basic.lean`.  Reuse the
 compiled Chapter 2.1 independence/product-expectation bridges and the
-V391-V394 first-crossing infrastructure; do not route back to Theorem 2.4.9
+V391-V395 first-crossing infrastructure; do not route back to Theorem 2.4.9
 unless search proves a concrete missing source display.
 
-Latest verified target V394 adds the maximal-crossing decomposition and summed
-first-crossing lower bound:
+Latest verified target V395 adds the square-expansion upper-comparison layer:
+`durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_add_mixed_le_terminalSq`,
+`durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral_of_mixed_zero`,
+`durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral`,
+`durrett2019_theorem_2_5_5_sum_firstCrossing_stoppedSq_integrals_le_sum_terminalSq_integrals`,
+and the matching one-based wrappers.  The source proof now has both
+`x^2 * P(max crossing) <= sum_m integral_{A_m} S_m^2` and
+`sum_m integral_{A_m} S_m^2 <= sum_m integral_{A_m} S_n^2`.
+Next aggressive target: prove finite disjoint integral splitting / monotonicity
+for the terminal square,
+`sum_m integral_{A_m} S_n^2 <= integral S_n^2`, then chain V394 and V395 into
+the full Theorem 2.5.5 maximal-inequality display.
+
+## Recent Verified Route Notes
+
+V394 adds the maximal-crossing decomposition and summed first-crossing lower
+bound:
 `durrett2019_theorem_2_5_5_maxCrossingEvent`,
 `durrett2019_theorem_2_5_5_firstCrossing_biUnion_eq_maxCrossingEvent`,
 `durrett2019_theorem_2_5_5_measurableSet_maxCrossingEvent`,
@@ -27,13 +42,9 @@ first-crossing lower bound:
 and matching one-based wrappers.  The probability side of the textbook proof
 now reaches
 `x^2 * P(max_{1 <= k <= n} |S_k| >= x) <= sum_k integral_{A_k} S_k^2`.
-Next aggressive target: prove the complementary upper comparison
-`sum_k integral_{A_k} S_k^2 <= integral S_n^2` using the square expansion
-`S_n^2 = S_k^2 + 2 * S_k * (S_n - S_k) + (S_n - S_k)^2`, the V391 mixed-term
-zero, nonnegativity of the final square, and finite disjoint-union integral
-splitting; then package the full Theorem 2.5.5 maximal-inequality display.
-
-## Recent Verified Route Notes
+V395 now supplies the complementary summed stopped-square upper comparison
+against the sum of terminal-square integrals over the same first-crossing
+events.
 
 V393 adds the finite first-crossing disjoint-union layer:
 `durrett2019_theorem_2_5_5_measurableSet_firstCrossingEvent`,
@@ -3303,6 +3314,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V394` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V395` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

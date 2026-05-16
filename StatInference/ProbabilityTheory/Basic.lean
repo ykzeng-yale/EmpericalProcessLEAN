@@ -1949,6 +1949,402 @@ theorem durrett2019_theorem_2_5_5_firstCrossing_mixed_integral_eq_zero_oneBased
       hShift_indep (fun i => hX_meas (i + 1)) hmn hX_int hzero x
 
 /--
+Durrett 2019, Theorem 2.5.5 support: pointwise square expansion on a
+first-crossing event.  The mixed term is written in the same early-block
+indicator form used by the independence/mixed-term-zero theorem.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_add_mixed_le_terminalSq
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {m n : ℕ} {x : ℝ} :
+    ∀ ω : Ω,
+      Set.indicator
+          {ω' : Ω |
+            (fun i : Finset.range m => X i ω') ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+          (fun ω' : Ω => (∑ i : Finset.range m, X i ω') ^ 2) ω +
+        ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+            Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+              (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+              (fun i : Finset.range m => X i ω)) *
+          ((∑ k ∈ Finset.range n, X k ω) -
+            ∑ k ∈ Finset.range m, X k ω) ≤
+        Set.indicator
+          {ω' : Ω |
+            (fun i : Finset.range m => X i ω') ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+          (fun ω' : Ω => (∑ k ∈ Finset.range n, X k ω') ^ 2) ω := by
+  intro ω
+  by_cases hω :
+      (fun i : Finset.range m => X i ω) ∈
+        durrett2019_theorem_2_5_5_firstCrossingBlockSet m x
+  · have hω_event :
+        ω ∈
+          {ω' : Ω |
+            (fun i : Finset.range m => X i ω') ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x} := hω
+    have hattach :
+        (∑ i : Finset.range m, X i ω) =
+          ∑ k ∈ Finset.range m, X k ω := by
+      simpa using
+        (Finset.sum_attach (Finset.range m) (fun k : ℕ => X k ω))
+    let Sm : ℝ := ∑ k ∈ Finset.range m, X k ω
+    let Sn : ℝ := ∑ k ∈ Finset.range n, X k ω
+    have hineq : Sm ^ 2 + (2 * Sm) * (Sn - Sm) ≤ Sn ^ 2 := by
+      nlinarith [sq_nonneg (Sn - Sm)]
+    have hineq' :
+        (∑ i : Finset.range m, X i ω) ^ 2 +
+            (2 * (∑ i : Finset.range m, X i ω)) *
+              (Sn - ∑ k ∈ Finset.range m, X k ω) ≤
+          Sn ^ 2 := by
+      rw [hattach]
+      simpa [Sm] using hineq
+    simpa [Set.indicator_of_mem hω, Set.indicator_of_mem hω_event, Sn]
+      using hineq'
+  · have hω_event :
+        ω ∉
+          {ω' : Ω |
+            (fun i : Finset.range m => X i ω') ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x} := hω
+    simp [Set.indicator_of_notMem hω, Set.indicator_of_notMem hω_event]
+
+/--
+Durrett 2019, Theorem 2.5.5 support: if the first-crossing mixed term has
+zero integral, then the stopped-square integral on `A_m` is bounded by the
+terminal-square integral restricted to the same event.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral_of_mixed_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {m n : ℕ} {x : ℝ}
+    (hmixed_zero :
+      ∫ ω, ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+          Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+            (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+            (fun i : Finset.range m => X i ω)) *
+        ((∑ k ∈ Finset.range n, X k ω) -
+          ∑ k ∈ Finset.range m, X k ω) ∂P = 0)
+    (hstopped_int :
+      Integrable
+        (fun ω =>
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X i ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ i : Finset.range m, X i ω') ^ 2) ω) P)
+    (hmixed_int :
+      Integrable
+        (fun ω =>
+          ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+              Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+                (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+                (fun i : Finset.range m => X i ω)) *
+            ((∑ k ∈ Finset.range n, X k ω) -
+              ∑ k ∈ Finset.range m, X k ω)) P)
+    (hterminal_int :
+      Integrable
+        (fun ω =>
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X i ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ k ∈ Finset.range n, X k ω') ^ 2) ω) P) :
+    ∫ ω,
+        Set.indicator
+          {ω' : Ω |
+            (fun i : Finset.range m => X i ω') ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+          (fun ω' : Ω => (∑ i : Finset.range m, X i ω') ^ 2) ω ∂P ≤
+      ∫ ω,
+        Set.indicator
+          {ω' : Ω |
+            (fun i : Finset.range m => X i ω') ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+          (fun ω' : Ω => (∑ k ∈ Finset.range n, X k ω') ^ 2) ω ∂P := by
+  let stopped : Ω -> ℝ := fun ω =>
+    Set.indicator
+      {ω' : Ω |
+        (fun i : Finset.range m => X i ω') ∈
+          durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+      (fun ω' : Ω => (∑ i : Finset.range m, X i ω') ^ 2) ω
+  let mixed : Ω -> ℝ := fun ω =>
+    ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+        Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+          (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X i ω)) *
+      ((∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω)
+  let terminal : Ω -> ℝ := fun ω =>
+    Set.indicator
+      {ω' : Ω |
+        (fun i : Finset.range m => X i ω') ∈
+          durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+      (fun ω' : Ω => (∑ k ∈ Finset.range n, X k ω') ^ 2) ω
+  have hsum_int : Integrable (fun ω => stopped ω + mixed ω) P := by
+    exact hstopped_int.add hmixed_int
+  have hpoint : ∀ ω : Ω, stopped ω + mixed ω ≤ terminal ω := by
+    intro ω
+    exact
+      durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_add_mixed_le_terminalSq
+        (X := X) (m := m) (n := n) (x := x) ω
+  calc
+    ∫ ω, stopped ω ∂P =
+        ∫ ω, stopped ω + mixed ω ∂P := by
+          rw [integral_add hstopped_int hmixed_int]
+          have hmixed_zero' : ∫ ω, mixed ω ∂P = 0 := by
+            simpa [mixed] using hmixed_zero
+          rw [hmixed_zero', add_zero]
+    _ ≤ ∫ ω, terminal ω ∂P :=
+        integral_mono hsum_int hterminal_int hpoint
+
+/--
+Durrett 2019, Theorem 2.5.5 support: source-shaped upper comparison for one
+first-crossing event, using the compiled Chapter 2.1 independence and
+zero-mean mixed-term bridge.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X i) P)
+    (hzero : ∀ i ∈ Finset.Ico m n, ∫ ω, X i ω ∂P = 0)
+    (x : ℝ)
+    (hstopped_int :
+      Integrable
+        (fun ω =>
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X i ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ i : Finset.range m, X i ω') ^ 2) ω) P)
+    (hmixed_int :
+      Integrable
+        (fun ω =>
+          ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+              Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+                (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+                (fun i : Finset.range m => X i ω)) *
+            ((∑ k ∈ Finset.range n, X k ω) -
+              ∑ k ∈ Finset.range m, X k ω)) P)
+    (hterminal_int :
+      Integrable
+        (fun ω =>
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X i ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ k ∈ Finset.range n, X k ω') ^ 2) ω) P) :
+    ∫ ω,
+        Set.indicator
+          {ω' : Ω |
+            (fun i : Finset.range m => X i ω') ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+          (fun ω' : Ω => (∑ i : Finset.range m, X i ω') ^ 2) ω ∂P ≤
+      ∫ ω,
+        Set.indicator
+          {ω' : Ω |
+            (fun i : Finset.range m => X i ω') ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+          (fun ω' : Ω => (∑ k ∈ Finset.range n, X k ω') ^ 2) ω ∂P :=
+  durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral_of_mixed_zero
+    (P := P) (X := X)
+    (durrett2019_theorem_2_5_5_firstCrossing_mixed_integral_eq_zero
+      (P := P) (X := X) hX_indep hX_meas hmn hX_int hzero x)
+    hstopped_int hmixed_int hterminal_int
+
+/--
+Durrett 2019, Theorem 2.5.5 support in one-based textbook notation:
+source-shaped upper comparison for one first-crossing event of
+`X_1, X_2, ...`.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X (i + 1)) P)
+    (hzero : ∀ i ∈ Finset.Ico m n, ∫ ω, X (i + 1) ω ∂P = 0)
+    (x : ℝ)
+    (hstopped_int :
+      Integrable
+        (fun ω =>
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X (i + 1) ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ i : Finset.range m, X (i + 1) ω') ^ 2) ω) P)
+    (hmixed_int :
+      Integrable
+        (fun ω =>
+          ((2 : ℝ) * (∑ i : Finset.range m, X (i + 1) ω) *
+              Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+                (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+                (fun i : Finset.range m => X (i + 1) ω)) *
+            ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+              ∑ k ∈ Finset.range m, X (k + 1) ω)) P)
+    (hterminal_int :
+      Integrable
+        (fun ω =>
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X (i + 1) ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ k ∈ Finset.range n, X (k + 1) ω') ^ 2) ω) P) :
+    ∫ ω,
+        Set.indicator
+          {ω' : Ω |
+            (fun i : Finset.range m => X (i + 1) ω') ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+          (fun ω' : Ω => (∑ i : Finset.range m, X (i + 1) ω') ^ 2) ω ∂P ≤
+      ∫ ω,
+        Set.indicator
+          {ω' : Ω |
+            (fun i : Finset.range m => X (i + 1) ω') ∈
+              durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+          (fun ω' : Ω => (∑ k ∈ Finset.range n, X (k + 1) ω') ^ 2) ω ∂P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  exact
+    durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral
+      (P := P) (X := fun i => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => hX_meas (i + 1)) hmn hX_int hzero x
+      hstopped_int hmixed_int hterminal_int
+
+/--
+Durrett 2019, Theorem 2.5.5 support: summing the first-crossing upper
+comparison over `1, ..., n` bounds the stopped-square sum by the corresponding
+terminal-square sum.
+-/
+theorem durrett2019_theorem_2_5_5_sum_firstCrossing_stoppedSq_integrals_le_sum_terminalSq_integrals
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {n : ℕ} (x : ℝ)
+    (hX_int :
+      ∀ m ∈ Finset.Icc 1 n, ∀ i ∈ Finset.Ico m n, Integrable (X i) P)
+    (hzero :
+      ∀ m ∈ Finset.Icc 1 n, ∀ i ∈ Finset.Ico m n, ∫ ω, X i ω ∂P = 0)
+    (hstopped_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable
+          (fun ω =>
+            Set.indicator
+              {ω' : Ω |
+                (fun i : Finset.range m => X i ω') ∈
+                  durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+              (fun ω' : Ω => (∑ i : Finset.range m, X i ω') ^ 2) ω) P)
+    (hmixed_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable
+          (fun ω =>
+            ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+                Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+                  (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+                  (fun i : Finset.range m => X i ω)) *
+              ((∑ k ∈ Finset.range n, X k ω) -
+                ∑ k ∈ Finset.range m, X k ω)) P)
+    (hterminal_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable
+          (fun ω =>
+            Set.indicator
+              {ω' : Ω |
+                (fun i : Finset.range m => X i ω') ∈
+                  durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+              (fun ω' : Ω => (∑ k ∈ Finset.range n, X k ω') ^ 2) ω) P) :
+    ∑ m ∈ Finset.Icc 1 n,
+        ∫ ω,
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X i ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ i : Finset.range m, X i ω') ^ 2) ω ∂P ≤
+      ∑ m ∈ Finset.Icc 1 n,
+        ∫ ω,
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X i ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ k ∈ Finset.range n, X k ω') ^ 2) ω ∂P := by
+  exact Finset.sum_le_sum fun m hm =>
+    durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral
+      (P := P) (X := X) hX_indep hX_meas
+      (hmn := (Finset.mem_Icc.mp hm).2)
+      (hX_int m hm) (hzero m hm) x
+      (hstopped_int m hm) (hmixed_int m hm) (hterminal_int m hm)
+
+/--
+Durrett 2019, Theorem 2.5.5 support in one-based textbook notation: summed
+upper comparison for first-crossing events of `X_1, X_2, ...`.
+-/
+theorem durrett2019_theorem_2_5_5_sum_firstCrossing_stoppedSq_integrals_le_sum_terminalSq_integrals_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {n : ℕ} (x : ℝ)
+    (hX_int :
+      ∀ m ∈ Finset.Icc 1 n, ∀ i ∈ Finset.Ico m n, Integrable (X (i + 1)) P)
+    (hzero :
+      ∀ m ∈ Finset.Icc 1 n, ∀ i ∈ Finset.Ico m n, ∫ ω, X (i + 1) ω ∂P = 0)
+    (hstopped_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable
+          (fun ω =>
+            Set.indicator
+              {ω' : Ω |
+                (fun i : Finset.range m => X (i + 1) ω') ∈
+                  durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+              (fun ω' : Ω => (∑ i : Finset.range m, X (i + 1) ω') ^ 2) ω) P)
+    (hmixed_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable
+          (fun ω =>
+            ((2 : ℝ) * (∑ i : Finset.range m, X (i + 1) ω) *
+                Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+                  (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+                  (fun i : Finset.range m => X (i + 1) ω)) *
+              ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+                ∑ k ∈ Finset.range m, X (k + 1) ω)) P)
+    (hterminal_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable
+          (fun ω =>
+            Set.indicator
+              {ω' : Ω |
+                (fun i : Finset.range m => X (i + 1) ω') ∈
+                  durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+              (fun ω' : Ω => (∑ k ∈ Finset.range n, X (k + 1) ω') ^ 2) ω) P) :
+    ∑ m ∈ Finset.Icc 1 n,
+        ∫ ω,
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X (i + 1) ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ i : Finset.range m, X (i + 1) ω') ^ 2) ω ∂P ≤
+      ∑ m ∈ Finset.Icc 1 n,
+        ∫ ω,
+          Set.indicator
+            {ω' : Ω |
+              (fun i : Finset.range m => X (i + 1) ω') ∈
+                durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+            (fun ω' : Ω => (∑ k ∈ Finset.range n, X (k + 1) ω') ^ 2) ω ∂P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  exact
+    durrett2019_theorem_2_5_5_sum_firstCrossing_stoppedSq_integrals_le_sum_terminalSq_integrals
+      (P := P) (X := fun i => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => hX_meas (i + 1)) x
+      hX_int hzero hstopped_int hmixed_int hterminal_int
+
+/--
 Durrett 2019, Theorem 2.1.15, product-space CDF convolution form.
 
 For independent coordinates with laws `μ` and `ν`, the distribution function
