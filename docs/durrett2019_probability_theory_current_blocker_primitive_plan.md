@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V389
+## Live In-Thread Goal Prompt V390
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,26 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V389 lifts the global middle-partition-with-tails
+Latest verified target V390 adds the direct countable supplied-partition and
+one-based outer-a.s. product-law/canonical route for Durrett Theorem 2.4.9:
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_tendsto_partitions_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions_canonical_iid`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_tendsto_partitions_canonical_iid`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_shift_hasLaw_infinitePi`,
+and
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_canonical_iid`.
+These consume the compiled Chapter 2.1.11 product-law/canonical iid packages
+and the V379/V389 middle-partition-with-tails route.  Next aggressive target:
+stop rebuilding Theorem 2.4.9 source-entry plumbing; either close one
+remaining source-facing display for 2.4.9 only if search proves it is missing,
+or move to Chapter 2.1.12/2.1.13 product-expectation/Kolmogorov-maximal
+support needed by the next Durrett theorem.
+
+## Recent Verified Route Notes
+
+V389 lifts the global middle-partition-with-tails
 uniform-error squeeze in Durrett Theorem 2.4.9 to product-law and canonical
 source forms:
 `durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul_of_hasLaw_infinitePi`,
@@ -3240,6 +3259,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V377` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V390` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

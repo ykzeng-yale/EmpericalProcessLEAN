@@ -7176,6 +7176,130 @@ theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUnifor
         hleftTail hrightTail hLaw hindep)
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step from a full infinite-product joint law:
+the countable supplied middle-partition route gives the pathwise
+uniform-deviation conclusion on one a.s. event.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (width : ℕ -> ℝ)
+    (hwidth_pos : ∀ scale, 0 < width scale)
+    (hwidth_tendsto : Tendsto width atTop (𝓝 0))
+    (a b : ℕ -> ℝ) (middleCells : ℕ -> ℕ)
+    (partition : ∀ scale,
+      SuppliedRealMiddleCDFPartition P (width scale / 2)
+        (a scale) (b scale) (middleCells scale))
+    (hleftTail : ∀ scale, P.real (Set.Iio (a scale)) < width scale / 2)
+    (hrightTail : ∀ scale, P.real (Set.Ioi (b scale)) < width scale / 2)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    AlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions
+      X width hwidth_pos hwidth_tendsto a b middleCells partition
+      hleftTail hrightTail hSource.1
+      (fun _ _ hij => hSource.2.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from a full infinite-product joint law:
+the countable supplied middle-partition route packaged in the VdV&W outer-a.s.
+uniform-deviation interface.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_tendsto_partitions_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (width : ℕ -> ℝ)
+    (hwidth_pos : ∀ scale, 0 < width scale)
+    (hwidth_tendsto : Tendsto width atTop (𝓝 0))
+    (a b : ℕ -> ℝ) (middleCells : ℕ -> ℕ)
+    (partition : ∀ scale,
+      SuppliedRealMiddleCDFPartition P (width scale / 2)
+        (a scale) (b scale) (middleCells scale))
+    (hleftTail : ∀ scale, P.real (Set.Iio (a scale)) < width scale / 2)
+    (hrightTail : ∀ scale, P.real (Set.Ioi (b scale)) < width scale / 2)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_tendsto_partitions
+      X width hwidth_pos hwidth_tendsto a b middleCells partition
+      hleftTail hrightTail hSource.1
+      (fun _ _ hij => hSource.2.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples:
+the countable supplied middle-partition route gives the pathwise
+uniform-deviation conclusion on one a.s. event.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ)
+    (width : ℕ -> ℝ)
+    (hwidth_pos : ∀ scale, 0 < width scale)
+    (hwidth_tendsto : Tendsto width atTop (𝓝 0))
+    (a b : ℕ -> ℝ) (middleCells : ℕ -> ℕ)
+    (partition : ∀ scale,
+      SuppliedRealMiddleCDFPartition (P : Measure ℝ) (width scale / 2)
+        (a scale) (b scale) (middleCells scale))
+    (hleftTail : ∀ scale, (P : Measure ℝ).real (Set.Iio (a scale)) < width scale / 2)
+    (hrightTail : ∀ scale, (P : Measure ℝ).real (Set.Ioi (b scale)) < width scale / 2) :
+    AlmostSureUniformDeviationTendstoZeroOn
+      (Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)) Set.univ
+      (fun c => ProbabilityTheory.cdf (P : Measure ℝ) c)
+      (fun sample sampleSize c =>
+        empiricalDistributionFunction
+          (samplePath (fun i => fun sample : ℕ -> ℝ => sample i) sample sampleSize) c) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions
+      (fun i => fun sample : ℕ -> ℝ => sample i) width hwidth_pos hwidth_tendsto
+      a b middleCells partition hleftTail hrightTail hCoord.1
+      (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples:
+the countable supplied middle-partition route packaged in the VdV&W outer-a.s.
+uniform-deviation interface.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_tendsto_partitions_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ)
+    (width : ℕ -> ℝ)
+    (hwidth_pos : ∀ scale, 0 < width scale)
+    (hwidth_tendsto : Tendsto width atTop (𝓝 0))
+    (a b : ℕ -> ℝ) (middleCells : ℕ -> ℕ)
+    (partition : ∀ scale,
+      SuppliedRealMiddleCDFPartition (P : Measure ℝ) (width scale / 2)
+        (a scale) (b scale) (middleCells scale))
+    (hleftTail : ∀ scale, (P : Measure ℝ).real (Set.Iio (a scale)) < width scale / 2)
+    (hrightTail : ∀ scale, (P : Measure ℝ).real (Set.Ioi (b scale)) < width scale / 2) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn
+      (Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)) Set.univ
+      (fun c => ProbabilityTheory.cdf (P : Measure ℝ) c)
+      (fun sample sampleSize c =>
+        empiricalDistributionFunction
+          (samplePath (fun i => fun sample : ℕ -> ℝ => sample i) sample sampleSize) c) := by
+  exact
+    vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_almostSure
+      (durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions_canonical_iid
+        P width hwidth_pos hwidth_tendsto a b middleCells partition
+        hleftTail hrightTail)
+
+/--
 Durrett 2019, Theorem 2.4.9 proof step: arbitrary real laws supply a bounded
 middle partition together with lower and upper tail bounds at every positive
 scale.
@@ -7330,6 +7454,71 @@ theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_oute
     durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
       (fun i => fun ω => X (i + 1) ω) hShift.1
       (fun _ _ hij => hShift.2.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint in one-based textbook
+notation from a full infinite-product joint law.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun
+      X hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint in one-based textbook
+notation from a shifted infinite-product joint law.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_shift_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum,
+    div_eq_mul_inv, mul_comm] using
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
+      (fun i => fun ω => X (i + 1) ω) hSource.1
+      (fun _ _ hij => hSource.2.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint for canonical iid product
+samples, in exact one-based textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn
+      (Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)) Set.univ
+      (fun c => ProbabilityTheory.cdf (P : Measure ℝ) c)
+      (fun sample sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (sample (i + 1))) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun
+      (fun i => fun sample : ℕ -> ℝ => sample i) hCoord.1 hCoord.2.1
 
 /--
 Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem under the
