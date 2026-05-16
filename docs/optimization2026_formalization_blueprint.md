@@ -261,6 +261,18 @@ preliminary Newton path and reduces the remaining geometry obligation to a
 global source-relative slack-ratio bound over feasible range points.  This is
 the preferred long-window entrypoint when boundedness of the feasible range
 polytope is available.
+The bounded feasible-range budget layer now also compiles the reusable
+intermediate facts
+`chewi1316_polytopeSlackNegLog_exists_globalSlackRatioBound_of_boundedFeasibleRange`,
+`chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_boundedFeasibleRange`,
+`chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_boundedPolytope`,
+`chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_closedPolytope_isBounded`, and
+`chewi1316_polytopeSlackNegLog_actualPreDecrementBudget_eventuallyRangeTailBound_of_boundedFeasibleRange`.
+These use Mathlib `Bornology.IsBounded.subset_closedBall` plus the local
+source slack floor to choose `rho`, `B`, and `tailBound` automatically, and
+then reuse the compiled slack-ratio-to-dual-local-norm bridge.  Future
+bounded-polytope range-tail work should consume these declarations directly
+instead of rebuilding the scalar budget inside final theorem wrappers.
 The coordinate-upper-bound specialization now compiles as
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_slackCoordinateUpperBound`
 and

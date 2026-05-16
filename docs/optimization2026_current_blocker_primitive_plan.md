@@ -863,6 +863,21 @@ source-centered radius, chooses `rho = R / sFloor`, and returns existential
 This is now the preferred bounded-polytope route when the remaining geometry
 proves boundedness of the feasible slack range rather than a hand-picked
 radius.
+The newest bounded range-tail budget packet exposes the reusable intermediate
+facts behind that endpoint:
+`chewi1316_polytopeSlackNegLog_exists_globalSlackRatioBound_of_boundedFeasibleRange`,
+`chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_boundedFeasibleRange`,
+`chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_boundedPolytope`,
+`chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_closedPolytope_isBounded`, and
+`chewi1316_polytopeSlackNegLog_actualPreDecrementBudget_eventuallyRangeTailBound_of_boundedFeasibleRange`.
+It reuses Mathlib `Bornology.IsBounded.subset_closedBall`, the local source
+slack-floor lemma, and
+`chewi1314_polytopeSlackNegLog_range_sourceGrad_dualLocalNorm_le_sqrt_mul_of_slackRatio_le`
+to turn bounded feasible-range geometry into an existential global
+slack-ratio budget, a uniform source-gradient range-tail budget, and a
+filter-eventual actual-path range-tail invariant.  Future §13.16 work should
+call these facts instead of recomputing `rho = R / sFloor`, `B = 1 + rho`, or
+`tailBound = sqrt m * B`.
 The source-space bounded-polytope bridge now adds
 `chewi1316_polytopeSlackNegLog_bounded_feasibleRange_of_bounded_polytopeSlackSet`
 and the endpoint

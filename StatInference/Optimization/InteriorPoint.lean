@@ -44325,6 +44325,257 @@ theorem chewi1316_polytopeSlackNegLog_exists_pos_sourceSlackFloor
     exact (hne ⟨i, Finset.mem_univ i⟩).elim
 
 /--
+Bounded feasible translated slack ranges have a finite source-relative
+slack-ratio budget.  The radius of a closed ball around the source range point
+and the finite positive source slack floor choose the budget automatically.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_globalSlackRatioBound_of_boundedFeasibleRange
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hbounded :
+      Bornology.IsBounded
+        (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))) :
+    ∃ B : ℝ, 0 ≤ B ∧
+      ∀ y : (polytopeSlackCLM aRow).range,
+        y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ->
+        ∀ i : Fin m,
+          |(((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) /
+              ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+                    EuclideanSpace ℝ (Fin m)) + bSlack) i)| ≤ B := by
+  rcases chewi1316_polytopeSlackNegLog_exists_pos_sourceSlackFloor
+      (aRow := aRow) (bSlack := bSlack) hxbar0Range with
+    ⟨sFloor, hsFloor_pos, hsourceSlack_floor⟩
+  let source : (polytopeSlackCLM aRow).range :=
+    (polytopeSlackCLM aRow).rangeRestrict xbar0
+  rcases hbounded.subset_closedBall source with ⟨R0, hR0⟩
+  let R : ℝ := max R0 0
+  have hR_nonneg : 0 ≤ R := by
+    exact le_max_right R0 0
+  have hradius : ∀ y : (polytopeSlackCLM aRow).range,
+      y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ->
+        dist y source ≤ R := by
+    intro y hy
+    have hy_closed : y ∈ Metric.closedBall source R0 := hR0 hy
+    have hdist_R0 : dist y source ≤ R0 := by
+      simpa [Metric.mem_closedBall] using hy_closed
+    exact hdist_R0.trans (le_max_left R0 0)
+  let rho : ℝ := R / sFloor
+  let B : ℝ := 1 + rho
+  have hrho : 0 ≤ rho := by
+    exact div_nonneg hR_nonneg hsFloor_pos.le
+  have hB_nonneg : 0 ≤ B := by
+    dsimp [B]
+    linarith
+  have hR_floor : R ≤ rho * sFloor := by
+    have hmul : rho * sFloor = R := by
+      change (R / sFloor) * sFloor = R
+      exact div_mul_cancel₀ R hsFloor_pos.ne'
+    exact le_of_eq hmul.symm
+  have hR_ratio : ∀ i : Fin m,
+      R ≤
+        (B - 1) *
+          ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+              EuclideanSpace ℝ (Fin m)) + bSlack) i) := by
+    intro i
+    calc
+      R ≤ rho * sFloor := hR_floor
+      _ ≤ rho *
+          ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+            EuclideanSpace ℝ (Fin m)) + bSlack) i) :=
+        mul_le_mul_of_nonneg_left (hsourceSlack_floor i) hrho
+      _ = (B - 1) *
+          ((((polytopeSlackCLM aRow).rangeRestrict xbar0 :
+            EuclideanSpace ℝ (Fin m)) + bSlack) i) := by
+        simp [B]
+  exact
+    ⟨B, hB_nonneg,
+      chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_sourceCenteredRadiusBound
+        (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+        (R := R) (B := B) hxbar0Range
+        (by simpa [source] using hradius) hR_ratio⟩
+
+/--
+Bounded feasible translated slack ranges give a uniform source-gradient
+dual-local-norm tail budget.  This is the reusable measured-tail form behind
+the bounded-polytope §13.16 route.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_boundedFeasibleRange
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hbounded :
+      Bornology.IsBounded
+        (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))) :
+    ∃ B tailBound : ℝ,
+      0 ≤ B ∧
+      0 ≤ tailBound ∧
+      Real.sqrt (m : ℝ) * B ≤ tailBound ∧
+      ∀ y : (polytopeSlackCLM aRow).range,
+        y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ->
+        dualLocalNorm
+            (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+            y
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad
+              ((polytopeSlackCLM aRow).rangeRestrict xbar0)) ≤
+          tailBound := by
+  rcases
+    chewi1316_polytopeSlackNegLog_exists_globalSlackRatioBound_of_boundedFeasibleRange
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      hxbar0Range hbounded with
+    ⟨B, hB_nonneg, hglobalSlackRatioBound⟩
+  let tailBound : ℝ := Real.sqrt (m : ℝ) * B
+  have htailBound_nonneg : 0 ≤ tailBound := by
+    exact mul_nonneg (Real.sqrt_nonneg _) hB_nonneg
+  refine ⟨B, tailBound, hB_nonneg, htailBound_nonneg, le_rfl, ?_⟩
+  intro y hy
+  exact
+    chewi1314_polytopeSlackNegLog_range_sourceGrad_dualLocalNorm_le_sqrt_mul_of_slackRatio_le
+      (a := aRow) (b := bSlack)
+      (x0 := (polytopeSlackCLM aRow).rangeRestrict xbar0)
+      (y := y) hxbar0Range hy hB_nonneg
+      (hglobalSlackRatioBound y hy)
+
+/--
+Source-space bounded polytope slack sets give the same automatic uniform
+range-tail budget after pushing boundedness through `rangeRestrict`.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_boundedPolytope
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hbounded_source : Bornology.IsBounded (polytopeSlackSet aRow bSlack)) :
+    ∃ B tailBound : ℝ,
+      0 ≤ B ∧
+      0 ≤ tailBound ∧
+      Real.sqrt (m : ℝ) * B ≤ tailBound ∧
+      ∀ y : (polytopeSlackCLM aRow).range,
+        y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ->
+        dualLocalNorm
+            (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+            y
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad
+              ((polytopeSlackCLM aRow).rangeRestrict xbar0)) ≤
+          tailBound :=
+  chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_boundedFeasibleRange
+    (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0) hxbar0Range
+    (chewi1316_polytopeSlackNegLog_bounded_feasibleRange_of_bounded_polytopeSlackSet
+      aRow bSlack hbounded_source)
+
+/--
+Bounded textbook closed polytopes give an automatic uniform source-gradient
+range-tail budget for the strict logarithmic-barrier feasible range.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_closedPolytope_isBounded
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hbounded_closed : Bornology.IsBounded (closedPolytopeSlackSet aRow bSlack)) :
+    ∃ B tailBound : ℝ,
+      0 ≤ B ∧
+      0 ≤ tailBound ∧
+      Real.sqrt (m : ℝ) * B ≤ tailBound ∧
+      ∀ y : (polytopeSlackCLM aRow).range,
+        y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ->
+        dualLocalNorm
+            (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+            y
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad
+              ((polytopeSlackCLM aRow).rangeRestrict xbar0)) ≤
+          tailBound :=
+  chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_boundedPolytope
+    (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0) hxbar0Range
+    (chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_closedPolytope_isBounded
+      aRow bSlack hbounded_closed)
+
+/--
+Actual preliminary Newton paths inherit an eventual source-gradient
+range-tail bound from bounded feasible translated slack range.  This is the
+filter-shaped bounded-polytope invariant expected by the no-prefix §13.16
+tail consumers.
+-/
+theorem chewi1316_polytopeSlackNegLog_actualPreDecrementBudget_eventuallyRangeTailBound_of_boundedFeasibleRange
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {xseq : ℕ -> F} {tseq : ℕ -> ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hbounded :
+      Bornology.IsBounded
+        (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))) :
+    ∃ tailBound : ℝ,
+      0 ≤ tailBound ∧
+      ∀ᶠ Nout : ℕ in atTop,
+        dualLocalNorm
+            (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+            ((polytopeSlackCLM aRow).rangeRestrict (xseq Nout))
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad
+              ((polytopeSlackCLM aRow).rangeRestrict xbar0)) ≤
+          tailBound := by
+  have hxRange : ∀ k : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xseq k) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) :=
+    chewi1316_polytopeSlackNegLog_rangeRestrict_mem_of_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0) (xseq := xseq) (tseq := tseq)
+      hxbar0Range hx0 ht0 htstep hnewton_next_source
+  rcases
+    chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_boundedFeasibleRange
+      (aRow := aRow) (bSlack := bSlack) (xbar0 := xbar0)
+      hxbar0Range hbounded with
+    ⟨_B, tailBound, _hB_nonneg, htailBound_nonneg, _hbudget, htail⟩
+  exact
+    ⟨tailBound, htailBound_nonneg,
+      Filter.Eventually.of_forall fun Nout =>
+        htail ((polytopeSlackCLM aRow).rangeRestrict (xseq Nout))
+          (hxRange Nout)⟩
+
+/--
 Bounded feasible translated slack ranges yield a source-shaped finite tail
 budget for the actual preliminary Newton initializer.  The boundedness
 certificate supplies a source-centered closed-ball radius; the positive source

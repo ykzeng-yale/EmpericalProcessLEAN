@@ -570,6 +570,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Bornology.IsBounded.subset_closedBall`, chooses `rho = R / sFloor`, and
   returns existential `sFloor`, `rho`, and `tailBound` with the verified
   main-stage decrement conclusion.
+  The bounded range-tail budget packet now exposes the reusable intermediate
+  statements:
+  `chewi1316_polytopeSlackNegLog_exists_globalSlackRatioBound_of_boundedFeasibleRange`,
+  `chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_boundedFeasibleRange`,
+  `chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_boundedPolytope`,
+  `chewi1316_polytopeSlackNegLog_exists_uniformRangeTailBound_of_closedPolytope_isBounded`, and
+  `chewi1316_polytopeSlackNegLog_actualPreDecrementBudget_eventuallyRangeTailBound_of_boundedFeasibleRange`.
+  These reuse the finite source slack floor and
+  `chewi1314_polytopeSlackNegLog_range_sourceGrad_dualLocalNorm_le_sqrt_mul_of_slackRatio_le`
+  to package bounded feasible-range geometry as a global slack-ratio budget,
+  a uniform source-gradient range-tail budget, and a filter-eventual actual
+  preliminary-path range-tail invariant before calling any final §13.16
+  initializer.
   The source-space bounded-polytope bridge now compiles as
   `chewi1316_polytopeSlackNegLog_bounded_feasibleRange_of_bounded_polytopeSlackSet`
   and
