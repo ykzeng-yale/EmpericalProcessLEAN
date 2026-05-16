@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V15`, this file's top
+   the full book is complete, route from `Live Goal Prompt V16`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V15
+## Live Goal Prompt V16
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -164,19 +164,31 @@ main-stage range membership, central-path optimality at the terminal
 parameter, barrier-step/lower-model inequalities, and the large-parameter
 stopping condition.
 
-Next theorem-sized target: discharge the concrete main-stage range-membership
-certificate for `chewi1316_standardSourceMainStageXSeq`, preferably by reusing
-the already compiled self-concordant main-stage decrement invariants and local
-range Cauchy/Hessian calculus (`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton`,
-`chewi1316_objective_gap_le_eps_of_mainStage_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`,
-`chewi1314_polytopeSlackNegLog_range_componentCauchy`, and the
-`barrierAffineRange_*` central-path transport lemmas).  Bounded search result:
-local `InteriorPoint.lean` has the Chewi-specific Cauchy, parameter, and
-self-concordance APIs; pinned mathlib has generic convex/min/compact APIs but
-no direct replacement for this Chewi standard main-stage membership theorem.
-Do not redo preliminary initialization, source/range Newton transport, or the
-standard main-stage recursion now compiled in V15.  Older paragraphs below are
-cached route history and must not override this V15 target.
+Current V16 packet narrows the main-stage membership blocker to a concrete
+per-step source-decrement certificate.  New compiled declarations:
+`chewi1316_standardSourceMainStage_rangeRestrict_mem_of_range_decrement_lt_one`,
+`chewi1316_standardSourceMainStage_rangeRestrict_mem_of_source_decrement_lt_one`,
+`chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_lt_one`,
+and
+`chewi1316_standardSourcePreliminaryXSeq_rangeRestrict_mem_of_sourceMem`.
+These reuse `chewi1314_polytopeSlackNegLog_range_newtonStep_mem_of_decrement_lt_one`,
+the source/range main-stage Newton transport lemma, and the source/range
+central-path decrement identity.  The final handoff can now take strict source
+start feasibility for the preliminary sequence and a concrete source-coordinate
+`lambda < 1` certificate for every standard main-stage step, instead of an
+opaque all-iterate range-membership assumption.
+
+Next theorem-sized target: prove the concrete standard main-stage
+source-decrement `< 1` certificate from the existing `lambda <= 1/4`
+main-stage decrement invariant, or at least package the invariant so it feeds
+`chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_lt_one`.
+Search first in `InteriorPoint.lean` around the compiled
+`chewi1316_mainStage_decrement_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`,
+`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton`,
+range Cauchy/Hessian calculus, and the V13/V15 transport lemmas.  Do not redo
+preliminary initialization, source/range Newton transport, or the standard
+main-stage recursion now compiled in V15/V16.  Older paragraphs below are
+cached route history and must not override this V16 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
 slack-range §13.16 handoff now

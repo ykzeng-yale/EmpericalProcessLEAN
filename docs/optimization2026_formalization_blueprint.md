@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V15` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V16` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -35,11 +35,11 @@ standard preliminary stage now hands off to a concrete standard source
 main-stage recursion through `Chewi1316StandardSourceMainStageObjectiveGapHandoff`
 and the bounded/compact
 `chewi1316_standardSourceMainStageObjectiveGapHandoff_*_standardPath`
-endpoints.  The next endpoint-moving theorem should prove the range-membership
-certificate for `chewi1316_standardSourceMainStageXSeq` and then discharge the
-terminal centrality, barrier-step/lower-model, and large-parameter stopping
-certificates; do not redo preliminary initialization, source/range Newton
-transport, or the standard main-stage recursion.
+endpoints.  The current V16 route reduces concrete main-stage range membership
+to proving source-coordinate standard-step Newton decrement `< 1` via
+`chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_lt_one`;
+do not redo preliminary initialization, source/range Newton transport, or the
+standard main-stage recursion.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the
@@ -367,6 +367,14 @@ Use this as the current §13.16 final-accuracy interface: the preliminary
 selection and standard increasing main-stage Newton recursion are fixed
 internally, leaving range membership and terminal analytic certificates as the
 remaining proof work.
+The main-stage membership reduction packet now compiles
+`chewi1316_standardSourceMainStage_rangeRestrict_mem_of_range_decrement_lt_one`,
+`chewi1316_standardSourceMainStage_rangeRestrict_mem_of_source_decrement_lt_one`,
+`chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_lt_one`,
+and
+`chewi1316_standardSourcePreliminaryXSeq_rangeRestrict_mem_of_sourceMem`.
+Use this layer to replace all-iterate membership hypotheses by a per-step
+source decrement `< 1` proof for the concrete standard main-stage sequence.
 The coordinate-upper-bound specialization now compiles as
 `chewi1316_polytopeSlackNegLog_globalSlackRatioBound_of_slackCoordinateUpperBound`
 and
