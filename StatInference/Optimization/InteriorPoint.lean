@@ -11194,6 +11194,53 @@ theorem chewi1316_objective_gap_le
         (nu + (((lambda + Real.sqrt nu) * lambda) / (1 - lambda))) := by
       ring
 
+/--
+Chewi Lemma 13.16 assembly with the V22 lower-model split.  Callers may
+provide the self-concordant value-growth certificate for the central-path
+objective and the first-order convex model, instead of constructing the
+inner-product lower-model inequality by hand.
+-/
+theorem chewi1316_objective_gap_le_of_value_growth_and_firstOrderStrongConvexOn
+    {C : Set E} {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiValue : E -> ℝ} {phiGrad : E -> E}
+    {a x center optimum : E} {t nu lambda : ℝ}
+    (ht_pos : 0 < t)
+    (hlambda_lt : lambda < 1)
+    (hcentral : t • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement : dualLocalNorm invHess x (t • a + phiGrad x) ≤ lambda)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hfirst :
+      FirstOrderStrongConvexOn C
+        (fun z => t * inner ℝ a z + phiValue z)
+        (fun z => t • a + phiGrad z) 0)
+    (hx : x ∈ C) (hcenter : center ∈ C)
+    (hgrowth :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        (t * inner ℝ a x + phiValue x) -
+          (t * inner ℝ a center + phiValue center)) :
+    inner ℝ a x - inner ℝ a optimum ≤
+      (1 / t) *
+        (nu + (((lambda + Real.sqrt nu) * lambda) / (1 - lambda))) := by
+  have hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (t • a + phiGrad x) (x - center) :=
+    chewi1316_centralPath_lowerModel_of_value_gap_and_firstOrderStrongConvexOn
+      (C := C) (hess := hess) (phiValue := phiValue)
+      (phiGrad := phiGrad) (a := a) (x := x) (center := center)
+      (t := t) hfirst hx hcenter hgrowth
+  exact
+    chewi1316_objective_gap_le
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (optimum := optimum)
+      (t := t) (nu := nu) (lambda := lambda)
+      ht_pos hlambda_lt hcentral hbarrier_step hdecrement hphi_bound
+      hcauchy hlower
+
 theorem chewi1316_objectiveGapNumerator_le_two_mul
     {nu lambda : ℝ}
     (hnu_one : 1 ≤ nu)
@@ -11272,6 +11319,53 @@ theorem chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t
     rw [one_div, inv_mul_le_iff₀ ht_pos]
     nlinarith [ht_large, heps_nonneg]
   exact hgap.trans (hscaled.trans hstop)
+
+/--
+Large-parameter version of the V22 lower-model split.  This is the
+`lambda <= 1/4` endpoint used by §13.16, with the inner-product lower-model
+discharged from value growth plus the first-order central-path model.
+-/
+theorem chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_value_growth_and_firstOrderStrongConvexOn
+    {C : Set E} {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiValue : E -> ℝ} {phiGrad : E -> E}
+    {a x center optimum : E} {t nu eps : ℝ}
+    (ht_pos : 0 < t)
+    (heps_pos : 0 < eps)
+    (hnu_one : 1 ≤ nu)
+    (hcentral : t • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement :
+      dualLocalNorm invHess x (t • a + phiGrad x) ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hfirst :
+      FirstOrderStrongConvexOn C
+        (fun z => t * inner ℝ a z + phiValue z)
+        (fun z => t • a + phiGrad z) 0)
+    (hx : x ∈ C) (hcenter : center ∈ C)
+    (hgrowth :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        (t * inner ℝ a x + phiValue x) -
+          (t * inner ℝ a center + phiValue center))
+    (ht_large : 2 * nu ≤ eps * t) :
+    inner ℝ a x - inner ℝ a optimum ≤ eps := by
+  have hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (t • a + phiGrad x) (x - center) :=
+    chewi1316_centralPath_lowerModel_of_value_gap_and_firstOrderStrongConvexOn
+      (C := C) (hess := hess) (phiValue := phiValue)
+      (phiGrad := phiGrad) (a := a) (x := x) (center := center)
+      (t := t) hfirst hx hcenter hgrowth
+  exact
+    chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (optimum := optimum)
+      (t := t) (nu := nu) (eps := eps)
+      ht_pos heps_pos hnu_one hcentral hbarrier_step hdecrement
+      hphi_bound hcauchy hlower ht_large
 
 /--
 Main-stage pre-Newton decrement update bound.  This is the norm-algebra line
@@ -11633,6 +11727,63 @@ theorem chewi1316_objective_gap_le_eps_of_mainStageParameter_large
       (t := tseq N) (nu := nu) (eps := eps)
       ht_pos heps_pos hnu_one hcentral hbarrier_step hdecrement
       hphi_bound hcauchy hlower ht_large
+
+/--
+Main-stage closed-parameter endpoint with the V22 lower-model split.  The
+source proof can now supply the self-concordant value-growth certificate for
+`f_t = t <a, ·> + phi` plus the first-order central-path model; this theorem
+feeds the resulting lower-model inequality into the existing §13.16 rate
+assembly.
+-/
+theorem chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_value_growth_and_firstOrderStrongConvexOn
+    {C : Set E} {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiValue : E -> ℝ} {phiGrad : E -> E}
+    {a x center optimum : E}
+    {tseq : ℕ -> ℝ} {N : ℕ} {t0 c0 nu eps : ℝ}
+    (h0 : tseq 0 = t0)
+    (hstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 + c0 / Real.sqrt nu) * tseq n)
+    (hr_pos : 0 < 1 + c0 / Real.sqrt nu)
+    (ht0_pos : 0 < t0)
+    (heps_pos : 0 < eps)
+    (hnu_one : 1 ≤ nu)
+    (hcentral : tseq N • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement :
+      dualLocalNorm invHess x (tseq N • a + phiGrad x) ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hfirst :
+      FirstOrderStrongConvexOn C
+        (fun z => tseq N * inner ℝ a z + phiValue z)
+        (fun z => tseq N • a + phiGrad z) 0)
+    (hx : x ∈ C) (hcenter : center ∈ C)
+    (hgrowth :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        (tseq N * inner ℝ a x + phiValue x) -
+          (tseq N * inner ℝ a center + phiValue center))
+    (hlarge :
+      2 * nu ≤
+        eps * ((1 + c0 / Real.sqrt nu) ^ N * t0)) :
+    inner ℝ a x - inner ℝ a optimum ≤ eps := by
+  have hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (tseq N • a + phiGrad x) (x - center) :=
+    chewi1316_centralPath_lowerModel_of_value_gap_and_firstOrderStrongConvexOn
+      (C := C) (hess := hess) (phiValue := phiValue)
+      (phiGrad := phiGrad) (a := a) (x := x) (center := center)
+      (t := tseq N) hfirst hx hcenter hgrowth
+  exact
+    chewi1316_objective_gap_le_eps_of_mainStageParameter_large
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (optimum := optimum)
+      (tseq := tseq) (N := N) (t0 := t0) (c0 := c0)
+      (nu := nu) (eps := eps)
+      h0 hstep hr_pos ht0_pos heps_pos hnu_one hcentral
+      hbarrier_step hdecrement hphi_bound hcauchy hlower hlarge
 
 /--
 Chewi Theorem 13.8 gradient fundamental-theorem identity along the segment:
@@ -33119,9 +33270,118 @@ theorem chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_ne
     (eps := eps) (N := N)
     hxseq_mem h0 htstep hnewton_next hc0_nonneg hc0_le hinit
     ht0_pos heps_pos hcentral
-    (chewi1316_polytopeSlackNegLog_range_barrier_step_le_of_mem
+      (chewi1316_polytopeSlackNegLog_range_barrier_step_le_of_mem
       (hm := hm) (a := aRow) (b := bSlack) hcenter_mem hoptimum_mem)
     hlower hlarge
+
+set_option maxHeartbeats 4000000 in
+/--
+Finite-row slack-range §13.16 endpoint with both V21 and V22 terminal
+reductions.  Feasibility of `center` and `optimum` discharges the Lemma 13.15
+barrier-step term, while the first-order central-path model plus
+self-concordant value growth discharges the Lemma 13.6 lower-model input.
+-/
+theorem chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton_of_terminal_mem_and_value_growth
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {aObj center optimum : (polytopeSlackCLM aRow).range}
+    {phiValue : (polytopeSlackCLM aRow).range -> ℝ}
+    {xseq : ℕ -> (polytopeSlackCLM aRow).range} {tseq : ℕ -> ℝ}
+    {t0 c0 eps : ℝ} {N : ℕ}
+    (hxseq_mem : ∀ n : ℕ,
+      xseq n ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (h0 : tseq 0 = t0)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) =
+        (1 + c0 / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (centralPathGrad (tseq (n + 1)) aObj
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          (xseq n))
+    (hc0_nonneg : 0 ≤ c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (hinit :
+      newtonDecrement
+          (centralPathGrad (tseq 0) aObj
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          (xseq 0) ≤ 1 / 4)
+    (ht0_pos : 0 < t0)
+    (heps_pos : 0 < eps)
+    (hcenter_mem :
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hcentral :
+      tseq N • aObj +
+        barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad center = 0)
+    (hfirst :
+      FirstOrderStrongConvexOn
+        (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+        (fun z =>
+          tseq N * inner ℝ aObj z + phiValue z)
+        (fun z =>
+          tseq N • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad z) 0)
+    (hgrowth :
+      (localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          (xseq N) (xseq N - center)) ^ (2 : ℕ) /
+          (1 + localNorm
+            (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM)
+            (xseq N) (xseq N - center)) ≤
+        (tseq N * inner ℝ aObj (xseq N) + phiValue (xseq N)) -
+          (tseq N * inner ℝ aObj center + phiValue center))
+    (hlarge :
+      2 * (m : ℝ) ≤
+        eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ N * t0)) :
+    inner ℝ aObj (xseq N) - inner ℝ aObj optimum ≤ eps := by
+  have hlower :
+      (localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          (xseq N) (xseq N - center)) ^ (2 : ℕ) /
+          (1 + localNorm
+            (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM)
+            (xseq N) (xseq N - center)) ≤
+        inner ℝ
+          (tseq N • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad (xseq N))
+          (xseq N - center) :=
+    chewi1316_centralPath_lowerModel_of_value_gap_and_firstOrderStrongConvexOn
+      (C := barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+      (hess := barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+        positiveOrthantNegLogHessCLM)
+      (phiValue := phiValue)
+      (phiGrad := barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+        positiveOrthantNegLogGrad)
+      (a := aObj) (x := xseq N) (center := center) (t := tseq N)
+      hfirst (hxseq_mem N) hcenter_mem hgrowth
+  exact
+    chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton_of_terminal_mem
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (aObj := aObj) (center := center) (optimum := optimum)
+      (xseq := xseq) (tseq := tseq) (t0 := t0) (c0 := c0)
+      (eps := eps) (N := N)
+      hxseq_mem h0 htstep hnewton_next hc0_nonneg hc0_le hinit
+      ht0_pos heps_pos hcenter_mem hoptimum_mem hcentral hlower hlarge
 
 set_option maxHeartbeats 4000000 in
 /--

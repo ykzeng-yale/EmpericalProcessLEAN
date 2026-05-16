@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V22` near the top of
+  `Live Goal Prompt V23` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -85,14 +85,21 @@ This dashboard tracks the Chewi optimization formalization lane for
   first-order convex model.  Search-first result: reuse local
   `FirstOrderStrongConvexOn.lower_model`; mathlib convex derivative slope APIs
   do not directly close Chewi's self-concordant value-growth display.
+  The V23 consumer packet pushes this split through the §13.16 fixed-parameter,
+  large-parameter, main-stage-parameter, and finite-row range endpoints:
+  `chewi1316_objective_gap_le_of_value_growth_and_firstOrderStrongConvexOn`,
+  `chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_value_growth_and_firstOrderStrongConvexOn`,
+  `chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_value_growth_and_firstOrderStrongConvexOn`,
+  and
+  `chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton_of_terminal_mem_and_value_growth`.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
   `hxseq_mem` or per-step decrement premise.  Next proof target: discharge one
-  remaining terminal certificate family for the V19/V21/V22 handoff: terminal
+  remaining terminal certificate family for the V19/V21/V22/V23 handoff: terminal
   centrality or the self-concordant value-growth certificate feeding the new
-  lower-model bridge.  Do not repeat large-parameter stopping/count,
+  value-growth consumers.  Do not repeat large-parameter stopping/count,
   barrier-step from terminal feasibility, or the first-order lower-model
-  bridge.
+  bridge/consumer wrappers.
 - Cached Chapter 13 frontier history: the finite-row slack-range §13.16 handoff now
   compiles through source-pullback decrement transport and a point-dependent
   range sqrt-coordinate one-step wrapper.  New reusable declarations are

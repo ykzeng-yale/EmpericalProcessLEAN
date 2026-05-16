@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V22` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V23` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -65,8 +65,16 @@ so finite-row terminal barrier-step is closed from feasibility of `center` and
 `chewi1316_centralPath_lowerModel_of_value_gap_and_firstOrderStrongConvexOn`,
 so the Lemma 13.6 lower-model route now reuses the local first-order convex
 model and leaves only the genuine self-concordant value-growth certificate.
+The V23 consumer packet pushes this split through the fixed-parameter,
+large-parameter, main-stage-parameter, and finite-row range endpoints via
+`chewi1316_objective_gap_le_of_value_growth_and_firstOrderStrongConvexOn`,
+`chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_value_growth_and_firstOrderStrongConvexOn`,
+`chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_value_growth_and_firstOrderStrongConvexOn`,
+and
+`chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton_of_terminal_mem_and_value_growth`.
 The remaining §13.16 terminal work is central-path optimality at the selected
-parameter and that self-concordant value-growth certificate.
+parameter and the self-concordant value-growth certificate feeding those
+consumers.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the
