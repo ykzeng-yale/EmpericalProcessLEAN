@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V386
+## Live In-Thread Goal Prompt V387
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,26 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V386 adds zero-based product-law consumers for the
+Latest verified target V387 adds canonical iid product-space pointwise
+Theorem 2.4.9 displays for both the empirical CDF and the left empirical CDF:
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae_canonical_iid`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae_canonical_iid`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae_canonical_iid`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_tendsto_cdf_ae_canonical_iid`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_range_sum_tendsto_cdf_ae_canonical_iid`,
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae_canonical_iid`,
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae_canonical_iid`,
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae_canonical_iid`,
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_tendsto_leftLim_ae_canonical_iid`,
+and
+`durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_range_sum_tendsto_leftLim_ae_canonical_iid`.
+These consume the compiled Chapter 2.1.11 canonical coordinate iid package on
+`P^N`.  Next work should not rebuild canonical pointwise displays; move to a
+new theorem-sized Chapter 2.1/2.4.9 source consumer, preferably one that
+packages finite-cutpoint or global empirical-CDF steps from the already
+compiled pointwise and product-law endpoints.
+
+V386 adds zero-based product-law consumers for the
 pointwise Theorem 2.4.9 proof steps:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae_of_hasLaw_infinitePi`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae_of_hasLaw_infinitePi`,

@@ -5717,6 +5717,108 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_inv_mul
       (fun i => fun ω => X (i + 1) ω) c hLawShift hIndepShift
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples:
+pointwise empirical-CDF convergence.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (c : ℝ) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      Tendsto
+        (fun n : ℕ =>
+          empiricalDistributionFunction
+              (samplePath (fun i => fun sample : ℕ -> ℝ => sample i) sample n) c -
+            ProbabilityTheory.cdf (P : Measure ℝ) c)
+        atTop (𝓝 0) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae
+      (fun i => fun sample : ℕ -> ℝ => sample i) c
+      hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+zero-based range-sum notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (c : ℝ) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      Tendsto
+        (fun n : ℕ =>
+          (∑ i ∈ Finset.range n, realHalfLineIndicator c (sample i)) /
+            (n : ℝ) -
+            ProbabilityTheory.cdf (P : Measure ℝ) c)
+        atTop (𝓝 0) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae
+      (fun i => fun sample : ℕ -> ℝ => sample i) c
+      hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+zero-based exact textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (c : ℝ) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realHalfLineIndicator c (sample i) -
+            ProbabilityTheory.cdf (P : Measure ℝ) c)
+        atTop (𝓝 0) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae
+      (fun i => fun sample : ℕ -> ℝ => sample i) c
+      hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+one-based empirical-CDF notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_tendsto_cdf_ae_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (c : ℝ) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      Tendsto
+        (fun n : ℕ =>
+          empiricalDistributionFunction
+              (samplePath
+                (fun i => fun sample : ℕ -> ℝ => sample (i + 1))
+                sample n) c -
+            ProbabilityTheory.cdf (P : Measure ℝ) c)
+        atTop (𝓝 0) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased P
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae
+      (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) c
+      hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+one-based range-sum notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_range_sum_tendsto_cdf_ae_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (c : ℝ) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      Tendsto
+        (fun n : ℕ =>
+          (∑ i ∈ Finset.range n, realHalfLineIndicator c (sample (i + 1))) /
+            (n : ℝ) -
+            ProbabilityTheory.cdf (P : Measure ℝ) c)
+        atTop (𝓝 0) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased P
+  exact
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae
+      (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) c
+      hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
 Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
 one-based exact textbook notation.
 -/
@@ -6087,6 +6189,108 @@ theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_inv
   exact
     durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae
       (fun i => fun ω => X (i + 1) ω) c hLawShift hIndepShift
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples:
+pointwise left empirical-CDF convergence.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (c : ℝ) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      Tendsto
+        (fun n : ℕ =>
+          empiricalLeftDistributionFunction
+              (samplePath (fun i => fun sample : ℕ -> ℝ => sample i) sample n) c -
+            Function.leftLim (ProbabilityTheory.cdf (P : Measure ℝ)) c)
+        atTop (𝓝 0) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  exact
+    durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae
+      (fun i => fun sample : ℕ -> ℝ => sample i) c
+      hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+zero-based left range-sum notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (c : ℝ) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      Tendsto
+        (fun n : ℕ =>
+          (∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (sample i)) /
+            (n : ℝ) -
+            Function.leftLim (ProbabilityTheory.cdf (P : Measure ℝ)) c)
+        atTop (𝓝 0) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  exact
+    durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae
+      (fun i => fun sample : ℕ -> ℝ => sample i) c
+      hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+zero-based exact left empirical-CDF notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (c : ℝ) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (sample i) -
+            Function.leftLim (ProbabilityTheory.cdf (P : Measure ℝ)) c)
+        atTop (𝓝 0) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  exact
+    durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae
+      (fun i => fun sample : ℕ -> ℝ => sample i) c
+      hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+one-based left empirical-CDF notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_tendsto_leftLim_ae_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (c : ℝ) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      Tendsto
+        (fun n : ℕ =>
+          empiricalLeftDistributionFunction
+              (samplePath
+                (fun i => fun sample : ℕ -> ℝ => sample (i + 1))
+                sample n) c -
+            Function.leftLim (ProbabilityTheory.cdf (P : Measure ℝ)) c)
+        atTop (𝓝 0) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased P
+  exact
+    durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae
+      (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) c
+      hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+one-based left range-sum notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_oneBased_range_sum_tendsto_leftLim_ae_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) (c : ℝ) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      Tendsto
+        (fun n : ℕ =>
+          (∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (sample (i + 1))) /
+            (n : ℝ) -
+            Function.leftLim (ProbabilityTheory.cdf (P : Measure ℝ)) c)
+        atTop (𝓝 0) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased P
+  exact
+    durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae
+      (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) c
+      hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
 
 /--
 Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in

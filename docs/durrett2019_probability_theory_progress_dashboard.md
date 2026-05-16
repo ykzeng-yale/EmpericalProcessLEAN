@@ -32,14 +32,21 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V386` in
+Route from `Live In-Thread Goal Prompt V387` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Chapter 2.1
 independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V386 adds zero-based
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V387 adds canonical
+iid product-space pointwise displays for both the empirical CDF and the left
+empirical CDF, in zero-based and one-based sample notation, by consuming the
+compiled Chapter 2.1.11 canonical coordinate iid package on `P^N`.  Next work
+should not rebuild these canonical pointwise displays; move to a new
+theorem-sized Chapter 2.1/2.4.9 source consumer, preferably one that packages
+finite-cutpoint or global empirical-CDF steps from the already compiled
+pointwise and product-law endpoints.  V386 adds zero-based
 product-law consumers for the pointwise Theorem 2.4.9 empirical CDF and left
 empirical CDF proof steps.  They consume
 `HasLaw (fun omega => fun i => X i omega) (P^N) mu` through the compiled
