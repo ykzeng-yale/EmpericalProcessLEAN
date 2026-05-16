@@ -2823,6 +2823,207 @@ theorem durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment
       hX_range_int hX_range_zero
 
 /--
+Durrett 2019, Theorem 2.5.5 support: finite partial sums inherit `L^2`
+integrability from finite-range `L^2` increments.
+-/
+theorem durrett2019_theorem_2_5_5_partialSum_memLp_two_of_increment_memLp_two
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {m n : ℕ} (hmn : m ≤ n)
+    (hX_mem : ∀ i ∈ Finset.range n, MemLp (X i) 2 P) :
+    MemLp (fun ω => ∑ i : Finset.range m, X i ω) 2 P := by
+  classical
+  have hsumfun :
+      (fun ω => ∑ i : Finset.range m, X i ω) =
+        (∑ i : Finset.range m, X i) := by
+    ext ω
+    simp [Finset.sum_apply]
+  rw [hsumfun]
+  exact
+    memLp_finsetSum' (Finset.univ : Finset (Finset.range m)) fun i _hi =>
+      hX_mem i.1
+        (Finset.mem_range.mpr ((Finset.mem_range.mp i.2).trans_le hmn))
+
+/--
+Durrett 2019, Theorem 2.5.5 support: finite partial-sum squares are integrable
+when the relevant increments are in `L^2`.
+-/
+theorem durrett2019_theorem_2_5_5_partialSum_sq_integrable_of_increment_memLp_two
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {m n : ℕ} (hmn : m ≤ n)
+    (hX_mem : ∀ i ∈ Finset.range n, MemLp (X i) 2 P) :
+    Integrable (fun ω => (∑ i : Finset.range m, X i ω) ^ 2) P :=
+  (durrett2019_theorem_2_5_5_partialSum_memLp_two_of_increment_memLp_two
+    (P := P) (X := X) hmn hX_mem).integrable_sq
+
+/--
+Durrett 2019, Theorem 2.5.5 support: finite range sums inherit `L^2`
+integrability from finite-range `L^2` increments.
+-/
+theorem durrett2019_theorem_2_5_5_rangeSum_memLp_two_of_increment_memLp_two
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {m n : ℕ} (hmn : m ≤ n)
+    (hX_mem : ∀ i ∈ Finset.range n, MemLp (X i) 2 P) :
+    MemLp (fun ω => ∑ i ∈ Finset.range m, X i ω) 2 P :=
+  memLp_finsetSum (Finset.range m) fun i hi =>
+    hX_mem i (Finset.mem_range.mpr ((Finset.mem_range.mp hi).trans_le hmn))
+
+/--
+Durrett 2019, Theorem 2.5.5 support: finite range-sum squares are integrable
+when the relevant increments are in `L^2`.
+-/
+theorem durrett2019_theorem_2_5_5_rangeSum_sq_integrable_of_increment_memLp_two
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {m n : ℕ} (hmn : m ≤ n)
+    (hX_mem : ∀ i ∈ Finset.range n, MemLp (X i) 2 P) :
+    Integrable (fun ω => (∑ i ∈ Finset.range m, X i ω) ^ 2) P :=
+  (durrett2019_theorem_2_5_5_rangeSum_memLp_two_of_increment_memLp_two
+    (P := P) (X := X) hmn hX_mem).integrable_sq
+
+/--
+Durrett 2019, Theorem 2.5.5 support: the mixed first-crossing term is
+integrable under finite-range `L^2` increment assumptions.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_mixed_integrable_of_increment_memLp_two
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hm : m ∈ Finset.Icc 1 n) (x : ℝ)
+    (hX_mem : ∀ i ∈ Finset.range n, MemLp (X i) 2 P) :
+    Integrable
+      (fun ω =>
+        ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+            Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+              (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+              (fun i : Finset.range m => X i ω)) *
+          ((∑ k ∈ Finset.range n, X k ω) -
+            ∑ k ∈ Finset.range m, X k ω)) P := by
+  let A : Set Ω :=
+    {ω : Ω |
+      (fun i : Finset.range m => X i ω) ∈
+        durrett2019_theorem_2_5_5_firstCrossingBlockSet m x}
+  let stopped : Ω -> ℝ := fun ω =>
+    Set.indicator A
+      (fun ω' => (2 : ℝ) * (∑ i : Finset.range m, X i ω')) ω
+  let future : Ω -> ℝ := fun ω =>
+    (∑ k ∈ Finset.range n, X k ω) - ∑ k ∈ Finset.range m, X k ω
+  have hmn : m ≤ n := (Finset.mem_Icc.mp hm).2
+  have hA : MeasurableSet A :=
+    durrett2019_theorem_2_5_5_measurableSet_firstCrossingEvent
+      (X := X) hX_meas m x
+  have hstopped_mem : MemLp stopped 2 P := by
+    have hsum_mem :
+        MemLp (fun ω => ∑ i : Finset.range m, X i ω) 2 P :=
+      durrett2019_theorem_2_5_5_partialSum_memLp_two_of_increment_memLp_two
+        (P := P) (X := X) hmn hX_mem
+    exact (hsum_mem.const_mul (2 : ℝ)).indicator hA
+  have hfuture_mem : MemLp future 2 P := by
+    have hSn_mem :
+        MemLp (fun ω => ∑ k ∈ Finset.range n, X k ω) 2 P :=
+      durrett2019_theorem_2_5_5_rangeSum_memLp_two_of_increment_memLp_two
+        (P := P) (X := X) (m := n) (n := n) le_rfl hX_mem
+    have hSm_mem :
+        MemLp (fun ω => ∑ k ∈ Finset.range m, X k ω) 2 P :=
+      durrett2019_theorem_2_5_5_rangeSum_memLp_two_of_increment_memLp_two
+        (P := P) (X := X) hmn hX_mem
+    exact hSn_mem.sub hSm_mem
+  have hprod : Integrable (fun ω => stopped ω * future ω) P :=
+    MemLp.integrable_mul hstopped_mem hfuture_mem
+  convert hprod using 1
+  ext ω
+  by_cases hω :
+      (fun i : Finset.range m => X i ω) ∈
+        durrett2019_theorem_2_5_5_firstCrossingBlockSet m x
+  · simp [stopped, future, A, hω]
+  · simp [stopped, future, A, hω]
+
+/--
+Durrett 2019, Theorem 2.5.5 variance display with the main integrability
+side conditions discharged from finite-range `L^2` increments.
+-/
+theorem durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_memLp_two_mean_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {n : ℕ} {x : ℝ} (hx_pos : 0 < x)
+    (hX_mem : ∀ i ∈ Finset.range n, MemLp (X i) 2 P)
+    (hX_zero : ∀ i ∈ Finset.range n, ∫ ω, X i ω ∂P = 0) :
+    P.real (durrett2019_theorem_2_5_5_maxCrossingEvent X n x) ≤
+      (x ^ 2)⁻¹ *
+        _root_.ProbabilityTheory.variance
+          (fun ω => ∑ k ∈ Finset.range n, X k ω) P := by
+  have hpartial_sq_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable (fun ω => (∑ i : Finset.range m, X i ω) ^ 2) P := by
+    intro m hm
+    exact
+      durrett2019_theorem_2_5_5_partialSum_sq_integrable_of_increment_memLp_two
+        (P := P) (X := X) ((Finset.mem_Icc.mp hm).2) hX_mem
+  have hX_int :
+      ∀ m ∈ Finset.Icc 1 n, ∀ i ∈ Finset.Ico m n, Integrable (X i) P := by
+    intro _m _hm i hi
+    exact (hX_mem i (Finset.mem_range.mpr (Finset.mem_Ico.mp hi).2)).integrable one_le_two
+  have hzero :
+      ∀ m ∈ Finset.Icc 1 n, ∀ i ∈ Finset.Ico m n, ∫ ω, X i ω ∂P = 0 := by
+    intro _m _hm i hi
+    exact hX_zero i (Finset.mem_range.mpr (Finset.mem_Ico.mp hi).2)
+  have hmixed_int :
+      ∀ m ∈ Finset.Icc 1 n,
+        Integrable
+          (fun ω =>
+            ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+                Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+                  (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+                  (fun i : Finset.range m => X i ω)) *
+              ((∑ k ∈ Finset.range n, X k ω) -
+                ∑ k ∈ Finset.range m, X k ω)) P := by
+    intro m hm
+    exact
+      durrett2019_theorem_2_5_5_firstCrossing_mixed_integrable_of_increment_memLp_two
+        (P := P) (X := X) hX_meas hm x hX_mem
+  have hSn_sq_int :
+      Integrable (fun ω => (∑ k ∈ Finset.range n, X k ω) ^ 2) P :=
+    durrett2019_theorem_2_5_5_rangeSum_sq_integrable_of_increment_memLp_two
+      (P := P) (X := X) (m := n) (n := n) le_rfl hX_mem
+  have hX_range_int : ∀ i ∈ Finset.range n, Integrable (X i) P := by
+    intro i hi
+    exact (hX_mem i hi).integrable one_le_two
+  exact
+    durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_mean_zero
+      (P := P) (X := X) hX_indep hX_meas (n := n) (x := x)
+      hx_pos hpartial_sq_int hX_int hzero hmixed_int hSn_sq_int
+      hX_range_int hX_zero
+
+/--
+Durrett 2019, Theorem 2.5.5 one-based variance display with the main
+integrability side conditions discharged from finite-range `L^2` increments.
+-/
+theorem durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_memLp_two_mean_zero_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {n : ℕ} {x : ℝ} (hx_pos : 0 < x)
+    (hX_mem : ∀ i ∈ Finset.range n, MemLp (X (i + 1)) 2 P)
+    (hX_zero : ∀ i ∈ Finset.range n, ∫ ω, X (i + 1) ω ∂P = 0) :
+    P.real
+        (durrett2019_theorem_2_5_5_maxCrossingEvent
+          (fun i => fun ω => X (i + 1) ω) n x) ≤
+      (x ^ 2)⁻¹ *
+        _root_.ProbabilityTheory.variance
+          (fun ω => ∑ k ∈ Finset.range n, X (k + 1) ω) P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  exact
+    durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_memLp_two_mean_zero
+      (P := P) (X := fun i => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => hX_meas (i + 1)) (n := n) (x := x)
+      hx_pos hX_mem hX_zero
+
+/--
 Durrett 2019, Theorem 2.1.15, product-space CDF convolution form.
 
 For independent coordinates with laws `μ` and `ν`, the distribution function

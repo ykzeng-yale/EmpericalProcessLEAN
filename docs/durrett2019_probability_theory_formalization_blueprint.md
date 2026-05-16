@@ -27,26 +27,36 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V398`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V399`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.5.5 Kolmogorov
-maximal inequality in `StatInference/ProbabilityTheory/Basic.lean`.  V398 adds
+maximal inequality in `StatInference/ProbabilityTheory/Basic.lean`.  V399 adds
+`L^2` source-side reduction for Theorem 2.5.5:
+`durrett2019_theorem_2_5_5_partialSum_memLp_two_of_increment_memLp_two`,
+`durrett2019_theorem_2_5_5_partialSum_sq_integrable_of_increment_memLp_two`,
+`durrett2019_theorem_2_5_5_rangeSum_memLp_two_of_increment_memLp_two`,
+`durrett2019_theorem_2_5_5_rangeSum_sq_integrable_of_increment_memLp_two`,
+`durrett2019_theorem_2_5_5_firstCrossing_mixed_integrable_of_increment_memLp_two`,
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_memLp_two_mean_zero`,
+and its one-based wrapper.  The front-facing textbook display now only needs
+independence, coordinate measurability, finite-range `MemLp X_i 2`, and
+finite-range mean zero; partial-square, terminal-square, future-integrability,
+and mixed-term integrability obligations are generated internally.  Next work
+should either package the final source statement in the exact Durrett
+hypothesis style, or move forward to the next theorem using 2.5.5 after
+checking source anchors.
+
+Verified route history below is provenance, not live prompt text.  V398 adds
 source-facing increment mean-zero wrappers:
 `durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_mean_zero`
 and
 `durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_mean_zero_oneBased`.
 These derive terminal partial-sum mean zero from finite-range increment
 integrability and mean-zero assumptions before applying the V397 variance
-display.  Next work should reduce or discharge the remaining explicit side
-conditions feeding the textbook display, especially square-integrability of
-partial sums and mixed-term integrability, using Chapter 2.1
-independence/product-expectation, local variance-sum, and mathlib `MemLp`
-finite-sum APIs where available.
-
-Verified route history below is provenance, not live prompt text.  V397
+display.  V397
 packages the textbook division and variance display from the compiled V396
 maximal integral inequality:
 `durrett2019_theorem_2_5_5_kolmogorov_maximal_integral_div_bound`,

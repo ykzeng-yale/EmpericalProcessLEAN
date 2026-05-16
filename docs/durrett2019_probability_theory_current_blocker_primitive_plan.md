@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V398
+## Live In-Thread Goal Prompt V399
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -14,20 +14,32 @@ Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Theorem 2.5.5 Kolmogorov maximal
 inequality in `StatInference/ProbabilityTheory/Basic.lean`.  Reuse the
 compiled Chapter 2.1 independence/product-expectation bridges and the
-V391-V398 first-crossing infrastructure; do not route back to Theorem 2.4.9
+V391-V399 first-crossing infrastructure; do not route back to Theorem 2.4.9
 unless search proves a concrete missing source display.
 
-Latest verified target V398 adds source-facing increment mean-zero wrappers:
+Latest verified target V399 adds `L^2` source-side reduction for Theorem
+2.5.5:
+`durrett2019_theorem_2_5_5_partialSum_memLp_two_of_increment_memLp_two`,
+`durrett2019_theorem_2_5_5_partialSum_sq_integrable_of_increment_memLp_two`,
+`durrett2019_theorem_2_5_5_rangeSum_memLp_two_of_increment_memLp_two`,
+`durrett2019_theorem_2_5_5_rangeSum_sq_integrable_of_increment_memLp_two`,
+`durrett2019_theorem_2_5_5_firstCrossing_mixed_integrable_of_increment_memLp_two`,
+`durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_memLp_two_mean_zero`,
+and its one-based wrapper.  The front-facing textbook display now only needs
+independence, coordinate measurability, finite-range `MemLp X_i 2`, and
+finite-range mean zero; partial-square, terminal-square, future-integrability,
+and mixed-term integrability obligations are generated internally.  Next
+aggressive target: either package the final source statement in the exact
+Durrett hypothesis style, or move forward to the next theorem using 2.5.5,
+after checking source anchors and avoiding any return to solved 2.4.9 plumbing.
+
+V398 adds source-facing increment mean-zero wrappers:
 `durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_mean_zero`
 and
 `durrett2019_theorem_2_5_5_kolmogorov_maximal_variance_bound_of_increment_mean_zero_oneBased`.
 These derive terminal partial-sum mean zero from finite-range increment
 integrability and mean-zero assumptions before applying the V397 variance
-display.  Next aggressive target: reduce or discharge the remaining explicit
-side conditions feeding the textbook display, especially square-integrability
-of partial sums and mixed-term integrability, by reusing existing Chapter 2.1
-independence/product-expectation, local variance-sum, and mathlib `MemLp`
-finite-sum APIs.
+display.
 
 V397 packages the textbook division and variance display from the compiled
 V396 maximal integral inequality:
@@ -50,8 +62,8 @@ first-crossing bridges.
 
 ## Recent Verified Route Notes
 
-V397 and V398 close the theorem-facing probability display and terminal
-mean-zero packaging for Durrett Theorem 2.5.5.  V395 adds the
+V397 through V399 close the theorem-facing probability display and the main
+source-side integrability packaging for Durrett Theorem 2.5.5.  V395 adds the
 square-expansion upper-comparison layer:
 `durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_add_mixed_le_terminalSq`,
 `durrett2019_theorem_2_5_5_firstCrossing_stoppedSq_integral_le_terminalSq_integral_of_mixed_zero`,
@@ -3345,6 +3357,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V398` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V399` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
