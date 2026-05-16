@@ -141,8 +141,20 @@ and compact closed-polytope standard-path endpoints.  The V33 packet adds
 `Chewi1316RangeCentralPathSelector`, a preliminary-initializer selector
 consumer, and four bounded/closed/compact selector endpoints; a positive-parameter
 selector now chooses the terminal center and discharges centrality in the final
-objective-gap statement.  Next finite-row work should prove a concrete selector
-from compact/closed minimizer existence and interior barrier optimality.
+objective-gap statement.  The V34 packet adds
+`negLogBarrier_hasDerivAt_of_pos`,
+`positiveOrthantNegLogBarrier_hasGradientAt`,
+`Chewi1316RangeCentralPathMinimizerSelector`, and
+`chewi1316_rangeCentralPathSelector_of_minimizerSelector`.  Search-first reuse:
+the scalar/vector barrier gradient uses mathlib `Real.hasDerivAt_log`,
+`HasDerivAt.comp_hasFDerivAt`, `PiLp.hasFDerivAt_apply`,
+`HasFDerivAt.fun_sum`, and `hasGradientAt_iff_hasFDerivAt`; the selector
+bridge reuses the local Fermat theorem
+`gradient_eq_zero_of_isMinOn_univ_hasGradientAt`.  Next finite-row work should
+define the concrete range central-path value, prove its gradient formula from
+the V34 positive-orthant barrier gradient plus affine composition, then obtain
+the minimizer selector from compact/closed minimizer existence and interior
+barrier optimality.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

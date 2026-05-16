@@ -186,10 +186,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   endpoints.  With a selector for positive central-path parameters, these
   endpoints choose both the terminal `Nmain` and its matching central-path
   `center`, then prove the objective gap directly.
+  The V34 packet adds `negLogBarrier_hasDerivAt_of_pos`,
+  `positiveOrthantNegLogBarrier_hasGradientAt`,
+  `Chewi1316RangeCentralPathMinimizerSelector`, and
+  `chewi1316_rangeCentralPathSelector_of_minimizerSelector`.  The positive
+  orthant barrier value now has a verified mathlib gradient, and any supplied
+  global minimizer of a verified central-path value model can be converted into
+  the V33 centrality selector by the reused Fermat bridge from
+  `Minimizer.lean`.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: prove a
-  concrete selector from compact/closed minimizer existence and interior
+  `hxseq_mem` or per-step decrement premise.  Next proof target: define and
+  differentiate the concrete range central-path value, then prove a concrete
+  minimizer selector from compact/closed minimizer existence and interior
   barrier optimality, reusing mathlib `IsCompact.exists_isMinOn`/Fermat APIs
   where applicable.
   Do not repeat

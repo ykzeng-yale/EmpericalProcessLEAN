@@ -25481,6 +25481,11 @@ theorem negLogBarrier_deriv (x : ℝ) :
   unfold negLogBarrier
   rw [deriv.fun_neg, Real.deriv_log]
 
+theorem negLogBarrier_hasDerivAt_of_pos {x : ℝ} (hx : 0 < x) :
+    HasDerivAt negLogBarrier (deriv negLogBarrier x) x := by
+  simpa [negLogBarrier, negLogBarrier_deriv] using
+    (Real.hasDerivAt_log hx.ne').neg
+
 theorem inv_sq_eq_zpow_neg_two (x : ℝ) :
     x⁻¹ ^ (2 : ℕ) = x ^ (-2 : ℤ) := by
   change x⁻¹ ^ (2 : ℕ) = (x ^ (2 : ℕ))⁻¹
@@ -25584,6 +25589,34 @@ noncomputable def positiveOrthantNegLogGrad {d : ℕ}
     (x : EuclideanSpace ℝ (Fin d)) (i : Fin d) :
     positiveOrthantNegLogGrad x i = deriv negLogBarrier (x i) := by
   simp [positiveOrthantNegLogGrad, PiLp.toLp_apply]
+
+theorem positiveOrthantNegLogBarrier_hasGradientAt {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    HasGradientAt positiveOrthantNegLogBarrier
+      (positiveOrthantNegLogGrad x) x := by
+  rw [hasGradientAt_iff_hasFDerivAt]
+  have hsum :
+      HasFDerivAt positiveOrthantNegLogBarrier
+        (∑ i : Fin d,
+          (deriv negLogBarrier (x i)) •
+            (PiLp.proj (𝕜 := ℝ) 2 (fun _ : Fin d => ℝ) i)) x := by
+    simpa [positiveOrthantNegLogBarrier] using
+      (HasFDerivAt.fun_sum
+        (u := (Finset.univ : Finset (Fin d)))
+        (A' := fun i =>
+          (deriv negLogBarrier (x i)) •
+            (PiLp.proj (𝕜 := ℝ) 2 (fun _ : Fin d => ℝ) i))
+        (fun i _hi => by
+          have hcoord :
+              HasFDerivAt (fun y : EuclideanSpace ℝ (Fin d) => y i)
+                (PiLp.proj (𝕜 := ℝ) 2 (fun _ : Fin d => ℝ) i) x :=
+            PiLp.hasFDerivAt_apply (𝕜 := ℝ) (p := 2)
+              (E := fun _ : Fin d => ℝ) x i
+          simpa [Function.comp_def] using
+            (negLogBarrier_hasDerivAt_of_pos (hx i)).comp_hasFDerivAt x hcoord))
+  convert hsum using 1
+  ext y
+  simp [positiveOrthantNegLogGrad, PiLp.inner_apply, RCLike.inner_apply, mul_comm]
 
 /--
 The coordinatewise inverse-Hessian model for the finite product logarithmic
@@ -36701,6 +36734,40 @@ def Chewi1316RangeCentralPathSelector
       t • aObj +
           barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
             positiveOrthantNegLogGrad center = 0
+
+/--
+Source-shaped minimizer certificate for the finite-row central path.  For each
+positive barrier parameter it supplies a feasible range point that globally
+minimizes some verified central-path value model whose mathlib gradient is the
+Chewi centrality vector.
+-/
+def Chewi1316RangeCentralPathMinimizerSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range) : Prop :=
+  ∀ {t : ℝ}, 0 < t ->
+    ∃ center : (polytopeSlackCLM aRow).range,
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) ∧
+      ∃ centralValue : (polytopeSlackCLM aRow).range -> ℝ,
+        IsMinOn centralValue Set.univ center ∧
+        HasGradientAt centralValue
+          (t • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad center) center
+
+theorem chewi1316_rangeCentralPathSelector_of_minimizerSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range)
+    (hselector : Chewi1316RangeCentralPathMinimizerSelector aRow bSlack aObj) :
+    Chewi1316RangeCentralPathSelector aRow bSlack aObj := by
+  intro t ht
+  rcases hselector ht with ⟨center, hcenter_mem, centralValue, hmin, hgrad⟩
+  refine ⟨center, hcenter_mem, ?_⟩
+  exact gradient_eq_zero_of_isMinOn_univ_hasGradientAt hmin hgrad
 
 theorem chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_centralPathSelector
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]

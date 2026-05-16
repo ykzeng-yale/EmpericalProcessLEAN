@@ -399,10 +399,30 @@ interface layer: a selector hypothesis for positive terminal parameters now
 chooses the matching `center`, proves terminal centrality, and returns the
 objective gap directly for all four bounded standard-path endpoints.
 
-Next theorem-sized target: prove a concrete
-`Chewi1316RangeCentralPathSelector` from compact/closed feasible-range
-minimizer existence plus an interior/barrier argument, or from a stronger local
-central-path existence theorem if one is already present locally.
+Current V34 packet packages the Fermat/minimizer bridge and the first concrete
+barrier-value gradient atom needed for selector existence.  New compiled
+declarations:
+`negLogBarrier_hasDerivAt_of_pos`,
+`positiveOrthantNegLogBarrier_hasGradientAt`,
+`Chewi1316RangeCentralPathMinimizerSelector`, and
+`chewi1316_rangeCentralPathSelector_of_minimizerSelector`.
+Search-first result: mathlib supplies `Real.hasDerivAt_log`,
+`HasDerivAt.comp_hasFDerivAt`, `PiLp.hasFDerivAt_apply`,
+`HasFDerivAt.fun_sum`, and the `HasGradientAt`/`HasFDerivAt` equivalence for
+the finite positive-orthant barrier gradient; local `Minimizer.lean` already
+supplies `gradient_eq_zero_of_isMinOn_univ_hasGradientAt`, so V34 reuses that
+Fermat wrapper instead of reproving local-minimum calculus.
+
+Next theorem-sized target: define the concrete finite-row central-path value on
+`(polytopeSlackCLM aRow).range`,
+`center ↦ t * inner ℝ aObj center + positiveOrthantNegLogBarrier ((center :
+EuclideanSpace ℝ (Fin m)) + bSlack)`, prove its gradient is
+`t • aObj + barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+positiveOrthantNegLogGrad center` at feasible positive-orthant points, and use
+that formula with compact/closed feasible-range minimizer existence and interior
+barrier optimality to build a concrete
+`Chewi1316RangeCentralPathMinimizerSelector`.  The V34 bridge will then
+immediately yield the existing `Chewi1316RangeCentralPathSelector` endpoints.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
