@@ -863,6 +863,15 @@ source-centered radius, chooses `rho = R / sFloor`, and returns existential
 This is now the preferred bounded-polytope route when the remaining geometry
 proves boundedness of the feasible slack range rather than a hand-picked
 radius.
+The source-space bounded-polytope bridge now adds
+`chewi1316_polytopeSlackNegLog_bounded_feasibleRange_of_bounded_polytopeSlackSet`
+and the endpoint
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_autoFloor_succ_noFactor_standardConstants`.
+It reuses Mathlib `Bornology.IsBounded.image` for the continuous linear
+`rangeRestrict` map plus the local
+`polytopeSlackSet_of_rangeRestrict_mem` bridge, so a boundedness certificate
+for the original source polytope slack set now feeds the actual §13.16
+main-stage initializer directly.
 This lets compactness or boundedness proofs feed Mathlib least-upper-bound
 data directly: prove the feasible translated slack range is compact (or show
 it sits inside a compact closure/envelope, or show each coordinate image is

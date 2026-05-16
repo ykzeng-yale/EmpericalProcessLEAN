@@ -570,6 +570,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Bornology.IsBounded.subset_closedBall`, chooses `rho = R / sFloor`, and
   returns existential `sFloor`, `rho`, and `tailBound` with the verified
   main-stage decrement conclusion.
+  The source-space bounded-polytope bridge now compiles as
+  `chewi1316_polytopeSlackNegLog_bounded_feasibleRange_of_bounded_polytopeSlackSet`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_autoFloor_succ_noFactor_standardConstants`.
+  It reuses Mathlib `Bornology.IsBounded.image` for `rangeRestrict` and the
+  local `polytopeSlackSet_of_rangeRestrict_mem` bridge, so boundedness of the
+  original source polytope slack set now feeds the actual §13.16 initializer
+  directly.
   This is the direct entrypoint for compact/bounded feasible-range arguments
   that naturally produce least-upper-bound data; the Mathlib reuse is
   `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,

@@ -26833,6 +26833,26 @@ theorem polytopeSlackSet_of_rangeRestrict_mem
   nlinarith
 
 /--
+If the source polytope slack set is bounded, then the translated feasible
+slack range is bounded.  This is the image-boundedness bridge from source-space
+bounded-polytope geometry to the range-space §13.16 handoff.
+-/
+theorem chewi1316_polytopeSlackNegLog_bounded_feasibleRange_of_bounded_polytopeSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    (hbounded : Bornology.IsBounded (polytopeSlackSet a b)) :
+    Bornology.IsBounded
+      (barrierAffineRangeSet (polytopeSlackCLM a) b
+        (positiveOrthant (d := m))) := by
+  refine (hbounded.image (polytopeSlackCLM a).rangeRestrict).subset ?_
+  intro y hy
+  rcases y with ⟨y, hy_range⟩
+  rcases hy_range with ⟨x, rfl⟩
+  refine ⟨x, ?_, ?_⟩
+  · exact polytopeSlackSet_of_rangeRestrict_mem a b (by simpa using hy)
+  · exact Subtype.ext rfl
+
+/--
 Chewi Example 13.14, finite-row logarithmic barrier in supplied right-inverse
 form.  Pulling the positive-orthant log barrier back along the slack map gives
 a `(m : ℝ)`-self-concordant barrier for the polytope slack domain.
@@ -44125,6 +44145,58 @@ theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decremen
   exact
     ⟨sFloor, rho, tailBound, Midx, Nout, tMain,
       hsFloor_pos, hrho, le_rfl, htMain, hlog, hN, hdec⟩
+
+/--
+Source-space bounded-polytope version of the actual preliminary Newton
+initializer.  A bounded source slack set is pushed through `rangeRestrict` to
+boundedness of the translated feasible slack range, then the auto-floor
+bounded-range endpoint chooses the radius and relative-slack budget.
+-/
+theorem chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_autoFloor_succ_noFactor_standardConstants
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 aObj : F} {xseq : ℕ -> F}
+    {tseq : ℕ -> ℝ}
+    (hxbar0Range :
+      (polytopeSlackCLM aRow).rangeRestrict xbar0 ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hx0 : xseq 0 = xbar0)
+    (ht0 : tseq 0 = 1)
+    (htstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 - (1 / 200 : ℝ) / Real.sqrt (m : ℝ)) * tseq n)
+    (hnewton_next_source : ∀ n : ℕ,
+      xseq (n + 1) =
+        newtonStep
+          (preliminaryPathGrad
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad)
+            xbar0 (tseq (n + 1)))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq n))
+    (hbounded_source : Bornology.IsBounded (polytopeSlackSet aRow bSlack)) :
+    ∃ sFloor rho tailBound : ℝ, ∃ Midx Nout : ℕ, ∃ tMain : ℝ,
+      0 < sFloor ∧
+      0 ≤ rho ∧
+      Real.sqrt (m : ℝ) * (1 + rho) ≤ tailBound ∧
+      0 < tMain ∧
+      Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+        (Midx : ℝ) * Real.log (2 : ℝ) ∧
+      (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+        (Nout : ℝ) * (1 / 200 : ℝ) ∧
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xseq Nout) ≤ 1 / 4 :=
+  chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedFeasibleRange_autoFloor_succ_noFactor_standardConstants
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (xseq := xseq) (tseq := tseq)
+    hxbar0Range hx0 ht0 htstep hnewton_next_source
+    (chewi1316_polytopeSlackNegLog_bounded_feasibleRange_of_bounded_polytopeSlackSet
+      aRow bSlack hbounded_source)
 
 /--
 Post-threshold source-centered radius handoff using a single source slack floor.
