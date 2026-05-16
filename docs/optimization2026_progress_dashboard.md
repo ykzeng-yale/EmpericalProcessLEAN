@@ -503,6 +503,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceLocalNormBound_succ_noFactor_standardConstants`
   and exact-budget source-local-norm wrapper
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceLocalNormBound_exactBudget_succ_noFactor_standardConstants`.
+  The coordinate-relative Dikin bridge now adds
+  `chewi1314_polytopeSlackNegLog_range_sourceLocalNorm_le_sqrt_fin_mul_of_coord_abs_le`,
+  `chewi1314_polytopeSlackNegLog_range_sourceLocalNorm_le_sqrt_fin_mul_of_relative_abs_sub_le`,
+  `chewi1316_polytopeSlackNegLog_sourceLocalNormBound_of_slackCoordAbsBound`,
+  `chewi1316_polytopeSlackNegLog_sourceLocalNormBound_of_slackRelativeAbsSubBound`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackCoordAbsBound_exactBudget_succ_noFactor_standardConstants`,
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRelativeAbsSubBound_exactBudget_succ_noFactor_standardConstants`.
   This is the direct entrypoint for compact/bounded feasible-range arguments
   that naturally produce least-upper-bound data; the Mathlib reuse is
   `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,
@@ -517,7 +525,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1314_polytopeSlackNegLog_range_slackRatio_le_one_add_of_sourceLocalNorm_le`
   to get slack-ratio budget `1 + r`.  The exact-budget wrapper derives
   nonnegativity from `localNorm_zero` at the source and leaves only
-  `sqrt(m) * (1 + r) <= tailBound`.
+  `sqrt(m) * (1 + r) <= tailBound`.  When geometry is coordinate-relative,
+  prove either `||slack_i(y) - slack_i(xbar0)|| <= rho * slack_i(xbar0)` or
+  `||slack_i(y) / slack_i(xbar0) - 1|| <= rho`; the new bridge reuses
+  `positiveOrthantNegLog_localNorm_le_sqrt_fin_mul_of_coord_abs_le`,
+  `positiveOrthant_coord_abs_sub_le_mul_of_relative_abs_sub_le`,
+  `barrierAffineRange_localNorm_eq_ambient`, and `Real.norm_eq_abs`, leaving
+  only `sqrt(m) * (1 + sqrt(m) * rho) <= tailBound`.
   Future selected-index work should reuse the `K+1 <= 49` local-window prefix
   budget, while the global prefix budget remains unsolved.
   The range-Hessian positivity bridge now adds

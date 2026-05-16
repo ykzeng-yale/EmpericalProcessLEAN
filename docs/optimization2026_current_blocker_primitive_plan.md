@@ -790,6 +790,14 @@ plus the Dikin/source-local-norm entrypoint
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceLocalNormBound_succ_noFactor_standardConstants`
 and its exact-budget specialization
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceLocalNormBound_exactBudget_succ_noFactor_standardConstants`.
+The newest coordinate-relative Dikin bridge adds
+`chewi1314_polytopeSlackNegLog_range_sourceLocalNorm_le_sqrt_fin_mul_of_coord_abs_le`,
+`chewi1314_polytopeSlackNegLog_range_sourceLocalNorm_le_sqrt_fin_mul_of_relative_abs_sub_le`,
+`chewi1316_polytopeSlackNegLog_sourceLocalNormBound_of_slackCoordAbsBound`,
+`chewi1316_polytopeSlackNegLog_sourceLocalNormBound_of_slackRelativeAbsSubBound`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackCoordAbsBound_exactBudget_succ_noFactor_standardConstants`,
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRelativeAbsSubBound_exactBudget_succ_noFactor_standardConstants`.
 This lets compactness or boundedness proofs feed Mathlib least-upper-bound
 data directly: prove the feasible translated slack range is compact (or show
 it sits inside a compact closure/envelope, or show each coordinate image is
@@ -818,6 +826,16 @@ budget `1 + r` by reusing
 the exact-budget specialization removes the auxiliary `B`, derives
 `0 <= 1 + r` from the bound at the source using `localNorm_zero`, and leaves
 only the scalar tail budget `sqrt(m) * (1 + r) <= tailBound`.
+If the geometry is coordinate-relative instead, prefer the new exact-budget
+coordinate wrappers: prove either
+`||slack_i(y) - slack_i(xbar0)|| <= rho * slack_i(xbar0)` or
+`||slack_i(y) / slack_i(xbar0) - 1|| <= rho` for every feasible range point.
+The compiled bridge reuses
+`positiveOrthantNegLog_localNorm_le_sqrt_fin_mul_of_coord_abs_le`,
+`positiveOrthant_coord_abs_sub_le_mul_of_relative_abs_sub_le`,
+`barrierAffineRange_localNorm_eq_ambient`, and `Real.norm_eq_abs`, then
+reduces the scalar tail obligation to
+`sqrt(m) * (1 + sqrt(m) * rho) <= tailBound`.
 
 Archived route log below: the active Chapter 13 lane has moved beyond
 Example 13.14's finite-row logarithmic barrier closure into Chewi Lemma

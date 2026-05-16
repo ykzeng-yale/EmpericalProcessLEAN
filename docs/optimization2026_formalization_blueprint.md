@@ -289,6 +289,14 @@ plus source-local-norm specialization
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceLocalNormBound_succ_noFactor_standardConstants`
 and exact-budget source-local-norm specialization
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_sourceLocalNormBound_exactBudget_succ_noFactor_standardConstants`.
+The coordinate-relative source-local-norm handoff now adds
+`chewi1314_polytopeSlackNegLog_range_sourceLocalNorm_le_sqrt_fin_mul_of_coord_abs_le`,
+`chewi1314_polytopeSlackNegLog_range_sourceLocalNorm_le_sqrt_fin_mul_of_relative_abs_sub_le`,
+`chewi1316_polytopeSlackNegLog_sourceLocalNormBound_of_slackCoordAbsBound`,
+`chewi1316_polytopeSlackNegLog_sourceLocalNormBound_of_slackRelativeAbsSubBound`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackCoordAbsBound_exactBudget_succ_noFactor_standardConstants`,
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRelativeAbsSubBound_exactBudget_succ_noFactor_standardConstants`.
 Use this when the bounded-polytope proof supplies `BddAbove` coordinate images
 or compactness facts.  Prefer the compact-superset form when the strict
 positive-orthant feasible set is open but contained in a compact
@@ -312,8 +320,16 @@ and the exact-budget specialization leaves only
 `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,
 `csSup_le_csSup`, `csSup_le`, `isCompact_closedBall`, `PiLp.norm_apply_le`,
 `Metric.mem_closedBall`, and coordinate continuity from `PiLp.continuous_apply`.
-The remaining scalar comparison is against the compact envelope coordinate
-`sSup` or the explicit envelope coordinate upper bounds.
+When geometry gives coordinate-relative bounds instead of an abstract Dikin
+radius, use the new coordinate wrappers: prove either
+`||slack_i(y) - slack_i(xbar0)|| <= rho * slack_i(xbar0)` or
+`||slack_i(y) / slack_i(xbar0) - 1|| <= rho`; the verified bridge reuses
+`positiveOrthantNegLog_localNorm_le_sqrt_fin_mul_of_coord_abs_le`,
+`positiveOrthant_coord_abs_sub_le_mul_of_relative_abs_sub_le`,
+`barrierAffineRange_localNorm_eq_ambient`, and `Real.norm_eq_abs`, and leaves
+only `sqrt(m) * (1 + sqrt(m) * rho) <= tailBound`.  The remaining scalar
+comparison is against the compact envelope coordinate `sSup`, the explicit
+envelope coordinate upper bounds, or this coordinate-relative `rho` budget.
 The no-prefix source-radius counterpart now compiles as
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySourceRadiusBound_succ_noFactor_standardConstants`
 and the half-radius specialization
