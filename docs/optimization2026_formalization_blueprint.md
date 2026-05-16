@@ -237,6 +237,18 @@ finite Euclidean coordinate-envelope bounds, and the existing range
 inverse-Hessian/Cauchy stack; there is no direct Mathlib range-restriction
 lemma to import.  The next exact target should therefore prove the eventual
 slack-ratio envelope from bounded-polytope or moving-center invariants.
+The finite-row Slater closure packet now adds
+`polytopeSlackSet_segment_source_mem_of_closed_mem_of_mem`,
+`closedPolytopeSlackSet_subset_closure_polytopeSlackSet_of_mem`, and
+`closure_polytopeSlackSet_eq_closedPolytopeSlackSet_of_mem`.
+It proves that one strict feasible source point makes the strict logarithmic
+barrier domain dense in the textbook closed polytope, reusing Mathlib
+`mem_closure_iff_seq_limit`, `tendsto_one_div_add_atTop_nhds_zero_nat`,
+`closure_minimal`, and real inner-product linearity.  Future compact-closure
+or bounded-closed-polytope arguments should reuse this identity instead of
+reproving open-segment approximations; the next live proof target remains the
+actual moving-center/measured range-tail estimate, not the invalid bare
+half-contraction route.
 The no-prefix counterpart now compiles as
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_rangeMem_eventuallySlackRatioBound_succ_noFactor_standardConstants`.
 Use it when the moving-center proof supplies all-iterate range feasibility

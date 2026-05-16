@@ -583,6 +583,9 @@ This dashboard tracks the Chewi optimization formalization lane for
   `halfspaceSlackSet_subset_closedHalfspaceSlackSet`,
   `polytopeSlackSet_subset_closedPolytopeSlackSet`,
   `isClosed_closedHalfspaceSlackSet`, `isClosed_closedPolytopeSlackSet`,
+  `polytopeSlackSet_segment_source_mem_of_closed_mem_of_mem`,
+  `closedPolytopeSlackSet_subset_closure_polytopeSlackSet_of_mem`,
+  `closure_polytopeSlackSet_eq_closedPolytopeSlackSet_of_mem`,
   `chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_subset_closedBall`,
   `chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_dist_le`,
   `chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_norm_sub_le`,
@@ -605,10 +608,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   and `Bornology.IsBounded.subset`, plus `Metric.mem_closedBall`,
   `dist_eq_norm`, `subset_closure`, `isClosed_Iic.preimage`, `innerSL`
   continuity, finite `isClosed_iInter`, and
-  `Metric.isCompact_of_isClosed_isBounded`, making closed-ball,
-  distance/norm-radius, compact-source, compact-closure, compact-envelope,
-  compact textbook closed-polytope, and bounded textbook closed-polytope source
-  assumptions direct entrypoints.
+  `Metric.isCompact_of_isClosed_isBounded`.  The Slater closure packet also
+  reuses `mem_closure_iff_seq_limit` and
+  `tendsto_one_div_add_atTop_nhds_zero_nat` to prove
+  `closure (polytopeSlackSet a b) = closedPolytopeSlackSet a b` from one
+  strict feasible point.  This makes closed-ball, distance/norm-radius,
+  compact-source, compact-closure, compact-envelope, compact textbook
+  closed-polytope, and bounded textbook closed-polytope source assumptions
+  direct entrypoints without redoing finite-row closure topology.
   This is the direct entrypoint for compact/bounded feasible-range arguments
   that naturally produce least-upper-bound data; the Mathlib reuse is
   `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,

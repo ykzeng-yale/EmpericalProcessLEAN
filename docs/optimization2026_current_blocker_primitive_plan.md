@@ -877,6 +877,9 @@ The source-facing boundedness packet now adds
 `halfspaceSlackSet_subset_closedHalfspaceSlackSet`,
 `polytopeSlackSet_subset_closedPolytopeSlackSet`,
 `isClosed_closedHalfspaceSlackSet`, `isClosed_closedPolytopeSlackSet`,
+`polytopeSlackSet_segment_source_mem_of_closed_mem_of_mem`,
+`closedPolytopeSlackSet_subset_closure_polytopeSlackSet_of_mem`,
+`closure_polytopeSlackSet_eq_closedPolytopeSlackSet_of_mem`,
 `chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_subset_closedBall`,
 `chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_dist_le`,
 `chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_norm_sub_le`,
@@ -904,8 +907,14 @@ local compactness upgrade proves compactness from closedness plus boundedness.
 These reuse Mathlib `Metric.isBounded_closedBall`, `IsCompact.isBounded`, and
 `Bornology.IsBounded.subset`, plus `Metric.mem_closedBall`, `dist_eq_norm`,
 `subset_closure`, `isClosed_Iic.preimage`, `innerSL` continuity, and finite
-`isClosed_iInter`, plus `Metric.isCompact_of_isClosed_isBounded` for the
-proper-space Heine-Borel route, so future source geometry can give a closed-ball
+`isClosed_iInter`, plus `mem_closure_iff_seq_limit`,
+`tendsto_one_div_add_atTop_nhds_zero_nat`, and
+`Metric.isCompact_of_isClosed_isBounded` for the proper-space Heine-Borel
+route.  Under one strict feasible point, the new Slater closure identity
+proves `closure (polytopeSlackSet a b) = closedPolytopeSlackSet a b`, so
+future source-topology arguments can move between strict barrier domains and
+textbook closed polytopes without redoing open-segment/sequence arguments.
+Thus future source geometry can give a closed-ball
 enclosure, pointwise distance/norm radius certificate, compact source set,
 compact source closure, compact source envelope, or compactness of the
 textbook closed polytope `{x | inner a_i x <= b_i}` for the original polytope

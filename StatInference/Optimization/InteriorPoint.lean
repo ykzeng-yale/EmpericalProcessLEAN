@@ -9,8 +9,10 @@ import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.Analysis.SpecialFunctions.Log.Deriv
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Analysis.SpecialFunctions.Sqrt
+import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
 import Mathlib.Topology.Algebra.Module.FiniteDimension
+import Mathlib.Topology.Sequences
 
 /-!
 # Chewi Chapter 13 interior-point methods
@@ -23,7 +25,7 @@ local-norm/Newton substrate, and the Lemma 13.6 Hessian-stability spine.
 namespace StatInference
 namespace Optimization
 
-open scoped intervalIntegral BigOperators
+open scoped intervalIntegral BigOperators Topology
 open Filter
 
 section ScalarGronwall
@@ -26833,6 +26835,83 @@ theorem isClosed_closedPolytopeSlackSet
   rw [closedPolytopeSlackSet_eq_iInter_closedHalfspaceSlackSet]
   exact isClosed_iInter fun i =>
     isClosed_closedHalfspaceSlackSet (a i) (b i)
+
+/--
+A strict feasible point and a closed-polytope point generate strict feasible
+points along the open segment.  This is the finite-row Slater bridge behind
+the closure of the logarithmic-barrier domain.
+-/
+theorem polytopeSlackSet_segment_source_mem_of_closed_mem_of_mem
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {x0 y : F} {t : ℝ}
+    (hx0 : x0 ∈ polytopeSlackSet a b)
+    (hy : y ∈ closedPolytopeSlackSet a b)
+    (ht_pos : 0 < t) (ht_le_one : t ≤ 1) :
+    y + t • (x0 - y) ∈ polytopeSlackSet a b := by
+  intro i
+  have hyi : inner ℝ (a i) y ≤ b i := hy i
+  have hxi : inner ℝ (a i) x0 < b i := by
+    have hslack := hx0 i
+    nlinarith
+  have hinner :
+      inner ℝ (a i) (y + t • (x0 - y)) =
+        inner ℝ (a i) y + t * (inner ℝ (a i) x0 - inner ℝ (a i) y) := by
+    simp only [inner_add_right, real_inner_smul_right, inner_sub_right]
+  have hlt : inner ℝ (a i) (y + t • (x0 - y)) < b i := by
+    rw [hinner]
+    nlinarith
+  nlinarith
+
+/--
+If the strict polytope slack set is nonempty, then the closed textbook
+polytope is contained in the closure of the strict logarithmic-barrier domain.
+The approximating sequence moves each closed feasible point a vanishing amount
+toward a fixed strict feasible source.
+-/
+theorem closedPolytopeSlackSet_subset_closure_polytopeSlackSet_of_mem
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+      [FrechetUrysohnSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {x0 : F} (hx0 : x0 ∈ polytopeSlackSet a b) :
+    closedPolytopeSlackSet a b ⊆ closure (polytopeSlackSet a b) := by
+  intro y hy
+  rw [mem_closure_iff_seq_limit]
+  refine ⟨fun n : ℕ => y + ((1 : ℝ) / ((n : ℝ) + 1)) • (x0 - y), ?_, ?_⟩
+  · intro n
+    have hn_nonneg : 0 ≤ (n : ℝ) := by exact_mod_cast Nat.zero_le n
+    have hden_pos : 0 < (n : ℝ) + 1 := by nlinarith
+    have ht_pos : 0 < (1 : ℝ) / ((n : ℝ) + 1) := by
+      exact div_pos zero_lt_one hden_pos
+    have ht_le_one : (1 : ℝ) / ((n : ℝ) + 1) ≤ 1 := by
+      rw [div_le_iff₀ hden_pos]
+      nlinarith
+    exact
+      polytopeSlackSet_segment_source_mem_of_closed_mem_of_mem
+        a b hx0 hy ht_pos ht_le_one
+  · have htend :
+        Tendsto (fun n : ℕ => (1 : ℝ) / ((n : ℝ) + 1)) atTop (𝓝 0) := by
+      simpa using (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ))
+    simpa using
+      (tendsto_const_nhds.add (htend.smul_const (x0 - y)))
+
+/--
+Slater closure identity for finite-row polytope slack domains: with one strict
+feasible source point, the closure of the strict logarithmic-barrier domain is
+exactly the closed polytope `{x | A x <= b}`.
+-/
+theorem closure_polytopeSlackSet_eq_closedPolytopeSlackSet_of_mem
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+      [FrechetUrysohnSpace F]
+    {m : ℕ} (a : Fin m -> F) (b : EuclideanSpace ℝ (Fin m))
+    {x0 : F} (hx0 : x0 ∈ polytopeSlackSet a b) :
+    closure (polytopeSlackSet a b) = closedPolytopeSlackSet a b := by
+  exact subset_antisymm
+    (closure_minimal
+      (polytopeSlackSet_subset_closedPolytopeSlackSet a b)
+      (isClosed_closedPolytopeSlackSet a b))
+    (closedPolytopeSlackSet_subset_closure_polytopeSlackSet_of_mem
+      a b hx0)
 
 /-- Tail offset vector for splitting a `Fin (m+1)` polytope slack system. -/
 noncomputable def polytopeSlackTailOffset
