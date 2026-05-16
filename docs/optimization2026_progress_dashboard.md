@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V23` near the top of
+  `Live Goal Prompt V24` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -92,14 +92,26 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_value_growth_and_firstOrderStrongConvexOn`,
   and
   `chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton_of_terminal_mem_and_value_growth`.
+  The V24 segment-integral lower-model packet adds
+  `chewi1316_lowerModel_of_gradient_segment_quadratic_lower`,
+  `chewi1316_centralPath_lowerModel_of_gradient_segment_quadratic_lower`,
+  `chewi1316_objective_gap_le_of_gradient_segment_quadratic_lower`, and
+  `chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_gradient_segment_quadratic_lower`.
+  It reuses local segment-gradient FTC infrastructure and mathlib
+  interval-integral monotonicity to reduce the lower-model certificate to a
+  pointwise Hessian quadratic lower bound along `center -> x`.  Search-first
+  result: no direct Chewi value-growth theorem exists in mathlib/local code;
+  the next efficient route is to reuse the existing local-norm sandwich and
+  Hessian segment comparison lemmas before introducing any new
+  self-concordance primitive.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
   `hxseq_mem` or per-step decrement premise.  Next proof target: discharge one
-  remaining terminal certificate family for the V19/V21/V22/V23 handoff: terminal
-  centrality or the self-concordant value-growth certificate feeding the new
-  value-growth consumers.  Do not repeat large-parameter stopping/count,
-  barrier-step from terminal feasibility, or the first-order lower-model
-  bridge/consumer wrappers.
+  remaining terminal certificate family for the V19/V21/V22/V23/V24 handoff:
+  terminal centrality, self-concordant value-growth for the V23 consumers, or
+  segment Hessian quadratic lower control for the V24 consumers.  Do not repeat
+  large-parameter stopping/count, barrier-step from terminal feasibility, or
+  the first-order/segment-integral lower-model bridge consumer wrappers.
 - Cached Chapter 13 frontier history: the finite-row slack-range §13.16 handoff now
   compiles through source-pullback decrement transport and a point-dependent
   range sqrt-coordinate one-step wrapper.  New reusable declarations are

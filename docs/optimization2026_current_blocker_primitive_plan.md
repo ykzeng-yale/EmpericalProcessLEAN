@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V23`, this file's top
+   the full book is complete, route from `Live Goal Prompt V24`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V23
+## Live Goal Prompt V24
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -239,11 +239,32 @@ and
 The finite-row range endpoint now combines V21 terminal feasibility
 barrier-step with V22 value-growth/first-order lower-model discharge.
 
-Next theorem-sized target: finish one of the two remaining genuine terminal
-certificate families for the V19/V21/V22/V23 auto handoff: terminal central-path
-optimality at the selected parameter, or the self-concordant value-growth
-certificate that feeds
-the new `*_of_value_growth_and_firstOrderStrongConvexOn` consumers.
+Current V24 packet adds a second, more analytic Lemma 13.6 route: a segment
+gradient fundamental-theorem bridge reduces the lower-model certificate to a
+pointwise Hessian quadratic lower bound along the segment from the central-path
+point to the terminal iterate.  New compiled declarations:
+`chewi1316_lowerModel_of_gradient_segment_quadratic_lower`,
+`chewi1316_centralPath_lowerModel_of_gradient_segment_quadratic_lower`,
+`chewi1316_objective_gap_le_of_gradient_segment_quadratic_lower`, and
+`chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_gradient_segment_quadratic_lower`.
+Search-first result: neither mathlib nor local `StatInference` has a direct
+Chewi self-concordant value-growth theorem, but local
+`hessianSegmentGradient_hasDerivAt_of_hasFDerivAt`, mathlib
+`intervalIntegral.integral_eq_sub_of_hasDerivAt`, and
+`intervalIntegral.integral_mono_on` close the FTC/integration layer.  The
+remaining analytic blocker is pointwise Hessian lower control; search/reuse the
+existing local-norm sandwich machinery such as
+`chewi136_localNorm_sandwich_sourceRadius` and related Hessian segment
+comparison lemmas before adding any new self-concordance primitive.
+
+Next theorem-sized target: finish one of the remaining genuine terminal
+certificate families for the V19/V21/V22/V23/V24 auto handoff: terminal
+central-path optimality at the selected parameter, the self-concordant
+value-growth certificate feeding the V23 consumers, or the segment Hessian
+quadratic lower certificate feeding the V24 consumers.  Prefer the segment
+Hessian route if existing local-norm sandwich APIs discharge it cleanly;
+otherwise prove the terminal centrality wrapper while preserving the analytic
+certificate as the next blocker.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
@@ -251,7 +272,7 @@ bridge/consumer wrappers.  Search first near existing `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, and Lemma 13.6 self-concordant growth/local-norm wrappers; then
 formalize only the genuinely missing terminal analytic certificate.
-Older paragraphs below are cached route history and must not override this V23
+Older paragraphs below are cached route history and must not override this V24
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

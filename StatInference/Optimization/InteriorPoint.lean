@@ -10886,6 +10886,107 @@ theorem chewi1315_gradient_segment_inner_le_of_cauchy_continuousOn
     (hessianSegmentGradientInner_continuousOn_of_convex hs hx hy hgrad_cont)
     hgrad hcauchy
 
+/--
+Segment-integral lower-model bridge for Chewi Lemma 13.6.  If the Hessian
+quadratic form along the segment from the central-path point `center` to the
+current point `x` is pointwise bounded below by the §13.16 display
+`r_x^2/(1+r_x)`, then the gradient fundamental theorem gives the required
+inner-product lower-model inequality.
+-/
+theorem chewi1316_lowerModel_of_gradient_segment_quadratic_lower
+    {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {x center : E}
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint center x τ))
+        (hessianSegmentPoint center x τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (x - center)
+          (hess (hessianSegmentPoint center x τ) (x - center)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hcentral : grad center = 0)
+    (hquad_lower : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (x - center)
+          (hess (hessianSegmentPoint center x τ) (x - center))) :
+    (localNorm hess x (x - center)) ^ (2 : ℕ) /
+        (1 + localNorm hess x (x - center)) ≤
+      inner ℝ (grad x) (x - center) := by
+  let A :=
+    (localNorm hess x (x - center)) ^ (2 : ℕ) /
+      (1 + localNorm hess x (x - center))
+  let q : ℝ -> ℝ := fun τ =>
+    inner ℝ (grad (hessianSegmentPoint center x τ)) (x - center)
+  let q' : ℝ -> ℝ := fun τ =>
+    inner ℝ (x - center)
+      (hess (hessianSegmentPoint center x τ) (x - center))
+  have hderiv : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasDerivAt q (q' τ) τ := by
+    intro τ hτ
+    have hpath :
+        HasDerivAt (fun s : ℝ => grad (hessianSegmentPoint center x s))
+          (hess (hessianSegmentPoint center x τ) (x - center)) τ :=
+      hessianSegmentGradient_hasDerivAt_of_hasFDerivAt
+        (grad := grad) (hess := hess) (x := center) (y := x)
+        (t := τ) (hgrad τ hτ)
+    have hconst : HasDerivAt (fun _ : ℝ => x - center) 0 τ :=
+      hasDerivAt_const τ (x - center)
+    have hinner := HasDerivAt.inner (𝕜 := ℝ) hpath hconst
+    simpa [q, q', real_inner_comm] using hinner
+  have hFTC :
+      (∫ τ in (0 : ℝ)..1, q' τ) = q 1 - q 0 :=
+    intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv (by simpa [q'] using hint)
+  have hA_int : IntervalIntegrable (fun _ : ℝ => A)
+      MeasureTheory.volume (0 : ℝ) 1 :=
+    continuous_const.intervalIntegrable (0 : ℝ) 1
+  have hmono :
+      (∫ τ in (0 : ℝ)..1, A) ≤ ∫ τ in (0 : ℝ)..1, q' τ := by
+    refine intervalIntegral.integral_mono_on zero_le_one hA_int (by simpa [q'] using hint) ?_
+    intro τ hτ
+    exact hquad_lower τ hτ
+  have hconst_eval : (∫ τ in (0 : ℝ)..1, A) = A := by
+    simp
+  have hcentral_pair : inner ℝ (grad center) (x - center) = 0 := by
+    simp [hcentral]
+  have hgap :
+      A ≤ inner ℝ (grad x) (x - center) := by
+    rw [hconst_eval, hFTC] at hmono
+    simpa [q, hessianSegmentPoint_zero, hessianSegmentPoint_one,
+      hcentral_pair] using hmono
+  simpa [A] using hgap
+
+/--
+Central-path specialization of
+`chewi1316_lowerModel_of_gradient_segment_quadratic_lower`.
+-/
+theorem chewi1316_centralPath_lowerModel_of_gradient_segment_quadratic_lower
+    {hess : E -> E →L[ℝ] E} {phiGrad : E -> E}
+    {a x center : E} {t : ℝ}
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (fun z => t • a + phiGrad z)
+        (hess (hessianSegmentPoint center x τ))
+        (hessianSegmentPoint center x τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (x - center)
+          (hess (hessianSegmentPoint center x τ) (x - center)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hcentral : t • a + phiGrad center = 0)
+    (hquad_lower : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (x - center)
+          (hess (hessianSegmentPoint center x τ) (x - center))) :
+    (localNorm hess x (x - center)) ^ (2 : ℕ) /
+        (1 + localNorm hess x (x - center)) ≤
+      inner ℝ (t • a + phiGrad x) (x - center) := by
+  simpa using
+    chewi1316_lowerModel_of_gradient_segment_quadratic_lower
+      (hess := hess) (grad := fun z => t • a + phiGrad z)
+      (x := x) (center := center) hgrad hint hcentral hquad_lower
+
 theorem real_le_div_one_sub_of_sq_div_one_add_le_mul
     {r lambda : ℝ}
     (hr : 0 ≤ r)
@@ -11195,6 +11296,56 @@ theorem chewi1316_objective_gap_le
       ring
 
 /--
+Chewi Lemma 13.16 assembly with the Lemma 13.6 lower-model term discharged
+from a segment Hessian quadratic lower bound.  This is the direct analytic
+route from the compiled gradient fundamental theorem plus pointwise Hessian
+lower control into the §13.16 objective-gap estimate.
+-/
+theorem chewi1316_objective_gap_le_of_gradient_segment_quadratic_lower
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {a x center optimum : E} {t nu lambda : ℝ}
+    (ht_pos : 0 < t)
+    (hlambda_lt : lambda < 1)
+    (hcentral : t • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement : dualLocalNorm invHess x (t • a + phiGrad x) ≤ lambda)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (fun z => t • a + phiGrad z)
+        (hess (hessianSegmentPoint center x τ))
+        (hessianSegmentPoint center x τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (x - center)
+          (hess (hessianSegmentPoint center x τ) (x - center)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hquad_lower : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (x - center)
+          (hess (hessianSegmentPoint center x τ) (x - center))) :
+    inner ℝ a x - inner ℝ a optimum ≤
+      (1 / t) *
+        (nu + (((lambda + Real.sqrt nu) * lambda) / (1 - lambda))) := by
+  have hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (t • a + phiGrad x) (x - center) :=
+    chewi1316_centralPath_lowerModel_of_gradient_segment_quadratic_lower
+      (hess := hess) (phiGrad := phiGrad) (a := a)
+      (x := x) (center := center) (t := t)
+      hgrad hint hcentral hquad_lower
+  exact
+    chewi1316_objective_gap_le
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (optimum := optimum)
+      (t := t) (nu := nu) (lambda := lambda)
+      ht_pos hlambda_lt hcentral hbarrier_step hdecrement hphi_bound
+      hcauchy hlower
+
+/--
 Chewi Lemma 13.16 assembly with the V22 lower-model split.  Callers may
 provide the self-concordant value-growth certificate for the central-path
 objective and the first-order convex model, instead of constructing the
@@ -11319,6 +11470,55 @@ theorem chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t
     rw [one_div, inv_mul_le_iff₀ ht_pos]
     nlinarith [ht_large, heps_nonneg]
   exact hgap.trans (hscaled.trans hstop)
+
+/--
+Large-parameter §13.16 endpoint with the lower-model term discharged from a
+segment Hessian quadratic lower bound.
+-/
+theorem chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_gradient_segment_quadratic_lower
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {a x center optimum : E} {t nu eps : ℝ}
+    (ht_pos : 0 < t)
+    (heps_pos : 0 < eps)
+    (hnu_one : 1 ≤ nu)
+    (hcentral : t • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement :
+      dualLocalNorm invHess x (t • a + phiGrad x) ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (fun z => t • a + phiGrad z)
+        (hess (hessianSegmentPoint center x τ))
+        (hessianSegmentPoint center x τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (x - center)
+          (hess (hessianSegmentPoint center x τ) (x - center)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hquad_lower : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (x - center)
+          (hess (hessianSegmentPoint center x τ) (x - center)))
+    (ht_large : 2 * nu ≤ eps * t) :
+    inner ℝ a x - inner ℝ a optimum ≤ eps := by
+  have hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (t • a + phiGrad x) (x - center) :=
+    chewi1316_centralPath_lowerModel_of_gradient_segment_quadratic_lower
+      (hess := hess) (phiGrad := phiGrad) (a := a)
+      (x := x) (center := center) (t := t)
+      hgrad hint hcentral hquad_lower
+  exact
+    chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (optimum := optimum)
+      (t := t) (nu := nu) (eps := eps)
+      ht_pos heps_pos hnu_one hcentral hbarrier_step hdecrement
+      hphi_bound hcauchy hlower ht_large
 
 /--
 Large-parameter version of the V22 lower-model split.  This is the

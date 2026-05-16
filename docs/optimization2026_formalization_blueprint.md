@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V23` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V24` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -72,9 +72,18 @@ large-parameter, main-stage-parameter, and finite-row range endpoints via
 `chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_value_growth_and_firstOrderStrongConvexOn`,
 and
 `chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStage_nextNewton_of_terminal_mem_and_value_growth`.
-The remaining §13.16 terminal work is central-path optimality at the selected
-parameter and the self-concordant value-growth certificate feeding those
-consumers.
+The V24 segment-integral packet adds
+`chewi1316_lowerModel_of_gradient_segment_quadratic_lower`,
+`chewi1316_centralPath_lowerModel_of_gradient_segment_quadratic_lower`,
+`chewi1316_objective_gap_le_of_gradient_segment_quadratic_lower`, and
+`chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_gradient_segment_quadratic_lower`,
+so the lower-model route can also be discharged from pointwise Hessian
+quadratic lower control along the segment from the central-path point to the
+terminal iterate.  It reuses local segment-gradient FTC lemmas plus mathlib
+interval-integral monotonicity.  The remaining §13.16 terminal work is
+central-path optimality at the selected parameter, self-concordant
+value-growth for the V23 consumers, or segment Hessian quadratic lower control
+for the V24 consumers.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the
