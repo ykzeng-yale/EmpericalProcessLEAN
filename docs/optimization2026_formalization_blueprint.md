@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V17` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V18` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -35,12 +35,17 @@ standard preliminary stage now hands off to a concrete standard source
 main-stage recursion through `Chewi1316StandardSourceMainStageObjectiveGapHandoff`
 and the bounded/compact
 `chewi1316_standardSourceMainStageObjectiveGapHandoff_*_standardPath`
-endpoints.  The current V17 route reduces concrete main-stage range membership
-to the same source-coordinate standard-step `lambda <= 1/4` invariant used by
-the self-concordant Newton machinery via
-`chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_le_quarter`;
-do not redo preliminary initialization, source/range Newton transport, or the
-standard main-stage recursion.
+endpoints.  The current V18 route closes concrete main-stage range membership
+and decrement preservation via
+`chewi1316_polytopeSlackNegLog_range_mainStage_step_mem_and_decrement_le_quarter`,
+`chewi1316_standardSourceMainStage_rangeRestrict_mem_and_source_decrement_le_quarter`,
+and
+`chewi1316_polytopeSlackNegLog_exists_standardSourceMainStage_objective_gap_le_eps_imp_of_preliminaryInit`.
+Next work should upgrade this automatic standard-main-stage wrapper into the
+bounded/closed/compact standard-path endpoints by proving the terminal
+centrality, barrier-step/lower-model, and large-parameter stopping certificates.
+Do not redo preliminary initialization, source/range Newton transport, standard
+recursions, or the V18 membership/decrement induction.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V17` near the top of
+  `Live Goal Prompt V18` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -43,24 +43,25 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current proof worktree: use `/private/tmp/chewi-dual-seminorm` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
-- Latest Chapter 13 frontier: concrete standard main-stage range membership
-  has been reduced to a source-coordinate per-step decrement `<= 1/4` certificate
-  in `StatInference/Optimization/InteriorPoint.lean`.  New reusable
-  declarations are
-  `chewi1316_standardSourceMainStage_rangeRestrict_mem_of_range_decrement_le_quarter`,
-  `chewi1316_standardSourceMainStage_rangeRestrict_mem_of_source_decrement_le_quarter`,
+- Latest Chapter 13 frontier: the concrete standard main-stage
+  range-membership/decrement blocker is closed in
+  `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations
+  are
+  `chewi1316_polytopeSlackNegLog_range_mainStage_preNewtonDecrement_le_update_bound`,
+  `chewi1316_polytopeSlackNegLog_range_mainStage_preNewtonDecrement_lt_one`,
+  `chewi1316_polytopeSlackNegLog_range_mainStage_step_mem`,
+  `chewi1316_polytopeSlackNegLog_range_mainStage_decrement_le_quarter`,
+  `chewi1316_polytopeSlackNegLog_range_mainStage_step_mem_and_decrement_le_quarter`,
+  `chewi1316_standardSourceMainStage_rangeRestrict_mem_and_range_decrement_le_quarter`,
+  `chewi1316_standardSourceMainStage_rangeRestrict_mem_and_source_decrement_le_quarter`,
   and
-  `chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_le_quarter`.
-  Prior V16 declarations remain available:
-  `chewi1316_standardSourceMainStage_rangeRestrict_mem_of_range_decrement_lt_one`,
-  `chewi1316_standardSourceMainStage_rangeRestrict_mem_of_source_decrement_lt_one`,
-  `chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_lt_one`,
-  and
-  `chewi1316_standardSourcePreliminaryXSeq_rangeRestrict_mem_of_sourceMem`.
-  Next proof target: prove the paired concrete standard main-stage induction
-  that gives successor range membership and successor `lambda <= 1/4` together,
-  then close terminal centrality, barrier-step/lower-model, and
-  large-parameter stopping certificates around the V17 handoff.
+  `chewi1316_polytopeSlackNegLog_exists_standardSourceMainStage_objective_gap_le_eps_imp_of_preliminaryInit`.
+  Prior V16/V17 membership reducers remain available, but the live route should
+  now use the automatic preliminary-initializer-to-standard-main-stage wrapper
+  instead of passing an external `hxseq_mem` or per-step decrement premise.
+  Next proof target: upgrade this wrapper into bounded/closed/compact polytope
+  standard-path endpoints by discharging the terminal centrality,
+  barrier-step/lower-model, and large-parameter stopping certificates.
 - Cached Chapter 13 frontier history: the finite-row slack-range §13.16 handoff now
   compiles through source-pullback decrement transport and a point-dependent
   range sqrt-coordinate one-step wrapper.  New reusable declarations are

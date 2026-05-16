@@ -132,14 +132,14 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V17
+## Live Goal Prompt V18
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
 Current active frontier: the concrete standard preliminary stage now feeds a
 concrete source-coordinate standard main-stage Newton recursion for §13.16
-objective-gap accuracy.  New compiled declarations:
+objective-gap accuracy.  Previously compiled handoff declarations include:
 `Chewi1316SourceMainStageObjectiveGapHandoff`,
 `chewi1316_sourceMainStageObjectiveGapHandoff_of_preliminaryInit`,
 `chewi1316_sourceMainStageObjectiveGapHandoff_boundedFeasibleRange_standardPath`,
@@ -157,55 +157,41 @@ plus the concrete main-stage layer
 `chewi1316_standardSourceMainStageObjectiveGapHandoff_boundedClosedPolytope_standardPath`,
 and
 `chewi1316_standardSourceMainStageObjectiveGapHandoff_compactClosedPolytope_standardPath`.
-These fix both the standard preliminary recursion and the standard increasing
-main-stage `t_n`/source-Newton `x_n` recursion internally.  The only remaining
-assumptions around the final handoff are the genuine analytic certificates:
-main-stage range membership, central-path optimality at the terminal
-parameter, barrier-step/lower-model inequalities, and the large-parameter
-stopping condition.
-
-Current V16 packet narrows the main-stage membership blocker to a concrete
-per-step source-decrement certificate.  New compiled declarations:
+The V16/V17 route-reduction declarations remain available:
 `chewi1316_standardSourceMainStage_rangeRestrict_mem_of_range_decrement_lt_one`,
 `chewi1316_standardSourceMainStage_rangeRestrict_mem_of_source_decrement_lt_one`,
 `chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_lt_one`,
-and
-`chewi1316_standardSourcePreliminaryXSeq_rangeRestrict_mem_of_sourceMem`.
-These reuse `chewi1314_polytopeSlackNegLog_range_newtonStep_mem_of_decrement_lt_one`,
-the source/range main-stage Newton transport lemma, and the source/range
-central-path decrement identity.  The final handoff can now take strict source
-start feasibility for the preliminary sequence and a concrete source-coordinate
-`lambda < 1` certificate for every standard main-stage step, instead of an
-opaque all-iterate range-membership assumption.
-
-Current V17 packet packages the existing `lambda <= 1/4` main-stage invariant
-shape into the V16 final handoff.  New compiled declarations:
 `chewi1316_standardSourceMainStage_rangeRestrict_mem_of_range_decrement_le_quarter`,
 `chewi1316_standardSourceMainStage_rangeRestrict_mem_of_source_decrement_le_quarter`,
-and
-`chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_le_quarter`.
-These are simple but important route reducers: the final handoff now accepts
-the same `lambda <= 1/4` source-decrement shape as the self-concordant
-main-stage invariant theorem, and internally converts it to the `< 1`
-membership condition.
+`chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_le_quarter`,
+and `chewi1316_standardSourcePreliminaryXSeq_rangeRestrict_mem_of_sourceMem`.
 
-Next theorem-sized target: prove a paired concrete standard main-stage
-successor theorem that simultaneously gives successor range membership and
-successor source/range decrement `<= 1/4`, avoiding the current global
-`hxseq_mem` premise in
-`chewi1316_mainStage_decrement_step_le_quarter_of_nextNewton_sqrtCoordFamilyModel_sourceNewtonSegment`.
-Search first around
-`chewi1316_mainStage_newtonDecrement_le_quarter_of_centralPathGradient_sqrtCoordFamilyModel_sourceNewtonSegment`,
+Current V18 packet closes the concrete main-stage membership/decrement blocker.
+New compiled declarations in `StatInference/Optimization/InteriorPoint.lean`:
+`chewi1316_polytopeSlackNegLog_range_mainStage_preNewtonDecrement_le_update_bound`,
+`chewi1316_polytopeSlackNegLog_range_mainStage_preNewtonDecrement_lt_one`,
+`chewi1316_polytopeSlackNegLog_range_mainStage_step_mem`,
+`chewi1316_polytopeSlackNegLog_range_mainStage_decrement_le_quarter`,
+`chewi1316_polytopeSlackNegLog_range_mainStage_step_mem_and_decrement_le_quarter`,
+`chewi1316_standardSourceMainStage_rangeRestrict_mem_and_range_decrement_le_quarter`,
+`chewi1316_standardSourceMainStage_rangeRestrict_mem_and_source_decrement_le_quarter`,
+and
+`chewi1316_polytopeSlackNegLog_exists_standardSourceMainStage_objective_gap_le_eps_imp_of_preliminaryInit`.
+The proof reuses the local generic self-concordant main-stage theorem,
 `chewi1316_preNewtonDecrement_le_update_bound_of_centralPathGradient_adjointSqrt_right_inverse`,
 `chewi1314_polytopeSlackNegLog_range_newtonStep_mem_of_decrement_lt_one`,
-and the V16 membership lemmas.  The likely proof route is: from current
-membership and current `lambda <= 1/4`, derive the pre-Newton decrement for
-the next parameter is `< 1`; use that to prove successor range membership; then
-feed the same data to the existing Newton decrement theorem to get successor
-`lambda <= 1/4`.  Do not redo preliminary initialization, source/range Newton
-transport, standard recursions, or the V16/V17 handoff packaging.  Older
-paragraphs below are cached route history and must not override this V17
-target.
+the slack-range sqrt-coordinate model, and source/range central-path transport.
+Do not repeat this membership induction or ask again for a global `hxseq_mem`.
+
+Next theorem-sized target: upgrade the newest automatic standard-main-stage
+objective-gap wrapper into the bounded/closed/compact polytope standard-path
+endpoints.  Search first for already compiled terminal certificates:
+central-path optimality at the terminal parameter, barrier-step inequality,
+lower-model inequality, and large-parameter stopping/count lemmas near the
+existing `*_standardPath` wrappers and `chewi1316_objective_gap_le_eps_*`
+consumers.  Formalize only the genuinely missing terminal certificates; the
+main-stage feasibility/decrement route is now closed.  Older paragraphs below
+are cached route history and must not override this V18 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
 slack-range §13.16 handoff now
