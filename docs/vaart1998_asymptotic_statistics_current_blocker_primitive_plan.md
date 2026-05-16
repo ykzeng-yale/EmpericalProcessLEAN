@@ -17,135 +17,52 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductObservationSequence_estimatorVectorConsistencySource_absEnvelopeIntegrableSource_observationDerivativeAtTheta0OperatorMeanSource_observationDerivativeAtTheta0OperatorIntegrableSource_observationDerivativeTransformDefinitionSource_observationDerivativeAtDefinitionSource_observationSecondDerivativeDefinitionSource_scoreTransformMapLawSource_scoreTransformCoordinateMomentSource_zGaussianMeasurableModificationSource_scoreTransformCoordinateMeasurableSource_zSampleCoordinateCovarianceObservationScoreCoordinateCovarianceSource_zCoordinateMeanSource_unscaledScoreSource_fixedTheta0Source_empiricalAverageRootSource_univSmoothnessSource_observationEnvelopeMeanSource_observationTransformDisplaySource_observationRandomSequenceTransformMomentSource_observationSamplePathSource_observationEnvelopeAverageSource_observationScoreCovarianceSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductObservationSequence_estimatorVectorConsistencySource_absEnvelopeIntegrableSource_scoreTransformMomentSource_observationDerivativeAtTheta0OperatorMeanSource_observationDerivativeAtTheta0OperatorIntegrableSource_observationDerivativeTransformDefinitionSource_observationDerivativeAtDefinitionSource_observationSecondDerivativeDefinitionSource_scoreTransformMapLawSource_zGaussianMeasurableModificationSource_zSampleCoordinateCovarianceObservationScoreCoordinateCovarianceSource_zCoordinateMeanSource_unscaledScoreSource_fixedTheta0Source_empiricalAverageRootSource_univSmoothnessSource_observationEnvelopeMeanSource_observationTransformDisplaySource_observationRandomSequenceTransformMomentSource_observationSamplePathSource_observationEnvelopeAverageSource_observationScoreCovarianceSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelope`.
 
-This endpoint is the preferred current route. It specializes the observation
-probability space to the canonical iid product sample space `ℕ -> Observation`
-with law `Measure.infinitePi (fun _ : ℕ => observationLaw)`, fixes the
-observation sequence to the identity map, and derives the observation-sequence
-measurability/law fields via `measurable_id` and `HasLaw.id`. It accepts the
-textbook-style estimator consistency statement
-`TendstoInMeasure P estimator atTop (fun _ => theta0)` and derives the scalar
-norm-residual consistency field by
-`vaart1998_tendstoInMeasure_norm_sub_const_zero_of_tendstoInMeasure_const`. It
-accepts integrability of the domination quantity `fun x => |envelope x|` and
-recovers signed-envelope integrability with `integrable_norm_iff`. It accepts
-sample-free observation-level derivative maps `observationDerivativeAt` and
-`observationSecondDerivative`, and defines the derivative-transform display as
-`fun observation entry =>
-  observationDerivativeAt observation theta0
-    (Pi.single entry.2 1) entry.1`.
-It derives coordinatewise measurability of this displayed derivative transform
-from the joint measurability of
-`fun p : Observation × (Param -> ℝ) => observationDerivativeAt p.1 p.2`, the
-continuous measurable evaluation map supplied by `isBoundedBilinearMap_apply`,
-and `measurable_pi_apply`. It now accepts the operator-valued integrability
-source
-`Integrable (fun observation => observationDerivativeAt observation theta0)`
-and the operator-valued mean identity
-`∫ observation, observationDerivativeAt observation theta0 = V`. It packages
-the display map with `ContinuousLinearMap.pi`, derives displayed vector
-integrability by `displayCLM.integrable_comp`, derives the displayed vector
-mean identity by `displayCLM.integral_comp_comm`, then lets the predecessor
-derive the old coordinate integrability and `V` basis-action mean fields.
-The wrapper instantiates the old sample-indexed first derivative as
-`fun _ _ observation theta => observationDerivativeAt observation theta`,
-derives its full joint measurability by composing the observation-level
-joint-measurable map with
-`fun p : ((ℕ -> Observation) × Observation) × (Param -> ℝ) => (p.1.2, p.2)`,
-and derives the fixed-`theta0` derivative-transform field definitionally. It
-also derives the first Taylor fderiv identity, derivative `ContDiffOn` field,
-and second-derivative Taylor identity from observation-level assumptions. It
-replaces the second-derivative joint measurability field and the abstract
-eventual envelope-domination field by
-`observationSecondDerivative`; the wrapper derives joint measurability by
-composing the observation-level measurable map with `measurable_snd`, derives
-eventual envelope domination by `Eventually.of_forall` from
-`‖observationSecondDerivative x‖ <= |envelope x|`, and keeps the separate
-`secondDerivative` kernel removed by definitional instantiation.
-It uses coordinatewise
-measurability, coordinatewise `L²`, and coordinatewise mean-zero assumptions for
-the score transform; operator-valued integrability plus one operator-valued
-`V` mean identity for `observationDerivativeAt · theta0`; coordinatewise
-sample mean-zero facts for the Gaussian limit representative `Z`; a
-Gaussian-limit coordinate covariance table
-`covariance Z_i Z_j Q = Gamma i j`; and an observation-level score coordinate
-covariance table `covariance score_i score_j observationLaw = Gamma i j`;
-absolute-envelope domination
-`‖observationSecondDerivative x‖ <= |envelope x|`; and the textbook empirical
-estimating equation
-`empiricalAverageVector sample (fun x => estimatingMap n omega x estimator_n) = 0`.
-It rebuilds full
-score-transform measurability via `measurable_pi_lambda`, rebuilds vector
-`MemLp scoreTransform 2` via `MemLp.of_eval`, rebuilds vector mean-zero via
-`vaart1998_vector_integral_zero_of_coordinate_mean_zero`, rebuilds full
-derivative-transform measurability, rebuilds the sample-level centered-product
-table for `Z` from the coordinate covariance table using
-`durrett2019_theorem_3_10_7_centeredProduct_eq_of_coordinateCovariance` and
-the `L²` control supplied by `HasGaussianLaw`, replaces ordinary measurability
-of `Z` by the measurable modification from `HasGaussianLaw.aemeasurable.mk`,
-rebuilds the observation-level score centered-product table from the score
-coordinate covariance table using the same Durrett helper and the coordinate
-score `L²` and mean-zero assumptions,
-transports coordinate means and centered products across the a.e. equality,
-transfers the limit back with `TendstoInDistribution.congr`, rebuilds sample
-vector mean-zero of `Z` from coordinatewise sample means via
-`vaart1998_z_sample_mean_zero_of_coordinate_mean_zero_of_gaussian`, and rebuilds
-operator-valued derivative integrability and mean source are now assumptions,
-and the wrapper derives the displayed vector source fields consumed by its
-predecessor. It
-rebuilds the nonnegative envelope internally using `fun x => |envelope x|`,
-recovers the finite-vector sum root from `empiricalAverageVector = 0` by
-multiplying by `n` and handling the `n = 0` case, and then recovers coordinate
-root equations by `congrFun` plus `Finset.sum_apply`. It derives
-the pushed-forward Gaussian-limit mean-zero and centered-product statements via
-`vaart1998_zLaw_map_mean_zero_of_sample_mean_zero` and
-`vaart1998_zLaw_centeredProduct_of_z_centeredProduct`, derives observation-level
-coordinate covariance equality via
-`vaart1998_observationScore_coordinate_covariance_eq_of_centeredProduct`,
-rewrites it to pushed-forward coordinate covariance via
-`vaart1998_scoreLaw_coordinate_covariance_eq_observation_scoreTransform`,
-then upgrades that equality to the all-dual covariance-bilinear comparison using
-`vaart1998_covarianceBilinDual_eq_of_law_coordinate_covariance`. It takes the
-score law to be the concrete pushforward `observationLaw.map scoreTransform`
-and builds the corresponding `HasLaw` proof by `rfl` after deriving full
-score-transform measurability from coordinatewise measurability. Do not route
-back to direct equality between the pushed-forward Gaussian limit covariance and
-observation-level score covariance, vector-valued score-transform
-moment assumptions, full score-transform measurability, pushed-forward
-derivative-law vector-mean, vector-valued observation derivative mean,
-full derivative-transform measurability, vector-valued derivative-transform
-integrability, coordinatewise observation derivative-at-theta0 integrability,
-coordinatewise observation derivative-at-theta0 basis-action means, displayed
-derivative-transform vector integrability or displayed derivative-transform
-vector mean hypotheses, separate `derivativeTransform` maps, pointwise
-`derivativeTransform` identification hypotheses, derivative-transform
-coordinate measurability assumptions, abstract score-law parameters or law assumptions, abstract
-score-law moment assumptions, abstract score-law
-covariance-bilinear assumptions, pushed-forward score-transform all-dual covariance-bilinear
-assumptions, pushed-forward score-transform coordinate covariance assumptions,
-sample-level centered-product table for `Z`, observation-level score
-centered-product table, sample vector mean-zero of `Z`, or full `Z`
-measurability, abstract observation-sequence measurability/law hypotheses,
-norm-residual-only estimator consistency hypotheses, coordinatewise root
-equations, finite-vector sum root equations, signed-envelope-only
-integrability hypotheses, sample-indexed `derivativeAt` kernels, full
-sample-indexed derivative-at joint measurability hypotheses, explicit
-fixed-`theta0` derivative joint measurability hypotheses, direct
-second-derivative joint measurability
-hypotheses, abstract eventual envelope-domination hypotheses, or explicit
-nonnegative-envelope hypotheses, separate `secondDerivative` kernels, or
-pointwise-identification hypotheses for such kernels, unless a source theorem
-specifically demands those displays.
+Use this endpoint as the only live route. It already specializes the sample
+space to the canonical iid product `ℕ -> Observation`, uses the identity
+observation sequence, accepts direct estimator convergence in probability,
+accepts `Integrable (fun x => |envelope x|)`, uses sample-free
+`observationDerivativeAt` and `observationSecondDerivative`, derives the
+displayed derivative-transform fields from the operator-valued
+`observationDerivativeAt · theta0` integrability and mean identity, and removes
+the separate sample-indexed derivative and second-derivative kernels.
+
+The newest layer replaces the old coordinate score-transform moment interface
+by the vector source triple
+`Measurable scoreTransform`, `MemLp scoreTransform 2 observationLaw`, and
+`∫ observation, scoreTransform observation ∂observationLaw = 0`. It derives
+coordinate score measurability by `measurable_pi_apply`, coordinate `L²` by
+`MemLp.eval`, and coordinate score mean-zero by
+`vaart1998_coordinate_mean_zero_of_vector_integral_zero`, then feeds the
+operator-valued derivative endpoint.
+
+Do not route back to vector-valued score-transform moment assumptions, full
+score-transform measurability, coordinatewise score-transform measurability,
+coordinatewise score-transform `L²`, coordinatewise score-transform mean-zero,
+displayed derivative-transform integrability or mean assumptions, coordinatewise
+observation derivative-at-theta0 integrability or basis-action means, separate
+`derivativeTransform`, `derivativeAt`, or `secondDerivative` kernels, abstract
+score-law parameters or law assumptions, score-law moment assumptions,
+pushed-forward score-transform covariance assumptions, observation-sequence
+measurability/law hypotheses, norm-residual-only estimator consistency,
+signed-envelope-only integrability, coordinate root equations, finite-vector sum
+root equations, sample-level centered-product tables, observation-level score
+centered-product tables, sample vector mean-zero for `Z`, or full `Z`
+measurability unless a genuinely new source theorem needs one of these displays.
+
+Next aggressive target: discharge one remaining model-facing source into this
+endpoint. Prefer the highest-yield source-shaped wrapper among the Gaussian
+coordinate covariance/mean route, observation-level score covariance route, or
+empirical estimating-equation root route; reuse local `StatInference` and
+mathlib APIs before adding primitives.
 
 Immediate predecessor endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductObservationSequence_estimatorVectorConsistencySource_absEnvelopeIntegrableSource_observationDerivativeAtTheta0DisplayMeanSource_observationDerivativeAtTheta0DisplayIntegrableSource_observationDerivativeTransformDefinitionSource_observationDerivativeAtDefinitionSource_observationSecondDerivativeDefinitionSource_scoreTransformMapLawSource_scoreTransformCoordinateMomentSource_zGaussianMeasurableModificationSource_scoreTransformCoordinateMeasurableSource_zSampleCoordinateCovarianceObservationScoreCoordinateCovarianceSource_zCoordinateMeanSource_unscaledScoreSource_fixedTheta0Source_empiricalAverageRootSource_univSmoothnessSource_observationEnvelopeMeanSource_observationTransformDisplaySource_observationRandomSequenceTransformMomentSource_observationEnvelopeAverageSource_observationScoreCovarianceSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductObservationSequence_estimatorVectorConsistencySource_absEnvelopeIntegrableSource_observationDerivativeAtTheta0OperatorMeanSource_observationDerivativeAtTheta0OperatorIntegrableSource_observationDerivativeTransformDefinitionSource_observationDerivativeAtDefinitionSource_observationSecondDerivativeDefinitionSource_scoreTransformMapLawSource_scoreTransformCoordinateMomentSource_zGaussianMeasurableModificationSource_scoreTransformCoordinateMeasurableSource_zSampleCoordinateCovarianceObservationScoreCoordinateCovarianceSource_zCoordinateMeanSource_unscaledScoreSource_fixedTheta0Source_empiricalAverageRootSource_univSmoothnessSource_observationEnvelopeMeanSource_observationTransformDisplaySource_observationRandomSequenceTransformMomentSource_observationSamplePathSource_observationEnvelopeAverageSource_observationScoreCovarianceSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelope`.
 
-This endpoint already defines the derivative-transform display from
-`observationDerivativeAt` at `theta0` and packages its displayed vector
-integrability and mean source, but it still asks for that display-level source
-directly. The current endpoint derives those display fields from the
-operator-valued derivative-at-theta0 integrability and mean identity.
+This predecessor still asks for coordinate score measurability, coordinate
+`L²`, and coordinate mean-zero. The current endpoint derives all three from the
+single vector score-transform moment source.
 
 Earlier predecessor endpoint:
 `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductObservationSequence_estimatorVectorConsistencySource_absEnvelopeIntegrableSource_observationDerivativeTransformDefinitionSource_observationDerivativeAtDefinitionSource_observationSecondDerivativeDefinitionSource_scoreTransformMapLawSource_scoreTransformCoordinateMomentSource_zGaussianMeasurableModificationSource_vObservationDerivativeAtTheta0MeanSource_observationDerivativeAtTheta0CoordinateIntegrableSource_scoreTransformCoordinateMeasurableSource_zSampleCoordinateCovarianceObservationScoreCoordinateCovarianceSource_zCoordinateMeanSource_unscaledScoreSource_fixedTheta0Source_empiricalAverageRootSource_univSmoothnessSource_observationEnvelopeMeanSource_observationTransformDisplaySource_observationRandomSequenceTransformMomentSource_observationSamplePathSource_observationEnvelopeAverageSource_observationScoreCovarianceSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_estimatingMapContDiffTaylorSource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelope`.
