@@ -10987,6 +10987,199 @@ theorem chewi1316_centralPath_lowerModel_of_gradient_segment_quadratic_lower
       (hess := hess) (grad := fun z => t • a + phiGrad z)
       (x := x) (center := center) hgrad hint hcentral hquad_lower
 
+/--
+Integrability of the Chewi Lemma 13.6 source kernel
+`r^2 / (1 + r t)^2` on `[0, 1]`.
+-/
+theorem chewi1316_weightedKernel_intervalIntegrable
+    {r : ℝ} (hr : 0 ≤ r) :
+    IntervalIntegrable
+      (fun τ : ℝ => r ^ (2 : ℕ) / (1 + r * τ) ^ (2 : ℕ))
+      MeasureTheory.volume (0 : ℝ) 1 := by
+  have hden_pos : ∀ τ ∈ Set.uIcc (0 : ℝ) 1, 0 < 1 + r * τ := by
+    intro τ hτ
+    have hτ_nonneg : 0 ≤ τ := by
+      have hτ' : τ ∈ Set.Icc (0 : ℝ) 1 := by
+        simpa [Set.uIcc_of_le zero_le_one] using hτ
+      exact hτ'.1
+    have hmul_nonneg : 0 ≤ r * τ := mul_nonneg hr hτ_nonneg
+    nlinarith
+  have hcont : ContinuousOn
+      (fun τ : ℝ => r ^ (2 : ℕ) / (1 + r * τ) ^ (2 : ℕ))
+      (Set.uIcc (0 : ℝ) 1) := by
+    refine ContinuousOn.div ?_ ?_ ?_
+    · fun_prop
+    · fun_prop
+    · intro τ hτ
+      exact pow_ne_zero 2 (hden_pos τ hτ).ne'
+  exact hcont.intervalIntegrable
+
+/--
+Chewi Lemma 13.6's scalar kernel calculation:
+`∫_0^1 r^2/(1+r t)^2 dt = r^2/(1+r)`.
+-/
+theorem chewi1316_weightedKernel_integral_eq_sq_div_one_add
+    {r : ℝ} (hr : 0 ≤ r) :
+    (∫ τ in (0 : ℝ)..1, r ^ (2 : ℕ) / (1 + r * τ) ^ (2 : ℕ)) =
+      r ^ (2 : ℕ) / (1 + r) := by
+  let F : ℝ -> ℝ := fun τ => -r / (1 + r * τ)
+  have hden_pos : ∀ τ ∈ Set.uIcc (0 : ℝ) 1, 0 < 1 + r * τ := by
+    intro τ hτ
+    have hτ_nonneg : 0 ≤ τ := by
+      have hτ' : τ ∈ Set.Icc (0 : ℝ) 1 := by
+        simpa [Set.uIcc_of_le zero_le_one] using hτ
+      exact hτ'.1
+    have hmul_nonneg : 0 ≤ r * τ := mul_nonneg hr hτ_nonneg
+    nlinarith
+  have hderiv : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasDerivAt F (r ^ (2 : ℕ) / (1 + r * τ) ^ (2 : ℕ)) τ := by
+    intro τ hτ
+    have hden_ne : 1 + r * τ ≠ 0 := (hden_pos τ hτ).ne'
+    have hlin : HasDerivAt (fun s : ℝ => 1 + r * s) r τ := by
+      simpa using ((hasDerivAt_id τ).const_mul r)
+    have hinv : HasDerivAt (fun s : ℝ => (1 + r * s)⁻¹)
+        (-r / (1 + r * τ) ^ (2 : ℕ)) τ := by
+      simpa using hlin.inv hden_ne
+    have hmul : HasDerivAt F
+        ((-r) * (-r / (1 + r * τ) ^ (2 : ℕ))) τ := by
+      simpa [F, div_eq_mul_inv] using hinv.const_mul (-r)
+    have hcoef :
+        (-r) * (-r / (1 + r * τ) ^ (2 : ℕ)) =
+          r ^ (2 : ℕ) / (1 + r * τ) ^ (2 : ℕ) := by
+      field_simp [hden_ne]
+    simpa [hcoef] using hmul
+  have hFTC :
+      (∫ τ in (0 : ℝ)..1,
+          r ^ (2 : ℕ) / (1 + r * τ) ^ (2 : ℕ)) =
+        F 1 - F 0 := by
+    exact intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv
+      (chewi1316_weightedKernel_intervalIntegrable (r := r) hr)
+  rw [hFTC]
+  have hden_ne : 1 + r ≠ 0 := by nlinarith
+  simp [F]
+  field_simp [hden_ne]
+  ring
+
+/--
+Source-shaped Chewi Lemma 13.6 lower-model bridge.  This is the exact
+integrated form used in Theorem 13.16: along the segment from the terminal
+iterate `x` to the central-path point `center`, the natural self-concordant
+Hessian lower bound has kernel `r^2/(1+r t)^2`, whose integral is
+`r^2/(1+r)`.
+-/
+theorem chewi1316_lowerModel_of_gradient_segment_weighted_quadratic_lower
+    {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {x center : E}
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x center τ))
+        (hessianSegmentPoint x center τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hcentral : grad center = 0)
+    (hquad_lower : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      (localNorm hess x (center - x)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (center - x) * τ) ^ (2 : ℕ) ≤
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x))) :
+    (localNorm hess x (x - center)) ^ (2 : ℕ) /
+        (1 + localNorm hess x (x - center)) ≤
+      inner ℝ (grad x) (x - center) := by
+  let r := localNorm hess x (center - x)
+  let q : ℝ -> ℝ := fun τ =>
+    inner ℝ (grad (hessianSegmentPoint x center τ)) (center - x)
+  let q' : ℝ -> ℝ := fun τ =>
+    inner ℝ (center - x)
+      (hess (hessianSegmentPoint x center τ) (center - x))
+  have hr_nonneg : 0 ≤ r := by
+    dsimp [r]
+    exact localNorm_nonneg hess x (center - x)
+  have hderiv : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasDerivAt q (q' τ) τ := by
+    intro τ hτ
+    have hpath :
+        HasDerivAt (fun s : ℝ => grad (hessianSegmentPoint x center s))
+          (hess (hessianSegmentPoint x center τ) (center - x)) τ :=
+      hessianSegmentGradient_hasDerivAt_of_hasFDerivAt
+        (grad := grad) (hess := hess) (x := x) (y := center)
+        (t := τ) (hgrad τ hτ)
+    have hconst : HasDerivAt (fun _ : ℝ => center - x) 0 τ :=
+      hasDerivAt_const τ (center - x)
+    have hinner := HasDerivAt.inner (𝕜 := ℝ) hpath hconst
+    simpa [q, q', real_inner_comm] using hinner
+  have hFTC :
+      (∫ τ in (0 : ℝ)..1, q' τ) = q 1 - q 0 :=
+    intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv (by simpa [q'] using hint)
+  have hkernel_int :
+      IntervalIntegrable
+        (fun τ : ℝ => r ^ (2 : ℕ) / (1 + r * τ) ^ (2 : ℕ))
+        MeasureTheory.volume (0 : ℝ) 1 :=
+    chewi1316_weightedKernel_intervalIntegrable (r := r) hr_nonneg
+  have hmono :
+      (∫ τ in (0 : ℝ)..1,
+          r ^ (2 : ℕ) / (1 + r * τ) ^ (2 : ℕ)) ≤
+        ∫ τ in (0 : ℝ)..1, q' τ := by
+    refine intervalIntegral.integral_mono_on zero_le_one hkernel_int (by simpa [q'] using hint) ?_
+    intro τ hτ
+    simpa [r, q'] using hquad_lower τ hτ
+  have hkernel_eval :
+      (∫ τ in (0 : ℝ)..1,
+          r ^ (2 : ℕ) / (1 + r * τ) ^ (2 : ℕ)) =
+        r ^ (2 : ℕ) / (1 + r) :=
+    chewi1316_weightedKernel_integral_eq_sq_div_one_add (r := r) hr_nonneg
+  have hcentral_pair : inner ℝ (grad center) (center - x) = 0 := by
+    simp [hcentral]
+  have hneg_pair :
+      -inner ℝ (grad x) (center - x) = inner ℝ (grad x) (x - center) := by
+    have hsub : center - x = -(x - center) := by
+      abel
+    rw [hsub, inner_neg_right, neg_neg]
+  have hgap :
+      r ^ (2 : ℕ) / (1 + r) ≤ inner ℝ (grad x) (x - center) := by
+    rw [hkernel_eval, hFTC] at hmono
+    simpa [q, hessianSegmentPoint_zero, hessianSegmentPoint_one,
+      hcentral_pair, hneg_pair] using hmono
+  have hsub : center - x = -(x - center) := by
+    abel
+  have hr_eq : r = localNorm hess x (x - center) := by
+    dsimp [r]
+    rw [hsub, localNorm_neg]
+  rw [hr_eq] at hgap
+  exact hgap
+
+/--
+Central-path specialization of
+`chewi1316_lowerModel_of_gradient_segment_weighted_quadratic_lower`.
+-/
+theorem chewi1316_centralPath_lowerModel_of_gradient_segment_weighted_quadratic_lower
+    {hess : E -> E →L[ℝ] E} {phiGrad : E -> E}
+    {a x center : E} {t : ℝ}
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (fun z => t • a + phiGrad z)
+        (hess (hessianSegmentPoint x center τ))
+        (hessianSegmentPoint x center τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hcentral : t • a + phiGrad center = 0)
+    (hquad_lower : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      (localNorm hess x (center - x)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (center - x) * τ) ^ (2 : ℕ) ≤
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x))) :
+    (localNorm hess x (x - center)) ^ (2 : ℕ) /
+        (1 + localNorm hess x (x - center)) ≤
+      inner ℝ (t • a + phiGrad x) (x - center) := by
+  simpa using
+    chewi1316_lowerModel_of_gradient_segment_weighted_quadratic_lower
+      (hess := hess) (grad := fun z => t • a + phiGrad z)
+      (x := x) (center := center) hgrad hint hcentral hquad_lower
+
 theorem real_le_div_one_sub_of_sq_div_one_add_le_mul
     {r lambda : ℝ}
     (hr : 0 ≤ r)
@@ -11346,6 +11539,56 @@ theorem chewi1316_objective_gap_le_of_gradient_segment_quadratic_lower
       hcauchy hlower
 
 /--
+Chewi Lemma 13.16 assembly with the Lemma 13.6 lower-model term discharged
+from the textbook weighted segment Hessian lower bound
+`r^2/(1+r t)^2`.  This is the source-shaped version of the V24
+segment-integral route.
+-/
+theorem chewi1316_objective_gap_le_of_gradient_segment_weighted_quadratic_lower
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {a x center optimum : E} {t nu lambda : ℝ}
+    (ht_pos : 0 < t)
+    (hlambda_lt : lambda < 1)
+    (hcentral : t • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement : dualLocalNorm invHess x (t • a + phiGrad x) ≤ lambda)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (fun z => t • a + phiGrad z)
+        (hess (hessianSegmentPoint x center τ))
+        (hessianSegmentPoint x center τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hquad_lower : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      (localNorm hess x (center - x)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (center - x) * τ) ^ (2 : ℕ) ≤
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x))) :
+    inner ℝ a x - inner ℝ a optimum ≤
+      (1 / t) *
+        (nu + (((lambda + Real.sqrt nu) * lambda) / (1 - lambda))) := by
+  have hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (t • a + phiGrad x) (x - center) :=
+    chewi1316_centralPath_lowerModel_of_gradient_segment_weighted_quadratic_lower
+      (hess := hess) (phiGrad := phiGrad) (a := a)
+      (x := x) (center := center) (t := t)
+      hgrad hint hcentral hquad_lower
+  exact
+    chewi1316_objective_gap_le
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (optimum := optimum)
+      (t := t) (nu := nu) (lambda := lambda)
+      ht_pos hlambda_lt hcentral hbarrier_step hdecrement hphi_bound
+      hcauchy hlower
+
+/--
 Chewi Lemma 13.16 assembly with the V22 lower-model split.  Callers may
 provide the self-concordant value-growth certificate for the central-path
 objective and the first-order convex model, instead of constructing the
@@ -11509,6 +11752,55 @@ theorem chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_gradient_seg
           (1 + localNorm hess x (x - center)) ≤
         inner ℝ (t • a + phiGrad x) (x - center) :=
     chewi1316_centralPath_lowerModel_of_gradient_segment_quadratic_lower
+      (hess := hess) (phiGrad := phiGrad) (a := a)
+      (x := x) (center := center) (t := t)
+      hgrad hint hcentral hquad_lower
+  exact
+    chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (optimum := optimum)
+      (t := t) (nu := nu) (eps := eps)
+      ht_pos heps_pos hnu_one hcentral hbarrier_step hdecrement
+      hphi_bound hcauchy hlower ht_large
+
+/--
+Large-parameter §13.16 endpoint with the lower-model term discharged from the
+textbook weighted segment Hessian lower bound `r^2/(1+r t)^2`.
+-/
+theorem chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_gradient_segment_weighted_quadratic_lower
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {a x center optimum : E} {t nu eps : ℝ}
+    (ht_pos : 0 < t)
+    (heps_pos : 0 < eps)
+    (hnu_one : 1 ≤ nu)
+    (hcentral : t • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement :
+      dualLocalNorm invHess x (t • a + phiGrad x) ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (fun z => t • a + phiGrad z)
+        (hess (hessianSegmentPoint x center τ))
+        (hessianSegmentPoint x center τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hquad_lower : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      (localNorm hess x (center - x)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (center - x) * τ) ^ (2 : ℕ) ≤
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x)))
+    (ht_large : 2 * nu ≤ eps * t) :
+    inner ℝ a x - inner ℝ a optimum ≤ eps := by
+  have hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (t • a + phiGrad x) (x - center) :=
+    chewi1316_centralPath_lowerModel_of_gradient_segment_weighted_quadratic_lower
       (hess := hess) (phiGrad := phiGrad) (a := a)
       (x := x) (center := center) (t := t)
       hgrad hint hcentral hquad_lower
@@ -11976,6 +12268,63 @@ theorem chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_value_grow
       (C := C) (hess := hess) (phiValue := phiValue)
       (phiGrad := phiGrad) (a := a) (x := x) (center := center)
       (t := tseq N) hfirst hx hcenter hgrowth
+  exact
+    chewi1316_objective_gap_le_eps_of_mainStageParameter_large
+      (hess := hess) (invHess := invHess) (phiGrad := phiGrad)
+      (a := a) (x := x) (center := center) (optimum := optimum)
+      (tseq := tseq) (N := N) (t0 := t0) (c0 := c0)
+      (nu := nu) (eps := eps)
+      h0 hstep hr_pos ht0_pos heps_pos hnu_one hcentral
+      hbarrier_step hdecrement hphi_bound hcauchy hlower hlarge
+
+/--
+Main-stage closed-parameter endpoint with the Lemma 13.6 lower-model term
+discharged from the textbook weighted segment Hessian lower bound.
+-/
+theorem chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_gradient_segment_weighted_quadratic_lower
+    {hess : E -> E →L[ℝ] E} {invHess : E -> E →L[ℝ] E}
+    {phiGrad : E -> E} {a x center optimum : E}
+    {tseq : ℕ -> ℝ} {N : ℕ} {t0 c0 nu eps : ℝ}
+    (h0 : tseq 0 = t0)
+    (hstep : ∀ n : ℕ,
+      tseq (n + 1) = (1 + c0 / Real.sqrt nu) * tseq n)
+    (hr_pos : 0 < 1 + c0 / Real.sqrt nu)
+    (ht0_pos : 0 < t0)
+    (heps_pos : 0 < eps)
+    (hnu_one : 1 ≤ nu)
+    (hcentral : tseq N • a + phiGrad center = 0)
+    (hbarrier_step : inner ℝ (phiGrad center) (optimum - center) ≤ nu)
+    (hdecrement :
+      dualLocalNorm invHess x (tseq N • a + phiGrad x) ≤ 1 / 4)
+    (hphi_bound : dualLocalNorm invHess x (phiGrad x) ≤ Real.sqrt nu)
+    (hcauchy : ∀ v w : E,
+      inner ℝ v w ≤ dualLocalNorm invHess x v * localNorm hess x w)
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (fun z => tseq N • a + phiGrad z)
+        (hess (hessianSegmentPoint x center τ))
+        (hessianSegmentPoint x center τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hquad_lower : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      (localNorm hess x (center - x)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (center - x) * τ) ^ (2 : ℕ) ≤
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x)))
+    (hlarge :
+      2 * nu ≤
+        eps * ((1 + c0 / Real.sqrt nu) ^ N * t0)) :
+    inner ℝ a x - inner ℝ a optimum ≤ eps := by
+  have hlower :
+      (localNorm hess x (x - center)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (x - center)) ≤
+        inner ℝ (tseq N • a + phiGrad x) (x - center) :=
+    chewi1316_centralPath_lowerModel_of_gradient_segment_weighted_quadratic_lower
+      (hess := hess) (phiGrad := phiGrad) (a := a)
+      (x := x) (center := center) (t := tseq N)
+      hgrad hint hcentral hquad_lower
   exact
     chewi1316_objective_gap_le_eps_of_mainStageParameter_large
       (hess := hess) (invHess := invHess) (phiGrad := phiGrad)

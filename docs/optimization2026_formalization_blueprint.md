@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V24` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V25` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -84,6 +84,18 @@ interval-integral monotonicity.  The remaining §13.16 terminal work is
 central-path optimality at the selected parameter, self-concordant
 value-growth for the V23 consumers, or segment Hessian quadratic lower control
 for the V24 consumers.
+The V25 packet adds the source-exact weighted Lemma 13.6 route:
+`chewi1316_weightedKernel_intervalIntegrable`,
+`chewi1316_weightedKernel_integral_eq_sq_div_one_add`,
+`chewi1316_lowerModel_of_gradient_segment_weighted_quadratic_lower`,
+`chewi1316_centralPath_lowerModel_of_gradient_segment_weighted_quadratic_lower`,
+`chewi1316_objective_gap_le_of_gradient_segment_weighted_quadratic_lower`,
+`chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_gradient_segment_weighted_quadratic_lower`,
+and
+`chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_gradient_segment_weighted_quadratic_lower`.
+Future work should prefer this weighted kernel over the stronger V24 pointwise
+constant lower-bound route, because the textbook proof integrates
+`r^2/(1+r t)^2` to obtain `r^2/(1+r)`.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

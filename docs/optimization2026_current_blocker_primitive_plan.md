@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V24`, this file's top
+   the full book is complete, route from `Live Goal Prompt V25`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V24
+## Live Goal Prompt V25
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -257,12 +257,34 @@ existing local-norm sandwich machinery such as
 `chewi136_localNorm_sandwich_sourceRadius` and related Hessian segment
 comparison lemmas before adding any new self-concordance primitive.
 
+Current V25 packet corrects the route to the exact textbook Lemma 13.6 kernel
+used in the proof of Theorem 13.16.  The V24 pointwise constant lower-bound
+consumer remains available as a stronger supplied-interface theorem, but the
+preferred route is now the weighted segment bound
+`r^2 / (1 + r * tau)^2`, integrated over `tau ∈ [0,1]`.  New compiled
+declarations:
+`chewi1316_weightedKernel_intervalIntegrable`,
+`chewi1316_weightedKernel_integral_eq_sq_div_one_add`,
+`chewi1316_lowerModel_of_gradient_segment_weighted_quadratic_lower`,
+`chewi1316_centralPath_lowerModel_of_gradient_segment_weighted_quadratic_lower`,
+`chewi1316_objective_gap_le_of_gradient_segment_weighted_quadratic_lower`,
+`chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_gradient_segment_weighted_quadratic_lower`,
+and
+`chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_gradient_segment_weighted_quadratic_lower`.
+Search-first result: Chewi's Markdown proof at Lemma 13.6 explicitly uses the
+kernel `||y-x||_x^2/(1 + M t ||y-x||_x)^2` and then integrates it to
+`||y-x||_x^2/(1 + M ||y-x||_x)`; mathlib has the FTC/integral infrastructure,
+while the local code already has segment-gradient FTC and Hessian/local-norm
+sandwich machinery.  Next proof work should discharge this V25 weighted
+`hquad_lower` gate from the existing Lemma 13.6 local-norm/Hessian comparison
+APIs, not from the stronger V24 constant pointwise gate.
+
 Next theorem-sized target: finish one of the remaining genuine terminal
-certificate families for the V19/V21/V22/V23/V24 auto handoff: terminal
+certificate families for the V19/V21/V22/V23/V24/V25 auto handoff: terminal
 central-path optimality at the selected parameter, the self-concordant
-value-growth certificate feeding the V23 consumers, or the segment Hessian
-quadratic lower certificate feeding the V24 consumers.  Prefer the segment
-Hessian route if existing local-norm sandwich APIs discharge it cleanly;
+value-growth certificate feeding the V23 consumers, or the weighted segment
+Hessian quadratic lower certificate feeding the V25 consumers.  Prefer the
+weighted segment Hessian route if existing local-norm sandwich APIs discharge it cleanly;
 otherwise prove the terminal centrality wrapper while preserving the analytic
 certificate as the next blocker.
 Do not redo large-parameter stopping/count, barrier-step from terminal
@@ -272,7 +294,7 @@ bridge/consumer wrappers.  Search first near existing `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, and Lemma 13.6 self-concordant growth/local-norm wrappers; then
 formalize only the genuinely missing terminal analytic certificate.
-Older paragraphs below are cached route history and must not override this V24
+Older paragraphs below are cached route history and must not override this V25
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
