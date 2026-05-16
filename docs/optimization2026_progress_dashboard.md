@@ -583,6 +583,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   a uniform source-gradient range-tail budget, and a filter-eventual actual
   preliminary-path range-tail invariant before calling any final §13.16
   initializer.
+  The clean boundedness-to-§13.16 packet now compiles
+  `chewi1316_polytopeSlackNegLog_actualPreDecrementBudget_eventuallyRangeTailBound_of_boundedPolytope`,
+  `chewi1316_polytopeSlackNegLog_actualPreDecrementBudget_eventuallyRangeTailBound_of_closedPolytope_isBounded`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedFeasibleRange_eventuallyRangeTailBound_succ_noFactor_standardConstants`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_eventuallyRangeTailBound_succ_noFactor_standardConstants`, and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedClosedPolytope_eventuallyRangeTailBound_succ_noFactor_standardConstants`.
+  These compose the actual-path range-feasibility theorem, the bounded
+  range-tail invariant, and the no-prefix `rangeMem_eventuallyRangeTailBound`
+  initializer, hiding the internal floor/radius/tail witnesses from ordinary
+  §13.16 callers.
   The source-space bounded-polytope bridge now compiles as
   `chewi1316_polytopeSlackNegLog_bounded_feasibleRange_of_bounded_polytopeSlackSet`
   and

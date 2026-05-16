@@ -878,6 +878,18 @@ slack-ratio budget, a uniform source-gradient range-tail budget, and a
 filter-eventual actual-path range-tail invariant.  Future §13.16 work should
 call these facts instead of recomputing `rho = R / sFloor`, `B = 1 + rho`, or
 `tailBound = sqrt m * B`.
+The clean boundedness-to-§13.16 packet now adds
+`chewi1316_polytopeSlackNegLog_actualPreDecrementBudget_eventuallyRangeTailBound_of_boundedPolytope`,
+`chewi1316_polytopeSlackNegLog_actualPreDecrementBudget_eventuallyRangeTailBound_of_closedPolytope_isBounded`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedFeasibleRange_eventuallyRangeTailBound_succ_noFactor_standardConstants`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_eventuallyRangeTailBound_succ_noFactor_standardConstants`, and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedClosedPolytope_eventuallyRangeTailBound_succ_noFactor_standardConstants`.
+These call the no-prefix `rangeMem_eventuallyRangeTailBound` §13.16 handoff
+after deriving actual-path range feasibility internally.  They are the
+preferred caller-facing endpoints when the only intended geometric assumption
+is bounded feasible range, bounded strict source polytope, or bounded textbook
+closed polytope; use the older `autoFloor` wrappers only when downstream work
+needs the explicit witnesses `sFloor`, `rho`, or `tailBound`.
 The source-space bounded-polytope bridge now adds
 `chewi1316_polytopeSlackNegLog_bounded_feasibleRange_of_bounded_polytopeSlackSet`
 and the endpoint
