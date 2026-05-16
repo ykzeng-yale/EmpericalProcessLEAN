@@ -27,16 +27,17 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V418`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V419`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V418 packages
+consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V419 packages
 Durrett Theorem 2.5.11's exact logarithmic normalizer layer, the
 source-shaped finite-variance bridge, and the iid finite-second-moment source
-wrapper.  New compiled anchors through V418:
+wrapper, plus the Cauchy-condensation and p-series reduction for the remaining
+logarithmic-series proof.  New compiled anchors through V419:
 `durrett2019_theorem_2_5_11_logNormalizer`,
 `durrett2019_theorem_2_5_11_logNormalizer_pos`,
 `durrett2019_theorem_2_5_11_logNormalizer_ne_zero`,
@@ -50,13 +51,22 @@ wrapper.  New compiled anchors through V418:
 `durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_variance_bound`,
 `durrett2019_theorem_2_5_11_memLp_of_identDistrib_zero`,
 `durrett2019_theorem_2_5_11_variance_bound_of_identDistrib`, and
-`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance`.
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance`,
+`durrett2019_theorem_2_5_11_logWeight_eq_inv_sq`,
+`durrett2019_theorem_2_5_11_logWeight_pos`,
+`durrett2019_theorem_2_5_11_logWeight_succ_le`,
+`durrett2019_theorem_2_5_11_logWeight_summable_of_condensed`,
+`durrett2019_theorem_2_5_11_logWeight_summable_of_condensed_pseries_bound`,
+and
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance_condensed`.
 The next source work is the remaining log-series summability theorem for
-`durrett2019_theorem_2_5_11_logWeight epsilon` under `epsilon > 0`; once it
-is compiled, remove the explicit summability hypothesis from the iid source
-theorem.
+`durrett2019_theorem_2_5_11_logWeight epsilon` under `epsilon > 0`, now
+reduced to the eventual dyadic p-series bound displayed in the current blocker
+plan; once it is compiled, remove the explicit summability hypothesis from the
+iid source theorem.
 
-Verified route history below is provenance, not live prompt text.  V417
+Verified route history below is provenance, not live prompt text.  V418
+packages the iid finite-second-moment source layer for Theorem 2.5.11.  V417
 packages Durrett Theorem 2.5.11's exact logarithmic normalizer layer and the
 source-shaped finite-variance bridge.  V416
 packages Durrett Theorem 2.5.11's abstract random-series/Kronecker bridge and

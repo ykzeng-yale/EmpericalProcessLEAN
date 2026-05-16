@@ -5,6 +5,7 @@ import StatInference.ProbabilityMeasure.ProductMeasure
 import StatInference.ProbabilityMeasure.StrongLaw
 import StatInference.ProbabilityMeasure.Tail
 import StatInference.ProbabilityMeasure.WeakConvergence
+import Mathlib.Analysis.PSeries
 import Mathlib.Analysis.SpecialFunctions.Pow.Integral
 import Mathlib.MeasureTheory.Measure.LevyConvergence
 import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
@@ -6791,6 +6792,107 @@ noncomputable def durrett2019_theorem_2_5_11_logWeight
     (Real.log (((k + 2 : ℕ) : ℝ)) ^ (1 + 2 * epsilon)))
 
 /--
+Durrett 2019, Theorem 2.5.11 support: the shifted logarithmic weight is the
+inverse square of the packaged logarithmic normalizer.
+-/
+theorem durrett2019_theorem_2_5_11_logWeight_eq_inv_sq
+    (epsilon : ℝ) (k : ℕ) :
+    durrett2019_theorem_2_5_11_logWeight epsilon k =
+      ((durrett2019_theorem_2_5_11_logNormalizer epsilon (k + 2)) ^ 2)⁻¹ := by
+  simpa [durrett2019_theorem_2_5_11_logWeight] using
+    (durrett2019_theorem_2_5_11_logNormalizer_inv_sq_eq
+      (epsilon := epsilon) (n := k + 2) (by omega : 2 ≤ k + 2)).symm
+
+/--
+Durrett 2019, Theorem 2.5.11 support: every shifted logarithmic weight is
+positive.
+-/
+theorem durrett2019_theorem_2_5_11_logWeight_pos
+    (epsilon : ℝ) (k : ℕ) :
+    0 < durrett2019_theorem_2_5_11_logWeight epsilon k := by
+  rw [durrett2019_theorem_2_5_11_logWeight_eq_inv_sq]
+  exact
+    inv_pos.2
+      (sq_pos_of_ne_zero
+        (durrett2019_theorem_2_5_11_logNormalizer_ne_zero epsilon (k + 2)))
+
+/--
+Durrett 2019, Theorem 2.5.11 support: the shifted logarithmic weights are
+monotone decreasing when `epsilon > 0`.
+-/
+theorem durrett2019_theorem_2_5_11_logWeight_succ_le
+    {epsilon : ℝ} (hepsilon_pos : 0 < epsilon) (k : ℕ) :
+    durrett2019_theorem_2_5_11_logWeight epsilon (k + 1) ≤
+      durrett2019_theorem_2_5_11_logWeight epsilon k := by
+  rw [durrett2019_theorem_2_5_11_logWeight_eq_inv_sq,
+    durrett2019_theorem_2_5_11_logWeight_eq_inv_sq]
+  have hnorm_le :
+      durrett2019_theorem_2_5_11_logNormalizer epsilon (k + 2) ≤
+        durrett2019_theorem_2_5_11_logNormalizer epsilon (k + 1 + 2) := by
+    exact
+      durrett2019_theorem_2_5_11_logNormalizer_le_of_two_le
+        (epsilon := epsilon) (by nlinarith : 0 ≤ (1 : ℝ) / 2 + epsilon)
+        (m := k + 2) (n := k + 1 + 2) (by omega) (by omega)
+  have hsq_le :
+      (durrett2019_theorem_2_5_11_logNormalizer epsilon (k + 2)) ^ 2 ≤
+        (durrett2019_theorem_2_5_11_logNormalizer epsilon (k + 1 + 2)) ^ 2 := by
+    exact
+      pow_le_pow_left₀
+        (le_of_lt
+          (durrett2019_theorem_2_5_11_logNormalizer_pos epsilon (k + 2)))
+        hnorm_le 2
+  exact
+    inv_anti₀
+      (sq_pos_of_ne_zero
+        (durrett2019_theorem_2_5_11_logNormalizer_ne_zero epsilon (k + 2)))
+      hsq_le
+
+/--
+Durrett 2019, Theorem 2.5.11 support: Cauchy's condensation test reduces the
+logarithmic-series summability display to its dyadic condensed series.
+-/
+theorem durrett2019_theorem_2_5_11_logWeight_summable_of_condensed
+    {epsilon : ℝ} (hepsilon_pos : 0 < epsilon)
+    (hcondensed :
+      Summable fun k : ℕ =>
+        (2 : ℝ) ^ k * durrett2019_theorem_2_5_11_logWeight epsilon (2 ^ k)) :
+    Summable (durrett2019_theorem_2_5_11_logWeight epsilon) := by
+  exact
+    (summable_condensed_iff_of_eventually_nonneg
+      (f := durrett2019_theorem_2_5_11_logWeight epsilon)
+      (Eventually.of_forall fun k =>
+        le_of_lt (durrett2019_theorem_2_5_11_logWeight_pos epsilon k))
+      (Eventually.of_forall fun k =>
+        durrett2019_theorem_2_5_11_logWeight_succ_le hepsilon_pos k)).1
+      hcondensed
+
+/--
+Durrett 2019, Theorem 2.5.11 support: after Cauchy's condensation test, it
+is enough to dominate the dyadic condensed series by the corresponding
+`p`-series with `p = 1 + 2 epsilon`.
+-/
+theorem durrett2019_theorem_2_5_11_logWeight_summable_of_condensed_pseries_bound
+    {epsilon : ℝ} (hepsilon_pos : 0 < epsilon)
+    (hbound :
+      ∀ᶠ k : ℕ in atTop,
+        ‖(2 : ℝ) ^ k *
+            durrett2019_theorem_2_5_11_logWeight epsilon ((2 : ℕ) ^ k)‖ ≤
+          ((Real.log (2 : ℝ)) ^ (-(1 + 2 * epsilon))) *
+            ((k : ℝ) ^ (-(1 + 2 * epsilon)))) :
+    Summable (durrett2019_theorem_2_5_11_logWeight epsilon) := by
+  have hpseries :
+      Summable fun k : ℕ =>
+        ((Real.log (2 : ℝ)) ^ (-(1 + 2 * epsilon))) *
+          ((k : ℝ) ^ (-(1 + 2 * epsilon))) := by
+    exact
+      (Real.summable_nat_rpow.2 (by nlinarith : -(1 + 2 * epsilon) < -1)).mul_left
+        ((Real.log (2 : ℝ)) ^ (-(1 + 2 * epsilon)))
+  exact
+    durrett2019_theorem_2_5_11_logWeight_summable_of_condensed
+      hepsilon_pos
+      (hpseries.of_norm_bounded_eventually_nat hbound)
+
+/--
 Durrett 2019, Theorem 2.5.11 support: the textbook logarithmic summability
 display gives summability of the inverse-square normalizer weights used by the
 random-series bridge.
@@ -6914,6 +7016,35 @@ theorem durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_fin
     (durrett2019_theorem_2_5_11_variance_bound_of_identDistrib
       (P := P) (X := X) hident)
     hepsilon_pos hlog_weight_summable
+
+/--
+Durrett 2019, Theorem 2.5.11 source-shaped bridge: the iid finite-variance
+endpoint follows from the dyadic condensed logarithmic-series display.
+-/
+theorem durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance_condensed
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {epsilon : ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_mem : MemLp (X 0) (2 : ℝ≥0∞) P)
+    (hX_zero : ∀ k : ℕ, ∫ ω, X k ω ∂P = 0)
+    (hident :
+      ∀ k : ℕ, _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hepsilon_pos : 0 < epsilon)
+    (hcondensed :
+      Summable fun k : ℕ =>
+        (2 : ℝ) ^ k * durrett2019_theorem_2_5_11_logWeight epsilon (2 ^ k)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+            durrett2019_theorem_2_5_11_logNormalizer epsilon (n + 1))
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance
+    (P := P) (X := X) (epsilon := epsilon)
+    hX_indep hX_meas hX0_mem hX_zero hident hepsilon_pos
+    (durrett2019_theorem_2_5_11_logWeight_summable_of_condensed
+      hepsilon_pos hcondensed)
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the

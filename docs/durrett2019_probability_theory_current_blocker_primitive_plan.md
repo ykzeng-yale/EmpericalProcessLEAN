@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V418
+## Live In-Thread Goal Prompt V419
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -15,18 +15,35 @@ synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
 in `StatInference/ProbabilityTheory/Basic.lean`.  Theorem 2.5.11 now has the
 exact logarithmic normalizer layer: `a_n = sqrt n * (log n)^(1/2 + epsilon)`
 for `n >= 2`, with `a_1 = a_2`; positivity, nonzero, monotone-increment,
-`atTop`, inverse-square algebra, shifted log-weight summability transfer, and
-the source-shaped finite-variance and iid finite-second-moment bridges all
-compile.  Next aggressive target: prove the remaining textbook log-series
-summability
-`sum_{n >= 2} 1 / (n * (log n)^(1 + 2 epsilon)) < infinity` for
-`epsilon > 0`, preferably via mathlib integral-test/sum-integral APIs before
-adding local real-analysis lemmas; then remove the explicit
-`Summable (durrett2019_theorem_2_5_11_logWeight epsilon)` assumption from the
-front-facing iid source theorem.  Do not route back to Theorem 2.4.9, 2.5.5,
-2.5.8, 2.5.9, 2.5.10, V416 abstract plumbing, V417 normalizer plumbing, or
-V418 iid variance/source packaging unless search proves a concrete missing
-source display.
+`atTop`, inverse-square algebra, shifted log-weight summability transfer,
+source-shaped finite-variance and iid finite-second-moment bridges, and the
+Cauchy-condensation reduction all compile.  Next aggressive target: prove the
+eventual dyadic p-series bound
+`‖2^k * logWeight epsilon (2^k)‖ <= (log 2)^(-(1+2 epsilon)) *
+k^(-(1+2 epsilon))` for `epsilon > 0`, using the algebra
+`2^k / (2^k + 2) <= 1` and `log(2^k + 2) >= k * log 2`; then call
+`durrett2019_theorem_2_5_11_logWeight_summable_of_condensed_pseries_bound`
+to remove the explicit `Summable (durrett2019_theorem_2_5_11_logWeight
+epsilon)` assumption from the front-facing iid source theorem.  Do not route
+back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10, V416 abstract plumbing,
+V417 normalizer plumbing, V418 iid variance/source packaging, or V419
+condensation plumbing unless search proves a concrete missing source display.
+
+Latest verified target V419 packages the Cauchy-condensation route for Durrett
+Theorem 2.5.11's logarithmic series.  New compiled anchors:
+`durrett2019_theorem_2_5_11_logWeight_eq_inv_sq`,
+`durrett2019_theorem_2_5_11_logWeight_pos`,
+`durrett2019_theorem_2_5_11_logWeight_succ_le`,
+`durrett2019_theorem_2_5_11_logWeight_summable_of_condensed`,
+`durrett2019_theorem_2_5_11_logWeight_summable_of_condensed_pseries_bound`,
+and
+`durrett2019_theorem_2_5_11_ae_log_normalized_sum_tendsto_zero_of_iid_finite_variance_condensed`.
+The proof reuses mathlib `summable_condensed_iff_of_eventually_nonneg` and
+`Real.summable_nat_rpow`, plus the local V417 logarithmic-normalizer
+monotonicity.  The remaining 2.5.11 blocker is no longer general summability
+plumbing: prove the single eventual dyadic comparison displayed in the live
+prompt, then package the final iid finite-variance source theorem without a
+summability hypothesis.
 
 Latest verified target V418 packages the iid finite-second-moment source layer
 for Durrett Theorem 2.5.11.  New compiled anchors:
