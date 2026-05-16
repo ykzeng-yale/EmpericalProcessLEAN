@@ -32,13 +32,27 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V413` in
+Route from `Live In-Thread Goal Prompt V414` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`,
-with Theorem 2.5.10 SLLN variance/truncated-to-original source estimates next.
-V413 packages the moving-truncation mean-convergence step.  New compiled
-anchors:
+with Theorem 2.5.10 SLLN truncated-to-original transfer next.  V414 packages
+the scaled-centered variance-summability layer and the source-facing
+truncated-average endpoint.  New compiled anchors:
+`durrett2019_theorem_2_5_10_variance_scaledCenteredTruncated_le_truncated_sq`,
+`durrett2019_theorem_2_5_10_integral_truncated_sq_eq_base_truncated_sq_of_identDistrib`,
+`durrett2019_theorem_2_5_10_integral_base_truncated_sq_eq_abs_truncation_sq`,
+`durrett2019_theorem_2_5_10_scaled_variance_summable_of_integrable_identDistrib`,
+and
+`durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_integrable_identDistrib`.
+This proves that iid integrable source hypotheses imply
+`T_n/n -> mu` almost surely for `T_n = sum_{k <= n} X_k 1_{|X_k| <= k}`.  Next
+work should transfer from truncated averages to original averages by proving
+eventual equality between `X_k` and `Y_k` from integrability of `X_0` and
+identical distribution.
+
+Verified route history below is provenance, not live prompt text.  V413
+packages the moving-truncation mean-convergence step.  Compiled anchors:
 `durrett2019_theorem_2_5_10_tendsto_integral_fixed_truncation`,
 `durrett2019_theorem_2_5_10_integral_truncated_eq_base_truncated_of_identDistrib`,
 `durrett2019_theorem_2_5_10_truncatedMean_tendsto_of_integrable_identDistrib`,
@@ -46,12 +60,7 @@ and
 `durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_scaled_variance_summable`.
 This proves the closed-absolute dominated-convergence step
 `E[X_k 1_{|X_k| <= k}] -> mu` under integrability plus identical distribution
-and plugs it into the source-facing truncated-average endpoint.  Next work
-should prove the remaining estimates: summability of
-`Var((Y_k - E Y_k) / k)` and transfer from truncated averages to original
-averages.
-
-Verified route history below is provenance, not live prompt text.  V412
+and plugs it into the source-facing truncated-average endpoint.  V412
 packages the moving-truncation setup.  Compiled anchors:
 `durrett2019_theorem_2_5_10_truncated`,
 `durrett2019_theorem_2_5_10_truncatedMean`,

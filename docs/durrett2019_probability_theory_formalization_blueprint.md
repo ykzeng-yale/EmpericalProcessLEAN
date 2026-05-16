@@ -27,24 +27,32 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V413`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V414`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
 consequences in `StatInference/ProbabilityTheory/Basic.lean`, with Theorem
-2.5.10 SLLN variance/truncated-to-original source estimates next.  V413
-packages the moving-truncation mean-convergence step.  New compiled anchors:
+2.5.10 SLLN truncated-to-original transfer next.  V414 packages the
+scaled-centered variance-summability layer and the source-facing
+truncated-average endpoint.  New compiled anchors:
+`durrett2019_theorem_2_5_10_variance_scaledCenteredTruncated_le_truncated_sq`,
+`durrett2019_theorem_2_5_10_integral_truncated_sq_eq_base_truncated_sq_of_identDistrib`,
+`durrett2019_theorem_2_5_10_integral_base_truncated_sq_eq_abs_truncation_sq`,
+`durrett2019_theorem_2_5_10_scaled_variance_summable_of_integrable_identDistrib`,
+and
+`durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_integrable_identDistrib`.
+The remaining source work is now the transfer from `T_n/n` to `S_n/n`.
+
+Verified route history below is provenance, not live prompt text.  V413
+packages the moving-truncation mean-convergence step.  Compiled anchors:
 `durrett2019_theorem_2_5_10_tendsto_integral_fixed_truncation`,
 `durrett2019_theorem_2_5_10_integral_truncated_eq_base_truncated_of_identDistrib`,
 `durrett2019_theorem_2_5_10_truncatedMean_tendsto_of_integrable_identDistrib`,
 and
 `durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_scaled_variance_summable`.
-The remaining source work is now narrow: prove scaled-centered variance
-summability and transfer from `T_n/n` to `S_n/n`.
-
-Verified route history below is provenance, not live prompt text.  V412
+V412
 packages the moving-truncation setup.  Compiled anchors:
 `durrett2019_theorem_2_5_10_truncated`,
 `durrett2019_theorem_2_5_10_truncatedMean`,
