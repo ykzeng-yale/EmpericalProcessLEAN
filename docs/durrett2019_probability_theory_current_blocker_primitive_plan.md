@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V432
+## Live In-Thread Goal Prompt V433
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,21 +12,32 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V432 advances Durrett
-Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: after V431's
-standard rpow normalization, the tail-first rpow indicator `tsum` is now
-localized to a finite `range (Nat.ceil (x^p))` prefix with a full-prefix bound
-consumer, and the truncated-square rpow indicator has a full p-series
-majorant plus summability.  Next aggressive target: import/reuse
-`Mathlib.Analysis.SumIntegralComparisons` and prove the two remaining
-quantitative estimates: a finite-prefix integral comparison for the tail-first
-sum and a p-series tail integral comparison for the truncated-square sum.  The
-exact real goals are
+in `StatInference/ProbabilityTheory/Basic.lean`.  V433 advances Durrett
+Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: after V432's finite
+prefix and p-series majorant layer, the scalar kernel estimates now reduce to
+unscaled p-series prefix/tail estimates.  The tail-first consumer factors out
+`x` and only asks for
+`sum_{k < ceil(x^p)} (k+1)^(-1/p) <= C x^(p-1)` when `0 < x`; the
+truncated-square consumer factors out `x^2` and only asks for the unscaled
+indicator tail bound
+`sum_k 1_{|x|^p <= k+1} (k+1)^(-2/p) <= C |x|^(p-2)` when `x != 0`.
+Next aggressive target: import/reuse `Mathlib.Analysis.SumIntegralComparisons`
+and prove exactly those two unscaled quantitative p-series estimates.  The
+source real goals remain
 `sum_k x 1_{(k+1)^(1/p) < x} / (k+1)^(1/p) <= C x^p` for `x >= 0`, `1 < p`,
 and `sum_k x^2 1_{x <= (k+1)^(1/p)} / (k+1)^(2/p) <= C x^p` for `x >= 0`,
 `p < 2`.  Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V433 adds the Theorem 2.5.12 unscaled p-series reducer
+layer.  New compiled anchors:
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscaled_bound`,
+`durrett2019_theorem_2_5_12_truncatedSq_unscaled_rpow_indicator_summable`, and
+`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_unscaled_rpow_indicator`.
+The remaining 2.5.12 blocker is no longer scaled-kernel algebra; it is the two
+unscaled real-analysis estimates above, ideally using
+`Mathlib.Analysis.SumIntegralComparisons`.
 
 Latest verified target V432 adds the Theorem 2.5.12 finite-prefix and
 standard p-series majorant layer.  New compiled anchors:

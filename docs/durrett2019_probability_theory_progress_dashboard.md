@@ -32,19 +32,17 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V432` in
+Route from `Live In-Thread Goal Prompt V433` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
-V432 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
-`1 < p < 2`.  In addition to the V421-V431 endpoint, Tonelli/Fubini,
-scalar-kernel, scalar-summability, canonical threshold, and standard rpow
-reducers, the tail-first rpow indicator `tsum` is now localized to a finite
-`range (Nat.ceil (x^p))` prefix with a full-prefix bound consumer, and the
-truncated-square rpow indicator has a full p-series majorant plus summability.
-The endpoint wrappers only need the two quantitative p-series estimates on
-these standard rpow finite-prefix/tail forms.  New compiled anchors through
-V432:
+V433 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
+`1 < p < 2`.  In addition to the V421-V432 endpoint, Tonelli/Fubini,
+scalar-kernel, scalar-summability, canonical threshold, standard rpow, and
+finite-prefix reducers, the two scalar estimates now reduce to unscaled
+p-series prefix/tail inequalities.  The endpoint wrappers only need the two
+unscaled quantitative p-series estimates displayed in the current blocker
+plan.  New compiled anchors through V433:
 `durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
@@ -113,9 +111,12 @@ and
 `durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_sum`,
 `durrett2019_theorem_2_5_12_truncatedSq_rpow_indicator_le_full`,
 and
-`durrett2019_theorem_2_5_12_truncatedSq_rpow_indicator_summable`.
+`durrett2019_theorem_2_5_12_truncatedSq_rpow_indicator_summable`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscaled_bound`,
+`durrett2019_theorem_2_5_12_truncatedSq_unscaled_rpow_indicator_summable`, and
+`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_unscaled_rpow_indicator`.
 The current blocker is now only ordinary real p-series/integral comparison for
-the standard rpow finite-prefix and tail inequalities.
+the two unscaled standard rpow prefix/tail inequalities.
 
 Verified route history below is provenance, not live prompt text.  V425 added
 the truncated-mean Kronecker layer reducing normalized mean convergence to
