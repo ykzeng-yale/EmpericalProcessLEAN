@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V377
+## Live In-Thread Goal Prompt V378
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,8 +21,22 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V377 adds the global middle-partition-with-tails squeeze
-that consumes V376 and the lower/upper tail cells:
+Latest verified target V378 packages the V377 global middle-partition-with-tails
+squeeze into the countable-scale uniform-deviation interface:
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions`,
+and
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_tendsto_partitions`.
+This avoids the false uncountable-intersection route: V377 gives a separate
+a.e. event at each fixed tolerance, while V378 first normalizes the
+`2 * (tolerance / 2)` bound and then intersects only a countable sequence of
+supplied middle/tail partitions whose widths tend to zero.  Next work should
+prove or package the actual countable supplied-partition data for Durrett's
+arbitrary real law, then attach it to this V378 outer-a.s. endpoint.
+
+V377 adds the global middle-partition-with-tails squeeze that consumes V376
+and the lower/upper tail cells:
 `empiricalDistributionFunction_nonneg`,
 `empiricalDistributionFunction_le_one`,
 `empiricalLeftDistributionFunction_nonneg`,
@@ -33,9 +47,9 @@ and
 This formalizes the final textbook tail lift around a bounded middle
 partition: for `c < a`, use `F_n(c) <= F_n(a-)`; for `b <= c`, use
 `F_n(b) <= F_n(c)` and `1 - F(b) = P((b, infinity))`; on `[a,b)` reuse V376.
-Next work should package this pathwise global squeeze into the exact
-outer-a.s./uniform-deviation endpoint-grid statement, not restate tail
-inequalities or endpoint convergence.
+V378 now packages this fixed-tolerance result into the countable-scale
+outer-a.s. uniform-deviation route, so do not restate tail inequalities,
+endpoint convergence, or the tolerance normalization.
 
 V376 adds the middle-partition monotonicity squeeze that
 consumes V375's finite-cutpoint burn-in:

@@ -6144,6 +6144,140 @@ theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_unif
     div_eq_mul_inv, mul_comm] using hn c
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step: the global middle-partition-with-tails
+squeeze normalized to an arbitrary requested tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction (samplePath X ω n) c -
+            ProbabilityTheory.cdf P c| < tolerance := by
+  have hhalf : 0 < tolerance / 2 := by linarith
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul
+      X hhalf partition hleftTail hrightTail hLaw hindep] with ω hω
+  filter_upwards [hω] with n hn c
+  have htwo : 2 * (tolerance / 2) = tolerance := by ring
+  simpa [htwo] using hn c
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in exact one-based notation: the
+global middle-partition-with-tails squeeze normalized to an arbitrary
+requested tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+            ProbabilityTheory.cdf P c| < tolerance := by
+  have hhalf : 0 < tolerance / 2 := by linarith
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_two_mul_of_iIndepFun
+      X hhalf partition hleftTail hrightTail hLaw hindep] with ω hω
+  filter_upwards [hω] with n hn c
+  have htwo : 2 * (tolerance / 2) = tolerance := by ring
+  simpa [htwo] using hn c
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step: a countable sequence of supplied
+middle partitions with tail mass tending to zero gives the pathwise
+uniform-deviation conclusion on one a.s. event.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (width : ℕ -> ℝ)
+    (hwidth_pos : ∀ scale, 0 < width scale)
+    (hwidth_tendsto : Tendsto width atTop (𝓝 0))
+    (a b : ℕ -> ℝ) (middleCells : ℕ -> ℕ)
+    (partition : ∀ scale,
+      SuppliedRealMiddleCDFPartition P (width scale / 2)
+        (a scale) (b scale) (middleCells scale))
+    (hleftTail : ∀ scale, P.real (Set.Iio (a scale)) < width scale / 2)
+    (hrightTail : ∀ scale, P.real (Set.Ioi (b scale)) < width scale / 2)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    AlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) := by
+  have hscale :
+      ∀ᵐ ω ∂μ, ∀ scale,
+        ∀ᶠ n in atTop,
+          ∀ c : ℝ,
+            |empiricalDistributionFunction (samplePath X ω n) c -
+              ProbabilityTheory.cdf P c| < width scale := by
+    refine ae_all_iff.2 ?_
+    intro scale
+    exact
+      durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt
+        X (hwidth_pos scale) (partition scale)
+        (hleftTail scale) (hrightTail scale) hLaw hindep
+  filter_upwards [hscale] with ω hω
+  intro tolerance htolerance
+  have hwidth_eventually :
+      ∀ᶠ scale in atTop, width scale < tolerance :=
+    Filter.Tendsto.eventually_lt hwidth_tendsto tendsto_const_nhds htolerance
+  rcases eventually_atTop.1 hwidth_eventually with ⟨scale, hscale_tail⟩
+  filter_upwards [hω scale] with n hn
+  intro c _hc
+  exact (le_of_lt (hn c)).trans (le_of_lt (hscale_tail scale le_rfl))
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step: the countable supplied
+middle-partition route packaged in the VdV&W outer-a.s. uniform-deviation
+interface.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_tendsto_partitions
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (width : ℕ -> ℝ)
+    (hwidth_pos : ∀ scale, 0 < width scale)
+    (hwidth_tendsto : Tendsto width atTop (𝓝 0))
+    (a b : ℕ -> ℝ) (middleCells : ℕ -> ℕ)
+    (partition : ∀ scale,
+      SuppliedRealMiddleCDFPartition P (width scale / 2)
+        (a scale) (b scale) (middleCells scale))
+    (hleftTail : ∀ scale, P.real (Set.Iio (a scale)) < width scale / 2)
+    (hrightTail : ∀ scale, P.real (Set.Ioi (b scale)) < width scale / 2)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) := by
+  exact
+    vdVWOuterAlmostSureUniformDeviationTendstoZeroOn_of_almostSure
+      (durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions
+        X width hwidth_pos hwidth_tendsto a b middleCells partition
+        hleftTail hrightTail hLaw hindep)
+
+/--
 Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem under the
 standard iid-source independence assumption `iIndepFun`.
 -/
