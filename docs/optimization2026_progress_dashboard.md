@@ -511,6 +511,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackCoordAbsBound_exactBudget_succ_noFactor_standardConstants`,
   and
   `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRelativeAbsSubBound_exactBudget_succ_noFactor_standardConstants`.
+  The moving-center relative-slack tail packet now adds
+  `positiveOrthant_ratio_abs_le_one_add_of_relative_abs_sub_le`,
+  `chewi1314_polytopeSlackNegLog_range_slackRatio_le_one_add_of_relative_abs_sub_le`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSlackRelativeAbsSubBound_succ_noFactor_standardConstants`,
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySlackRelativeAbsSubBound_succ_noFactor_standardConstants`.
+  This is the preferred pathwise moving-center interface when geometry gives
+  eventual or post-threshold coordinatewise relative slack displacements along
+  the actual preliminary iterates: the scalar budget is the sharper
+  `sqrt(m) * (1 + rho) <= tailBound`, not the Dikin-detour
+  `sqrt(m) * (1 + sqrt(m) * rho) <= tailBound`.
   This is the direct entrypoint for compact/bounded feasible-range arguments
   that naturally produce least-upper-bound data; the Mathlib reuse is
   `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,

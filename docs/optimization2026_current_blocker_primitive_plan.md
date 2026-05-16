@@ -798,6 +798,18 @@ The newest coordinate-relative Dikin bridge adds
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackCoordAbsBound_exactBudget_succ_noFactor_standardConstants`,
 and
 `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_slackRelativeAbsSubBound_exactBudget_succ_noFactor_standardConstants`.
+The moving-center relative-slack tail packet adds
+`positiveOrthant_ratio_abs_le_one_add_of_relative_abs_sub_le`,
+`chewi1314_polytopeSlackNegLog_range_slackRatio_le_one_add_of_relative_abs_sub_le`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSlackRelativeAbsSubBound_succ_noFactor_standardConstants`,
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySlackRelativeAbsSubBound_succ_noFactor_standardConstants`.
+This sharper route uses the direct scalar triangle inequality to consume
+`|slack_i(x_N) / slack_i(xbar0) - 1| <= rho` with budget
+`sqrt(m) * (1 + rho) <= tailBound`, instead of forcing the Dikin-radius
+detour budget `sqrt(m) * (1 + sqrt(m) * rho)`.  It is now the preferred
+post-threshold/eventual moving-center interface when the remaining geometry is
+pathwise rather than a global feasible-range compactness envelope.
 This lets compactness or boundedness proofs feed Mathlib least-upper-bound
 data directly: prove the feasible translated slack range is compact (or show
 it sits inside a compact closure/envelope, or show each coordinate image is
