@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V379
+## Live In-Thread Goal Prompt V380
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,19 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V379 closes the countable supplied-partition gap for
+Latest verified target V380 rewires the main source-facing iid and canonical
+empirical-CDF outer-a.s. endpoints to consume the V379 textbook middle/tail
+route directly.  In particular,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun`,
+its range-sum and inverse-multiply displays, the corresponding one-based
+`iIndepFun` displays, and the zero-/one-based canonical iid empirical-CDF
+outer-a.s. endpoints now route through
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation`
+or the exact one-based V379 display theorem.  Next work should move to a
+new source-entrance wrapper in Chapter 2.1/2.4.9 or a genuinely missing
+Durrett display form, not rewire the same endpoints again.
+
+V379 closes the countable supplied-partition gap for
 the V377/V378 textbook middle/tail route:
 `durrett2019_theorem_2_4_9_exists_middlePartitionWithTails`,
 `durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation`,

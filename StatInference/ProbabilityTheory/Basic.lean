@@ -6490,7 +6490,7 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
       (fun c => ProbabilityTheory.cdf P c)
       (fun ω sampleSize c =>
         empiricalDistributionFunction (samplePath X ω sampleSize) c) :=
-  durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
     X hLaw (fun _ _ hij => hindep.indepFun hij)
 
 /--
@@ -6507,9 +6507,10 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
       (fun c => ProbabilityTheory.cdf P c)
       (fun ω sampleSize c =>
         (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) /
-          (sampleSize : ℝ)) :=
-  durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum
-    X hLaw (fun _ _ hij => hindep.indepFun hij)
+          (sampleSize : ℝ)) := by
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun
+      X hLaw hindep
 
 /--
 Durrett 2019, Theorem 2.4.9, exact outer-a.s. empirical-CDF display in
@@ -6526,9 +6527,10 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
       (fun c => ProbabilityTheory.cdf P c)
       (fun ω sampleSize c =>
         (sampleSize : ℝ)⁻¹ *
-          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) :=
-  durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum
-    X hLaw (fun _ _ hij => hindep.indepFun hij)
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) := by
+  simpa [div_eq_mul_inv, mul_comm] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun
+      X hLaw hindep
 
 /--
 Durrett 2019, Theorem 2.4.9, one-based half-line Glivenko-Cantelli theorem
@@ -6606,8 +6608,9 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
     durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
       (X := X) hLaw hindep
   exact
-    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun
-      (fun i => fun ω => X (i + 1) ω) hShift.1 hShift.2
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
+      (fun i => fun ω => X (i + 1) ω) hShift.1
+      (fun _ _ hij => hShift.2.indepFun hij)
 
 /--
 Durrett 2019, Theorem 2.4.9, one-based exact outer-a.s. empirical-CDF
@@ -6624,12 +6627,9 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
       (fun ω sampleSize c =>
         (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) /
           (sampleSize : ℝ)) := by
-  have hShift :=
-    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
-      (X := X) hLaw hindep
-  exact
-    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_iIndepFun
-      (fun i => fun ω => X (i + 1) ω) hShift.1 hShift.2
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_iIndepFun_oneBased
+      X hLaw hindep
 
 /--
 Durrett 2019, Theorem 2.4.9, one-based exact outer-a.s. empirical-CDF display
@@ -6647,12 +6647,9 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
       (fun ω sampleSize c =>
         (sampleSize : ℝ)⁻¹ *
           ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) := by
-  have hShift :=
-    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
-      (X := X) hLaw hindep
   exact
-    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_iIndepFun
-      (fun i => fun ω => X (i + 1) ω) hShift.1 hShift.2
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun
+      X hLaw hindep
 
 /--
 Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem from a full
@@ -7467,11 +7464,14 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
       (fun sample sampleSize c =>
         empiricalDistributionFunction
           (samplePath (fun i => fun sequence : ℕ -> ℝ => sequence i) sample sampleSize) c) := by
-  have hhalf :=
-    durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_canonical_iid P
-  simpa [VdVWOuterAlmostSurePGlivenkoCantelliClass,
-    empiricalDistributionFunction, populationRiskOfFunction,
-    realHalfLineIndicator_integral_eq_cdf] using hhalf
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
+      (μ := Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ)))
+      (P := (P : Measure ℝ))
+      (fun i => fun sample : ℕ -> ℝ => sample i) hCoord.1
+      (fun _ _ hij => hCoord.2.1.indepFun hij)
 
 /--
 Durrett 2019, Theorem 2.4.9, canonical iid product-space empirical-CDF display
@@ -7569,11 +7569,14 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_
           (samplePath
             (fun i => fun sequence : ℕ -> ℝ => sequence (i + 1))
             sample sampleSize) c) := by
-  have hhalf :=
-    durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_canonical_iid_oneBased P
-  simpa [VdVWOuterAlmostSurePGlivenkoCantelliClass,
-    empiricalDistributionFunction, populationRiskOfFunction,
-    realHalfLineIndicator_integral_eq_cdf] using hhalf
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased P
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
+      (μ := Measure.infinitePi (fun _ : ℕ => (P : Measure ℝ)))
+      (P := (P : Measure ℝ))
+      (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) hCoord.1
+      (fun _ _ hij => hCoord.2.1.indepFun hij)
 
 /--
 Durrett 2019, Theorem 2.4.9, one-based canonical iid product-space empirical-CDF
