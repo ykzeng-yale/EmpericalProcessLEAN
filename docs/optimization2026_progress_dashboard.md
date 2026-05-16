@@ -532,6 +532,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   moving-center interface, with generalized budget
   `sqrt(m) * (1 + r) <= tailBound` and half-ball budget
   `sqrt(m) * (3 / 2) <= tailBound`.
+  The pathwise coordinate-displacement packet now adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSlackCoordAbsBound_exactBudget_succ_noFactor_standardConstants`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySlackCoordAbsBound_exactBudget_succ_noFactor_standardConstants`.
+  These let future moving-center proofs feed source-slack coordinate
+  displacement directly through
+  `chewi1314_polytopeSlackNegLog_range_sourceLocalNorm_le_sqrt_fin_mul_of_coord_abs_le`,
+  with exact budget `sqrt(m) * (1 + sqrt(m) * rho) <= tailBound`.
   This is the direct entrypoint for compact/bounded feasible-range arguments
   that naturally produce least-upper-bound data; the Mathlib reuse is
   `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,
