@@ -27,15 +27,34 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V408`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V409`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current active frontier for this goal cycle: Durrett Theorem 2.5.8 Kolmogorov
-three-series theorem in `StatInference/ProbabilityTheory/Basic.lean`.  V408
-adds Durrett Theorem 2.5.8 fixed-level truncation and large-jump mismatch
-support.  New compiled anchors: `durrett2019_theorem_2_5_8_truncated`,
+Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
+consequences in `StatInference/ProbabilityTheory/Basic.lean`, with Theorem
+2.5.9 Kronecker's lemma next.  V409 packages the source-facing one-based
+sufficiency direction of Durrett Theorem 2.5.8.  New compiled anchors:
+`durrett2019_theorem_2_5_8_integral_centered_truncated_eq_zero`,
+`durrett2019_theorem_2_5_8_variance_centered_truncated_eq_variance`,
+`durrett2019_theorem_2_5_8_tsum_tail_ne_top_of_oneBased`, and
+`durrett2019_theorem_2_5_8_random_series_converges_ae_of_three_series_sufficiency_oneBased`.
+The front-facing sufficiency theorem now takes Durrett's three displayed
+one-based assumptions: `sum P(|X_i| > A) < infinity`, convergence of
+`sum E Y_i`, and summability of `Var(Y_i)` for
+`Y_i = X_i 1_{|X_i| <= A}`, then proves a.s. convergence of `sum X_i`.
+The proof applies V406 to the centered truncations `Y_i - E Y_i`, using V408
+independence and `L^2` support, and uses `variance_sub_const` to translate
+Durrett's condition (iii) from `Var(Y_i)` to the centered variables.  The
+necessity direction is deliberately deferred to Durrett Example 3.4.12, as in
+the text.  Next work should formalize Theorem 2.5.9 Kronecker's lemma as a
+deterministic real sequence theorem, then use it to start Theorem 2.5.10
+strong law from the random-series route.
+
+Verified route history below is provenance, not live prompt text.  V408 adds
+Durrett Theorem 2.5.8 fixed-level truncation and large-jump mismatch support.
+Compiled anchors: `durrett2019_theorem_2_5_8_truncated`,
 `durrett2019_theorem_2_5_8_measurable_truncationMap`,
 `durrett2019_theorem_2_5_8_measurable_truncated`,
 `durrett2019_theorem_2_5_8_iIndepFun_truncated_of_iIndepFun`,
@@ -56,13 +75,7 @@ This proves the source scaffold
 `Y_i = X_i 1_{|X_i| <= A}`, `{X_i != Y_i} subset {|X_i| > A}`, summable
 large-jump probabilities imply eventual equality by Borel-Cantelli, and the
 abstract sufficiency assembly from centered truncated convergence plus
-deterministic centering convergence to convergence of `sum X_i`.  Next work
-should package the one-based source-facing sufficiency theorem by applying V406
-to `Y_i - E Y_i`, using the V408 centered-truncation independence and `L^2`
-support, proving the centered variables have zero integral, and aligning the
-textbook tail condition with the V408 large-jump input.
-
-Verified route history below is provenance, not live prompt text.  V407 starts
+deterministic centering convergence to convergence of `sum X_i`.  V407 starts
 Durrett Theorem 2.5.8 Kolmogorov three-series sufficiency.  Compiled anchors:
 `durrett2019_theorem_2_5_8_realPartialSum`,
 `durrett2019_theorem_2_5_8_realSeriesConverges`,

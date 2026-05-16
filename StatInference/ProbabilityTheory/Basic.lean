@@ -5004,6 +5004,140 @@ theorem durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_truncated_centered
       htrunc
 
 /--
+Durrett 2019, Theorem 2.5.8 support: the centered truncated variable has mean
+zero.
+-/
+theorem durrett2019_theorem_2_5_8_integral_centered_truncated_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {A : ℝ} {n : ℕ}
+    (hX : Measurable (X n)) :
+    ∫ ω, (durrett2019_theorem_2_5_8_truncated X A n ω -
+        ∫ x, durrett2019_theorem_2_5_8_truncated X A n x ∂P) ∂P = 0 := by
+  have hY_mem :
+      MemLp (durrett2019_theorem_2_5_8_truncated X A n) (2 : ℝ≥0∞) P :=
+    durrett2019_theorem_2_5_8_truncated_memLp_two_of_measurable
+      (P := P) (X := X) (A := A) (n := n) hX
+  have hY_int :
+      Integrable (durrett2019_theorem_2_5_8_truncated X A n) P :=
+    hY_mem.integrable one_le_two
+  rw [integral_sub hY_int (integrable_const _)]
+  simp [integral_const, probReal_univ, smul_eq_mul]
+
+/--
+Durrett 2019, Theorem 2.5.8 support: centering a truncated variable by its
+mean does not change its variance.
+-/
+theorem durrett2019_theorem_2_5_8_variance_centered_truncated_eq_variance
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {A : ℝ} {n : ℕ}
+    (hX : Measurable (X n)) :
+    _root_.ProbabilityTheory.variance
+        (fun ω : Ω => durrett2019_theorem_2_5_8_truncated X A n ω -
+          ∫ x, durrett2019_theorem_2_5_8_truncated X A n x ∂P) P =
+      _root_.ProbabilityTheory.variance
+        (durrett2019_theorem_2_5_8_truncated X A n) P := by
+  exact _root_.ProbabilityTheory.variance_sub_const
+    (durrett2019_theorem_2_5_8_measurable_truncated
+      (X := X) (A := A) (n := n) hX).aestronglyMeasurable
+    (∫ x, durrett2019_theorem_2_5_8_truncated X A n x ∂P)
+
+/--
+Durrett 2019, Theorem 2.5.8 support: a one-based finite large-jump series also
+gives the zero-based input consumed by the Borel-Cantelli scaffold.
+-/
+theorem durrett2019_theorem_2_5_8_tsum_tail_ne_top_of_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {A : ℝ}
+    (htail : (∑' i : ℕ, P {ω : Ω | A < |X (i + 1) ω|}) ≠ ∞) :
+    (∑' n : ℕ, P {ω : Ω | A < |X n ω|}) ≠ ∞ := by
+  rw [tsum_eq_zero_add' ENNReal.summable]
+  exact ENNReal.add_ne_top.mpr ⟨measure_ne_top P _, htail⟩
+
+/--
+Durrett 2019, Theorem 2.5.8, sufficiency direction in one-based textbook
+form.  If the independent sequence satisfies the three displayed conditions for
+the fixed truncation `Y_i = X_i 1_{|X_i| <= A}`, then the random series
+`sum X_i` converges almost surely.
+-/
+theorem durrett2019_theorem_2_5_8_random_series_converges_ae_of_three_series_sufficiency_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {A : ℝ}
+    (_hA_pos : 0 < A)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    (htail : (∑' i : ℕ, P {ω : Ω | A < |X (i + 1) ω|}) ≠ ∞)
+    (hmean :
+      durrett2019_theorem_2_5_8_realSeriesConverges
+        (fun i : ℕ => ∫ ω,
+          durrett2019_theorem_2_5_8_truncated X A i ω ∂P))
+    (hvar :
+      Summable fun i : ℕ =>
+        _root_.ProbabilityTheory.variance
+          (durrett2019_theorem_2_5_8_truncated X A (i + 1)) P) :
+    ∀ᵐ ω ∂P, durrett2019_theorem_2_5_6_randomSeriesConverges X ω := by
+  let mean : ℕ -> ℝ := fun i : ℕ =>
+    ∫ ω, durrett2019_theorem_2_5_8_truncated X A i ω ∂P
+  have hcenter_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun n : ℕ => fun ω : Ω =>
+          durrett2019_theorem_2_5_8_truncated X A n ω - mean n) P :=
+    durrett2019_theorem_2_5_8_iIndepFun_centered_truncated_of_iIndepFun
+      (P := P) (X := X) (A := A) (a := mean) hX_indep
+  have hcenter_meas :
+      ∀ i : ℕ, Measurable
+        ((fun n : ℕ => fun ω : Ω =>
+          durrett2019_theorem_2_5_8_truncated X A n ω - mean n) i) := by
+    intro i
+    exact
+      (durrett2019_theorem_2_5_8_measurable_truncated
+        (X := X) (A := A) (n := i) (hX_meas i)).sub measurable_const
+  have hcenter_mem :
+      ∀ i : ℕ, MemLp
+        ((fun n : ℕ => fun ω : Ω =>
+          durrett2019_theorem_2_5_8_truncated X A n ω - mean n) i)
+        (2 : ℝ≥0∞) P := by
+    intro i
+    exact durrett2019_theorem_2_5_8_centered_truncated_memLp_two_of_measurable
+      (P := P) (X := X) (A := A) (a := mean) (n := i) (hX_meas i)
+  have hcenter_zero :
+      ∀ i : ℕ,
+        ∫ ω,
+          ((fun n : ℕ => fun ω : Ω =>
+            durrett2019_theorem_2_5_8_truncated X A n ω - mean n) i) ω ∂P = 0 := by
+    intro i
+    simpa [mean] using
+      durrett2019_theorem_2_5_8_integral_centered_truncated_eq_zero
+        (P := P) (X := X) (A := A) (n := i) (hX_meas i)
+  have hcenter_var :
+      Summable fun i : ℕ =>
+        _root_.ProbabilityTheory.variance
+          ((fun n : ℕ => fun ω : Ω =>
+            durrett2019_theorem_2_5_8_truncated X A n ω - mean n) (i + 1)) P := by
+    refine hvar.congr ?_
+    intro i
+    simpa [mean] using
+      (durrett2019_theorem_2_5_8_variance_centered_truncated_eq_variance
+        (P := P) (X := X) (A := A) (n := i + 1) (hX_meas (i + 1))).symm
+  have hcenter_converges :
+      ∀ᵐ ω ∂P,
+        durrett2019_theorem_2_5_6_randomSeriesConverges
+          (fun i ω =>
+            durrett2019_theorem_2_5_8_truncated X A i ω - mean i) ω :=
+    durrett2019_theorem_2_5_6_random_series_converges_ae_of_summable_variance
+      (P := P)
+      (X := fun i : ℕ => fun ω : Ω =>
+        durrett2019_theorem_2_5_8_truncated X A i ω - mean i)
+      hcenter_indep hcenter_meas hcenter_mem hcenter_zero hcenter_var
+  have htail_zeroBased :
+      (∑' n : ℕ, P {ω : Ω | A < |X n ω|}) ≠ ∞ :=
+    durrett2019_theorem_2_5_8_tsum_tail_ne_top_of_oneBased
+      (P := P) (X := X) (A := A) htail
+  exact
+    durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_truncated_centered_of_realSeriesConverges_of_tsum_tail_ne_top
+      (P := P) (X := X) (A := A) (a := mean)
+      htail_zeroBased hcenter_converges (by simpa [mean] using hmean)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
