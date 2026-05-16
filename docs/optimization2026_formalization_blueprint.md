@@ -136,9 +136,13 @@ compact closed-polytope standard-path constructors.  The V31 packet adds
 which reuses V20 `chewi1316_exists_mainStageIndex_large_parameter` to choose
 the terminal `Nmain` automatically.  The V32 packet lifts this consumer through
 the bounded feasible-range, bounded source-polytope, bounded closed-polytope,
-and compact closed-polytope standard-path endpoints.  Next finite-row work
-should prove the central-path existence/selection layer; centrality of the
-selected terminal center remains the real mathematical certificate.
+and compact closed-polytope standard-path endpoints.  The V33 packet adds
+`chewi1316_standardSourceMainStageTSeq_pos`,
+`Chewi1316RangeCentralPathSelector`, a preliminary-initializer selector
+consumer, and four bounded/closed/compact selector endpoints; a positive-parameter
+selector now chooses the terminal center and discharges centrality in the final
+objective-gap statement.  Next finite-row work should prove a concrete selector
+from compact/closed minimizer existence and interior barrier optimality.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

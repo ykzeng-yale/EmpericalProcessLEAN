@@ -177,10 +177,21 @@ This dashboard tracks the Chewi optimization formalization lane for
   V30 standard-path constructors with the V31 index selector.  The live
   standard-path call surface now keeps only the terminal centrality premise as
   the real remaining certificate.
+  The V33 selector packet adds
+  `chewi1316_standardSourceMainStageTSeq_pos`,
+  `Chewi1316RangeCentralPathSelector`,
+  `chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_centralPathSelector`,
+  and the four bounded/closed/compact
+  `*_exists_center_mainStageIndex_objective_gap_le_eps_of_centralPathSelector`
+  endpoints.  With a selector for positive central-path parameters, these
+  endpoints choose both the terminal `Nmain` and its matching central-path
+  `center`, then prove the objective gap directly.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: attack the
-  central-path existence/selection wrapper that supplies terminal centrality.
+  `hxseq_mem` or per-step decrement premise.  Next proof target: prove a
+  concrete selector from compact/closed minimizer existence and interior
+  barrier optimality, reusing mathlib `IsCompact.exists_isMinOn`/Fermat APIs
+  where applicable.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge

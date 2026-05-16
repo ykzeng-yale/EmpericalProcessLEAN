@@ -35671,6 +35671,26 @@ noncomputable def chewi1316_standardSourceMainStageTSeq
         chewi1316_standardSourceMainStageTSeq m c0 tStart n :=
   rfl
 
+theorem chewi1316_standardSourceMainStageTSeq_pos
+    {m n : ℕ} {c0 tStart : ℝ}
+    (hm : 0 < m)
+    (hc0_nonneg : 0 ≤ c0)
+    (htStart_pos : 0 < tStart) :
+    0 < chewi1316_standardSourceMainStageTSeq m c0 tStart n := by
+  induction n with
+  | zero =>
+      simpa using htStart_pos
+  | succ n ih =>
+      have hm_real_pos : 0 < (m : ℝ) := by exact_mod_cast hm
+      have hsqrt_pos : 0 < Real.sqrt (m : ℝ) :=
+        Real.sqrt_pos.2 hm_real_pos
+      have hdiv_nonneg : 0 ≤ c0 / Real.sqrt (m : ℝ) :=
+        div_nonneg hc0_nonneg hsqrt_pos.le
+      have hfactor_pos : 0 < 1 + c0 / Real.sqrt (m : ℝ) := by
+        nlinarith
+      simpa [chewi1316_standardSourceMainStageTSeq_succ] using
+        mul_pos hfactor_pos ih
+
 /--
 The concrete source-coordinate main-stage Newton sequence obtained by starting
 from a selected preliminary point and following the increasing central-path
@@ -36664,6 +36684,150 @@ theorem chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_exist
       hlog, hcount, hlarge, ?_⟩
   intro hcentral
   exact hmain hc0_pos.le hc0_le heps_pos hcentral hlarge
+
+/--
+Reusable certificate interface for selecting a range central-path point at any
+positive barrier parameter.
+-/
+def Chewi1316RangeCentralPathSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range) : Prop :=
+  ∀ {t : ℝ}, 0 < t ->
+    ∃ center : (polytopeSlackCLM aRow).range,
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) ∧
+      t • aObj +
+          barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad center = 0
+
+theorem chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_centralPathSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {aObj optimum : (polytopeSlackCLM aRow).range}
+    {xpre : ℕ -> F}
+    (hxpre_mem : ∀ n : ℕ,
+      (polytopeSlackCLM aRow).rangeRestrict (xpre n) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hpre :
+      ∃ tailBound : ℝ, ∃ Midx Npre : ℕ, ∃ tMain : ℝ,
+        0 ≤ tailBound ∧
+        0 < tMain ∧
+        Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+          (Midx : ℝ) * Real.log (2 : ℝ) ∧
+        (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+          (Npre : ℝ) * (1 / 200 : ℝ) ∧
+        newtonDecrement
+          (centralPathGrad tMain
+            (ContinuousLinearMap.adjoint
+              (polytopeSlackCLM aRow).rangeRestrict aObj)
+            (barrierAffinePreimageGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangePullInvHess aRow bSlack)
+          (xpre Npre) ≤ 1 / 4)
+    (hselector : Chewi1316RangeCentralPathSelector aRow bSlack aObj)
+    {eps c0 : ℝ}
+    (hc0_pos : 0 < c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (heps_pos : 0 < eps) :
+    ∃ tailBound : ℝ, ∃ Midx Npre : ℕ, ∃ tMain : ℝ, ∃ Nmain : ℕ,
+      ∃ center : (polytopeSlackCLM aRow).range,
+        center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ∧
+        0 ≤ tailBound ∧
+        0 < tMain ∧
+        Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+          (Midx : ℝ) * Real.log (2 : ℝ) ∧
+        (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+          (Npre : ℝ) * (1 / 200 : ℝ) ∧
+        2 * (m : ℝ) ≤
+          eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ Nmain * tMain) ∧
+        chewi1316_standardSourceMainStageTSeq m c0 tMain Nmain • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad center = 0 ∧
+        inner ℝ aObj
+            ((polytopeSlackCLM aRow).rangeRestrict
+              (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                (xpre Npre) tMain c0 Nmain)) -
+            inner ℝ aObj optimum ≤ eps := by
+  rcases hpre with
+    ⟨tailBound, Midx, Npre, tMain, htail_nonneg, htMain_pos, hlog, hcount,
+      hinit⟩
+  obtain ⟨Nmain, hlarge⟩ :=
+    chewi1316_exists_mainStageIndex_large_parameter
+      (hm := hm) (c0 := c0) (tMain := tMain) (eps := eps)
+      hc0_pos htMain_pos heps_pos
+  have htTerminal_pos :
+      0 < chewi1316_standardSourceMainStageTSeq m c0 tMain Nmain :=
+    chewi1316_standardSourceMainStageTSeq_pos
+      (hm := hm) (n := Nmain) hc0_pos.le htMain_pos
+  rcases hselector (t := chewi1316_standardSourceMainStageTSeq m c0 tMain Nmain)
+      htTerminal_pos with
+    ⟨center, hcenter_mem, hcentral⟩
+  let xmain : ℕ -> F :=
+    chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+      (xpre Npre) tMain c0
+  let tmain : ℕ -> ℝ :=
+    chewi1316_standardSourceMainStageTSeq m c0 tMain
+  have hinit_range :
+      newtonDecrement
+          (centralPathGrad tMain aObj
+            (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          ((polytopeSlackCLM aRow).rangeRestrict (xpre Npre)) ≤ 1 / 4 := by
+    simpa [chewi1314_polytopeSlackNegLog_centralPath_newtonDecrement_rangePull_eq]
+      using hinit
+  have hinv :=
+    chewi1316_standardSourceMainStage_rangeRestrict_mem_and_range_decrement_le_quarter
+      (hm := hm) (aRow := aRow) (bSlack := bSlack) (aObj := aObj)
+      (xStart := xpre Npre) (tStart := tMain) (c0 := c0)
+      (hxpre_mem Npre) hinit_range hc0_pos.le hc0_le
+  have hxmain :
+      (polytopeSlackCLM aRow).rangeRestrict (xmain Nmain) ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) := by
+    simpa [xmain] using (hinv Nmain).1
+  have hdecrement_range :
+      dualLocalNorm (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack)
+          ((polytopeSlackCLM aRow).rangeRestrict (xmain Nmain))
+          (tmain Nmain • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad
+              ((polytopeSlackCLM aRow).rangeRestrict (xmain Nmain))) ≤
+        1 / 4 := by
+    simpa [newtonDecrement, centralPathGrad, xmain, tmain] using
+      (hinv Nmain).2
+  have hgap :
+      inner ℝ aObj
+          ((polytopeSlackCLM aRow).rangeRestrict
+            (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+              (xpre Npre) tMain c0 Nmain)) -
+          inner ℝ aObj optimum ≤ eps := by
+    exact
+      chewi1316_polytopeSlackNegLog_range_objective_gap_le_eps_of_mainStageParameter_large_of_terminal_mem_and_mixedThird_zeroSafe
+        (hm := hm) (aRow := aRow) (bSlack := bSlack)
+        (aObj := aObj)
+        (x := (polytopeSlackCLM aRow).rangeRestrict (xmain Nmain))
+        (center := center) (optimum := optimum)
+        (tseq := tmain) (t0 := tMain) (c0 := c0)
+        (eps := eps) (N := Nmain)
+        hxmain
+        (by simp [tmain])
+        (by intro n; simp [tmain])
+        hc0_pos.le htMain_pos heps_pos hcenter_mem hoptimum_mem
+        (by simpa [tmain] using hcentral)
+        hdecrement_range
+        (by simpa [tmain] using hlarge)
+  exact
+    ⟨tailBound, Midx, Npre, tMain, Nmain, center, hcenter_mem,
+      htail_nonneg, htMain_pos, hlog, hcount, hlarge, hcentral, hgap⟩
 
 set_option maxHeartbeats 4000000 in
 /--
@@ -51280,6 +51444,229 @@ theorem chewi1316_standardSourceMainStageObjectiveGapMixedThirdAutoHandoff_compa
       (xbar0 := xbar0) (aObj := aObj) (center := center)
       (optimum := optimum) hxbar0Set hcenter_mem hoptimum_mem hcompact_closed)
     hc0_pos hc0_le heps_pos
+
+/--
+Bounded feasible-range standard-path endpoint with both the terminal
+main-stage index and its matching central-path point selected automatically.
+-/
+theorem chewi1316_standardSourceMainStage_boundedFeasibleRange_exists_center_mainStageIndex_objective_gap_le_eps_of_centralPathSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hbounded :
+      Bornology.IsBounded
+        (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m))))
+    (hselector : Chewi1316RangeCentralPathSelector aRow bSlack aObj)
+    {eps c0 : ℝ}
+    (hc0_pos : 0 < c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (heps_pos : 0 < eps) :
+    ∃ tailBound : ℝ, ∃ Midx Npre : ℕ, ∃ tMain : ℝ, ∃ Nmain : ℕ,
+      ∃ center : (polytopeSlackCLM aRow).range,
+        center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ∧
+        0 ≤ tailBound ∧
+        0 < tMain ∧
+        Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+          (Midx : ℝ) * Real.log (2 : ℝ) ∧
+        (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+          (Npre : ℝ) * (1 / 200 : ℝ) ∧
+        2 * (m : ℝ) ≤
+          eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ Nmain * tMain) ∧
+        chewi1316_standardSourceMainStageTSeq m c0 tMain Nmain • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad center = 0 ∧
+        inner ℝ aObj
+            ((polytopeSlackCLM aRow).rangeRestrict
+              (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0 Npre)
+                tMain c0 Nmain)) -
+            inner ℝ aObj optimum ≤ eps :=
+  chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_centralPathSelector
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (aObj := aObj) (optimum := optimum)
+    (xpre := chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+    (chewi1316_standardSourcePreliminaryXSeq_rangeRestrict_mem_of_sourceMem
+      (hm := hm) aRow bSlack hxbar0Set)
+    hoptimum_mem
+    (chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedFeasibleRange_standardPath_eventuallyRangeTailBound_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0)
+      (aObj := ContinuousLinearMap.adjoint
+        (polytopeSlackCLM aRow).rangeRestrict aObj)
+      hxbar0Set hbounded)
+    hselector hc0_pos hc0_le heps_pos
+
+/--
+Bounded strict source-polytope standard-path endpoint with both the terminal
+main-stage index and its matching central-path point selected automatically.
+-/
+theorem chewi1316_standardSourceMainStage_boundedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_centralPathSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hbounded_source : Bornology.IsBounded (polytopeSlackSet aRow bSlack))
+    (hselector : Chewi1316RangeCentralPathSelector aRow bSlack aObj)
+    {eps c0 : ℝ}
+    (hc0_pos : 0 < c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (heps_pos : 0 < eps) :
+    ∃ tailBound : ℝ, ∃ Midx Npre : ℕ, ∃ tMain : ℝ, ∃ Nmain : ℕ,
+      ∃ center : (polytopeSlackCLM aRow).range,
+        center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ∧
+        0 ≤ tailBound ∧
+        0 < tMain ∧
+        Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+          (Midx : ℝ) * Real.log (2 : ℝ) ∧
+        (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+          (Npre : ℝ) * (1 / 200 : ℝ) ∧
+        2 * (m : ℝ) ≤
+          eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ Nmain * tMain) ∧
+        chewi1316_standardSourceMainStageTSeq m c0 tMain Nmain • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad center = 0 ∧
+        inner ℝ aObj
+            ((polytopeSlackCLM aRow).rangeRestrict
+              (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0 Npre)
+                tMain c0 Nmain)) -
+            inner ℝ aObj optimum ≤ eps :=
+  chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_centralPathSelector
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (aObj := aObj) (optimum := optimum)
+    (xpre := chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+    (chewi1316_standardSourcePreliminaryXSeq_rangeRestrict_mem_of_sourceMem
+      (hm := hm) aRow bSlack hxbar0Set)
+    hoptimum_mem
+    (chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytope_standardPath_eventuallyRangeTailBound_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0)
+      (aObj := ContinuousLinearMap.adjoint
+        (polytopeSlackCLM aRow).rangeRestrict aObj)
+      hxbar0Set hbounded_source)
+    hselector hc0_pos hc0_le heps_pos
+
+/--
+Bounded closed-polytope standard-path endpoint with both the terminal
+main-stage index and its matching central-path point selected automatically.
+-/
+theorem chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_centralPathSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hbounded_closed : Bornology.IsBounded (closedPolytopeSlackSet aRow bSlack))
+    (hselector : Chewi1316RangeCentralPathSelector aRow bSlack aObj)
+    {eps c0 : ℝ}
+    (hc0_pos : 0 < c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (heps_pos : 0 < eps) :
+    ∃ tailBound : ℝ, ∃ Midx Npre : ℕ, ∃ tMain : ℝ, ∃ Nmain : ℕ,
+      ∃ center : (polytopeSlackCLM aRow).range,
+        center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ∧
+        0 ≤ tailBound ∧
+        0 < tMain ∧
+        Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+          (Midx : ℝ) * Real.log (2 : ℝ) ∧
+        (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+          (Npre : ℝ) * (1 / 200 : ℝ) ∧
+        2 * (m : ℝ) ≤
+          eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ Nmain * tMain) ∧
+        chewi1316_standardSourceMainStageTSeq m c0 tMain Nmain • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad center = 0 ∧
+        inner ℝ aObj
+            ((polytopeSlackCLM aRow).rangeRestrict
+              (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0 Npre)
+                tMain c0 Nmain)) -
+            inner ℝ aObj optimum ≤ eps :=
+  chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_centralPathSelector
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (aObj := aObj) (optimum := optimum)
+    (xpre := chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+    (chewi1316_standardSourcePreliminaryXSeq_rangeRestrict_mem_of_sourceMem
+      (hm := hm) aRow bSlack hxbar0Set)
+    hoptimum_mem
+    (chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedClosedPolytope_standardPath_eventuallyRangeTailBound_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0)
+      (aObj := ContinuousLinearMap.adjoint
+        (polytopeSlackCLM aRow).rangeRestrict aObj)
+      hxbar0Set hbounded_closed)
+    hselector hc0_pos hc0_le heps_pos
+
+/--
+Compact closed-polytope standard-path endpoint with both the terminal
+main-stage index and its matching central-path point selected automatically.
+-/
+theorem chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_centralPathSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hcompact_closed : IsCompact (closedPolytopeSlackSet aRow bSlack))
+    (hselector : Chewi1316RangeCentralPathSelector aRow bSlack aObj)
+    {eps c0 : ℝ}
+    (hc0_pos : 0 < c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (heps_pos : 0 < eps) :
+    ∃ tailBound : ℝ, ∃ Midx Npre : ℕ, ∃ tMain : ℝ, ∃ Nmain : ℕ,
+      ∃ center : (polytopeSlackCLM aRow).range,
+        center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) ∧
+        0 ≤ tailBound ∧
+        0 < tMain ∧
+        Real.log ((16 : ℝ) * (tailBound + 1)) ≤
+          (Midx : ℝ) * Real.log (2 : ℝ) ∧
+        (Midx : ℝ) * Real.log (2 : ℝ) * Real.sqrt (m : ℝ) ≤
+          (Npre : ℝ) * (1 / 200 : ℝ) ∧
+        2 * (m : ℝ) ≤
+          eps * ((1 + c0 / Real.sqrt (m : ℝ)) ^ Nmain * tMain) ∧
+        chewi1316_standardSourceMainStageTSeq m c0 tMain Nmain • aObj +
+            barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogGrad center = 0 ∧
+        inner ℝ aObj
+            ((polytopeSlackCLM aRow).rangeRestrict
+              (chewi1316_standardSourceMainStageXSeq aRow bSlack aObj
+                (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0 Npre)
+                tMain c0 Nmain)) -
+            inner ℝ aObj optimum ≤ eps :=
+  chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_centralPathSelector
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (aObj := aObj) (optimum := optimum)
+    (xpre := chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+    (chewi1316_standardSourcePreliminaryXSeq_rangeRestrict_mem_of_sourceMem
+      (hm := hm) aRow bSlack hxbar0Set)
+    hoptimum_mem
+    (chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactClosedPolytope_standardPath_eventuallyRangeTailBound_succ_noFactor_standardConstants
+      (hm := hm) (aRow := aRow) (bSlack := bSlack)
+      (xbar0 := xbar0)
+      (aObj := ContinuousLinearMap.adjoint
+        (polytopeSlackCLM aRow).rangeRestrict aObj)
+      hxbar0Set hcompact_closed)
+    hselector hc0_pos hc0_le heps_pos
 
 /--
 Bounded feasible translated slack ranges yield a source-shaped finite tail

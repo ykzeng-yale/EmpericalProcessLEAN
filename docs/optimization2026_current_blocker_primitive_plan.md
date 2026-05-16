@@ -380,9 +380,29 @@ so the new wrappers simply compose those constructors with the V31 index
 selection theorem.  No new scalar, barrier-step, lower-model, or decrement
 proof was introduced.
 
-Next theorem-sized target: prove or package the central-path
-existence/selection wrapper that supplies the terminal centrality premise for
-the selected terminal parameter.  Shallow bounded wrappers are now done.
+Current V33 packet packages the centrality-selection call surface.  New
+compiled declarations:
+`chewi1316_standardSourceMainStageTSeq_pos`,
+`Chewi1316RangeCentralPathSelector`,
+`chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_centralPathSelector`,
+`chewi1316_standardSourceMainStage_boundedFeasibleRange_exists_center_mainStageIndex_objective_gap_le_eps_of_centralPathSelector`,
+`chewi1316_standardSourceMainStage_boundedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_centralPathSelector`,
+`chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_centralPathSelector`, and
+`chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_centralPathSelector`.
+Search-first result: local code had `centralPathGrad`,
+`centralPathGrad_hasFDerivAt`, `centralPathGrad_at_analyticalCenter`, the V29
+zero-safe mixed-third endpoint, V30 bounded constructors, and V20 large-index
+selection; mathlib provides `IsCompact.exists_isMinOn` and Fermat local-minimum
+APIs for the eventual selector existence proof, but no direct finite-row Chewi
+central-path selector theorem.  V33 therefore formalizes only the missing
+interface layer: a selector hypothesis for positive terminal parameters now
+chooses the matching `center`, proves terminal centrality, and returns the
+objective gap directly for all four bounded standard-path endpoints.
+
+Next theorem-sized target: prove a concrete
+`Chewi1316RangeCentralPathSelector` from compact/closed feasible-range
+minimizer existence plus an interior/barrier argument, or from a stronger local
+central-path existence theorem if one is already present locally.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
