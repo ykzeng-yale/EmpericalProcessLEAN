@@ -32,14 +32,26 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V376` in
+Route from `Live In-Thread Goal Prompt V377` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Chapter 2.1
 independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V376 adds the
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V377 adds the global
+middle-partition-with-tails squeeze:
+`empiricalDistributionFunction_nonneg`,
+`empiricalDistributionFunction_le_one`,
+`empiricalLeftDistributionFunction_nonneg`,
+`empiricalLeftDistributionFunction_le_one`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul`,
+and
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_two_mul_of_iIndepFun`.
+This consumes V376 on `[a,b)`, uses `F_n(c) <= F_n(a-)` on the lower tail, and
+uses `F_n(b) <= F_n(c)` plus `1 - F(b) = P((b, infinity))` on the upper tail.
+The next target should package this pathwise global squeeze into the exact
+outer-a.s./uniform-deviation endpoint-grid statement.  V376 adds the
 middle-partition monotonicity squeeze that consumes V375's finite-cutpoint
 burn-in:
 `durrett2019_theorem_2_4_9_middlePartition_uniform_error_lt_of_cutpoint_errors`,

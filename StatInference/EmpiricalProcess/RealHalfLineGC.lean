@@ -103,6 +103,68 @@ theorem empiricalLeftDistributionFunction_eq_sum_div {n : ℕ}
       (∑ i : Fin n, realOpenHalfLineIndicator c (sample i)) / (n : ℝ) :=
   rfl
 
+/-- Empirical distribution functions are nonnegative. -/
+theorem empiricalDistributionFunction_nonneg {n : ℕ}
+    (sample : SampleAt ℝ n) (c : ℝ) :
+    0 ≤ empiricalDistributionFunction sample c := by
+  unfold empiricalDistributionFunction empiricalAverage
+  exact div_nonneg
+    (Finset.sum_nonneg fun i _hi => by
+      by_cases h : sample i ≤ c <;> simp [realHalfLineIndicator, h])
+    (Nat.cast_nonneg n)
+
+/-- Empirical distribution functions are bounded by one. -/
+theorem empiricalDistributionFunction_le_one {n : ℕ}
+    (sample : SampleAt ℝ n) (c : ℝ) :
+    empiricalDistributionFunction sample c ≤ 1 := by
+  unfold empiricalDistributionFunction empiricalAverage
+  have hsum :
+      (∑ i : Fin n, realHalfLineIndicator c (sample i)) ≤
+        ∑ _i : Fin n, (1 : ℝ) := by
+    exact Finset.sum_le_sum fun i _hi => by
+      by_cases h : sample i ≤ c <;> simp [realHalfLineIndicator, h]
+  calc
+    (∑ i : Fin n, realHalfLineIndicator c (sample i)) / (n : ℝ)
+        ≤ (∑ _i : Fin n, (1 : ℝ)) / (n : ℝ) :=
+          div_le_div_of_nonneg_right hsum (Nat.cast_nonneg n)
+    _ ≤ 1 := by
+      by_cases hn : n = 0
+      · subst n
+        simp
+      · have hcast : (n : ℝ) ≠ 0 := by exact_mod_cast hn
+        simp [hcast]
+
+/-- Left empirical distribution functions are nonnegative. -/
+theorem empiricalLeftDistributionFunction_nonneg {n : ℕ}
+    (sample : SampleAt ℝ n) (c : ℝ) :
+    0 ≤ empiricalLeftDistributionFunction sample c := by
+  unfold empiricalLeftDistributionFunction empiricalAverage
+  exact div_nonneg
+    (Finset.sum_nonneg fun i _hi => by
+      by_cases h : sample i < c <;> simp [realOpenHalfLineIndicator, h])
+    (Nat.cast_nonneg n)
+
+/-- Left empirical distribution functions are bounded by one. -/
+theorem empiricalLeftDistributionFunction_le_one {n : ℕ}
+    (sample : SampleAt ℝ n) (c : ℝ) :
+    empiricalLeftDistributionFunction sample c ≤ 1 := by
+  unfold empiricalLeftDistributionFunction empiricalAverage
+  have hsum :
+      (∑ i : Fin n, realOpenHalfLineIndicator c (sample i)) ≤
+        ∑ _i : Fin n, (1 : ℝ) := by
+    exact Finset.sum_le_sum fun i _hi => by
+      by_cases h : sample i < c <;> simp [realOpenHalfLineIndicator, h]
+  calc
+    (∑ i : Fin n, realOpenHalfLineIndicator c (sample i)) / (n : ℝ)
+        ≤ (∑ _i : Fin n, (1 : ℝ)) / (n : ℝ) :=
+          div_le_div_of_nonneg_right hsum (Nat.cast_nonneg n)
+    _ ≤ 1 := by
+      by_cases hn : n = 0
+      · subst n
+        simp
+      · have hcast : (n : ℝ) ≠ 0 := by exact_mod_cast hn
+        simp [hcast]
+
 /--
 Empirical distribution functions along an observation process are the usual
 range-indexed averages of half-line indicators.

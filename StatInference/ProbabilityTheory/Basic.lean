@@ -5982,6 +5982,168 @@ theorem durrett2019_theorem_2_4_9_middlePartition_oneBased_inv_mul_uniform_error
     div_eq_mul_inv, mul_comm] using hn c hca hcb
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step: tail cells plus the bounded
+middle-partition squeeze give a global uniform empirical-CDF bound.
+
+The lower tail uses `F_n(c) <= F_n(a-)` for `c < a`; the upper tail uses
+`F_n(b) <= F_n(c)` for `b <= c`.  On `[a,b)` this consumes the V376 bounded
+middle-partition squeeze.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction (samplePath X ω n) c -
+            ProbabilityTheory.cdf P c| < 2 * epsilon := by
+  classical
+  let cutpoints : Finset ℝ := Finset.univ.image partition.endpoint
+  have hleftLim_a_eq_tail :
+      Function.leftLim (ProbabilityTheory.cdf P) a = P.real (Set.Iio a) := by
+    calc
+      Function.leftLim (ProbabilityTheory.cdf P) a
+          = ∫ x, realOpenHalfLineIndicator a x ∂P :=
+            (realOpenHalfLineIndicator_integral_eq_cdf_leftLim P a).symm
+      _ = P.real (Set.Iio a) := by
+            simp [realOpenHalfLineIndicator]
+  have hrightTail_cdf_b :
+      1 - ProbabilityTheory.cdf P b = P.real (Set.Ioi b) := by
+    rw [ProbabilityTheory.cdf_eq_real]
+    rw [← probReal_compl_eq_one_sub (μ := P) measurableSet_Iic]
+    congr 1
+    ext x
+    simp
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartition_eventually_uniform_error_lt_two_mul
+      X hepsilon partition hLaw hindep,
+     durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt
+      X cutpoints hepsilon hLaw hindep] with ω hmiddle hpoints
+  filter_upwards [hmiddle, hpoints] with n hmiddle_n hpoints_n c
+  by_cases hca : c < a
+  · have ha_mem : a ∈ cutpoints := by
+      exact Finset.mem_image.mpr ⟨0, Finset.mem_univ _, partition.left_eq⟩
+    have hleft_a :
+        |empiricalLeftDistributionFunction (samplePath X ω n) a -
+          Function.leftLim (ProbabilityTheory.cdf P) a| < epsilon :=
+      (hpoints_n a ha_mem).2
+    have hleft_a_bounds := abs_sub_lt_iff.mp hleft_a
+    have hleft_a_upper :
+        empiricalLeftDistributionFunction (samplePath X ω n) a <
+          P.real (Set.Iio a) + epsilon := by
+      rw [hleftLim_a_eq_tail] at hleft_a_bounds
+      linarith
+    have hbracket :
+        (realHalfLineBracket c a).Mem (realHalfLineIndicator c) :=
+      realHalfLineBracket_mem_indicator_of_le_lt le_rfl hca
+    have hFn_le_left_a :
+        empiricalDistributionFunction (samplePath X ω n) c ≤
+          empiricalLeftDistributionFunction (samplePath X ω n) a := by
+      simpa [empiricalDistributionFunction, empiricalLeftDistributionFunction,
+        realHalfLineBracket] using
+        FunctionBracket.empiricalAverage_le_upperEmpirical_of_mem
+          (samplePath X ω n) hbracket
+    have hcdf_c_le_tail :
+        ProbabilityTheory.cdf P c ≤ P.real (Set.Iio a) := by
+      calc
+        ProbabilityTheory.cdf P c
+            ≤ Function.leftLim (ProbabilityTheory.cdf P) a :=
+              (ProbabilityTheory.monotone_cdf P).le_leftLim hca
+        _ = P.real (Set.Iio a) := hleftLim_a_eq_tail
+    refine abs_sub_lt_iff.mpr ⟨?_, ?_⟩
+    · have hcdf_nonneg : 0 ≤ ProbabilityTheory.cdf P c :=
+        ProbabilityTheory.cdf_nonneg P c
+      linarith
+    · have hFn_nonneg :
+          0 ≤ empiricalDistributionFunction (samplePath X ω n) c :=
+        _root_.StatInference.empiricalDistributionFunction_nonneg
+          (samplePath X ω n) c
+      linarith
+  · by_cases hcb : c < b
+    · exact hmiddle_n c (le_of_not_gt hca) hcb
+    · have hb_le_c : b ≤ c := le_of_not_gt hcb
+      have hb_mem : b ∈ cutpoints := by
+        exact Finset.mem_image.mpr
+          ⟨Fin.last middleCells, Finset.mem_univ _, partition.right_eq⟩
+      have hclosed_b :
+          |empiricalDistributionFunction (samplePath X ω n) b -
+            ProbabilityTheory.cdf P b| < epsilon :=
+        (hpoints_n b hb_mem).1
+      have hclosed_b_bounds := abs_sub_lt_iff.mp hclosed_b
+      have hFn_b_le_c :
+          empiricalDistributionFunction (samplePath X ω n) b ≤
+            empiricalDistributionFunction (samplePath X ω n) c := by
+        simpa [empiricalDistributionFunction] using
+          FunctionBracket.empiricalAverage_mono (samplePath X ω n)
+            (fun x => by
+              by_cases hxb : x ≤ b
+              · have hxc : x ≤ c := hxb.trans hb_le_c
+                simp [realHalfLineIndicator, hxb, hxc]
+              · by_cases hxc : x ≤ c
+                · simp [realHalfLineIndicator, hxb, hxc]
+                · simp [realHalfLineIndicator, hxb, hxc])
+      have htail_c_le_tail_b :
+          1 - ProbabilityTheory.cdf P c ≤ P.real (Set.Ioi b) := by
+        have htail_c_eq :
+            1 - ProbabilityTheory.cdf P c = P.real (Set.Ioi c) := by
+          rw [ProbabilityTheory.cdf_eq_real]
+          rw [← probReal_compl_eq_one_sub (μ := P) measurableSet_Iic]
+          congr 1
+          ext x
+          simp
+        rw [htail_c_eq]
+        exact measureReal_mono fun x hx => lt_of_le_of_lt hb_le_c hx
+      refine abs_sub_lt_iff.mpr ⟨?_, ?_⟩
+      · have hFn_c_le_one :
+            empiricalDistributionFunction (samplePath X ω n) c ≤ 1 :=
+          _root_.StatInference.empiricalDistributionFunction_le_one
+            (samplePath X ω n) c
+        linarith
+      · have hcdf_c_le_one : ProbabilityTheory.cdf P c ≤ 1 :=
+          ProbabilityTheory.cdf_le_one P c
+        linarith
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in exact one-based notation: tail cells
+plus the bounded middle-partition squeeze give the global empirical-CDF bound.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_two_mul_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+            ProbabilityTheory.cdf P c| < 2 * epsilon := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul
+      (fun i => fun ω => X (i + 1) ω) hepsilon partition hleftTail hrightTail
+      hShift.1 (fun _ _ hij => hShift.2.indepFun hij)] with ω hω
+  filter_upwards [hω] with n hn c
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum,
+    div_eq_mul_inv, mul_comm] using hn c
+
+/--
 Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem under the
 standard iid-source independence assumption `iIndepFun`.
 -/
