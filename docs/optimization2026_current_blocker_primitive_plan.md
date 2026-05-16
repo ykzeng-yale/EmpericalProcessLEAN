@@ -872,6 +872,16 @@ It reuses Mathlib `Bornology.IsBounded.image` for the continuous linear
 `polytopeSlackSet_of_rangeRestrict_mem` bridge, so a boundedness certificate
 for the original source polytope slack set now feeds the actual §13.16
 main-stage initializer directly.
+The source-facing boundedness packet now adds
+`chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_subset_closedBall`,
+`chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_subset_isCompact`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytopeClosedBall_autoFloor_succ_noFactor_standardConstants`,
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSourceSupersetPolytope_autoFloor_succ_noFactor_standardConstants`.
+These reuse Mathlib `Metric.isBounded_closedBall`, `IsCompact.isBounded`, and
+`Bornology.IsBounded.subset`, so future source geometry can give either a
+closed-ball enclosure or a compact source envelope for the original polytope
+slack set.
 This lets compactness or boundedness proofs feed Mathlib least-upper-bound
 data directly: prove the feasible translated slack range is compact (or show
 it sits inside a compact closure/envelope, or show each coordinate image is

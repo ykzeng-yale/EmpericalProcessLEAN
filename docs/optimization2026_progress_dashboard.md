@@ -578,6 +578,15 @@ This dashboard tracks the Chewi optimization formalization lane for
   local `polytopeSlackSet_of_rangeRestrict_mem` bridge, so boundedness of the
   original source polytope slack set now feeds the actual §13.16 initializer
   directly.
+  The source-facing boundedness packet now compiles
+  `chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_subset_closedBall`,
+  `chewi1316_polytopeSlackNegLog_bounded_polytopeSlackSet_of_subset_isCompact`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_boundedPolytopeClosedBall_autoFloor_succ_noFactor_standardConstants`,
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementBudget_compactSourceSupersetPolytope_autoFloor_succ_noFactor_standardConstants`.
+  These reuse Mathlib `Metric.isBounded_closedBall`, `IsCompact.isBounded`,
+  and `Bornology.IsBounded.subset`, making closed-ball and compact-envelope
+  source assumptions direct entrypoints.
   This is the direct entrypoint for compact/bounded feasible-range arguments
   that naturally produce least-upper-bound data; the Mathlib reuse is
   `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,
