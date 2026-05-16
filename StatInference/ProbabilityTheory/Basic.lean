@@ -3962,6 +3962,142 @@ theorem durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_tendsto_zero_
       (M := M) (eps := eps) heps_pos hX_mem hX_zero hvar_summable
 
 /--
+Durrett 2019, Theorem 2.5.6 support: the shifted-block version of the
+oscillation event `sup_{m,n >= M} |S_m - S_n| > x`.  The block lengths are
+zero-based, so length `0` represents the anchor `S_M`.
+-/
+def durrett2019_theorem_2_5_6_tailPairOscillationEvent
+    {Ω : Type u} (X : ℕ -> Ω -> ℝ) (M : ℕ) (x : ℝ) : Set Ω :=
+  {ω | ∃ m n : ℕ,
+    x <
+      |(∑ i : Finset.range m, X (M + (i + 1)) ω) -
+        ∑ i : Finset.range n, X (M + (i + 1)) ω|}
+
+/--
+Durrett 2019, Theorem 2.5.6 support: the shifted pair-oscillation event is
+measurable under measurable coordinates.
+-/
+theorem durrett2019_theorem_2_5_6_measurableSet_tailPairOscillationEvent
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_meas : ∀ i, Measurable (X i)) {M : ℕ} {x : ℝ} :
+    MeasurableSet
+      (durrett2019_theorem_2_5_6_tailPairOscillationEvent X M x) := by
+  rw [durrett2019_theorem_2_5_6_tailPairOscillationEvent]
+  simp_rw [Set.setOf_exists]
+  exact MeasurableSet.iUnion fun (m : ℕ) =>
+    MeasurableSet.iUnion fun (n : ℕ) => by
+      have hm :
+          Measurable fun ω : Ω =>
+            ∑ i : Finset.range m, X (M + (i + 1)) ω :=
+        Finset.measurable_sum Finset.univ fun i _hi => hX_meas (M + (i + 1))
+      have hn :
+          Measurable fun ω : Ω =>
+            ∑ i : Finset.range n, X (M + (i + 1)) ω :=
+        Finset.measurable_sum Finset.univ fun i _hi => hX_meas (M + (i + 1))
+      exact measurableSet_lt measurable_const ((hm.sub hn).abs)
+
+/--
+Durrett 2019, Theorem 2.5.6 support: if two shifted tail partial sums are more
+than `2 * eps` apart, then at least one of them is more than `eps` away from
+the anchor `S_M`.  Thus the pair-oscillation event is contained in the
+tail-maximal crossing event.
+-/
+theorem durrett2019_theorem_2_5_6_tailPairOscillationEvent_subset_tailMaxCrossingEvent_two_mul
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {M : ℕ} {eps : ℝ}
+    (heps_pos : 0 < eps) :
+    durrett2019_theorem_2_5_6_tailPairOscillationEvent X M (2 * eps) ⊆
+      durrett2019_theorem_2_5_6_tailMaxCrossingEvent X M eps := by
+  intro ω hω
+  rcases hω with ⟨m, n, hmn⟩
+  let Sm : ℝ := ∑ i : Finset.range m, X (M + (i + 1)) ω
+  let Sn : ℝ := ∑ i : Finset.range n, X (M + (i + 1)) ω
+  have hlarge : 2 * eps < |Sm - Sn| := by
+    simpa [durrett2019_theorem_2_5_6_tailPairOscillationEvent, Sm, Sn] using hmn
+  have htri : |Sm - Sn| ≤ |Sm| + |Sn| := by
+    calc
+      |Sm - Sn| = |Sm + -Sn| := by ring_nf
+      _ ≤ |Sm| + |-Sn| := abs_add_le Sm (-Sn)
+      _ = |Sm| + |Sn| := by rw [abs_neg]
+  by_cases hm : eps < |Sm|
+  · have hm_pos : 0 < m := by
+      by_cases hm_zero : m = 0
+      · subst m
+        simp [Sm] at hm
+        exact False.elim ((not_lt_of_ge heps_pos.le) hm)
+      · exact Nat.pos_of_ne_zero hm_zero
+    rw [durrett2019_theorem_2_5_6_tailMaxCrossingEvent]
+    refine Set.mem_iUnion.mpr ⟨m, ?_⟩
+    rw [durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent,
+      Nat.add_sub_cancel_left]
+    refine ⟨m, Finset.mem_Icc.mpr ⟨Nat.succ_le_iff.mpr hm_pos, le_rfl⟩, ?_⟩
+    simpa [Sm] using le_of_lt hm
+  · by_cases hn : eps < |Sn|
+    · have hn_pos : 0 < n := by
+        by_cases hn_zero : n = 0
+        · subst n
+          simp [Sn] at hn
+          exact False.elim ((not_lt_of_ge heps_pos.le) hn)
+        · exact Nat.pos_of_ne_zero hn_zero
+      rw [durrett2019_theorem_2_5_6_tailMaxCrossingEvent]
+      refine Set.mem_iUnion.mpr ⟨n, ?_⟩
+      rw [durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent,
+        Nat.add_sub_cancel_left]
+      refine ⟨n, Finset.mem_Icc.mpr ⟨Nat.succ_le_iff.mpr hn_pos, le_rfl⟩, ?_⟩
+      simpa [Sn] using le_of_lt hn
+    · have hm_le : |Sm| ≤ eps := le_of_not_gt hm
+      have hn_le : |Sn| ≤ eps := le_of_not_gt hn
+      have hsmall : |Sm - Sn| ≤ 2 * eps := by
+        linarith
+      exact False.elim ((not_lt_of_ge hsmall) hlarge)
+
+/--
+Durrett 2019, Theorem 2.5.6 support: the pair-oscillation probability is
+bounded by the already-controlled tail-maximal crossing probability.
+-/
+theorem durrett2019_theorem_2_5_6_tailPairOscillationEvent_measureReal_le_tailMaxCrossingEvent
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {M : ℕ} {eps : ℝ}
+    (heps_pos : 0 < eps) :
+    P.real (durrett2019_theorem_2_5_6_tailPairOscillationEvent X M (2 * eps)) ≤
+      P.real (durrett2019_theorem_2_5_6_tailMaxCrossingEvent X M eps) :=
+  measureReal_mono
+    (durrett2019_theorem_2_5_6_tailPairOscillationEvent_subset_tailMaxCrossingEvent_two_mul
+      (X := X) (M := M) heps_pos)
+
+/--
+Durrett 2019, Theorem 2.5.6 support: under the summable-variance hypothesis,
+the shifted pair-oscillation probability tends to zero.  This is the Lean
+version of Durrett's `P(w_M > 2 eps) -> 0` step before the final a.s. Cauchy
+packaging.
+-/
+theorem durrett2019_theorem_2_5_6_tailPairOscillationEvent_measureReal_tendsto_zero_of_summable_variance
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {eps : ℝ} (heps_pos : 0 < eps)
+    (hX_mem : ∀ i, MemLp (X i) 2 P)
+    (hX_zero : ∀ i, ∫ ω, X i ω ∂P = 0)
+    (hvar_summable :
+      Summable fun i : ℕ =>
+        _root_.ProbabilityTheory.variance (X (i + 1)) P) :
+    Tendsto
+      (fun M : ℕ =>
+        P.real (durrett2019_theorem_2_5_6_tailPairOscillationEvent X M (2 * eps)))
+      atTop (𝓝 (0 : ℝ)) := by
+  have htail :=
+    durrett2019_theorem_2_5_6_tailMaxCrossingEvent_measureReal_tendsto_zero_of_summable_variance
+      (P := P) (X := X) hX_indep hX_meas
+      (eps := eps) heps_pos hX_mem hX_zero hvar_summable
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds htail
+    (fun M => measureReal_nonneg) ?_
+  intro M
+  exact
+    durrett2019_theorem_2_5_6_tailPairOscillationEvent_measureReal_le_tailMaxCrossingEvent
+      (P := P) (X := X) (M := M) heps_pos
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

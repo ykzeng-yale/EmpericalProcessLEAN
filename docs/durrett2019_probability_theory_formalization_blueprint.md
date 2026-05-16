@@ -27,14 +27,29 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V402`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V403`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.5.6 convergence
-of random series in `StatInference/ProbabilityTheory/Basic.lean`.  V402
-derives the textbook variance-tail probability limit from one-based summability
+of random series in `StatInference/ProbabilityTheory/Basic.lean`.  V403
+packages Durrett's oscillation step in shifted block form.  New compiled
+anchors:
+`durrett2019_theorem_2_5_6_tailPairOscillationEvent`,
+`durrett2019_theorem_2_5_6_measurableSet_tailPairOscillationEvent`,
+`durrett2019_theorem_2_5_6_tailPairOscillationEvent_subset_tailMaxCrossingEvent_two_mul`,
+`durrett2019_theorem_2_5_6_tailPairOscillationEvent_measureReal_le_tailMaxCrossingEvent`,
+and
+`durrett2019_theorem_2_5_6_tailPairOscillationEvent_measureReal_tendsto_zero_of_summable_variance`.
+This is the formal `P(w_M > 2 eps) <= P(sup_{m >= M} |S_m - S_M| > eps)
+-> 0` bridge, represented by shifted tail-block partial sums.  Next work
+should package the pathwise Cauchy endpoint from eventual absence of the
+tail-pair oscillation events and then state the front-facing Theorem 2.5.6
+a.s. convergence wrapper.
+
+Verified route history below is provenance, not live prompt text.  V402 derives
+the textbook variance-tail probability limit from one-based summability
 of `fun i => Var(X_{i+1})`.  New compiled anchors:
 `durrett2019_theorem_2_5_6_sum_range_shift_tendsto_tsum_of_summable`,
 `durrett2019_theorem_2_5_6_tsum_tail_tendsto_zero_of_summable`,
@@ -46,12 +61,7 @@ and
 The line
 `P(sup_{m >= M} |S_m - S_M| > eps) <= eps^{-2} *
 sum_{i=M+1}^\infty Var(X_i) -> 0`
-is now represented for the shifted tail-maximal event.  Next work should
-connect this tail event to Durrett's oscillation event
-`w_M = sup_{m,n >= M} |S_m - S_n|`, prove the `2 eps` triangle/probability
-handoff, and package the Cauchy/a.s. convergence endpoint.
-
-Verified route history below is provenance, not live prompt text.  V401 lifts
+is now represented for the shifted tail-maximal event.  V401 lifts
 the finite Theorem 2.5.6 block estimate to the increasing-union tail event:
 `durrett2019_theorem_2_5_6_finiteBlockMaxCrossingEvent`,
 `durrett2019_theorem_2_5_6_tailMaxCrossingEvent`,
