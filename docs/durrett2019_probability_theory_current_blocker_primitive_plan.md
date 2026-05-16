@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V414
+## Live In-Thread Goal Prompt V415
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,23 +12,36 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  Theorem 2.5.10 now has the
-compiled moving-truncation setup for `Y_k = X_k 1_{|X_k| <= k}` and the
-source probability estimates needed for truncated averages: `E Y_k -> mu` and
-`sum Var((Y_k - E Y_k) / k) < infinity`, both under integrability plus
-identical distribution.  The current source-facing endpoint proves
-`T_n/n -> mu` almost surely for the truncated sums.  Next aggressive target:
-transfer from truncated sums `T_n/n` to original sums `S_n/n` using
-`P(X_k != Y_k i.o.) = 0`, derived from integrability of `X_0` and identical
-distribution.  Reuse Borel-Cantelli/eventual-equality infrastructure from
-V407-V409, mathlib/local tail-integrability facts, and V391-V414
-first-crossing/block-tail/oscillation/pathwise-Cauchy/a.s.-convergence/
-Kronecker/Cesaro/moving-truncation/mean-convergence/variance-summability
-infrastructure.  Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9,
-deterministic 2.5.10 assembly, `E Y_k -> mu`, or scaled variance summability
-unless search proves a concrete missing source display.
+in `StatInference/ProbabilityTheory/Basic.lean`.  Theorem 2.5.10 SLLN now has
+the source-facing one-based average endpoint under iid/integrable hypotheses:
+moving truncation, mean convergence, scaled variance summability, Borel-
+Cantelli eventual equality, and transfer from `T_n/n` to `S_n/n` all compile.
+Next aggressive target: Durrett Theorem 2.5.11 logarithmic rate of convergence.
+Package the theorem-shaped route from `E X_i = 0`, finite second moment, and
+the summability of `1 / (n * (log n)^(1 + 2 epsilon))` to convergence of
+`S_n / (n^(1/2) * (log n)^(1/2 + epsilon)) -> 0` a.s.  Reuse V406 random-
+series convergence, V410 Kronecker normalization, local variance scaling APIs,
+and mathlib p-series/log-series results before adding any new real-analysis
+lemmas.  Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, or any
+solved 2.5.10 layer unless search proves a concrete missing source display.
 
-Latest verified target V414 packages Durrett Theorem 2.5.10 scaled-centered
+Latest verified target V415 packages Durrett Theorem 2.5.10 truncated-to-
+original transfer and the full source-facing SLLN average endpoint.  New
+compiled anchors:
+`durrett2019_theorem_2_5_10_truncation_mismatch_subset_tail`,
+`durrett2019_theorem_2_5_10_measure_mismatch_le_tail`,
+`durrett2019_theorem_2_5_10_tsum_tail_ne_top_of_integrable_identDistrib`,
+`durrett2019_theorem_2_5_10_tsum_mismatch_ne_top_of_tsum_tail_ne_top`,
+`durrett2019_theorem_2_5_10_ae_eventuallyEq_truncated_of_integrable_identDistrib`,
+`durrett2019_theorem_2_5_10_average_tendsto_of_eventuallyEq`,
+and
+`durrett2019_theorem_2_5_10_ae_average_tendsto_of_integrable_identDistrib`.
+The proof reuses mathlib `Probability.StrongLaw.tsum_prob_mem_Ioi_lt_top`,
+local Borel-Cantelli/eventual-equality infrastructure from V407-V409, and the
+V414 truncated-average endpoint.  This closes the Chapter 2.5.10 SLLN route in
+the current one-based source display.
+
+V414 packages Durrett Theorem 2.5.10 scaled-centered
 variance summability and the truncated-average source endpoint.  New compiled
 anchors:
 `durrett2019_theorem_2_5_10_variance_scaledCenteredTruncated_le_truncated_sq`,

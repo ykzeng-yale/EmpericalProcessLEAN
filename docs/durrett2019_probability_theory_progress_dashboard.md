@@ -32,13 +32,29 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V414` in
+Route from `Live In-Thread Goal Prompt V415` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`,
-with Theorem 2.5.10 SLLN truncated-to-original transfer next.  V414 packages
-the scaled-centered variance-summability layer and the source-facing
-truncated-average endpoint.  New compiled anchors:
+with Theorem 2.5.11 logarithmic rate of convergence next.  V415 packages the
+truncated-to-original transfer and full source-facing one-based SLLN endpoint
+for Theorem 2.5.10.  New compiled anchors:
+`durrett2019_theorem_2_5_10_truncation_mismatch_subset_tail`,
+`durrett2019_theorem_2_5_10_measure_mismatch_le_tail`,
+`durrett2019_theorem_2_5_10_tsum_tail_ne_top_of_integrable_identDistrib`,
+`durrett2019_theorem_2_5_10_tsum_mismatch_ne_top_of_tsum_tail_ne_top`,
+`durrett2019_theorem_2_5_10_ae_eventuallyEq_truncated_of_integrable_identDistrib`,
+`durrett2019_theorem_2_5_10_average_tendsto_of_eventuallyEq`,
+and
+`durrett2019_theorem_2_5_10_ae_average_tendsto_of_integrable_identDistrib`.
+This proves the source display `S_n/n -> mu` a.s. from iid, integrability, and
+common mean hypotheses.  Next work should start Durrett Theorem 2.5.11 by
+packaging the random-series/Kronecker route for
+`S_n / (n^(1/2) * (log n)^(1/2 + epsilon)) -> 0` under finite second moment.
+
+Verified route history below is provenance, not live prompt text.  V414
+packages the scaled-centered variance-summability layer and the source-facing
+truncated-average endpoint.  Compiled anchors:
 `durrett2019_theorem_2_5_10_variance_scaledCenteredTruncated_le_truncated_sq`,
 `durrett2019_theorem_2_5_10_integral_truncated_sq_eq_base_truncated_sq_of_identDistrib`,
 `durrett2019_theorem_2_5_10_integral_base_truncated_sq_eq_abs_truncation_sq`,
@@ -46,12 +62,7 @@ truncated-average endpoint.  New compiled anchors:
 and
 `durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_integrable_identDistrib`.
 This proves that iid integrable source hypotheses imply
-`T_n/n -> mu` almost surely for `T_n = sum_{k <= n} X_k 1_{|X_k| <= k}`.  Next
-work should transfer from truncated averages to original averages by proving
-eventual equality between `X_k` and `Y_k` from integrability of `X_0` and
-identical distribution.
-
-Verified route history below is provenance, not live prompt text.  V413
+`T_n/n -> mu` almost surely for `T_n = sum_{k <= n} X_k 1_{|X_k| <= k}`.  V413
 packages the moving-truncation mean-convergence step.  Compiled anchors:
 `durrett2019_theorem_2_5_10_tendsto_integral_fixed_truncation`,
 `durrett2019_theorem_2_5_10_integral_truncated_eq_base_truncated_of_identDistrib`,

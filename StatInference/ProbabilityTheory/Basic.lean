@@ -6241,6 +6241,189 @@ theorem durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_integrable_id
       (P := P) (X := X) hX_meas hX_int0 hX_ident)
 
 /--
+Durrett 2019, Theorem 2.5.10 support: the moving-truncation mismatch event is
+contained in the corresponding large-jump event.
+-/
+theorem durrett2019_theorem_2_5_10_truncation_mismatch_subset_tail
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} (n : ℕ) :
+    {ω : Ω | X n ω ≠ durrett2019_theorem_2_5_10_truncated X n ω} ⊆
+      {ω : Ω | (n : ℝ) < |X n ω|} := by
+  simpa [durrett2019_theorem_2_5_10_truncated] using
+    durrett2019_theorem_2_5_8_truncation_mismatch_subset_tail
+      (X := X) (A := (n : ℝ)) n
+
+/--
+Durrett 2019, Theorem 2.5.10 support: moving-truncation mismatch
+probabilities are bounded by the moving large-jump probabilities.
+-/
+theorem durrett2019_theorem_2_5_10_measure_mismatch_le_tail
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} (n : ℕ) :
+    P {ω : Ω | X n ω ≠ durrett2019_theorem_2_5_10_truncated X n ω} ≤
+      P {ω : Ω | (n : ℝ) < |X n ω|} :=
+  measure_mono
+    (durrett2019_theorem_2_5_10_truncation_mismatch_subset_tail
+      (X := X) n)
+
+/--
+Durrett 2019, Theorem 2.5.10 support: integrability plus identical
+distribution imply summability of the moving large-jump probabilities
+`P(|X_k| > k)`.
+-/
+theorem durrett2019_theorem_2_5_10_tsum_tail_ne_top_of_integrable_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_int0 : Integrable (X 0) P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P) :
+    (∑' k : ℕ, P {ω : Ω | (k : ℝ) < |X k ω|}) ≠ ∞ := by
+  have hbase_lt_top :
+      (∑' k : ℕ, P {ω : Ω | |X 0 ω| ∈ Set.Ioi (k : ℝ)}) < ∞ := by
+    letI : MeasureSpace Ω := { toMeasurableSpace := ‹MeasurableSpace Ω›, volume := P }
+    haveI : IsProbabilityMeasure (MeasureTheory.MeasureSpace.volume : Measure Ω) := by
+      change IsProbabilityMeasure P
+      infer_instance
+    simpa using
+      (_root_.ProbabilityTheory.tsum_prob_mem_Ioi_lt_top
+        (X := fun ω : Ω => |X 0 ω|)
+        (by
+          change Integrable (fun ω : Ω => |X 0 ω|) P
+          exact hX_int0.abs)
+        (fun ω => abs_nonneg (X 0 ω)))
+  have hseq_lt_top :
+      (∑' k : ℕ, P {ω : Ω | |X k ω| ∈ Set.Ioi (k : ℝ)}) < ∞ := by
+    convert hbase_lt_top using 2
+    ext k
+    have hident_abs :
+        _root_.ProbabilityTheory.IdentDistrib
+          (fun ω : Ω => |X k ω|) (fun ω : Ω => |X 0 ω|) P P :=
+      (hX_ident k).comp measurable_abs
+    simpa using hident_abs.measure_mem_eq measurableSet_Ioi
+  exact ne_top_of_lt (by simpa [Set.mem_Ioi] using hseq_lt_top)
+
+/--
+Durrett 2019, Theorem 2.5.10 support: summable moving large-jump
+probabilities imply summable moving-truncation mismatch probabilities.
+-/
+theorem durrett2019_theorem_2_5_10_tsum_mismatch_ne_top_of_tsum_tail_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (htail : (∑' k : ℕ, P {ω : Ω | (k : ℝ) < |X k ω|}) ≠ ∞) :
+    (∑' k : ℕ,
+      P {ω : Ω | X k ω ≠ durrett2019_theorem_2_5_10_truncated X k ω}) ≠ ∞ := by
+  refine ne_top_of_le_ne_top htail ?_
+  exact ENNReal.tsum_le_tsum fun k =>
+    durrett2019_theorem_2_5_10_measure_mismatch_le_tail
+      (P := P) (X := X) k
+
+/--
+Durrett 2019, Theorem 2.5.10 support: integrability plus identical
+distribution imply eventual sample-path equality between `X_k` and the moving
+truncation `Y_k = X_k 1_{|X_k| <= k}`.
+-/
+theorem durrett2019_theorem_2_5_10_ae_eventuallyEq_truncated_of_integrable_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_int0 : Integrable (X 0) P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P) :
+    ∀ᵐ ω ∂P,
+      ∀ᶠ k in atTop, X k ω = durrett2019_theorem_2_5_10_truncated X k ω :=
+  durrett2019_theorem_2_5_8_ae_eventuallyEq_of_tsum_measure_ne_top
+    (P := P) (X := X)
+    (Y := fun k : ℕ => durrett2019_theorem_2_5_10_truncated X k)
+    (durrett2019_theorem_2_5_10_tsum_mismatch_ne_top_of_tsum_tail_ne_top
+      (P := P) (X := X)
+      (durrett2019_theorem_2_5_10_tsum_tail_ne_top_of_integrable_identDistrib
+        (P := P) (X := X) hX_int0 hX_ident))
+
+/--
+Durrett 2019, Theorem 2.5.10 support: eventual equality transfers convergence
+of one-based averages.
+-/
+theorem durrett2019_theorem_2_5_10_average_tendsto_of_eventuallyEq
+    {Ω : Type u} {X Y : ℕ -> Ω -> ℝ} {ω : Ω} {μ : ℝ}
+    (hXY : ∀ᶠ k in atTop, X k ω = Y k ω)
+    (hY :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), Y (k + 1) ω) /
+            ((n + 1 : ℕ) : ℝ))
+        atTop (𝓝 μ)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+          ((n + 1 : ℕ) : ℝ))
+      atTop (𝓝 μ) := by
+  have hdiff_tendsto :
+      Tendsto (fun k : ℕ => X (k + 1) ω - Y (k + 1) ω) atTop (𝓝 0) := by
+    rcases eventually_atTop.1 hXY with ⟨M, hM⟩
+    apply tendsto_const_nhds.congr'
+    refine eventually_atTop.2 ⟨M, ?_⟩
+    intro k hk
+    have heq : X (k + 1) ω = Y (k + 1) ω :=
+      hM (k + 1) (le_trans hk (Nat.le_succ k))
+    simp [heq]
+  have hdiff_avg :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            (X (k + 1) ω - Y (k + 1) ω)) /
+            ((n + 1 : ℕ) : ℝ))
+        atTop (𝓝 0) := by
+    have hcesaro :=
+      (Filter.Tendsto.cesaro hdiff_tendsto).comp (tendsto_add_atTop_nat 1)
+    convert hcesaro using 1
+    ext n
+    simp [div_eq_mul_inv, mul_comm]
+  have hsum :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), Y (k + 1) ω) /
+              ((n + 1 : ℕ) : ℝ) +
+            (∑ k ∈ Finset.range (n + 1),
+              (X (k + 1) ω - Y (k + 1) ω)) /
+              ((n + 1 : ℕ) : ℝ))
+        atTop (𝓝 μ) := by
+    simpa using hY.add hdiff_avg
+  refine hsum.congr' ?_
+  exact Eventually.of_forall fun n => by
+    dsimp
+    rw [Finset.sum_sub_distrib]
+    ring_nf
+
+/--
+Durrett 2019, Theorem 2.5.10 source-facing strong law endpoint: iid
+integrable real-valued random variables satisfy the one-based sample-average
+strong law.
+-/
+theorem durrett2019_theorem_2_5_10_ae_average_tendsto_of_integrable_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {μ : ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_int0 : Integrable (X 0) P)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P)
+    (hμ : ∫ ω, X 0 ω ∂P = μ) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+            ((n + 1 : ℕ) : ℝ))
+        atTop (𝓝 μ) := by
+  filter_upwards
+    [durrett2019_theorem_2_5_10_ae_eventuallyEq_truncated_of_integrable_identDistrib
+      (P := P) (X := X) hX_int0 hX_ident,
+     durrett2019_theorem_2_5_10_ae_truncated_average_tendsto_of_integrable_identDistrib
+      (P := P) (X := X) (μ := μ) hX_indep hX_meas hX_int0 hX_ident hμ] with
+    ω heq htrunc
+  exact
+    durrett2019_theorem_2_5_10_average_tendsto_of_eventuallyEq
+      (X := X) (Y := durrett2019_theorem_2_5_10_truncated X)
+      (ω := ω) (μ := μ) heq htrunc
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
