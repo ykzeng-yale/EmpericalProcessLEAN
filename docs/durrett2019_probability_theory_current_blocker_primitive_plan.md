@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V375
+## Live In-Thread Goal Prompt V376
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,20 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V375 adds the finite-cutpoint simultaneous closed and
+Latest verified target V376 adds the middle-partition monotonicity squeeze that
+consumes V375's finite-cutpoint burn-in:
+`durrett2019_theorem_2_4_9_middlePartition_uniform_error_lt_of_cutpoint_errors`,
+`durrett2019_theorem_2_4_9_middlePartition_eventually_uniform_error_lt_two_mul`,
+and
+`durrett2019_theorem_2_4_9_middlePartition_oneBased_inv_mul_uniform_error_lt_two_mul_of_iIndepFun`.
+This formalizes Durrett's displayed inequalities on each cell: closed-endpoint
+and strict-left endpoint errors plus a small CDF left-limit increment imply
+`|F_n(c) - F(c)| < 2 * epsilon` uniformly over the bounded middle partition.
+Next work should lift this bounded middle-partition squeeze through the
+already compiled tail/endpoint-grid wrappers, not restate endpoint convergence
+or the deterministic bracket monotonicity.
+
+V375 adds the finite-cutpoint simultaneous closed and
 strict-left error bridge used in Durrett Theorem 2.4.9's proof after pointwise
 convergence has been established:
 `durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt`
@@ -548,12 +561,14 @@ identDistrib+iIndepFun, and pairwise-identDistrib source wrappers, the V372
 strict-left empirical-CDF pointwise SLLN wrappers, the V373 exact-textbook
 strict-left source-entrance wrappers, or the V374 closed-endpoint pointwise
 empirical-CDF source wrappers, or the V375 finite-cutpoint simultaneous
-closed/strict-left error bridge.  Next
+closed/strict-left error bridge, or the V376 middle-partition uniform squeeze
+from cutpoint errors.  Next
 aggressive packet:
-continue Chapter 2.1 / Theorem 2.4.9 only by closing the next concrete
-uniform-grid squeeze step that consumes the finite-cutpoint error bridge, or a
-source-facing shape that directly feeds that step.  Do not rebuild the compiled
-pointwise, strict-left, product-law, or cutpoint-chain support.
+continue Chapter 2.1 / Theorem 2.4.9 only by lifting the V376 bounded
+middle-partition uniform squeeze through the compiled tail/endpoint-grid
+assembly, or by adding an exact source-facing wrapper that directly feeds that
+lift.  Do not rebuild the compiled pointwise, strict-left, product-law,
+cutpoint-chain, finite-cutpoint, or deterministic monotonicity support.
 
 ## Historical V306 Prompt Notes
 
@@ -3043,6 +3058,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V375` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V376` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

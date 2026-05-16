@@ -5822,6 +5822,166 @@ theorem durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_
     div_eq_mul_inv, mul_comm] using hn c hc
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step: deterministic middle-partition
+squeeze.
+
+If the empirical CDF is close to the population CDF at the left endpoints and
+the left empirical CDF is close to the CDF left limits at the right endpoints,
+then monotonicity gives a uniform bound throughout the bounded middle
+partition. This is the formal version of the two displayed inequalities after
+the random burn-in `N_k(omega)` is chosen.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartition_uniform_error_lt_of_cutpoint_errors
+    {P : Measure ℝ} [IsProbabilityMeasure P] {n : ℕ}
+    (sample : SampleAt ℝ n)
+    {epsilon delta a b : ℝ} {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hclosed : ∀ cell : Fin middleCells,
+      |empiricalDistributionFunction sample
+          (partition.endpoint (Fin.castSucc cell)) -
+        ProbabilityTheory.cdf P (partition.endpoint (Fin.castSucc cell))| <
+        delta)
+    (hleft : ∀ cell : Fin middleCells,
+      |empiricalLeftDistributionFunction sample
+          (partition.endpoint (Fin.succ cell)) -
+        Function.leftLim (ProbabilityTheory.cdf P)
+          (partition.endpoint (Fin.succ cell))| < delta)
+    {c : ℝ} (hca : a ≤ c) (hcb : c < b) :
+    |empiricalDistributionFunction sample c - ProbabilityTheory.cdf P c| <
+      epsilon + delta := by
+  classical
+  let cell : Fin middleCells := partition.bracketOf c hca hcb
+  have hleftEndpoint_le :
+      partition.endpoint (Fin.castSucc cell) ≤ c :=
+    partition.left_le_index c hca hcb
+  have hc_lt_right :
+      c < partition.endpoint (Fin.succ cell) :=
+    partition.index_lt_right c hca hcb
+  have hbracket :
+      (realHalfLineBracket
+        (partition.endpoint (Fin.castSucc cell))
+        (partition.endpoint (Fin.succ cell))).Mem
+        (realHalfLineIndicator c) :=
+    realHalfLineBracket_mem_indicator_of_le_lt hleftEndpoint_le hc_lt_right
+  have hFn_left_le :
+      empiricalDistributionFunction sample
+          (partition.endpoint (Fin.castSucc cell)) ≤
+        empiricalDistributionFunction sample c := by
+    simpa [empiricalDistributionFunction, realHalfLineBracket] using
+      FunctionBracket.lowerEmpirical_le_empiricalAverage_of_mem sample hbracket
+  have hFn_le_right :
+      empiricalDistributionFunction sample c ≤
+        empiricalLeftDistributionFunction sample
+          (partition.endpoint (Fin.succ cell)) := by
+    simpa [empiricalDistributionFunction, empiricalLeftDistributionFunction,
+      realHalfLineBracket] using
+      FunctionBracket.empiricalAverage_le_upperEmpirical_of_mem sample hbracket
+  have hclosedBounds :=
+    abs_sub_lt_iff.mp (hclosed cell)
+  have hleftBounds :=
+    abs_sub_lt_iff.mp (hleft cell)
+  have hcdf_left_le_c :
+      ProbabilityTheory.cdf P (partition.endpoint (Fin.castSucc cell)) ≤
+        ProbabilityTheory.cdf P c :=
+    ProbabilityTheory.monotone_cdf P hleftEndpoint_le
+  have hcdf_c_le_leftLim_right :
+      ProbabilityTheory.cdf P c ≤
+        Function.leftLim (ProbabilityTheory.cdf P)
+          (partition.endpoint (Fin.succ cell)) :=
+    (ProbabilityTheory.monotone_cdf P).le_leftLim hc_lt_right
+  have hcellIncrement :
+      Function.leftLim (ProbabilityTheory.cdf P)
+          (partition.endpoint (Fin.succ cell)) -
+        ProbabilityTheory.cdf P
+          (partition.endpoint (Fin.castSucc cell)) < epsilon :=
+    partition.cdf_increment_lt cell
+  refine abs_sub_lt_iff.mpr ⟨?_, ?_⟩
+  · calc
+      empiricalDistributionFunction sample c - ProbabilityTheory.cdf P c
+          ≤ empiricalLeftDistributionFunction sample
+              (partition.endpoint (Fin.succ cell)) -
+            ProbabilityTheory.cdf P
+              (partition.endpoint (Fin.castSucc cell)) := by
+            linarith
+      _ < epsilon + delta := by
+            linarith
+  · calc
+      ProbabilityTheory.cdf P c - empiricalDistributionFunction sample c
+          ≤ Function.leftLim (ProbabilityTheory.cdf P)
+              (partition.endpoint (Fin.succ cell)) -
+            empiricalDistributionFunction sample
+              (partition.endpoint (Fin.castSucc cell)) := by
+            linarith
+      _ < epsilon + delta := by
+            linarith
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step: after the finite-cutpoint burn-in,
+the middle-partition monotonicity squeeze is uniform on the bounded interval.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartition_eventually_uniform_error_lt_two_mul
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ, a ≤ c -> c < b ->
+          |empiricalDistributionFunction (samplePath X ω n) c -
+            ProbabilityTheory.cdf P c| < 2 * epsilon := by
+  classical
+  let cutpoints : Finset ℝ := Finset.univ.image partition.endpoint
+  filter_upwards
+    [durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt
+      X cutpoints hepsilon hLaw hindep] with ω hω
+  filter_upwards [hω] with n hn c hca hcb
+  have hbound :
+      |empiricalDistributionFunction (samplePath X ω n) c -
+        ProbabilityTheory.cdf P c| < epsilon + epsilon :=
+    durrett2019_theorem_2_4_9_middlePartition_uniform_error_lt_of_cutpoint_errors
+      (samplePath X ω n) partition
+      (fun cell => by
+        exact (hn (partition.endpoint (Fin.castSucc cell)) (by
+          exact Finset.mem_image.mpr ⟨Fin.castSucc cell, Finset.mem_univ _, rfl⟩)).1)
+      (fun cell => by
+        exact (hn (partition.endpoint (Fin.succ cell)) (by
+          exact Finset.mem_image.mpr ⟨Fin.succ cell, Finset.mem_univ _, rfl⟩)).2)
+      hca hcb
+  simpa [two_mul] using hbound
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in exact one-based textbook notation:
+the middle-partition squeeze after the finite-cutpoint burn-in.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartition_oneBased_inv_mul_uniform_error_lt_two_mul_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon) {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ, a ≤ c -> c < b ->
+          |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+            ProbabilityTheory.cdf P c| < 2 * epsilon := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartition_eventually_uniform_error_lt_two_mul
+      (fun i => fun ω => X (i + 1) ω) hepsilon partition hShift.1
+      (fun _ _ hij => hShift.2.indepFun hij)] with ω hω
+  filter_upwards [hω] with n hn c hca hcb
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum,
+    div_eq_mul_inv, mul_comm] using hn c hca hcb
+
+/--
 Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem under the
 standard iid-source independence assumption `iIndepFun`.
 -/

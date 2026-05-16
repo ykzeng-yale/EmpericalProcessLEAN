@@ -32,14 +32,25 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V375` in
+Route from `Live In-Thread Goal Prompt V376` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Chapter 2.1
 independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V375 adds the
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V376 adds the
+middle-partition monotonicity squeeze that consumes V375's finite-cutpoint
+burn-in:
+`durrett2019_theorem_2_4_9_middlePartition_uniform_error_lt_of_cutpoint_errors`,
+`durrett2019_theorem_2_4_9_middlePartition_eventually_uniform_error_lt_two_mul`,
+and
+`durrett2019_theorem_2_4_9_middlePartition_oneBased_inv_mul_uniform_error_lt_two_mul_of_iIndepFun`.
+This compiles the displayed cell inequalities in Durrett's proof and gives the
+eventual `2 * epsilon` uniform bound on every bounded middle partition.  The
+next target should lift this bounded middle-partition squeeze through the
+compiled tail/endpoint-grid wrappers, not revisit endpoint convergence or
+bracket monotonicity.  V375 adds the
 finite-cutpoint simultaneous closed and strict-left error bridge used in the
 proof of Durrett Theorem 2.4.9:
 `durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt`
