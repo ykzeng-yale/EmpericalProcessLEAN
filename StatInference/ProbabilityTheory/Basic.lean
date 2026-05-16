@@ -1352,6 +1352,122 @@ theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_int
       (P := P) (X := X) hX_indep hX_meas hmn hX_int hzero hψ
 
 /--
+Durrett 2019, Theorem 2.5.5 first-crossing block set.  On this set, the
+partial sum at time `m` has crossed the threshold `x`, while every earlier
+partial sum has stayed below `x` in absolute value.
+-/
+def durrett2019_theorem_2_5_5_firstCrossingBlockSet
+    (m : ℕ) (x : ℝ) : Set ((i : Finset.range m) -> ℝ) :=
+  {z | x ≤ |∑ i : Finset.range m, z i|} ∩
+    ⋂ j : Finset.range m,
+      {z |
+        |∑ i : Finset.range j.1,
+            z ⟨i.1,
+              Finset.mem_range.mpr
+                ((Finset.mem_range.mp i.2).trans
+                  (Finset.mem_range.mp j.2))⟩| < x}
+
+/--
+Durrett 2019, Theorem 2.5.5 support: the first-crossing block event is
+measurable as a finite intersection of threshold conditions on partial sums.
+-/
+theorem durrett2019_theorem_2_5_5_measurableSet_firstCrossingBlockSet
+    (m : ℕ) (x : ℝ) :
+    MeasurableSet (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x) := by
+  classical
+  have hterminal :
+      Measurable fun z : ((i : Finset.range m) -> ℝ) =>
+        |∑ i : Finset.range m, z i| := by
+    have hsum :
+        Measurable fun z : ((i : Finset.range m) -> ℝ) =>
+          ∑ i : Finset.range m, z i :=
+      Finset.measurable_fun_sum Finset.univ
+        fun i _ => measurable_pi_apply i
+    exact hsum.abs
+  have hprefix :
+      ∀ j : Finset.range m,
+        Measurable fun z : ((i : Finset.range m) -> ℝ) =>
+          |∑ i : Finset.range j.1,
+              z ⟨i.1,
+                Finset.mem_range.mpr
+                  ((Finset.mem_range.mp i.2).trans
+                    (Finset.mem_range.mp j.2))⟩| := by
+    intro j
+    have hsum :
+        Measurable fun z : ((i : Finset.range m) -> ℝ) =>
+          ∑ i : Finset.range j.1,
+              z ⟨i.1,
+                Finset.mem_range.mpr
+                  ((Finset.mem_range.mp i.2).trans
+                    (Finset.mem_range.mp j.2))⟩ :=
+      Finset.measurable_fun_sum Finset.univ
+        fun i _ => measurable_pi_apply
+          (⟨i.1,
+            Finset.mem_range.mpr
+              ((Finset.mem_range.mp i.2).trans
+                (Finset.mem_range.mp j.2))⟩ : Finset.range m)
+    exact hsum.abs
+  rw [durrett2019_theorem_2_5_5_firstCrossingBlockSet]
+  exact
+    (measurableSet_le measurable_const hterminal).inter
+      (MeasurableSet.iInter fun j =>
+        measurableSet_lt (hprefix j) measurable_const)
+
+/--
+Durrett 2019, Theorem 2.5.5 support: the mixed term for the first-crossing
+event vanishes.  This is the source-shaped instance of Theorems 2.1.10 and
+2.1.13 used in the proof of Kolmogorov's maximal inequality.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_mixed_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X i) P)
+    (hzero : ∀ i ∈ Finset.Ico m n, ∫ ω, X i ω ∂P = 0)
+    (x : ℝ) :
+    ∫ ω, ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+        Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+          (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X i ω)) *
+      ((∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero
+    (P := P) (X := X) hX_indep hX_meas hmn hX_int hzero
+    (durrett2019_theorem_2_5_5_measurableSet_firstCrossingBlockSet m x)
+
+/--
+Durrett 2019, Theorem 2.5.5 support in one-based textbook notation: the
+mixed term for the first-crossing event vanishes for the shifted source
+sequence `X_1, X_2, ...`.
+-/
+theorem durrett2019_theorem_2_5_5_firstCrossing_mixed_integral_eq_zero_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X (i + 1)) P)
+    (hzero : ∀ i ∈ Finset.Ico m n, ∫ ω, X (i + 1) ω ∂P = 0)
+    (x : ℝ) :
+    ∫ ω, ((2 : ℝ) * (∑ i : Finset.range m, X (i + 1) ω) *
+        Set.indicator (durrett2019_theorem_2_5_5_firstCrossingBlockSet m x)
+          (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X (i + 1) ω)) *
+      ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  exact
+    durrett2019_theorem_2_5_5_firstCrossing_mixed_integral_eq_zero
+      (P := P) (X := fun i => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => hX_meas (i + 1)) hmn hX_int hzero x
+
+/--
 Durrett 2019, Theorem 2.1.15, product-space CDF convolution form.
 
 For independent coordinates with laws `μ` and `ν`, the distribution function

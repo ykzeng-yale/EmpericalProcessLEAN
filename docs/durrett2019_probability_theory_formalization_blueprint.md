@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V390`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V391`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -37,7 +37,15 @@ independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V390 adds the direct
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V391 starts the
+Durrett Theorem 2.5.5 Kolmogorov maximal-inequality proof route by packaging
+the first-crossing mixed-term calculation from Theorems 2.1.10 and 2.1.13.
+Next work should prove the square-integral lower-bound/mass inequality over
+the disjoint first-crossing events, then assemble the full Theorem 2.5.5
+display.  Do not return to Theorem 2.4.9 source-entry plumbing unless search
+proves a concrete missing display.
+
+Verified route history below is provenance, not live prompt text.  V390 adds the direct
 countable supplied-partition and one-based outer-a.s. product-law/canonical
 route for Theorem 2.4.9, consuming the compiled Chapter 2.1.11 product-law
 and canonical iid packages.  Next work should not rebuild Theorem 2.4.9
@@ -45,7 +53,7 @@ source-entry plumbing; either close one remaining source-facing display only
 if search proves it is missing, or move to Chapter 2.1.12/2.1.13
 product-expectation/Kolmogorov-maximal support.
 
-Verified route history below is provenance, not live prompt text.  V389 lifts the
+V389 lifts the
 global middle-partition-with-tails uniform-error squeeze in Theorem 2.4.9 to
 product-law and canonical source forms, consuming the compiled Chapter 2.1.11
 product-law/canonical iid packages and the V388 finite-cutpoint burn-in layer.
