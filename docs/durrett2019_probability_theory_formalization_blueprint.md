@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V388`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V389`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -37,7 +37,14 @@ independence/product-law support and Durrett Theorem 2.4.9
 Glivenko-Cantelli source-facing wrappers in
 `StatInference/ProbabilityTheory/Basic.lean`,
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and
-`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V388 lifts the
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`.  V389 lifts the
+global middle-partition-with-tails uniform-error squeeze in Theorem 2.4.9 to
+product-law and canonical source forms, consuming the compiled Chapter 2.1.11
+product-law/canonical iid packages and the V388 finite-cutpoint burn-in layer.
+Next work should not rebuild the middle/tail uniform-error product-law
+consumers; move to the countable supplied-partition route or direct outer-a.s.
+empirical-CDF source entries that still lack product-law/canonical wrappers.
+V388 lifts the
 finite-cutpoint burn-in step in Theorem 2.4.9 to product-law and canonical
 source forms.  The new wrappers consume the compiled Chapter 2.1.11
 product-law/canonical iid packages and the pointwise empirical-CDF endpoints.

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V388
+## Live In-Thread Goal Prompt V389
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,23 @@ independence, `HasLaw`, product-measure, strong-law, and empirical-process
 wrappers first; only add exact source-shape consumers that are not already
 compiled.
 
-Latest verified target V388 lifts the finite-cutpoint burn-in step in
+Latest verified target V389 lifts the global middle-partition-with-tails
+uniform-error squeeze in Durrett Theorem 2.4.9 to product-law and canonical
+source forms:
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_two_mul_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_two_mul_of_shift_hasLaw_infinitePi`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_canonical_iid`,
+and
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_canonical_iid`.
+These consume the compiled Chapter 2.1.11 product-law/canonical iid packages
+and the V388 finite-cutpoint burn-in layer.  Next work should not rebuild the
+middle/tail uniform-error product-law consumers; move to the countable
+supplied-partition route or direct outer-a.s. empirical-CDF source entries
+that still lack product-law/canonical wrappers.
+
+V388 lifts the finite-cutpoint burn-in step in
 Durrett Theorem 2.4.9 to product-law and canonical source forms:
 `durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt_of_hasLaw_infinitePi`,
 `durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_hasLaw_infinitePi`,
