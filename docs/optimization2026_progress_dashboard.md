@@ -522,6 +522,16 @@ This dashboard tracks the Chewi optimization formalization lane for
   the actual preliminary iterates: the scalar budget is the sharper
   `sqrt(m) * (1 + rho) <= tailBound`, not the Dikin-detour
   `sqrt(m) * (1 + sqrt(m) * rho) <= tailBound`.
+  The actual half-contracting source-radius packet now adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSourceRadiusBound_succ_noFactor_standardConstants`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySourceRadiusBound_succ_noFactor_standardConstants`,
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSourceRadiusHalf_succ_noFactor_standardConstants`,
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySourceRadiusHalf_succ_noFactor_standardConstants`.
+  This gives the same actual-budget endpoint a direct Dikin/source-radius
+  moving-center interface, with generalized budget
+  `sqrt(m) * (1 + r) <= tailBound` and half-ball budget
+  `sqrt(m) * (3 / 2) <= tailBound`.
   This is the direct entrypoint for compact/bounded feasible-range arguments
   that naturally produce least-upper-bound data; the Mathlib reuse is
   `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,

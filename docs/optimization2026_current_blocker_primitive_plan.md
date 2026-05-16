@@ -810,6 +810,16 @@ This sharper route uses the direct scalar triangle inequality to consume
 detour budget `sqrt(m) * (1 + sqrt(m) * rho)`.  It is now the preferred
 post-threshold/eventual moving-center interface when the remaining geometry is
 pathwise rather than a global feasible-range compactness envelope.
+The actual half-contracting source-radius handoff now also compiles as
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSourceRadiusBound_succ_noFactor_standardConstants`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySourceRadiusBound_succ_noFactor_standardConstants`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSourceRadiusHalf_succ_noFactor_standardConstants`,
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySourceRadiusHalf_succ_noFactor_standardConstants`.
+Use these when moving-center geometry proves a Dikin/source-local-norm bound
+along the actual preliminary iterates; the generalized scalar budget is
+`sqrt(m) * (1 + r) <= tailBound`, with the common half-ball specialization
+using `sqrt(m) * (3 / 2) <= tailBound`.
 This lets compactness or boundedness proofs feed Mathlib least-upper-bound
 data directly: prove the feasible translated slack range is compact (or show
 it sits inside a compact closure/envelope, or show each coordinate image is

@@ -307,6 +307,16 @@ Use it when the bounded-polytope or moving-center proof supplies only
 eventual/pathwise relative slack displacement along the preliminary iterates;
 the required scalar tail budget is directly
 `sqrt(m) * (1 + rho) <= tailBound`.
+The actual half-contracting source-radius handoff now adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSourceRadiusBound_succ_noFactor_standardConstants`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySourceRadiusBound_succ_noFactor_standardConstants`,
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSourceRadiusHalf_succ_noFactor_standardConstants`,
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySourceRadiusHalf_succ_noFactor_standardConstants`.
+Use these when the moving-center proof gives an eventual/pathwise Dikin
+source-local-norm bound along the actual preliminary iterates; the scalar
+budget is `sqrt(m) * (1 + r) <= tailBound`, with half-ball specialization
+`sqrt(m) * (3 / 2) <= tailBound`.
 Use this when the bounded-polytope proof supplies `BddAbove` coordinate images
 or compactness facts.  Prefer the compact-superset form when the strict
 positive-orthant feasible set is open but contained in a compact
