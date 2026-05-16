@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V25` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V26` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -93,9 +93,22 @@ The V25 packet adds the source-exact weighted Lemma 13.6 route:
 `chewi1316_objective_gap_le_eps_of_le_quarter_and_large_t_of_gradient_segment_weighted_quadratic_lower`,
 and
 `chewi1316_objective_gap_le_eps_of_mainStageParameter_large_of_gradient_segment_weighted_quadratic_lower`.
-Future work should prefer this weighted kernel over the stronger V24 pointwise
-constant lower-bound route, because the textbook proof integrates
-`r^2/(1+r t)^2` to obtain `r^2/(1+r)`.
+The V26 Riccati/Hessian packet discharges that source-exact weighted
+`hquad_lower` gate from mixed-third self-concordance, adding
+`scalar_riccati_lower_bound_on_unit_interval`,
+`hessianSegmentLocalNorm_riccatiDerivLowerBound_of_mixedThirdSelfConcordantOn`,
+`hessianSegmentLocalNorm_ge_of_riccati_lower_bound`,
+`hessianSegment_quadratic_lower_weighted_of_mixedThirdSelfConcordantOn`,
+`chewi1316_weighted_hessian_quadratic_lower_of_mixedThirdSelfConcordantOn`,
+`chewi1316_lowerModel_of_mixedThirdSelfConcordantOn`, and
+`chewi1316_centralPath_lowerModel_of_mixedThirdSelfConcordantOn`.  Search
+first result: local code had one-minus upper Riccati/local-norm sandwich APIs,
+but no one-plus lower primitive matching Chewi's `r^2/(1+r t)^2` kernel; the
+new scalar inverse-monotonicity lemma is the reusable missing piece.  Next
+terminal §13.16 work should feed the new central-path weighted lower-model
+theorem into the existing objective-gap consumers by proving the remaining
+centrality/selected-parameter hypotheses, not by redoing the weighted kernel
+or Riccati lower layer.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

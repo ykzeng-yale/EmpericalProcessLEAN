@@ -374,6 +374,97 @@ theorem scalar_riccati_upper_bound_on_unit_interval
     (by simpa [mul_comm, mul_left_comm, mul_assoc] using htarget_mul)
 
 /--
+Lower Riccati comparison on `[0,1]`: if `-M q(t)^2 ≤ q'(t)`, `q(0) = r`,
+and `q` stays positive, then `r / (1 + M r t) ≤ q(t)`.  This is the scalar
+one-plus denominator used in Chewi Lemma 13.6's integrated lower bound.
+-/
+theorem scalar_riccati_lower_bound_on_unit_interval
+    {q q' : ℝ -> ℝ} {M r : ℝ}
+    (hM_nonneg : 0 ≤ M) (hr_pos : 0 < r)
+    (hqcont : ContinuousOn q (Set.Icc (0 : ℝ) 1))
+    (hq_pos : ∀ s, s ∈ Set.Icc (0 : ℝ) 1 -> 0 < q s)
+    (hqderiv : ∀ s, s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      HasDerivWithinAt q (q' s) (interior (Set.Icc (0 : ℝ) 1)) s)
+    (hderiv_lower : ∀ s, s ∈ interior (Set.Icc (0 : ℝ) 1) ->
+      -M * (q s) ^ (2 : ℕ) ≤ q' s)
+    (hq0_eq : q 0 = r) :
+    ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      r / (1 + M * r * t) ≤ q t := by
+  let D := Set.Icc (0 : ℝ) 1
+  let w : ℝ -> ℝ := fun s => (q s)⁻¹ - M * s
+  have hq_ne : ∀ s, s ∈ D -> q s ≠ 0 := by
+    intro s hs
+    exact (hq_pos s hs).ne'
+  have hwcont : ContinuousOn w D := by
+    have hinv : ContinuousOn (fun s : ℝ => (q s)⁻¹) D :=
+      hqcont.inv₀ hq_ne
+    have hlin : ContinuousOn (fun s : ℝ => M * s) D :=
+      (continuous_const.mul continuous_id).continuousOn
+    simpa [w] using hinv.sub hlin
+  have hwderiv : ∀ s, s ∈ interior D ->
+      HasDerivWithinAt w
+        (-q' s / (q s) ^ (2 : ℕ) - M) (interior D) s := by
+    intro s hs
+    have hqinvd :
+        HasDerivWithinAt (fun u : ℝ => (q u)⁻¹)
+          (-q' s / (q s) ^ (2 : ℕ)) (interior D) s := by
+      exact (hqderiv s hs).inv ((hq_pos s (interior_subset hs)).ne')
+    have hlin :
+        HasDerivWithinAt (fun u : ℝ => M * u) M (interior D) s := by
+      simpa using (hasDerivAt_id s).const_mul M |>.hasDerivWithinAt
+    simpa [w] using hqinvd.sub hlin
+  have hderiv_nonpos : ∀ s, s ∈ interior D ->
+      -q' s / (q s) ^ (2 : ℕ) - M ≤ 0 := by
+    intro s hs
+    have hq_s_pos : 0 < q s := hq_pos s (interior_subset hs)
+    have hq_sq_pos : 0 < (q s) ^ (2 : ℕ) := sq_pos_of_pos hq_s_pos
+    have hdiv_lower : -M ≤ q' s / (q s) ^ (2 : ℕ) := by
+      exact (le_div_iff₀ hq_sq_pos).2 (hderiv_lower s hs)
+    have hneg :
+        -q' s / (q s) ^ (2 : ℕ) =
+          -(q' s / (q s) ^ (2 : ℕ)) := by
+      ring
+    rw [hneg]
+    linarith
+  have hanti : AntitoneOn w D :=
+    antitoneOn_of_hasDerivWithinAt_nonpos (convex_Icc (0 : ℝ) 1)
+      hwcont hwderiv hderiv_nonpos
+  intro t ht
+  have hzero_mem : (0 : ℝ) ∈ D := ⟨le_rfl, zero_le_one⟩
+  have ht_mem : t ∈ D := ht
+  have ht_nonneg : 0 ≤ t := ht.1
+  have hwt := hanti hzero_mem ht_mem ht_nonneg
+  have hrecip_step : (q t)⁻¹ ≤ r⁻¹ + M * t := by
+    have hwt' : (q t)⁻¹ - M * t ≤ (q 0)⁻¹ := by
+      simpa [w] using hwt
+    rw [hq0_eq] at hwt'
+    linarith
+  have hden_pos : 0 < 1 + M * r * t := by
+    have hmul_nonneg : 0 ≤ M * r * t := by
+      exact mul_nonneg (mul_nonneg hM_nonneg hr_pos.le) ht_nonneg
+    nlinarith
+  have hqt_pos : 0 < q t := hq_pos t ht
+  have hrecip : (q t)⁻¹ ≤ (1 + M * r * t) / r := by
+    have heq : r⁻¹ + M * t = (1 + M * r * t) / r := by
+      field_simp [hr_pos.ne']
+    simpa [heq] using hrecip_step
+  have hmul := mul_le_mul_of_nonneg_right hrecip hqt_pos.le
+  have hmul' : 1 ≤ ((1 + M * r * t) / r) * q t := by
+    simpa [hqt_pos.ne'] using hmul
+  have hmulr := mul_le_mul_of_nonneg_right hmul' hr_pos.le
+  have htarget_mul : r ≤ (1 + M * r * t) * q t := by
+    have hright :
+        ((1 + M * r * t) / r) * q t * r =
+          (1 + M * r * t) * q t := by
+      field_simp [hr_pos.ne']
+    calc
+      r = 1 * r := by ring
+      _ ≤ ((1 + M * r * t) / r) * q t * r := hmulr
+      _ = (1 + M * r * t) * q t := hright
+  exact (div_le_iff₀ hden_pos).2
+    (by simpa [mul_comm, mul_left_comm, mul_assoc] using htarget_mul)
+
+/--
 Reverse Riccati blow-up exclusion on `[0,1]`.  If
 `g(t)^2 <= nu * g'(t)` throughout the open interval, then the initial value
 cannot exceed `nu`: otherwise `1 / g(t) + t / nu` is decreasing while staying
@@ -8036,6 +8127,42 @@ theorem hessianSegmentLocalNorm_riccatiDerivBound_of_mixedThirdSelfConcordantOn
   rw [div_le_iff₀ hden_pos]
   nlinarith [hd_le]
 
+theorem hessianSegmentLocalNorm_riccatiDerivLowerBound_of_mixedThirdSelfConcordantOn
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {thirdMixed : E -> E -> E -> ℝ} {x y : E} {M : ℝ} {t : ℝ}
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hz : hessianSegmentPoint x y t ∈ s)
+    (hlocal_pos :
+      0 < localNorm hess (hessianSegmentPoint x y t) (y - x)) :
+    -M * (localNorm hess (hessianSegmentPoint x y t) (y - x)) ^ (2 : ℕ) ≤
+      hessianSegmentMixedThirdPsiDeriv thirdMixed x y (y - x) t /
+        (2 * localNorm hess (hessianSegmentPoint x y t) (y - x)) := by
+  have hden_pos :
+      0 < 2 * localNorm hess (hessianSegmentPoint x y t) (y - x) := by
+    nlinarith
+  have hbound := hsc.mixed_third_bound hz (y - x) (y - x)
+  have hd_lower :
+      -(2 * M * localNorm hess (hessianSegmentPoint x y t) (y - x) *
+          (localNorm hess (hessianSegmentPoint x y t) (y - x)) ^ (2 : ℕ)) ≤
+        hessianSegmentMixedThirdPsiDeriv thirdMixed x y (y - x) t := by
+    have hneg_abs :
+        -|hessianSegmentMixedThirdPsiDeriv thirdMixed x y (y - x) t| ≤
+          hessianSegmentMixedThirdPsiDeriv thirdMixed x y (y - x) t :=
+      neg_abs_le _
+    have hneg_bound :
+        -(2 * M * localNorm hess (hessianSegmentPoint x y t) (y - x) *
+            (localNorm hess (hessianSegmentPoint x y t) (y - x)) ^ (2 : ℕ)) ≤
+          -|hessianSegmentMixedThirdPsiDeriv thirdMixed x y (y - x) t| := by
+      have hbound' :
+          |hessianSegmentMixedThirdPsiDeriv thirdMixed x y (y - x) t| ≤
+            2 * M * localNorm hess (hessianSegmentPoint x y t) (y - x) *
+              (localNorm hess (hessianSegmentPoint x y t) (y - x)) ^ (2 : ℕ) := by
+        simpa [hessianSegmentMixedThirdPsiDeriv] using hbound
+      linarith
+    exact hneg_bound.trans hneg_abs
+  exact (le_div_iff₀ hden_pos).2 (by
+    nlinarith [hd_lower])
+
 theorem HessianSegmentMixedThirdLocalNormCertificate.of_mixedThirdSelfConcordantOn
     {s : Set E} {hess : E -> E →L[ℝ] E}
     {thirdMixed : E -> E -> E -> ℝ} {x y : E} {M r : ℝ}
@@ -8511,6 +8638,47 @@ theorem hessianSegmentCoeffBound_of_localNorm_bound
   have hcoeff_nonneg : 0 ≤ 2 * M := by nlinarith
   have hmul := mul_le_mul_of_nonneg_left (hsegment_norm t ht) hcoeff_nonneg
   simpa [div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc] using hmul
+
+/--
+Segment-local-norm lower Riccati comparison in the exact one-plus shape used
+by Chewi Lemma 13.6's integrated lower model.  Once the analytic proof supplies
+`-M ||y - x||_{z_t}^2 ≤ d/dt ||y - x||_{z_t}`, this theorem gives
+`r / (1 + M r t) ≤ ||y - x||_{z_t}`.
+-/
+theorem hessianSegmentLocalNorm_ge_of_riccati_lower_bound
+    {hess : E -> E →L[ℝ] E} {x y : E} {M r : ℝ}
+    {localNormDeriv : ℝ -> ℝ}
+    (hM_nonneg : 0 ≤ M) (hr_pos : 0 < r)
+    (hqcont : ContinuousOn
+      (fun t : ℝ => localNorm hess (hessianSegmentPoint x y t) (y - x))
+      (Set.Icc (0 : ℝ) 1))
+    (hq_pos : ∀ t,
+      t ∈ Set.Icc (0 : ℝ) 1 ->
+        0 < localNorm hess (hessianSegmentPoint x y t) (y - x))
+    (hqderiv : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasDerivWithinAt
+          (fun s : ℝ => localNorm hess (hessianSegmentPoint x y s) (y - x))
+          (localNormDeriv t)
+          (interior (Set.Icc (0 : ℝ) 1)) t)
+    (hderiv_lower : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        -M * (localNorm hess (hessianSegmentPoint x y t) (y - x)) ^ (2 : ℕ) ≤
+          localNormDeriv t)
+    (hzero : localNorm hess x (y - x) = r) :
+    ∀ t,
+      t ∈ Set.Icc (0 : ℝ) 1 ->
+        r / (1 + M * r * t) ≤
+          localNorm hess (hessianSegmentPoint x y t) (y - x) := by
+  have hzero' :
+      (fun t : ℝ => localNorm hess (hessianSegmentPoint x y t) (y - x)) 0 =
+        r := by
+    simpa [hessianSegmentPoint_zero] using hzero
+  exact
+    scalar_riccati_lower_bound_on_unit_interval
+      (q := fun t : ℝ => localNorm hess (hessianSegmentPoint x y t) (y - x))
+      (q' := localNormDeriv) (M := M) (r := r)
+      hM_nonneg hr_pos hqcont hq_pos hqderiv hderiv_lower hzero'
 
 /--
 Segment-local-norm Riccati comparison in the exact shape needed by Chewi
@@ -11061,6 +11229,154 @@ theorem chewi1316_weightedKernel_integral_eq_sq_div_one_add
   ring
 
 /--
+Pointwise self-concordant Hessian lower bound along a segment.  This is the
+Lemma 13.6 one-plus Riccati lower comparison squared and rewritten as a
+Hessian quadratic form:
+`r^2 / (1 + M r t)^2 ≤ <d, Hess(x + t d) d>`, where
+`r = ||d||_x` and `d = y - x`.
+-/
+theorem hessianSegment_quadratic_lower_weighted_of_mixedThirdSelfConcordantOn
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {x y : E} {M : ℝ}
+    (hs : Convex ℝ s) (hx : x ∈ s) (hy : y ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed M)
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hdiff_ne : y - x ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasFDerivAt hess
+          (hessDeriv (hessianSegmentPoint x y t))
+          (hessianSegmentPoint x y t))
+    (hmixed : ∀ v : E, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ v ((hessDeriv (hessianSegmentPoint x y t) (y - x)) v) =
+          hessianSegmentMixedThirdPsiDeriv thirdMixed x y v t) :
+    ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      (localNorm hess x (y - x)) ^ (2 : ℕ) /
+          (1 + M * localNorm hess x (y - x) * τ) ^ (2 : ℕ) ≤
+        inner ℝ (y - x)
+          (hess (hessianSegmentPoint x y τ) (y - x)) := by
+  let r := localNorm hess x (y - x)
+  let localNormDeriv : ℝ -> ℝ := fun t =>
+    hessianSegmentMixedThirdPsiDeriv thirdMixed x y (y - x) t /
+      (2 * localNorm hess (hessianSegmentPoint x y t) (y - x))
+  have hqcont :
+      ContinuousOn
+        (fun t : ℝ =>
+          localNorm hess (hessianSegmentPoint x y t) (y - x))
+        (Set.Icc (0 : ℝ) 1) :=
+    hessianSegmentLocalNorm_continuousOn_of_convex_continuousOn
+      (hess := hess) (s := s) hs hx hy hhess_cont
+  have hq_pos : ∀ t,
+      t ∈ Set.Icc (0 : ℝ) 1 ->
+        0 < localNorm hess (hessianSegmentPoint x y t) (y - x) :=
+    hessianSegmentLocalNorm_pos_of_hessian_pos
+      (s := s) (hess := hess) hs hx hy hess_pos hdiff_ne
+  have hr_pos : 0 < r := by
+    have hzero : (0 : ℝ) ∈ Set.Icc (0 : ℝ) 1 := ⟨le_rfl, zero_le_one⟩
+    simpa [r, hessianSegmentPoint_zero] using hq_pos 0 hzero
+  have hlocal_lower : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      r / (1 + M * r * τ) ≤
+        localNorm hess (hessianSegmentPoint x y τ) (y - x) :=
+    hessianSegmentLocalNorm_ge_of_riccati_lower_bound
+      (hess := hess) (x := x) (y := y) (M := M) (r := r)
+      (localNormDeriv := localNormDeriv)
+      hsc.parameter_pos.le hr_pos hqcont hq_pos
+      (by
+        intro t ht
+        exact hessianSegmentLocalNorm_hasDerivWithinAt_of_mixedThird
+          (hess := hess) (hessDeriv := hessDeriv)
+          (thirdMixed := thirdMixed) (x := x) (y := y)
+          (t := t) (u := interior (Set.Icc (0 : ℝ) 1))
+          (hq_pos t (interior_subset ht)) (hhess t ht)
+          (hmixed (y - x) t ht))
+      (by
+        intro t ht
+        exact
+          hessianSegmentLocalNorm_riccatiDerivLowerBound_of_mixedThirdSelfConcordantOn
+            (s := s) (hess := hess) (thirdMixed := thirdMixed)
+            (x := x) (y := y) (M := M) (t := t)
+            hsc (hessianSegmentPoint_mem_of_convex_interior hs hx hy ht)
+            (hq_pos t (interior_subset ht)))
+      (by rfl)
+  intro τ hτ
+  let den := 1 + M * r * τ
+  have hden_pos : 0 < den := by
+    have hτ_nonneg : 0 ≤ τ := hτ.1
+    have hmul_nonneg : 0 ≤ M * r * τ := by
+      exact mul_nonneg (mul_nonneg hsc.parameter_pos.le hr_pos.le) hτ_nonneg
+    dsimp [den]
+    nlinarith
+  have hleft_nonneg : 0 ≤ r / den :=
+    div_nonneg hr_pos.le hden_pos.le
+  have hsq_le :
+      (r / den) ^ (2 : ℕ) ≤
+        (localNorm hess (hessianSegmentPoint x y τ) (y - x)) ^ (2 : ℕ) :=
+    (sq_le_sq₀ hleft_nonneg
+      (localNorm_nonneg hess (hessianSegmentPoint x y τ) (y - x))).mpr
+      (hlocal_lower τ hτ)
+  have hz : hessianSegmentPoint x y τ ∈ s :=
+    hessianSegmentPoint_mem_of_convex hs hx hy hτ
+  have hquad_nonneg :
+      0 ≤ inner ℝ (y - x)
+        (hess (hessianSegmentPoint x y τ) (y - x)) :=
+    hsc.hess_nonneg hz (y - x)
+  have hq_sq :
+      (localNorm hess (hessianSegmentPoint x y τ) (y - x)) ^ (2 : ℕ) =
+        inner ℝ (y - x)
+          (hess (hessianSegmentPoint x y τ) (y - x)) :=
+    localNorm_sq_eq_inner hquad_nonneg
+  calc
+    (localNorm hess x (y - x)) ^ (2 : ℕ) /
+        (1 + M * localNorm hess x (y - x) * τ) ^ (2 : ℕ) =
+        (r / den) ^ (2 : ℕ) := by
+      dsimp [r, den]
+      rw [div_pow]
+    _ ≤ (localNorm hess (hessianSegmentPoint x y τ) (y - x)) ^ (2 : ℕ) :=
+      hsq_le
+    _ = inner ℝ (y - x)
+          (hess (hessianSegmentPoint x y τ) (y - x)) := hq_sq
+
+/--
+Chewi Theorem 13.16 source orientation (`M = 1`) of the pointwise weighted
+Hessian lower bound needed by the integrated terminal certificate.
+-/
+theorem chewi1316_weighted_hessian_quadratic_lower_of_mixedThirdSelfConcordantOn
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {x center : E}
+    (hs : Convex ℝ s) (hx : x ∈ s) (hcenter : center ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hdiff_ne : center - x ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasFDerivAt hess
+          (hessDeriv (hessianSegmentPoint x center t))
+          (hessianSegmentPoint x center t))
+    (hmixed : ∀ v : E, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ v ((hessDeriv (hessianSegmentPoint x center t) (center - x)) v) =
+          hessianSegmentMixedThirdPsiDeriv thirdMixed x center v t) :
+    ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      (localNorm hess x (center - x)) ^ (2 : ℕ) /
+          (1 + localNorm hess x (center - x) * τ) ^ (2 : ℕ) ≤
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x)) := by
+  have h :=
+    hessianSegment_quadratic_lower_weighted_of_mixedThirdSelfConcordantOn
+      (s := s) (hess := hess) (hessDeriv := hessDeriv)
+      (thirdMixed := thirdMixed) (x := x) (y := center) (M := (1 : ℝ))
+      hs hx hcenter hsc hess_pos hdiff_ne hhess_cont hhess hmixed
+  intro τ hτ
+  simpa [one_mul, mul_assoc] using h τ hτ
+
+/--
 Source-shaped Chewi Lemma 13.6 lower-model bridge.  This is the exact
 integrated form used in Theorem 13.16: along the segment from the terminal
 iterate `x` to the central-path point `center`, the natural self-concordant
@@ -11179,6 +11495,97 @@ theorem chewi1316_centralPath_lowerModel_of_gradient_segment_weighted_quadratic_
     chewi1316_lowerModel_of_gradient_segment_weighted_quadratic_lower
       (hess := hess) (grad := fun z => t • a + phiGrad z)
       (x := x) (center := center) hgrad hint hcentral hquad_lower
+
+/--
+Chewi Lemma 13.6 plus the weighted lower-model integration in one supplied
+self-concordance interface.  This discharges the pointwise weighted quadratic
+gate of `chewi1316_lowerModel_of_gradient_segment_weighted_quadratic_lower`
+from the mixed-third self-concordance hypotheses.
+-/
+theorem chewi1316_lowerModel_of_mixedThirdSelfConcordantOn
+    {s : Set E} {hess : E -> E →L[ℝ] E} {grad : E -> E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {x center : E}
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint x center τ))
+        (hessianSegmentPoint x center τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hcentral : grad center = 0)
+    (hs : Convex ℝ s) (hx : x ∈ s) (hcenter : center ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hdiff_ne : center - x ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasFDerivAt hess
+          (hessDeriv (hessianSegmentPoint x center t))
+          (hessianSegmentPoint x center t))
+    (hmixed : ∀ v : E, ∀ t,
+      t ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ v ((hessDeriv (hessianSegmentPoint x center t) (center - x)) v) =
+          hessianSegmentMixedThirdPsiDeriv thirdMixed x center v t) :
+    (localNorm hess x (x - center)) ^ (2 : ℕ) /
+        (1 + localNorm hess x (x - center)) ≤
+      inner ℝ (grad x) (x - center) := by
+  have hquad_lower :=
+    chewi1316_weighted_hessian_quadratic_lower_of_mixedThirdSelfConcordantOn
+      (s := s) (hess := hess) (hessDeriv := hessDeriv)
+      (thirdMixed := thirdMixed) (x := x) (center := center)
+      hs hx hcenter hsc hess_pos hdiff_ne hhess_cont hhess hmixed
+  exact
+    chewi1316_lowerModel_of_gradient_segment_weighted_quadratic_lower
+      (hess := hess) (grad := grad) (x := x) (center := center)
+      hgrad hint hcentral hquad_lower
+
+/--
+Central-path version of `chewi1316_lowerModel_of_mixedThirdSelfConcordantOn`.
+-/
+theorem chewi1316_centralPath_lowerModel_of_mixedThirdSelfConcordantOn
+    {s : Set E} {hess : E -> E →L[ℝ] E} {phiGrad : E -> E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {a x center : E} {t : ℝ}
+    (hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt (fun z => t • a + phiGrad z)
+        (hess (hessianSegmentPoint x center τ))
+        (hessianSegmentPoint x center τ))
+    (hint : IntervalIntegrable
+      (fun τ : ℝ =>
+        inner ℝ (center - x)
+          (hess (hessianSegmentPoint x center τ) (center - x)))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hcentral : t • a + phiGrad center = 0)
+    (hs : Convex ℝ s) (hx : x ∈ s) (hcenter : center ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hdiff_ne : center - x ≠ 0)
+    (hhess_cont : ContinuousOn hess s)
+    (hhess : ∀ τ,
+      τ ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        HasFDerivAt hess
+          (hessDeriv (hessianSegmentPoint x center τ))
+          (hessianSegmentPoint x center τ))
+    (hmixed : ∀ v : E, ∀ τ,
+      τ ∈ interior (Set.Icc (0 : ℝ) 1) ->
+        inner ℝ v ((hessDeriv (hessianSegmentPoint x center τ) (center - x)) v) =
+          hessianSegmentMixedThirdPsiDeriv thirdMixed x center v τ) :
+    (localNorm hess x (x - center)) ^ (2 : ℕ) /
+        (1 + localNorm hess x (x - center)) ≤
+      inner ℝ (t • a + phiGrad x) (x - center) := by
+  exact
+    chewi1316_lowerModel_of_mixedThirdSelfConcordantOn
+      (s := s) (hess := hess) (grad := fun z => t • a + phiGrad z)
+      (hessDeriv := hessDeriv) (thirdMixed := thirdMixed)
+      (x := x) (center := center)
+      hgrad hint hcentral hs hx hcenter hsc hess_pos hdiff_ne
+      hhess_cont hhess hmixed
 
 theorem real_le_div_one_sub_of_sq_div_one_add_le_mul
     {r lambda : ℝ}

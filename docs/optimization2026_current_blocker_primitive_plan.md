@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V25`, this file's top
+   the full book is complete, route from `Live Goal Prompt V26`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V25
+## Live Goal Prompt V26
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -279,22 +279,42 @@ sandwich machinery.  Next proof work should discharge this V25 weighted
 `hquad_lower` gate from the existing Lemma 13.6 local-norm/Hessian comparison
 APIs, not from the stronger V24 constant pointwise gate.
 
-Next theorem-sized target: finish one of the remaining genuine terminal
-certificate families for the V19/V21/V22/V23/V24/V25 auto handoff: terminal
-central-path optimality at the selected parameter, the self-concordant
-value-growth certificate feeding the V23 consumers, or the weighted segment
-Hessian quadratic lower certificate feeding the V25 consumers.  Prefer the
-weighted segment Hessian route if existing local-norm sandwich APIs discharge it cleanly;
-otherwise prove the terminal centrality wrapper while preserving the analytic
-certificate as the next blocker.
+Current V26 packet discharges the V25 weighted `hquad_lower` gate through the
+actual one-plus Riccati lower comparison from Chewi Lemma 13.6, rather than
+the stronger V24 constant pointwise supplied gate.  New compiled declarations:
+`scalar_riccati_lower_bound_on_unit_interval`,
+`hessianSegmentLocalNorm_riccatiDerivLowerBound_of_mixedThirdSelfConcordantOn`,
+`hessianSegmentLocalNorm_ge_of_riccati_lower_bound`,
+`hessianSegment_quadratic_lower_weighted_of_mixedThirdSelfConcordantOn`,
+`chewi1316_weighted_hessian_quadratic_lower_of_mixedThirdSelfConcordantOn`,
+`chewi1316_lowerModel_of_mixedThirdSelfConcordantOn`, and
+`chewi1316_centralPath_lowerModel_of_mixedThirdSelfConcordantOn`.
+Search-first result: existing local APIs had the one-minus upper sandwich
+(`chewi136_localNorm_sandwich_sourceRadius` and
+`hessianSegmentLocalNorm_le_of_riccati_bound`) but no one-plus lower Riccati
+primitive; mathlib's general ODE/Gronwall material was not a closer match than
+adding the scalar inverse-monotonicity proof.  The proof reuses local
+`hessianSegmentLocalNorm_hasDerivWithinAt_of_mixedThird`, mixed-third
+self-concordance, segment membership, local norm positivity, and
+`localNorm_sq_eq_inner`.
+
+Next theorem-sized target: finish one remaining genuine terminal certificate
+family for the V19/V21/V22/V23/V24/V25/V26 auto handoff.  Prefer the terminal
+central-path optimality/centrality wrapper that feeds the new
+`chewi1316_centralPath_lowerModel_of_mixedThirdSelfConcordantOn` into the
+already compiled objective-gap consumers.  If that wrapper exposes a stronger
+analytic gap, use the V26 weighted lower-model theorem as the value-growth
+route and record the exact missing central-path or Hessian-derivative
+hypothesis.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
-bridge/consumer wrappers.  Search first near existing `*_standardPath` wrappers,
-`chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
-definitions, and Lemma 13.6 self-concordant growth/local-norm wrappers; then
+bridge/consumer wrappers, the weighted kernel route, or the one-plus Riccati
+lower/Hessian-lower discharge.  Search first near existing `*_standardPath`
+wrappers, `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
+definitions, and terminal centrality/Hessian-derivative wrappers; then
 formalize only the genuinely missing terminal analytic certificate.
-Older paragraphs below are cached route history and must not override this V25
+Older paragraphs below are cached route history and must not override this V26
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
