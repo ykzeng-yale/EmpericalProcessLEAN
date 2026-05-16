@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V18` near the top of
+  `Live Goal Prompt V19` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -56,12 +56,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_standardSourceMainStage_rangeRestrict_mem_and_source_decrement_le_quarter`,
   and
   `chewi1316_polytopeSlackNegLog_exists_standardSourceMainStage_objective_gap_le_eps_imp_of_preliminaryInit`.
+  The latest V19 packaging layer adds
+  `Chewi1316StandardSourceMainStageObjectiveGapAutoHandoff`,
+  `chewi1316_standardSourceMainStageObjectiveGapAutoHandoff_of_preliminaryInit`,
+  `chewi1316_standardSourceMainStageObjectiveGapAutoHandoff_boundedFeasibleRange_standardPath`,
+  `chewi1316_standardSourceMainStageObjectiveGapAutoHandoff_boundedPolytope_standardPath`,
+  `chewi1316_standardSourceMainStageObjectiveGapAutoHandoff_boundedClosedPolytope_standardPath`,
+  and
+  `chewi1316_standardSourceMainStageObjectiveGapAutoHandoff_compactClosedPolytope_standardPath`.
   Prior V16/V17 membership reducers remain available, but the live route should
-  now use the automatic preliminary-initializer-to-standard-main-stage wrapper
-  instead of passing an external `hxseq_mem` or per-step decrement premise.
-  Next proof target: upgrade this wrapper into bounded/closed/compact polytope
-  standard-path endpoints by discharging the terminal centrality,
-  barrier-step/lower-model, and large-parameter stopping certificates.
+  now use the V19 auto standard-path handoff instead of passing an external
+  `hxseq_mem` or per-step decrement premise.  Next proof target: discharge one
+  genuine terminal certificate family for the V19 handoff: terminal centrality,
+  barrier-step/lower-model, or large-parameter stopping/count.
 - Cached Chapter 13 frontier history: the finite-row slack-range §13.16 handoff now
   compiles through source-pullback decrement transport and a point-dependent
   range sqrt-coordinate one-step wrapper.  New reusable declarations are

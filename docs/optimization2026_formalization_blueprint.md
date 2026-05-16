@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V18` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V19` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -46,6 +46,10 @@ bounded/closed/compact standard-path endpoints by proving the terminal
 centrality, barrier-step/lower-model, and large-parameter stopping certificates.
 Do not redo preliminary initialization, source/range Newton transport, standard
 recursions, or the V18 membership/decrement induction.
+The V19 packaging layer adds
+`Chewi1316StandardSourceMainStageObjectiveGapAutoHandoff` and its
+bounded/closed/compact `*_standardPath` endpoints, so future work should go
+straight to the terminal certificates consumed by that handoff.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

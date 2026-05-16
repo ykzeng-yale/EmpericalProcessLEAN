@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V18
+## Live Goal Prompt V19
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -166,8 +166,8 @@ The V16/V17 route-reduction declarations remain available:
 `chewi1316_standardSourceMainStage_objective_gap_le_eps_of_source_decrement_le_quarter`,
 and `chewi1316_standardSourcePreliminaryXSeq_rangeRestrict_mem_of_sourceMem`.
 
-Current V18 packet closes the concrete main-stage membership/decrement blocker.
-New compiled declarations in `StatInference/Optimization/InteriorPoint.lean`:
+The V18 packet closes the concrete main-stage membership/decrement blocker.
+Compiled declarations in `StatInference/Optimization/InteriorPoint.lean`:
 `chewi1316_polytopeSlackNegLog_range_mainStage_preNewtonDecrement_le_update_bound`,
 `chewi1316_polytopeSlackNegLog_range_mainStage_preNewtonDecrement_lt_one`,
 `chewi1316_polytopeSlackNegLog_range_mainStage_step_mem`,
@@ -183,15 +183,34 @@ The proof reuses the local generic self-concordant main-stage theorem,
 the slack-range sqrt-coordinate model, and source/range central-path transport.
 Do not repeat this membership induction or ask again for a global `hxseq_mem`.
 
-Next theorem-sized target: upgrade the newest automatic standard-main-stage
-objective-gap wrapper into the bounded/closed/compact polytope standard-path
-endpoints.  Search first for already compiled terminal certificates:
+Current V19 packet upgrades the automatic standard-main-stage wrapper into
+standard-path endpoints.  New compiled declarations:
+`Chewi1316StandardSourceMainStageObjectiveGapAutoHandoff`,
+`chewi1316_standardSourceMainStageObjectiveGapAutoHandoff_of_preliminaryInit`,
+`chewi1316_standardSourceMainStageObjectiveGapAutoHandoff_boundedFeasibleRange_standardPath`,
+`chewi1316_standardSourceMainStageObjectiveGapAutoHandoff_boundedPolytope_standardPath`,
+`chewi1316_standardSourceMainStageObjectiveGapAutoHandoff_boundedClosedPolytope_standardPath`,
+and
+`chewi1316_standardSourceMainStageObjectiveGapAutoHandoff_compactClosedPolytope_standardPath`.
+This packet reuses the V18 automatic objective-gap wrapper, the standard
+preliminary source-membership theorem
+`chewi1316_standardSourcePreliminaryXSeq_rangeRestrict_mem_of_sourceMem`, and
+the existing bounded/closed/compact preliminary initializers.  Search-first
+result: the local `chewi1316_objective_gap_le_eps_of_mainStageParameter_large`
+family already contains the main-stage closed-form/large-parameter API; no
+new mathlib geometric-series work was needed for this packet.
+
+Next theorem-sized target: discharge one genuine terminal certificate family
+for the V19 auto handoff rather than adding another wrapper.  Search first for
+already compiled terminal certificates:
 central-path optimality at the terminal parameter, barrier-step inequality,
 lower-model inequality, and large-parameter stopping/count lemmas near the
-existing `*_standardPath` wrappers and `chewi1316_objective_gap_le_eps_*`
-consumers.  Formalize only the genuinely missing terminal certificates; the
-main-stage feasibility/decrement route is now closed.  Older paragraphs below
-are cached route history and must not override this V18 target.
+existing `*_standardPath` wrappers, `chewi1316_objective_gap_le_eps_*`
+consumers, and finite-row slack-range objective-gap lemmas.  Formalize only the
+genuinely missing terminal certificates; the preliminary initializer,
+main-stage feasibility/decrement induction, and standard-path auto packaging
+are now closed.  Older paragraphs below are cached route history and must not
+override this V19 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
 slack-range §13.16 handoff now
