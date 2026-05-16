@@ -4,34 +4,47 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V406
+## Live In-Thread Goal Prompt V407
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
 below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Immediate lane: Durrett Theorem 2.5.6 convergence of random
-series in `StatInference/ProbabilityTheory/Basic.lean`.  Reuse the compiled
+synced `main`.  Immediate lane: Durrett Theorem 2.5.8 Kolmogorov three-series
+theorem in `StatInference/ProbabilityTheory/Basic.lean`.  Reuse the compiled
 Chapter 2.1 independence/product-expectation bridges, Theorem 2.2.1
-variance-sum APIs, and V391-V406 first-crossing/block-tail/oscillation/pathwise-Cauchy/a.s.-convergence infrastructure; do not route
+variance-sum APIs, and V391-V407 first-crossing/block-tail/oscillation/pathwise-Cauchy/a.s.-convergence infrastructure; do not route
 back to Theorem 2.4.9 or 2.5.5 source packaging
 unless search proves a concrete missing source display.
 
-Latest verified target V406 adds the exact textbook series-convergence display
-wrapper for Durrett Theorem 2.5.6.  New compiled anchors:
+Latest verified target V407 starts Durrett Theorem 2.5.8 Kolmogorov
+three-series sufficiency.  New compiled anchors:
+`durrett2019_theorem_2_5_8_realPartialSum`,
+`durrett2019_theorem_2_5_8_realSeriesConverges`,
+`durrett2019_theorem_2_5_8_randomSeriesConverges_add_of_randomSeriesConverges_of_realSeriesConverges`,
+`durrett2019_theorem_2_5_8_randomSeriesConverges_of_centered_of_realSeriesConverges`,
+`durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_ae_centered_of_realSeriesConverges`,
+`durrett2019_theorem_2_5_8_randomSeriesConverges_of_eventuallyEq`,
+`durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_ae_eventuallyEq_of_ae_randomSeriesConverges`,
+`durrett2019_theorem_2_5_8_ae_eventuallyEq_of_tsum_measure_ne_top`,
+and
+`durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_tsum_mismatch_ne_top_of_ae_randomSeriesConverges`.
+This packages the textbook assembly: centered a.s. convergence plus convergence
+of `sum E Y_n` gives convergence of `sum Y_n`, and Borel-Cantelli-generated
+eventual equality transfers convergence from `Y_n` to `X_n`.  Next aggressive
+target: instantiate this scaffold with Durrett's truncation
+`Y_i = X_i * 1_{|X_i| <= A}` by proving the mismatch event is contained in
+`{|X_i| > A}`, packaging the centered variables `Y_i - E Y_i`, and feeding V406
+and V407 into the first source-facing sufficiency theorem.
+
+V406 adds the exact textbook series-convergence display wrapper for Durrett
+Theorem 2.5.6.  New compiled anchors:
 `durrett2019_theorem_2_5_6_randomSeriesConverges` and
 `durrett2019_theorem_2_5_6_random_series_converges_ae_of_summable_variance`.
 This matches Durrett's definition that `sum_{n=1}^infty X_n(omega)` converges
 iff the one-based partial sums have a finite limit, and restates V405 in that
-wording.  Next aggressive target: start Durrett Theorem 2.5.8
-Kolmogorov three-series theorem, first by proving the sufficiency assembly:
-Borel-Cantelli gives `X_n = Y_n` eventually from condition (i), V406 applied
-to `Y_n - E Y_n` gives centered convergence from condition (iii), deterministic
-convergence of `sum E Y_n` gives convergence of `sum Y_n`, and eventual
-equality gives convergence of `sum X_n`.  Use the existing
-`durrett2019_theorem_2_3_1_eventually_notMem` Borel-Cantelli wrapper and do
-not rebuild first Borel-Cantelli.
+wording.
 
 V405 packages the a.s. convergence endpoint for Durrett Theorem 2.5.6.
 Compiled anchors:

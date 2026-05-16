@@ -4598,6 +4598,166 @@ theorem durrett2019_theorem_2_5_6_random_series_converges_ae_of_summable_varianc
       (P := P) (X := X) hX_indep hX_meas hX_mem hX_zero hvar_summable
 
 /--
+Durrett 2019, Theorem 2.5.8 support: deterministic one-based partial sums for
+the non-random centering sequence `E Y_n`.
+-/
+noncomputable def durrett2019_theorem_2_5_8_realPartialSum
+    (a : ℕ -> ℝ) (n : ℕ) : ℝ :=
+  ∑ i ∈ Finset.range n, a (i + 1)
+
+/--
+Durrett 2019, Theorem 2.5.8 support: deterministic one-based convergence of
+the centering series `sum E Y_n`.
+-/
+def durrett2019_theorem_2_5_8_realSeriesConverges (a : ℕ -> ℝ) : Prop :=
+  ∃ s : ℝ,
+    Tendsto (fun n : ℕ => durrett2019_theorem_2_5_8_realPartialSum a n)
+      atTop (𝓝 s)
+
+/--
+Durrett 2019, Theorem 2.5.8 support: adding a convergent deterministic series
+to a pathwise convergent random series preserves convergence.
+-/
+theorem durrett2019_theorem_2_5_8_randomSeriesConverges_add_of_randomSeriesConverges_of_realSeriesConverges
+    {Ω : Type u} {Z : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ} {ω : Ω}
+    (hZ : durrett2019_theorem_2_5_6_randomSeriesConverges Z ω)
+    (ha : durrett2019_theorem_2_5_8_realSeriesConverges a) :
+    durrett2019_theorem_2_5_6_randomSeriesConverges
+      (fun i ω => Z i ω + a i) ω := by
+  rcases hZ with ⟨z, hz⟩
+  rcases ha with ⟨c, hc⟩
+  refine ⟨z + c, ?_⟩
+  convert hz.add hc using 1
+  ext n
+  simp [durrett2019_theorem_2_5_6_partialSum,
+    durrett2019_theorem_2_5_8_realPartialSum, Finset.sum_add_distrib]
+
+/--
+Durrett 2019, Theorem 2.5.8 support: convergence of the centered series
+`sum (Y_n - a_n)` plus convergence of `sum a_n` gives convergence of
+`sum Y_n`.
+-/
+theorem durrett2019_theorem_2_5_8_randomSeriesConverges_of_centered_of_realSeriesConverges
+    {Ω : Type u} {Y : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ} {ω : Ω}
+    (hcenter :
+      durrett2019_theorem_2_5_6_randomSeriesConverges
+        (fun i ω => Y i ω - a i) ω)
+    (ha : durrett2019_theorem_2_5_8_realSeriesConverges a) :
+    durrett2019_theorem_2_5_6_randomSeriesConverges Y ω := by
+  simpa [sub_eq_add_neg, add_comm, add_left_comm, add_assoc] using
+    durrett2019_theorem_2_5_8_randomSeriesConverges_add_of_randomSeriesConverges_of_realSeriesConverges
+      (Z := fun i ω => Y i ω - a i) (a := a) (ω := ω) hcenter ha
+
+/--
+Durrett 2019, Theorem 2.5.8 support: the previous deterministic centered-plus
+mean assembly in almost-sure form.
+-/
+theorem durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_ae_centered_of_realSeriesConverges
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ}
+    (hcenter :
+      ∀ᵐ ω ∂P,
+        durrett2019_theorem_2_5_6_randomSeriesConverges
+          (fun i ω => Y i ω - a i) ω)
+    (ha : durrett2019_theorem_2_5_8_realSeriesConverges a) :
+    ∀ᵐ ω ∂P, durrett2019_theorem_2_5_6_randomSeriesConverges Y ω := by
+  filter_upwards [hcenter] with ω hω
+  exact
+    durrett2019_theorem_2_5_8_randomSeriesConverges_of_centered_of_realSeriesConverges
+      (Y := Y) (a := a) (ω := ω) hω ha
+
+/--
+Durrett 2019, Theorem 2.5.8 support: if two random sequences are eventually
+equal along a sample path, convergence of one one-based series implies
+convergence of the other.
+-/
+theorem durrett2019_theorem_2_5_8_randomSeriesConverges_of_eventuallyEq
+    {Ω : Type u} {X Y : ℕ -> Ω -> ℝ} {ω : Ω}
+    (hXY : ∀ᶠ i in atTop, X i ω = Y i ω)
+    (hY : durrett2019_theorem_2_5_6_randomSeriesConverges Y ω) :
+    durrett2019_theorem_2_5_6_randomSeriesConverges X ω := by
+  rcases eventually_atTop.1 hXY with ⟨M, hM⟩
+  rcases hY with ⟨s, hs⟩
+  let C : ℝ :=
+    durrett2019_theorem_2_5_6_partialSum X M ω -
+      durrett2019_theorem_2_5_6_partialSum Y M ω
+  refine ⟨s + C, ?_⟩
+  refine (tendsto_add_atTop_iff_nat
+    (f := fun n : ℕ => durrett2019_theorem_2_5_6_partialSum X n ω) M).mp ?_
+  have hY_shift :
+      Tendsto (fun n : ℕ => durrett2019_theorem_2_5_6_partialSum Y (n + M) ω)
+        atTop (𝓝 s) :=
+    hs.comp (tendsto_add_atTop_nat M)
+  refine (hY_shift.add tendsto_const_nhds).congr' ?_
+  refine eventually_atTop.2 ⟨0, ?_⟩
+  intro n _hn
+  change
+    durrett2019_theorem_2_5_6_partialSum Y (n + M) ω + C =
+      durrett2019_theorem_2_5_6_partialSum X (n + M) ω
+  have htail :
+      durrett2019_theorem_2_5_6_tailBlockSum X M n ω =
+        durrett2019_theorem_2_5_6_tailBlockSum Y M n ω := by
+    dsimp [durrett2019_theorem_2_5_6_tailBlockSum]
+    refine Finset.sum_congr rfl fun i _hi => ?_
+    exact hM (M + (i + 1)) (Nat.le_add_right M (i + 1))
+  rw [Nat.add_comm n M]
+  rw [durrett2019_theorem_2_5_6_partialSum_add_eq_partialSum_add_tailBlockSum
+      (X := X) M n ω,
+    durrett2019_theorem_2_5_6_partialSum_add_eq_partialSum_add_tailBlockSum
+      (X := Y) M n ω,
+    htail]
+  ring
+
+/--
+Durrett 2019, Theorem 2.5.8 support: eventual equality transfers almost-sure
+series convergence.
+-/
+theorem durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_ae_eventuallyEq_of_ae_randomSeriesConverges
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X Y : ℕ -> Ω -> ℝ}
+    (hXY : ∀ᵐ ω ∂P, ∀ᶠ i in atTop, X i ω = Y i ω)
+    (hY : ∀ᵐ ω ∂P, durrett2019_theorem_2_5_6_randomSeriesConverges Y ω) :
+    ∀ᵐ ω ∂P, durrett2019_theorem_2_5_6_randomSeriesConverges X ω := by
+  filter_upwards [hXY, hY] with ω hXYω hYω
+  exact
+    durrett2019_theorem_2_5_8_randomSeriesConverges_of_eventuallyEq
+      (X := X) (Y := Y) (ω := ω) hXYω hYω
+
+/--
+Durrett 2019, Theorem 2.5.8 support: the first Borel-Cantelli lemma turns
+summable mismatch probabilities into eventual sample-path equality.
+-/
+theorem durrett2019_theorem_2_5_8_ae_eventuallyEq_of_tsum_measure_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X Y : ℕ -> Ω -> ℝ}
+    (hXY :
+      (∑' n : ℕ, P {ω : Ω | X n ω ≠ Y n ω}) ≠ ∞) :
+    ∀ᵐ ω ∂P, ∀ᶠ n in atTop, X n ω = Y n ω := by
+  filter_upwards
+    [StatInference.ProbabilityMeasure.ae_eventually_notMem
+      (μ := P) (s := fun n : ℕ => {ω : Ω | X n ω ≠ Y n ω}) hXY] with ω hω
+  filter_upwards [hω] with n hn
+  simpa using hn
+
+/--
+Durrett 2019, Theorem 2.5.8 support: if mismatch probabilities are summable,
+then almost-sure convergence transfers across the eventual equality generated
+by Borel-Cantelli.
+-/
+theorem durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_tsum_mismatch_ne_top_of_ae_randomSeriesConverges
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X Y : ℕ -> Ω -> ℝ}
+    (hXY :
+      (∑' n : ℕ, P {ω : Ω | X n ω ≠ Y n ω}) ≠ ∞)
+    (hY : ∀ᵐ ω ∂P, durrett2019_theorem_2_5_6_randomSeriesConverges Y ω) :
+    ∀ᵐ ω ∂P, durrett2019_theorem_2_5_6_randomSeriesConverges X ω :=
+  durrett2019_theorem_2_5_8_ae_randomSeriesConverges_of_ae_eventuallyEq_of_ae_randomSeriesConverges
+    (P := P) (X := X) (Y := Y)
+    (durrett2019_theorem_2_5_8_ae_eventuallyEq_of_tsum_measure_ne_top
+      (P := P) (X := X) (Y := Y) hXY)
+    hY
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
