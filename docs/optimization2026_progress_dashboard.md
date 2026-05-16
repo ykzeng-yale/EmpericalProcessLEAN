@@ -548,6 +548,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   These reduce pathwise coordinate control to the moving-center distance
   certificate `dist x_N xbar0 <= R` plus
   `R <= rho * slack_i(xbar0)`, reusing `PiLp.norm_apply_le`.
+  The source-slack floor specialization now adds
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants`
+  and
+  `chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants`.
+  These replace the coordinatewise radius comparison with a single source
+  slack floor `sFloor` and scalar side `R <= rho * sFloor`.
   This is the direct entrypoint for compact/bounded feasible-range arguments
   that naturally produce least-upper-bound data; the Mathlib reuse is
   `IsCompact.bddAbove_image`, `BddAbove.mono`, `Set.image_mono`,

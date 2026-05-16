@@ -838,6 +838,13 @@ These let a moving-center proof give only a range-subtype distance bound
 `dist x_N xbar0 <= R` plus coordinate comparisons
 `R <= rho * slack_i(xbar0)`; `PiLp.norm_apply_le` turns that into the
 coordinate-displacement certificate above.
+The source-slack floor specialization now adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants`.
+These replace the per-coordinate comparison by a single floor certificate
+`sFloor <= slack_i(xbar0)` for all `i` plus the scalar radius side
+`R <= rho * sFloor`.
 This lets compactness or boundedness proofs feed Mathlib least-upper-bound
 data directly: prove the feasible translated slack range is compact (or show
 it sits inside a compact closure/envelope, or show each coordinate image is

@@ -332,6 +332,12 @@ and
 Use these when geometry naturally gives a range-subtype moving-center distance
 bound `dist x_N xbar0 <= R`; the remaining coordinate comparison is
 `R <= rho * slack_i(xbar0)`.
+The source-slack floor specialization now adds
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_postThresholdSourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants`
+and
+`chewi1316_polytopeSlackNegLog_exists_positive_mainStage_initial_decrement_le_quarter_of_preliminaryPath_sequence_closedForm_sourceStart_sourcePreliminaryNextNewtonSteps_actualPreDecrementHalfContractingBudget_eventuallySourceCenteredRadiusFloorBound_exactBudget_succ_noFactor_standardConstants`.
+Use these when the geometry produces a single source slack lower bound
+`sFloor <= slack_i(xbar0)` and `R <= rho * sFloor`.
 Use this when the bounded-polytope proof supplies `BddAbove` coordinate images
 or compactness facts.  Prefer the compact-superset form when the strict
 positive-orthant feasible set is open but contained in a compact
