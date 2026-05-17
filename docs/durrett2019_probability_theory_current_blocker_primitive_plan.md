@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V492
+## Live In-Thread Goal Prompt V493
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -37,7 +37,9 @@ wrappers for the infinite product coordinate process.  V491 adds one-based
 finite-prefix cylinder displays from joint infinite-product laws and canonical
 coordinates with prefix-indexed cylinder sets.  V492 adds reusable
 event-independence extraction wrappers from `iIndepFun`, joint
-`Measure.infinitePi` laws, and canonical product coordinates.
+`Measure.infinitePi` laws, and canonical product coordinates.  V493 adds
+closed/open real half-line event-independence wrappers for source, one-based
+joint-law, and one-based canonical iid forms.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -57,7 +59,23 @@ solved one-based finite-prefix joint/canonical cylinder displays with
 prefix-indexed sets,
 solved event-independence extraction wrappers from source/joint/canonical
 product-law hypotheses,
+solved real half-line event-independence wrappers for closed/open empirical-CDF
+events,
 or old app-level stale prompts.
+
+Latest verified target V493 specializes Durrett Theorem 2.1.11
+event-independence to the real half-line events used by Theorem 2.4.9:
+`durrett2019_theorem_2_1_11_real_Iic_iIndepSet_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_real_Iio_iIndepSet_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_shift_real_Iic_iIndepSet_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_shift_real_Iio_iIndepSet_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_shift_real_Iic_iIndepSet_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_11_iid_shift_real_Iio_iIndepSet_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_11_canonical_iid_shift_real_Iic_iIndepSet`, and
+`durrett2019_theorem_2_1_11_canonical_iid_shift_real_Iio_iIndepSet`.
+These wrappers expose `{X_i <= x_i}` and `{X_i < x_i}` independence directly,
+so empirical-CDF and left-limit consumers no longer need to instantiate the
+generic preimage-event theorem by hand.
 
 Latest verified target V492 adds event-independence support for Durrett
 Theorem 2.1.11:
@@ -4513,6 +4531,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V492` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V493` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

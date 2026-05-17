@@ -1295,6 +1295,144 @@ theorem durrett2019_theorem_2_1_11_iIndepSet_preimage_of_hasLaw_infinitePi
       hSource.2 hX_meas hA
 
 /--
+Durrett 2019, Theorem 2.1.11, closed real half-line event-independence form.
+
+This specializes the event-facing independence bridge to the empirical-CDF
+events `{X_i <= x_i}` used later in Theorem 2.4.9.
+-/
+theorem durrett2019_theorem_2_1_11_real_Iic_iIndepSet_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (hX_meas : ∀ i, Measurable (X i)) (x : ℕ -> ℝ) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {ω : Ω | X i ω ≤ x i}) μ := by
+  simpa [Set.mem_Iic] using
+    durrett2019_theorem_2_1_11_iIndepSet_preimage_of_iIndepFun
+      (S := fun _ : ℕ => ℝ) (X := X)
+      (A := fun i : ℕ => Set.Iic (x i))
+      hindep hX_meas (fun _ => measurableSet_Iic)
+
+/--
+Durrett 2019, Theorem 2.1.11, open real half-line event-independence form.
+
+This is the left-limit analogue of the closed half-line wrapper, exposing the
+events `{X_i < x_i}` directly.
+-/
+theorem durrett2019_theorem_2_1_11_real_Iio_iIndepSet_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (hX_meas : ∀ i, Measurable (X i)) (x : ℕ -> ℝ) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {ω : Ω | X i ω < x i}) μ := by
+  simpa [Set.mem_Iio] using
+    durrett2019_theorem_2_1_11_iIndepSet_preimage_of_iIndepFun
+      (S := fun _ : ℕ => ℝ) (X := X)
+      (A := fun i : ℕ => Set.Iio (x i))
+      hindep hX_meas (fun _ => measurableSet_Iio)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based closed real half-line
+event-independence form.
+-/
+theorem durrett2019_theorem_2_1_11_shift_real_Iic_iIndepSet_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (hX_meas : ∀ i, Measurable (X i)) (x : ℕ -> ℝ) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {ω : Ω | X (i + 1) ω ≤ x i}) μ := by
+  simpa [Set.mem_Iic] using
+    durrett2019_theorem_2_1_11_iIndepSet_shift_preimage_of_iIndepFun
+      (S := fun _ : ℕ => ℝ) (X := X)
+      (A := fun i : ℕ => Set.Iic (x i))
+      hindep hX_meas (fun _ => measurableSet_Iic)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based open real half-line
+event-independence form.
+-/
+theorem durrett2019_theorem_2_1_11_shift_real_Iio_iIndepSet_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (hX_meas : ∀ i, Measurable (X i)) (x : ℕ -> ℝ) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {ω : Ω | X (i + 1) ω < x i}) μ := by
+  simpa [Set.mem_Iio] using
+    durrett2019_theorem_2_1_11_iIndepSet_shift_preimage_of_iIndepFun
+      (S := fun _ : ℕ => ℝ) (X := X)
+      (A := fun i : ℕ => Set.Iio (x i))
+      hindep hX_meas (fun _ => measurableSet_Iio)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based closed real half-line
+event-independence from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_real_Iic_iIndepSet_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (hX_meas : ∀ i, Measurable (X i)) (x : ℕ -> ℝ) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {ω : Ω | X (i + 1) ω ≤ x i}) μ := by
+  simpa [Set.mem_Iic] using
+    durrett2019_theorem_2_1_11_iid_iIndepSet_shift_preimage_of_hasLaw_infinitePi
+      (ν := ν) (X := X) (A := fun i : ℕ => Set.Iic (x i))
+      hJoint hX_meas (fun _ => measurableSet_Iic)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based open real half-line
+event-independence from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_real_Iio_iIndepSet_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (hX_meas : ∀ i, Measurable (X i)) (x : ℕ -> ℝ) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {ω : Ω | X (i + 1) ω < x i}) μ := by
+  simpa [Set.mem_Iio] using
+    durrett2019_theorem_2_1_11_iid_iIndepSet_shift_preimage_of_hasLaw_infinitePi
+      (ν := ν) (X := X) (A := fun i : ℕ => Set.Iio (x i))
+      hJoint hX_meas (fun _ => measurableSet_Iio)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based canonical iid closed half-line
+event-independence on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_shift_real_Iic_iIndepSet
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (x : ℕ -> ℝ) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {sample : ℕ -> ℝ | sample (i + 1) ≤ x i})
+      (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+  simpa [Set.mem_Iic] using
+    durrett2019_theorem_2_1_11_canonical_iid_shift_preimage_iIndepSet
+      (ν := ν) (A := fun i : ℕ => Set.Iic (x i))
+      (fun _ => measurableSet_Iic)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based canonical iid open half-line
+event-independence on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_shift_real_Iio_iIndepSet
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (x : ℕ -> ℝ) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {sample : ℕ -> ℝ | sample (i + 1) < x i})
+      (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+  simpa [Set.mem_Iio] using
+    durrett2019_theorem_2_1_11_canonical_iid_shift_preimage_iIndepSet
+      (ν := ν) (A := fun i : ℕ => Set.Iio (x i))
+      (fun _ => measurableSet_Iio)
+
+/--
 Durrett 2019, Theorem 2.1.11, arbitrary finite-dimensional product-law form.
 
 For any finite index set `s`, the subfamily `(X_i)_{i ∈ s}` has the
