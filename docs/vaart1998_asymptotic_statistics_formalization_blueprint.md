@@ -19,23 +19,28 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    the next proof packet; the solved-progress ledgers are evidence, not
    instructions to replay.
 
-Current frontier: Theorem 5.41 now has a compiled positive-sample root-set
-source. It states the limit theorem for a positive-sample estimator indexed as
-sample size `n + 1`, prepends `theta0` at sample size zero, uses the empty
-finite sum as an exact root, feeds the existing exact-root-set source endpoint,
-and shifts the distributional conclusion back along `Nat.succ`.  This keeps
-the live route focused on actual positive sample sizes instead of forcing
-sample-size-zero inverse or uniqueness hypotheses.
+Current frontier: Theorem 5.41 now has a compiled positive-sample
+finite-sum-root source. It states the limit theorem for a positive-sample
+estimator indexed as sample size `n + 1`, consumes the textbook finite
+estimating-equation identity directly, packages it as exact-root-set
+membership, prepends `theta0` at sample size zero, feeds the existing
+exact-root-set source endpoint, and shifts the distributional conclusion back
+along `Nat.succ`.  This keeps the live route focused on actual positive sample
+sizes instead of forcing sample-size-zero inverse, uniqueness, or direct
+root-set-membership hypotheses.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_rootSetSource`.
+`vaart1998_theorem_5_41_positiveSample_sumRootSource`.
 
 The newest wrapper adds
+`vaart1998_theorem_5_41_positiveSample_sumRootSource`.  The next proof layer
+should derive the positive finite-sum zero equation from a common-core affine
+display, the nonzero scaled-core inverse lemma when an inverse-defined
+estimator is used, or a concrete model's algebraic estimating equation.
+
+The previous wrapper adds
 `vaart1998_tendstoInMeasure_zero_prepend` and
-`vaart1998_theorem_5_41_positiveSample_rootSetSource`.  The next proof layer
-should construct the positive exact-root-set membership field from common-core
-affine algebra, the nonzero scaled-core inverse lemma, or a concrete model's
-finite-sample estimating equation.
+`vaart1998_theorem_5_41_positiveSample_rootSetSource`.
 
 The previous wrapper adds
 `vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core

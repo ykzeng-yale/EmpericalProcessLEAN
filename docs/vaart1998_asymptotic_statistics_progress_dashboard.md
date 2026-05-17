@@ -15,24 +15,30 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: positive-sample root-set source for Theorem 5.41.
-The live endpoint now states the asymptotic-normality handoff for a
-positive-sample estimator indexed as sample size `n + 1`.  It prepends
-`theta0` at sample size zero, uses the empty finite sum as an exact root,
-reuses the existing exact-root-set Theorem 5.41 source endpoint, and shifts the
-distributional conclusion back by `Nat.succ`.  This removes the artificial
-sample-size-zero inverse/uniqueness obstruction from the current route.
+Latest verified packet: positive-sample finite-sum-root source for Theorem
+5.41.  The live endpoint now states the asymptotic-normality handoff for a
+positive-sample estimator indexed as sample size `n + 1`, consumes the
+textbook finite estimating-equation identity directly, turns it into exact
+root-set membership, prepends `theta0` at sample size zero, reuses the existing
+exact-root-set Theorem 5.41 source endpoint, and shifts the distributional
+conclusion back by `Nat.succ`.  This removes the artificial sample-size-zero
+inverse/uniqueness obstruction and the direct root-set-membership hypothesis
+from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_rootSetSource`.
+`vaart1998_theorem_5_41_positiveSample_sumRootSource`.
 
-The new positive-sample packet adds
+The new positive-sample finite-sum packet adds
+`vaart1998_theorem_5_41_positiveSample_sumRootSource`, building on
+`vaart1998_theorem_5_41_positiveSample_rootSetSource`.  The next blocker is to
+derive the positive finite-sum zero equation from common-core affine algebra or
+from a concrete model's estimating equation.
+
+The previous positive-sample packet adds
 `vaart1998_tendstoInMeasure_zero_prepend` and
 `vaart1998_theorem_5_41_positiveSample_rootSetSource`, building on the previous
 `Nat.succ` convergence-in-distribution bridges and nonzero scaled-core inverse
-lemmas.  The next blocker is to produce the positive root-set membership field
-from the common-core affine algebra or from a concrete model's finite-sample
-estimating equation.
+lemmas.
 
 The previous common-core packet adds
 `vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core
