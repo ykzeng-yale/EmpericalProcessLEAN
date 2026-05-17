@@ -1411,6 +1411,114 @@ theorem durrett2019_theorem_2_1_11_iid_shift_finite_cylinder_prob_of_identDistri
     hindep s hA
 
 /--
+Durrett 2019, Theorem 2.1.11, shifted arbitrary finite-dimensional product law
+from a joint infinite product law.
+
+This is the joint-law counterpart of
+`durrett2019_theorem_2_1_11_iIndepFun_shift_finite_restrict_hasLaw_pi`.
+-/
+theorem durrett2019_theorem_2_1_11_hasLaw_infinitePi_shift_finite_restrict_hasLaw_pi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {ν : ∀ i, Measure (S i)}
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {X : ∀ i, Ω -> S i}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω) (Measure.infinitePi ν) μ)
+    (s : Finset ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : s => X ((i : ℕ) + 1) ω)
+      (Measure.pi fun i : s => ν ((i : ℕ) + 1)) μ := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_11_iIndepFun_shift_finite_restrict_hasLaw_pi
+      hSource.1 hSource.2 s
+
+/--
+Durrett 2019, Theorem 2.1.11, shifted arbitrary finite-dimensional cylinder
+probabilities from a joint infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_hasLaw_infinitePi_shift_finite_cylinder_prob
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {ν : ∀ i, Measure (S i)}
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {X : ∀ i, Ω -> S i} {A : ∀ i, Set (S i)}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω) (Measure.infinitePi ν) μ)
+    (s : Finset ℕ)
+    (hA : ∀ i, i ∈ s -> MeasurableSet (A (i + 1))) :
+    μ {ω | ∀ i, i ∈ s -> X (i + 1) ω ∈ A (i + 1)} =
+      ∏ i ∈ s, ν (i + 1) (A (i + 1)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_11_iIndepFun_shift_finite_cylinder_prob
+      hSource.1 hSource.2 s hA
+
+/--
+Durrett 2019, Theorem 2.1.11, iid shifted arbitrary finite-dimensional product
+law from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_shift_finite_restrict_hasLaw_pi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (s : Finset ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : s => X ((i : ℕ) + 1) ω)
+      (Measure.pi fun _ : s => ν) μ := by
+  simpa using
+    durrett2019_theorem_2_1_11_hasLaw_infinitePi_shift_finite_restrict_hasLaw_pi
+      (S := fun _ : ℕ => S) (ν := fun _ : ℕ => ν)
+      (X := X) hJoint s
+
+/--
+Durrett 2019, Theorem 2.1.11, iid shifted arbitrary finite-dimensional cylinder
+probabilities from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_shift_finite_cylinder_prob
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S} {A : ℕ -> Set S}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (s : Finset ℕ)
+    (hA : ∀ i, i ∈ s -> MeasurableSet (A (i + 1))) :
+    μ {ω | ∀ i, i ∈ s -> X (i + 1) ω ∈ A (i + 1)} =
+      ∏ i ∈ s, ν (A (i + 1)) := by
+  simpa using
+    durrett2019_theorem_2_1_11_hasLaw_infinitePi_shift_finite_cylinder_prob
+      (S := fun _ : ℕ => S) (ν := fun _ : ℕ => ν)
+      (X := X) (A := A) hJoint s hA
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based iid finite-prefix cylinder
+probabilities from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_shift_range_cylinder_prob
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S} {A : ℕ -> Set S}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ)
+    (hA : ∀ i, i ∈ Finset.range n -> MeasurableSet (A (i + 1))) :
+    μ {ω | ∀ i, i ∈ Finset.range n -> X (i + 1) ω ∈ A (i + 1)} =
+      ∏ i ∈ Finset.range n, ν (A (i + 1)) :=
+  durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_shift_finite_cylinder_prob
+    (hJoint := hJoint) (s := Finset.range n) hA
+
+/--
 Durrett 2019, Theorem 2.1.11, general finite prefix product-law form.
 
 For a sequence of independent variables with coordinate laws `ν_i`, the vector
