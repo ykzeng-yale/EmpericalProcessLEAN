@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Matrix.Order
+import Mathlib.Analysis.CStarAlgebra.Matrix
 import StatInference.Optimization.Basic
 
 /-!
@@ -10,7 +11,7 @@ A.4's Loewner/PSD order display using mathlib's `MatrixOrder` instance.
 -/
 
 open Matrix
-open scoped MatrixOrder
+open scoped MatrixOrder Matrix.Norms.L2Operator
 
 namespace StatInference
 namespace Optimization
@@ -158,6 +159,85 @@ theorem chewiA5_unit_dotProduct_mulVec_self_le_of_transpose_mul_self_le_scalar_o
   have hbound :=
     (chewiA5_transpose_mul_self_le_scalar_one_iff_dotProduct_bound A C).mp hA v
   simpa [hv] using hbound
+
+/--
+Chewi Definition A.5, operator-norm upper bound from the Loewner bound on
+`Aᵀ A`.  Mathlib's `Matrix.Norms.L2Operator` norm is the Euclidean operator
+norm, so this is the source implication `Aᵀ A <= C^2 I -> ||A||_op <= C`.
+-/
+theorem chewiA5_l2_opNorm_le_of_transpose_mul_self_le_scalar_one
+    [DecidableEq n] {A : Matrix m n ℝ} {C : ℝ}
+    (hC : 0 ≤ C)
+    (hA : (Aᵀ * A) ≤ (C ^ (2 : ℕ)) • (1 : Matrix n n ℝ)) :
+    ‖A‖ ≤ C := by
+  rw [Matrix.l2_opNorm_def]
+  let T : EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ m :=
+    (Matrix.toEuclideanLin (𝕜 := ℝ) (m := m) (n := n)).trans
+      LinearMap.toContinuousLinearMap A
+  change ‖T‖ ≤ C
+  refine T.opNorm_le_bound hC ?_
+  intro x
+  have hbound :=
+    (chewiA5_transpose_mul_self_le_scalar_one_iff_dotProduct_bound A C).mp hA x.ofLp
+  have hTx_sq :
+      ‖T x‖ ^ (2 : ℕ) = dotProduct (A *ᵥ x.ofLp) (A *ᵥ x.ofLp) := by
+    rw [EuclideanSpace.real_norm_sq_eq]
+    simp [T, Matrix.toLpLin_apply, dotProduct, pow_two]
+  have hx_sq : ‖x‖ ^ (2 : ℕ) = dotProduct x.ofLp x.ofLp := by
+    rw [EuclideanSpace.real_norm_sq_eq]
+    simp [dotProduct, pow_two]
+  have hsq :
+      ‖T x‖ ^ (2 : ℕ) ≤ (C * ‖x‖) ^ (2 : ℕ) := by
+    calc
+      ‖T x‖ ^ (2 : ℕ)
+          = dotProduct (A *ᵥ x.ofLp) (A *ᵥ x.ofLp) := hTx_sq
+      _ ≤ C ^ (2 : ℕ) * dotProduct x.ofLp x.ofLp := hbound
+      _ = (C * ‖x‖) ^ (2 : ℕ) := by
+          rw [← hx_sq]
+          ring
+  exact (sq_le_sq₀ (norm_nonneg _) (mul_nonneg hC (norm_nonneg _))).mp hsq
+
+/--
+Chewi Definition A.5, full Loewner/operator-norm bridge for rectangular
+matrices.  For `C >= 0`, the Euclidean operator-norm bound `||A||_op <= C` is
+equivalent to the Loewner bound `Aᵀ A <= C^2 I`.
+-/
+theorem chewiA5_transpose_mul_self_le_scalar_one_iff_l2_opNorm_le
+    [DecidableEq n] {A : Matrix m n ℝ} {C : ℝ} (hC : 0 ≤ C) :
+    (Aᵀ * A) ≤ (C ^ (2 : ℕ)) • (1 : Matrix n n ℝ) ↔ ‖A‖ ≤ C := by
+  constructor
+  · intro hA
+    exact chewiA5_l2_opNorm_le_of_transpose_mul_self_le_scalar_one hC hA
+  · intro hnorm
+    rw [chewiA5_transpose_mul_self_le_scalar_one_iff_dotProduct_bound A C]
+    intro v
+    let T : EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ m :=
+      (Matrix.toEuclideanLin (𝕜 := ℝ) (m := m) (n := n)).trans
+        LinearMap.toContinuousLinearMap A
+    let x : EuclideanSpace ℝ n := WithLp.toLp 2 v
+    have hnorm_T : ‖T‖ ≤ C := by
+      simpa [Matrix.l2_opNorm_def, T] using hnorm
+    have hpoint : ‖T x‖ ≤ C * ‖x‖ := by
+      calc
+        ‖T x‖ ≤ ‖T‖ * ‖x‖ := T.le_opNorm x
+        _ ≤ C * ‖x‖ := mul_le_mul_of_nonneg_right hnorm_T (norm_nonneg x)
+    have hsq :
+        ‖T x‖ ^ (2 : ℕ) ≤ (C * ‖x‖) ^ (2 : ℕ) :=
+      sq_le_sq₀ (norm_nonneg _) (mul_nonneg hC (norm_nonneg _)) |>.mpr hpoint
+    have hTx_sq :
+        ‖T x‖ ^ (2 : ℕ) = dotProduct (A *ᵥ v) (A *ᵥ v) := by
+      rw [EuclideanSpace.real_norm_sq_eq]
+      simp [T, x, Matrix.toLpLin_apply, dotProduct, pow_two]
+    have hx_sq : ‖x‖ ^ (2 : ℕ) = dotProduct v v := by
+      rw [EuclideanSpace.real_norm_sq_eq]
+      simp [x, dotProduct, pow_two]
+    calc
+      dotProduct (A *ᵥ v) (A *ᵥ v)
+          = ‖T x‖ ^ (2 : ℕ) := hTx_sq.symm
+      _ ≤ (C * ‖x‖) ^ (2 : ℕ) := hsq
+      _ = C ^ (2 : ℕ) * dotProduct v v := by
+          rw [← hx_sq]
+          ring
 
 end Optimization
 end StatInference

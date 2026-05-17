@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V49` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V50` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,7 +30,7 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V49 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V50 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved to Appendix A matrix infrastructure.  The new module
 `StatInference/Optimization/AppendixA.lean` compiles and is root-imported,
@@ -44,9 +44,13 @@ PSD and quadratic-form substrate for `A^T A`.  The V49 layer adds
 `chewiA5_transpose_mul_self_le_scalar_one_iff_dotProduct_bound` and
 `chewiA5_unit_dotProduct_mulVec_self_le_of_transpose_mul_self_le_scalar_one`,
 so the source all-vector/unit-vector `A^T A <= C^2 I` bound is now compiled.
-Next source-shaped work should continue with the actual operator-norm/eigenvalue
-bound wrappers after a bounded search of mathlib spectral/operator-norm APIs
-and local `Ellipsoid.lean`/`InteriorPoint.lean` matrix bridges.
+The V50 layer adds `chewiA5_l2_opNorm_le_of_transpose_mul_self_le_scalar_one`
+and `chewiA5_transpose_mul_self_le_scalar_one_iff_l2_opNorm_le`, giving the
+rectangular real-matrix equivalence `A^T A <= C^2 I <-> ||A||_op <= C` for
+`C >= 0`.  Next source-shaped work should continue with the symmetric-square
+corollary `||A||_op <= C <-> -C I <= A <= C I` after a bounded search of
+mathlib Rayleigh/spectral APIs and local `Ellipsoid.lean`/`InteriorPoint.lean`
+matrix bridges.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source

@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V49`, this file's top
+   the full book is complete, route from `Live Goal Prompt V50`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V49
+## Live Goal Prompt V50
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -657,15 +657,29 @@ The local op-norm wrappers in `InteriorPoint.lean` remain useful for the next
 continuous-linear-map layer, but this packet intentionally keeps Appendix A
 independent of the huge `InteriorPoint.lean` import.
 
+Current V50 packet proves the actual Definition A.5 Euclidean operator-norm
+bridge, using mathlib's `Matrix.Norms.L2Operator` norm.  New compiled
+declarations:
+`chewiA5_l2_opNorm_le_of_transpose_mul_self_le_scalar_one` and
+`chewiA5_transpose_mul_self_le_scalar_one_iff_l2_opNorm_le`.  For `C >= 0`,
+the second theorem gives the source-facing equivalence
+`A^T A <= C^2 I <-> ||A||_op <= C` for rectangular real matrices.
+
+Search-first reuse for V50: mathlib `Mathlib.Analysis.CStarAlgebra.Matrix`,
+`Matrix.l2_opNorm_def`, `Matrix.toEuclideanLin`/`Matrix.toLpLin_apply`,
+`ContinuousLinearMap.opNorm_le_bound`, `ContinuousLinearMap.le_opNorm`,
+`EuclideanSpace.real_norm_sq_eq`, and the V49 all-vector bound.  This closes
+the rectangular A.5 operator-norm side without importing local
+`InteriorPoint.lean`.
+
 Next theorem-sized target: continue Appendix A from Definition A.5 by proving
-the actual operator-norm side of the source display, preferably a theorem that
-turns the V49 all-vector/unit-vector bound into
-`‖Matrix.toEuclideanLin A‖ <= C` (or mathlib's matrix `l2_opNorm` surface) and
-then a symmetric-matrix corollary for `-C I <= A <= C I`.  Search first through
-mathlib `Analysis/CStarAlgebra/Matrix`, `Analysis/InnerProductSpace/PiL2`,
-`ContinuousLinearMap.opNorm_*`, Rayleigh quotient lemmas, and local
-`Ellipsoid.lean`/`InteriorPoint.lean` operator-norm bridges.  Create the Chewi
-Lemma 13.16 report only after the PDF screenshot
+the symmetric-matrix corollary `||A||_op <= C <-> -C I <= A <= C I` (or the two
+directions separately) for Hermitian/symmetric square real matrices.  Search
+first through mathlib Rayleigh quotient lemmas,
+`ContinuousLinearMap.norm_eq_iSup_rayleighQuotient`,
+`Matrix.isSymmetric_toEuclideanLin_iff`, `Analysis/Matrix/Spectrum`, and the
+new V50 rectangular bridge before adding any local spectral primitive.  Create
+the Chewi Lemma 13.16 report only after the PDF screenshot
 and report compilation tools are available.  Do not reopen the completed
 §13.16 proof surface unless a regression breaks it.
 Do not reintroduce supplied central-path selectors, supplied minimizers,
@@ -680,9 +694,9 @@ consumers.  The old §13.16 search surface near `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers is only relevant if a later run
-returns to the report/tooling gate; the active V49 Lean proof target is
+returns to the report/tooling gate; the active V50 Lean proof target is
 Appendix A matrix infrastructure.
-Older paragraphs below are cached route history and must not override this V49
+Older paragraphs below are cached route history and must not override this V50
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V49` near the top of
+  `Live Goal Prompt V50` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -63,8 +63,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewiA5_transpose_mul_self_le_scalar_one_iff_dotProduct_bound` and
   `chewiA5_unit_dotProduct_mulVec_self_le_of_transpose_mul_self_le_scalar_one`,
   proving the all-vector and unit-vector `A^T A <= C^2 I` quadratic bound
-  forms.  Next Appendix A step is the actual operator-norm/eigenvalue bound
-  wrapper after a bounded mathlib spectral/operator-norm search.
+  forms.  The V50 layer imports mathlib's l2 matrix operator norm and proves
+  `chewiA5_l2_opNorm_le_of_transpose_mul_self_le_scalar_one` and
+  `chewiA5_transpose_mul_self_le_scalar_one_iff_l2_opNorm_le`, closing
+  `A^T A <= C^2 I <-> ||A||_op <= C` for `C >= 0`.  Next Appendix A step is
+  the symmetric-square corollary `||A||_op <= C <-> -C I <= A <= C I` after a
+  bounded Rayleigh/spectral API search.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations
