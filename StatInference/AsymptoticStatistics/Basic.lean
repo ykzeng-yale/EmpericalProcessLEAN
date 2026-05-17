@@ -323,6 +323,40 @@ theorem vaart1998_tendstoInMeasure_const_of_norm_sub_const_zero
   simpa [sub_zero, Real.norm_eq_abs] using htail
 
 /--
+Continuous mapping for convergence in probability to a constant.
+
+This Chapter 2 form is intentionally local at the limit point: if `X_i`
+converges in measure to the constant `c`, then any map continuous at `c`
+preserves the convergence in measure.
+-/
+theorem vaart1998_tendstoInMeasure_continuousAt_const
+    {ι Ω E F : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [PseudoMetricSpace E] [PseudoMetricSpace F]
+    {l : Filter ι} {X : ι -> Ω -> E} {c : E} {g : E -> F}
+    (hg : ContinuousAt g c)
+    (hX : TendstoInMeasure P X l (fun _ : Ω => c)) :
+    TendstoInMeasure P (fun i ω => g (X i ω)) l
+      (fun _ : Ω => g c) := by
+  rw [MeasureTheory.tendstoInMeasure_iff_dist]
+  intro ε hε
+  rw [Metric.continuousAt_iff] at hg
+  rcases hg ε hε with ⟨δ, hδpos, hδ⟩
+  have hXδ :
+      Tendsto
+        (fun i => P {ω : Ω | δ ≤ dist (X i ω) c})
+        l (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_dist.mp hX) δ hδpos
+  refine
+    tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hXδ
+      (fun _ => zero_le) ?_
+  intro i
+  exact measure_mono (by
+    intro ω hω
+    exact not_lt.mp (by
+      intro hdist
+      exact not_lt_of_ge hω (hδ (x := X i ω) hdist)))
+
+/--
 VdV&W tightness of a sequence of laws gives the real-valued norm-tail bound
 used by van der Vaart's `O_P(1)` criterion.
 
