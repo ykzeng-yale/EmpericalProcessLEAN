@@ -46431,6 +46431,251 @@ theorem vaart1998_theorem_5_41_positiveSample_sumRootSource
       hObservationSecondDerivative_eq_fderiv_observationDerivativeAt
 
 /--
+The positive-sample estimator obtained by solving a common-core affine
+estimating equation.  For sample size `n + 1`, the target core value is the
+negative average offset.
+-/
+def vaart1998PositiveCommonObservationCoreInverseEstimator
+    {Observation Coord Param : Type*}
+    (commonObservationCoreRightInverse : (Coord -> ℝ) -> Param -> ℝ)
+    (observationOffset : Observation -> Coord -> ℝ)
+    (n : ℕ) (sample : ℕ -> Observation) : Param -> ℝ :=
+  commonObservationCoreRightInverse
+    (-(((n + 1 : ℕ) : ℝ)⁻¹ •
+      (∑ i : Fin (n + 1), observationOffset (sample i.val))))
+
+/--
+The selected common-core inverse estimator solves the positive-sample
+unnormalized finite estimating equation.
+-/
+theorem vaart1998_positiveCommonObservationCoreInverseEstimator_sum_zero
+    {Observation Coord Param : Type*}
+    (observationEstimatingMap : Observation -> (Param -> ℝ) -> Coord -> ℝ)
+    (commonObservationCore : (Param -> ℝ) -> Coord -> ℝ)
+    (commonObservationCoreRightInverse : (Coord -> ℝ) -> Param -> ℝ)
+    (observationOffset : Observation -> Coord -> ℝ)
+    (hObservationEstimatingMap_commonAffine : ∀ observation : Observation,
+      ∀ theta : Param -> ℝ,
+        observationEstimatingMap observation theta =
+          commonObservationCore theta + observationOffset observation)
+    (hCommonObservationCore_rightInverse : ∀ y : Coord -> ℝ,
+      commonObservationCore (commonObservationCoreRightInverse y) = y)
+    (n : ℕ) (sample : ℕ -> Observation) :
+    (∑ i : Fin (n + 1),
+      observationEstimatingMap (sample i.val)
+        (vaart1998PositiveCommonObservationCoreInverseEstimator
+          commonObservationCoreRightInverse observationOffset n sample)) = 0 := by
+  let offsetSum : Coord -> ℝ :=
+    ∑ i : Fin (n + 1), observationOffset (sample i.val)
+  let theta : Param -> ℝ :=
+    vaart1998PositiveCommonObservationCoreInverseEstimator
+      commonObservationCoreRightInverse observationOffset n sample
+  have htheta_core :
+      commonObservationCore theta =
+        -(((n + 1 : ℕ) : ℝ)⁻¹ • offsetSum) := by
+    simpa [theta, offsetSum,
+      vaart1998PositiveCommonObservationCoreInverseEstimator] using
+      hCommonObservationCore_rightInverse
+        (-(((n + 1 : ℕ) : ℝ)⁻¹ • offsetSum))
+  have hn_real : (((n + 1 : ℕ) : ℝ) ≠ 0) := by
+    exact_mod_cast (Nat.succ_ne_zero n)
+  calc
+    (∑ i : Fin (n + 1),
+      observationEstimatingMap (sample i.val)
+        (vaart1998PositiveCommonObservationCoreInverseEstimator
+          commonObservationCoreRightInverse observationOffset n sample))
+        = ∑ i : Fin (n + 1),
+            (commonObservationCore theta + observationOffset (sample i.val)) := by
+          apply Finset.sum_congr rfl
+          intro i _
+          simpa [theta] using
+            hObservationEstimatingMap_commonAffine (sample i.val) theta
+    _ = (∑ _ : Fin (n + 1), commonObservationCore theta) + offsetSum := by
+          simp [offsetSum, Finset.sum_add_distrib]
+    _ = ((n + 1 : ℕ) : ℝ) • commonObservationCore theta + offsetSum := by
+          rw [vaart1998_finiteSum_commonObservationCore_eq_nat_smul
+            commonObservationCore (n + 1) theta]
+    _ = ((n + 1 : ℕ) : ℝ) •
+          (-(((n + 1 : ℕ) : ℝ)⁻¹ • offsetSum)) + offsetSum := by
+          rw [htheta_core]
+    _ = 0 := by
+          rw [smul_neg, smul_smul, mul_inv_cancel₀ hn_real, one_smul,
+            neg_add_cancel]
+
+/--
+van der Vaart 1998, Theorem 5.41, positive-sample common-core inverse source
+endpoint.
+
+This wrapper is the model-facing positive-sample affine route: a common-core
+right inverse applied to the negative average offset supplies the finite-sum
+zero equation consumed by
+`vaart1998_theorem_5_41_positiveSample_sumRootSource`.
+-/
+theorem vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseSource
+    {Ω' Observation Coord Param : Type*} [Fintype Coord] [Fintype Param]
+    [DecidableEq Param]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace Observation]
+    [PseudoMetricSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)] [CompleteSpace (Coord -> ℝ)]
+    [MeasurableSpace (Param -> ℝ)] [SecondCountableTopology (Param -> ℝ)]
+    [BorelSpace (Param -> ℝ)] [OpensMeasurableSpace (Param -> ℝ)]
+    [CompleteSpace (Param -> ℝ)]
+    [MeasurableSub₂ (Param -> ℝ)] [MeasurableSMul₂ ℝ (Param -> ℝ)]
+    [PseudoMetricSpace (Coord × Param -> ℝ)]
+    [SecondCountableTopology (Coord × Param -> ℝ)]
+    [BorelSpace (Coord × Param -> ℝ)]
+    [OpensMeasurableSpace (Coord × Param -> ℝ)]
+    [CompleteSpace (Coord × Param -> ℝ)]
+    [SecondCountableTopology ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [OpensMeasurableSpace ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableAdd₂ ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableAdd₂ ((Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ
+      ((Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    (V : (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (Vinv : (Coord -> ℝ) →L[ℝ] (Param -> ℝ))
+    (observationEstimatingMap : Observation -> (Param -> ℝ) -> Coord -> ℝ)
+    (observationDerivativeAt :
+      Observation -> (Param -> ℝ) ->
+        (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (observationSecondDerivative :
+      Observation -> (Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (envelope : Observation -> ℝ)
+    {observationLaw : Measure Observation} [IsProbabilityMeasure observationLaw]
+    {theta0 : Param -> ℝ}
+    (commonObservationCore : (Param -> ℝ) -> Coord -> ℝ)
+    (commonObservationCoreRightInverse : (Coord -> ℝ) -> Param -> ℝ)
+    (observationOffset : Observation -> Coord -> ℝ)
+    {Z : Ω' -> Coord -> ℝ}
+    (hLeftInverse : ∀ x : Param -> ℝ, Vinv (V x) = x)
+    (hObservationEstimatingMapTheta0_coordinate_meas : ∀ coordinate : Coord,
+      Measurable
+        (fun observation : Observation =>
+          observationEstimatingMap observation theta0 coordinate))
+    (hObservationEstimatingMapTheta0_coordinate_memLp : ∀ coordinate : Coord,
+      MemLp
+        (fun observation : Observation =>
+          observationEstimatingMap observation theta0 coordinate)
+        2 observationLaw)
+    (hObservationEstimatingMapTheta0_coordinate_mean_zero :
+      ∀ coordinate : Coord,
+        (∫ observation,
+          observationEstimatingMap observation theta0 coordinate
+            ∂observationLaw) = 0)
+    (hObservationDerivativeAt_joint_measurable_source :
+      Measurable
+        (fun p : Observation × (Param -> ℝ) =>
+          observationDerivativeAt p.1 p.2))
+    (hObservationDerivativeAtTheta0_operator_integrable :
+      Integrable
+        (fun observation : Observation =>
+          observationDerivativeAt observation theta0)
+        observationLaw)
+    (hV_observationDerivativeAtTheta0_operator_mean :
+      (∫ observation,
+        observationDerivativeAt observation theta0 ∂observationLaw) = V)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_mean_zero : (∫ ω, Z ω ∂Q) = 0)
+    (Gamma : Coord -> Coord -> ℝ)
+    (hZ_centered_product : ∀ i j : Coord,
+      (∫ ω, Z ω i * Z ω j ∂Q) = Gamma i j)
+    (hObservationEstimatingMapTheta0_centered_product : ∀ i j : Coord,
+      (∫ observation,
+        observationEstimatingMap observation theta0 i *
+          observationEstimatingMap observation theta0 j ∂observationLaw) =
+        Gamma i j)
+    (hObservationEstimatingMap_commonAffine : ∀ observation : Observation,
+      ∀ theta : Param -> ℝ,
+        observationEstimatingMap observation theta =
+          commonObservationCore theta + observationOffset observation)
+    (hCommonObservationCore_rightInverse : ∀ y : Coord -> ℝ,
+      commonObservationCore (commonObservationCoreRightInverse y) = y)
+    (hPositiveEstimator_consistency :
+      TendstoInMeasure (Measure.infinitePi (fun _ : ℕ => observationLaw))
+        (vaart1998PositiveCommonObservationCoreInverseEstimator
+          commonObservationCoreRightInverse observationOffset)
+        atTop (fun _ : ℕ -> Observation => theta0))
+    (hEnvelope_meas : Measurable envelope)
+    (hAbsEnvelope_integrable : Integrable (fun x => |envelope x|) observationLaw)
+    (hObservationSecondDerivative_measurable :
+      Measurable observationSecondDerivative)
+    (hObservationSecondDerivative_bound : ∀ x,
+      ‖observationSecondDerivative x‖ ≤ |envelope x|)
+    (hParamMeasurableSpace_le_pi :
+      (inferInstance : MeasurableSpace (Param -> ℝ)) ≤
+        @MeasurableSpace.pi Param (fun _ : Param => ℝ)
+          (fun _ : Param => inferInstance))
+    (hPositiveEstimator_coordinate_meas : ∀ n : ℕ, ∀ param : Param,
+      Measurable
+        (fun sample : ℕ -> Observation =>
+          vaart1998PositiveCommonObservationCoreInverseEstimator
+            commonObservationCoreRightInverse observationOffset n sample param))
+    (hContDiffObservationEstimatingMap_univ : ∀ observation : Observation,
+      ContDiffOn ℝ 1 (observationEstimatingMap observation) Set.univ)
+    (hObservationDerivativeAt_eq_fderiv_observationEstimatingMap :
+      ∀ observation : Observation, ∀ theta : Param -> ℝ,
+        fderiv ℝ (observationEstimatingMap observation) theta =
+          observationDerivativeAt observation theta)
+    (hContDiffObservationDerivativeAt_univ : ∀ observation : Observation,
+      ContDiffOn ℝ 1 (observationDerivativeAt observation) Set.univ)
+    (hObservationSecondDerivative_eq_fderiv_observationDerivativeAt :
+      ∀ observation : Observation, ∀ theta : Param -> ℝ,
+        fderiv ℝ (observationDerivativeAt observation) theta =
+          observationSecondDerivative observation) :
+    TendstoInDistribution
+      (fun (n : ℕ) sample =>
+        √((n + 1 : ℕ) : ℝ) •
+          (vaart1998PositiveCommonObservationCoreInverseEstimator
+              commonObservationCoreRightInverse observationOffset n sample -
+            theta0))
+      atTop
+      (fun ω => (-Vinv : (Coord -> ℝ) →L[ℝ] (Param -> ℝ)) (Z ω))
+      (fun _ => Measure.infinitePi (fun _ : ℕ => observationLaw)) Q := by
+  have hPositiveEstimator_sum_zero :
+      ∀ n : ℕ, ∀ sample : ℕ -> Observation,
+        (∑ i : Fin (n + 1),
+          observationEstimatingMap (sample i.val)
+            (vaart1998PositiveCommonObservationCoreInverseEstimator
+              commonObservationCoreRightInverse observationOffset n sample)) = 0 := by
+    intro n sample
+    exact
+      vaart1998_positiveCommonObservationCoreInverseEstimator_sum_zero
+        observationEstimatingMap commonObservationCore
+        commonObservationCoreRightInverse observationOffset
+        hObservationEstimatingMap_commonAffine
+        hCommonObservationCore_rightInverse n sample
+  exact
+    vaart1998_theorem_5_41_positiveSample_sumRootSource
+      (Q := Q) (V := V) (Vinv := Vinv)
+      (observationEstimatingMap := observationEstimatingMap)
+      (observationDerivativeAt := observationDerivativeAt)
+      (observationSecondDerivative := observationSecondDerivative)
+      (envelope := envelope) (observationLaw := observationLaw)
+      (theta0 := theta0)
+      (positiveEstimator :=
+        vaart1998PositiveCommonObservationCoreInverseEstimator
+          commonObservationCoreRightInverse observationOffset)
+      (Z := Z)
+      hLeftInverse hObservationEstimatingMapTheta0_coordinate_meas
+      hObservationEstimatingMapTheta0_coordinate_memLp
+      hObservationEstimatingMapTheta0_coordinate_mean_zero
+      hObservationDerivativeAt_joint_measurable_source
+      hObservationDerivativeAtTheta0_operator_integrable
+      hV_observationDerivativeAtTheta0_operator_mean hZ_gaussian
+      hZ_mean_zero Gamma hZ_centered_product
+      hObservationEstimatingMapTheta0_centered_product
+      hPositiveEstimator_consistency hEnvelope_meas hAbsEnvelope_integrable
+      hObservationSecondDerivative_measurable hObservationSecondDerivative_bound
+      hParamMeasurableSpace_le_pi hPositiveEstimator_coordinate_meas
+      hPositiveEstimator_sum_zero hContDiffObservationEstimatingMap_univ
+      hObservationDerivativeAt_eq_fderiv_observationEstimatingMap
+      hContDiffObservationDerivativeAt_univ
+      hObservationSecondDerivative_eq_fderiv_observationDerivativeAt
+
+/--
 van der Vaart 1998, Theorem 5.41, selected-root source endpoint.
 
 This wrapper matches the textbook estimator construction one level more

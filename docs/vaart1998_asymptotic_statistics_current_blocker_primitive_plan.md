@@ -17,21 +17,33 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_sumRootSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
-positive-sample estimator indexed as sample size `n + 1`, assumes the
-textbook finite estimating-equation identity
-`∑ i : Fin (n + 1), observationEstimatingMap (sample i.val)
-(positiveEstimator n sample) = 0`, packages that identity as exact
-root-set membership, prepends `theta0` at sample size zero, applies the
+positive-sample estimator indexed as sample size `n + 1` and defined by the
+common-core inverse expression
+`vaart1998PositiveCommonObservationCoreInverseEstimator`.  The route assumes a
+pointwise common-core affine display
+`observationEstimatingMap observation theta =
+commonObservationCore theta + observationOffset observation` and a right
+inverse
+`commonObservationCore (commonObservationCoreRightInverse y) = y`.  It proves
+the textbook finite estimating-equation identity internally, packages it as
+exact root-set membership, prepends `theta0` at sample size zero, applies the
 compiled exact-root-set Theorem 5.41 source endpoint, and then shifts the
 convergence-in-distribution conclusion back along `Nat.succ`.  This removes
-the artificial `n = 0` left-inverse/root-uniqueness obstruction from the live
-proof route and no longer asks the caller to state root-set membership
+the artificial `n = 0` left-inverse/root-uniqueness obstruction and no longer
+asks the caller to state either root-set membership or finite-sum zero
 directly.
 
-The newest positive-sample finite-sum packet adds
+The newest common-core inverse packet adds
+`vaart1998PositiveCommonObservationCoreInverseEstimator`,
+`vaart1998_positiveCommonObservationCoreInverseEstimator_sum_zero`, and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseSource`.
+It proves the positive finite-sum zero equation from the common-core affine
+display plus a right inverse for the common core.
+
+The previous positive-sample finite-sum packet adds
 `vaart1998_theorem_5_41_positiveSample_sumRootSource`, which turns the
 finite-sum zero equation into the root-set membership consumed by
 `vaart1998_theorem_5_41_positiveSample_rootSetSource`.
@@ -46,15 +58,15 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: prove the positive finite-sum zero equation from a
-common-core affine display or from an actual model's algebraic estimating
-equation, using the nonzero scaled-core inverse lemma only when the estimator
-is defined by a selected inverse expression. Do not route back to sample-size
-zero inverses, arbitrary canonical-selector measurability, direct root
-uniqueness, raw finite-sum-map injectivity, a raw left inverse, aggregate
-finite-sample affine-display hypotheses, arbitrary observation-dependent
-cores, or direct root-set membership when the positive finite-sum route is
-available.
+Next aggressive target: discharge the remaining model-facing fields for the
+explicit common-core inverse estimator, especially coordinate measurability and
+consistency in probability, or instantiate the endpoint on a concrete
+estimating equation from the textbook. Do not route back to sample-size zero
+inverses, arbitrary canonical-selector measurability, direct root uniqueness,
+raw finite-sum-map injectivity, a raw left inverse, aggregate finite-sample
+affine-display hypotheses, arbitrary observation-dependent cores, direct
+root-set membership, or an external finite-sum-zero assumption when the
+common-core right-inverse route is available.
 
 The previous common-core packet adds
 `vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core

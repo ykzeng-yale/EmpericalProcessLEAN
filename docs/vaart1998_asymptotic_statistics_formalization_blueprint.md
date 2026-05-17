@@ -19,20 +19,29 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    the next proof packet; the solved-progress ledgers are evidence, not
    instructions to replay.
 
-Current frontier: Theorem 5.41 now has a compiled positive-sample
-finite-sum-root source. It states the limit theorem for a positive-sample
-estimator indexed as sample size `n + 1`, consumes the textbook finite
-estimating-equation identity directly, packages it as exact-root-set
-membership, prepends `theta0` at sample size zero, feeds the existing
-exact-root-set source endpoint, and shifts the distributional conclusion back
-along `Nat.succ`.  This keeps the live route focused on actual positive sample
-sizes instead of forcing sample-size-zero inverse, uniqueness, or direct
-root-set-membership hypotheses.
+Current frontier: Theorem 5.41 now has a compiled positive-sample common-core
+right-inverse source. It states the limit theorem for the explicit estimator
+`vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
+finite estimating-equation identity from a pointwise common-core affine display
+and a common-core right inverse, packages it as exact-root-set membership,
+prepends `theta0` at sample size zero, feeds the existing exact-root-set source
+endpoint, and shifts the distributional conclusion back along `Nat.succ`.
+This keeps the live route focused on actual positive sample sizes instead of
+forcing sample-size-zero inverse, uniqueness, direct root-set-membership, or
+external finite-sum-zero hypotheses.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_sumRootSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseSource`.
 
 The newest wrapper adds
+`vaart1998PositiveCommonObservationCoreInverseEstimator`,
+`vaart1998_positiveCommonObservationCoreInverseEstimator_sum_zero`, and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseSource`.
+The next proof layer should discharge measurability and consistency for the
+explicit inverse estimator, or instantiate it on a concrete model's algebraic
+estimating equation.
+
+The previous wrapper adds
 `vaart1998_theorem_5_41_positiveSample_sumRootSource`.  The next proof layer
 should derive the positive finite-sum zero equation from a common-core affine
 display, the nonzero scaled-core inverse lemma when an inverse-defined

@@ -15,24 +15,32 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: positive-sample finite-sum-root source for Theorem
-5.41.  The live endpoint now states the asymptotic-normality handoff for a
-positive-sample estimator indexed as sample size `n + 1`, consumes the
-textbook finite estimating-equation identity directly, turns it into exact
-root-set membership, prepends `theta0` at sample size zero, reuses the existing
+Latest verified packet: positive-sample common-core right-inverse source for
+Theorem 5.41.  The live endpoint now states the asymptotic-normality handoff
+for the explicit estimator
+`vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
+finite estimating-equation identity from a pointwise common-core affine
+display and a right inverse for the common core, turns it into exact root-set
+membership, prepends `theta0` at sample size zero, reuses the existing
 exact-root-set Theorem 5.41 source endpoint, and shifts the distributional
 conclusion back by `Nat.succ`.  This removes the artificial sample-size-zero
-inverse/uniqueness obstruction and the direct root-set-membership hypothesis
-from the current route.
+inverse/uniqueness obstruction plus the direct root-set-membership and
+finite-sum-zero hypotheses from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_sumRootSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseSource`.
 
-The new positive-sample finite-sum packet adds
+The new common-core inverse packet adds
+`vaart1998PositiveCommonObservationCoreInverseEstimator`,
+`vaart1998_positiveCommonObservationCoreInverseEstimator_sum_zero`, and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseSource`.
+The next blocker is to discharge coordinate measurability and consistency for
+that explicit inverse estimator, or instantiate it on a concrete textbook
+estimating equation.
+
+The previous positive-sample finite-sum packet adds
 `vaart1998_theorem_5_41_positiveSample_sumRootSource`, building on
-`vaart1998_theorem_5_41_positiveSample_rootSetSource`.  The next blocker is to
-derive the positive finite-sum zero equation from common-core affine algebra or
-from a concrete model's estimating equation.
+`vaart1998_theorem_5_41_positiveSample_rootSetSource`.
 
 The previous positive-sample packet adds
 `vaart1998_tendstoInMeasure_zero_prepend` and
