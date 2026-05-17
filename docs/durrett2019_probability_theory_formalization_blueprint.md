@@ -27,21 +27,23 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V479`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V480`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V479: stay on Durrett Theorem 2.4.9
+Current immediate target after V480: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
 V478 adds Durrett Theorem 2.1.12 nonnegative separated product-measure and
 independent-pair product-expectation wrappers; V479 adds law-side Theorem
 2.1.12 nonnegative and integrable separated-product wrappers from `HasLaw`
-hypotheses.  The next packet should close only a proved-missing 2.4.9 display
-or add the next Chapter 2.1 product-law/product-expectation wrapper that
-directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+hypotheses; V480 adds law-side Theorem 2.1.13 finite/range/Ico
+product-expectation and iid power wrappers.  The next packet should close only
+a proved-missing 2.4.9 display or add the next Chapter 2.1
+product-law/product-expectation wrapper that directly supports 2.4.9 or the
+adjacent Kolmogorov-maximal route.
 Do not return to scalar-kernel estimates, annulus mass summability, concrete
 majorant integrability, display-wrapper plumbing, branch-combination plumbing,
 reciprocal-growth conversion, monotone-convergence shell, linear-tail transfer,
@@ -49,7 +51,8 @@ layer-cake/counting plumbing, easy growth cleanup, infinite-mean display
 polish, tail-series indexing polish, the nonnegative finite-product
 expectation wrappers, the nonnegative independent-pair separated
 product-expectation wrappers, or the law-side separated product-expectation
-wrappers unless a focused source check exposes a missing handoff.
+wrappers, or the law-side finite-product expectation/power wrappers unless a
+focused source check exposes a missing handoff.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.4.9
 Glivenko-Cantelli and Chapter 2.1 support in
