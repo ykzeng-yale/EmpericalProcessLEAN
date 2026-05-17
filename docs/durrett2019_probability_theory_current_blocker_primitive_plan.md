@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V480
+## Live In-Thread Goal Prompt V481
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -28,6 +28,8 @@ branch and the integrable Bochner-integral branch.
 V480 adds law-side Durrett Theorem 2.1.13 finite/range/Ico product-expectation
 wrappers from `iIndepFun`, individual `HasLaw` hypotheses, and law-side
 integrability, including iid power forms.
+V481 adds the measurable law-side nonnegative `ℝ≥0∞` branch of Durrett Theorem
+2.1.13, including finite/range/Ico product-expectation and iid power forms.
 Do not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -63,7 +65,7 @@ integrability instantiation, the solved lintegral infinite-mean display, the
 solved unshifted-to-one-based divergent tail-series display, or the solved
 nonnegative finite-product, independent-pair separated product-expectation,
 law-side separated product-expectation, and law-side finite-product
-expectation/power wrappers.
+expectation/power wrappers, including the law-side nonnegative `ℝ≥0∞` branch.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -71,6 +73,19 @@ source-facing 2.4.9 display only if search proves it is absent; otherwise add
 the next Chapter 2.1 product-law/product-expectation wrapper that directly
 supports 2.4.9 or the adjacent Kolmogorov-maximal route.  Do not return to
 2.5.13 or old app-level stale prompts.
+
+Latest verified target V481 adds the measurable law-side nonnegative branch of
+Durrett Theorem 2.1.13:
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iid_lintegral_finset_law_prod_eq_pow_lintegral`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_law_prod_eq_pow_lintegral`,
+and
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_prod_eq_pow_lintegral`.
+These wrappers combine `iIndepFun`, coordinate `HasLaw`, coordinate
+measurability, and measurable `ℝ≥0∞` test functions to produce finite product
+expectation and iid power displays.
 
 Latest verified target V480 adds the law-side finite-product branch of
 Durrett Theorem 2.1.13:
@@ -4385,6 +4400,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V480` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V481` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

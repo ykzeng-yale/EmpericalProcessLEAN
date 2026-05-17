@@ -1509,6 +1509,156 @@ theorem durrett2019_theorem_2_1_13_iid_integral_Ico_law_prod_eq_pow_integral
       (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf (Finset.Ico m n)
 
 /--
+Durrett 2019, Theorem 2.1.13, law-side nonnegative finite-subfamily
+expectation factorization.
+
+This is the source-facing nonnegative branch:
+`E[∏ i in s, f_i(X_i)] = ∏ i in s, ∫ f_i dμ_i`, with values in `ℝ≥0∞`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_prod_eq_prod_lintegral
+    {Ω : Type u} {ι : Type w}
+    [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ι -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {μ : ∀ i, Measure (S i)}
+    {f : ∀ i, S i -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (μ i) P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (s : Finset ι) :
+    ∫⁻ ω, ∏ i ∈ s, f i (X i ω) ∂P =
+      ∏ i ∈ s, ∫⁻ x, f i x ∂μ i := by
+  have hcomp_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i => fun ω => f i (X i ω)) P := by
+    simpa [Function.comp_def] using hX.comp f hf
+  have hcomp_meas : ∀ i, Measurable (fun ω => f i (X i ω)) := fun i =>
+    (hf i).comp (hX_meas i)
+  calc
+    ∫⁻ ω, ∏ i ∈ s, f i (X i ω) ∂P =
+        ∏ i ∈ s, ∫⁻ ω, f i (X i ω) ∂P := by
+      exact
+        _root_.ProbabilityTheory.lintegral_prod_eq_prod_lintegral_of_indepFun
+          (μ := P)
+          s (fun i => fun ω => f i (X i ω)) hcomp_indep hcomp_meas
+    _ = ∏ i ∈ s, ∫⁻ x, f i x ∂μ i := by
+      refine Finset.prod_congr rfl ?_
+      intro i _hi
+      simpa [Function.comp_def] using
+        (hLaw i).lintegral_comp (hf i).aemeasurable
+
+/--
+Durrett 2019, Theorem 2.1.13, law-side nonnegative range product
+expectation factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_prod_eq_prod_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {μ : ∀ i, Measure (S i)}
+    {f : ∀ i, S i -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (μ i) P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.range n, f i (X i ω) ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ x, f i x ∂μ i := by
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_prod_eq_prod_lintegral
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13, law-side nonnegative interval product
+expectation factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_prod_eq_prod_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {μ : ∀ i, Measure (S i)}
+    {f : ∀ i, S i -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (μ i) P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (m n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Ico m n, f i (X i ω) ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ x, f i x ∂μ i := by
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_prod_eq_prod_lintegral
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side nonnegative finite-subfamily
+power form.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_finset_law_prod_eq_pow_lintegral
+    {Ω : Type u} {ι : Type w} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    (s : Finset ι) :
+    ∫⁻ ω, ∏ i ∈ s, f (X i ω) ∂P =
+      (∫⁻ x, f x ∂μ) ^ s.card := by
+  calc
+    ∫⁻ ω, ∏ i ∈ s, f (X i ω) ∂P =
+        ∏ i ∈ s, ∫⁻ x, f x ∂μ := by
+      simpa using
+        durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_prod_eq_prod_lintegral
+          (P := P) (S := fun _ : ι => S) (X := X)
+          (μ := fun _ : ι => μ) (f := fun _ : ι => f)
+          hX hLaw hX_meas (fun _ => hf) s
+    _ = (∫⁻ x, f x ∂μ) ^ s.card := by
+      rw [Finset.prod_const]
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side nonnegative range power form.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_law_prod_eq_pow_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.range n, f (X i ω) ∂P =
+      (∫⁻ x, f x ∂μ) ^ n := by
+  simpa using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_law_prod_eq_pow_lintegral
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side nonnegative interval power form.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_prod_eq_pow_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    (m n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Ico m n, f (X i ω) ∂P =
+      (∫⁻ x, f x ∂μ) ^ (n - m) := by
+  simpa [Nat.card_Ico] using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_law_prod_eq_pow_lintegral
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf (Finset.Ico m n)
+
+/--
 Durrett 2019, Theorem 2.1.13, nonnegative finite-subfamily expectation
 factorization.
 
