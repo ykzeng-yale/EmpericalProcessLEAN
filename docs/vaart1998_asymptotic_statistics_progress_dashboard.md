@@ -45,15 +45,22 @@ the raw common-core injectivity hypothesis, the raw population common-core
 equation, and the raw right-inverse-value hypothesis from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearTwoSidedInverseAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearEquivAffineMeanZeroOffsetSource`.
 
-The new two-sided inverse packet adds
+The new continuous-linear-equivalence packet adds
+`vaart1998_commonObservationCore_rightInverse_of_continuousLinearEquiv`,
+`vaart1998_commonObservationCore_leftInverse_of_continuousLinearEquiv`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearEquivAffineMeanZeroOffsetSource`.
+The next blocker is to derive the common-core continuous linear equivalence
+from a concrete linear/common-core model, finite matrix nonsingularity source,
+or textbook estimating equation, or to discharge a live observation-offset
+field for that endpoint.
+
+The previous two-sided inverse packet adds
 `vaart1998_commonObservationCore_injective_of_leftInverse`
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearTwoSidedInverseAffineMeanZeroOffsetSource`.
-The next blocker is to derive the two inverse laws for the continuous linear
-inverse from a concrete linear/common-core model or a textbook estimating
-equation.
 
 The previous affine mean-zero packet adds
 `vaart1998_commonObservationCore_theta0_eq_negative_offsetMean_of_commonAffine_meanZero`
@@ -1156,9 +1163,9 @@ Superseded blocker note: the derivative-transform measurability
 fixed-`theta0` route has been replaced by the positive-sample common-core
 continuous-linear two-sided inverse affine mean-zero observation-law offset
 source. The current live blocker is recorded at the top of this dashboard and
-in the current blocker plan: derive the two inverse laws for the continuous
-linear inverse from a concrete common-core model or instantiate a concrete
-textbook estimating equation.
+in the current blocker plan: derive the continuous linear equivalence from a
+concrete common-core model or instantiate a concrete textbook estimating
+equation.
 Do not replay the centered derivative-coordinate residual algebra,
 smooth/raw/scaled Taylor transfer, score-at-theta0 vector scaling transfer,
 estimator-definition a.e. wrappers, raw-root a.e. wrappers, selected

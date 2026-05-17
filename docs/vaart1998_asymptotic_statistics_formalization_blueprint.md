@@ -47,15 +47,22 @@ measurability, raw common-core injectivity, a raw population common-core
 equation, or a raw right-inverse value at the limiting target.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearTwoSidedInverseAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearEquivAffineMeanZeroOffsetSource`.
 
 The newest wrapper adds
+`vaart1998_commonObservationCore_rightInverse_of_continuousLinearEquiv`,
+`vaart1998_commonObservationCore_leftInverse_of_continuousLinearEquiv`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearEquivAffineMeanZeroOffsetSource`.
+The next proof layer should derive the common-core continuous linear
+equivalence from a concrete linear/common-core model, finite matrix
+nonsingularity source, or textbook estimating equation, or discharge a live
+observation-offset field for that endpoint.
+
+The previous wrapper adds
 `vaart1998_commonObservationCore_injective_of_leftInverse`
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearTwoSidedInverseAffineMeanZeroOffsetSource`.
-The next proof layer should derive the two inverse laws for the continuous
-linear inverse from a concrete linear/common-core model or textbook estimating
-equation.
 
 The previous wrapper adds
 `vaart1998_commonObservationCore_theta0_eq_negative_offsetMean_of_commonAffine_meanZero`
