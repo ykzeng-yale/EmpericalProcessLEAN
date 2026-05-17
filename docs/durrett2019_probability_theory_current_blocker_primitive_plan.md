@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V461
+## Live In-Thread Goal Prompt V462
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -88,6 +88,11 @@ finite sum, the annuli are pairwise disjoint, their lower-cutoff union is
 contained in the tail event `{a_n <= |X_0|}`, and the resulting finite-prefix
 mass inequality now feeds the V460 summability and weighted-annulus-tail
 consumers directly.
+V462 plugs that source mass summability into the convergent-half mean route:
+the monotone annulus partition now supplies the base truncated-integral bound,
+finite base tail summability plus monotone cutoffs prove the truncated means
+normalize to zero, and the scalar-kernel moving-truncated/original endpoints
+now consume those source hypotheses directly.
 Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
@@ -107,15 +112,26 @@ absolute finite-annulus partition/integral bridge, or the solved
 annulus-first-moment-to-identity-mass bridge, or the solved
 mass-weight-summable-to-shifted-tail-bound bridge, or the solved
 finite-prefix-identity(*) consumer, or the solved monotone-annulus
-finite-identity bridge.
-Next aggressive target: plug the V461 source mass summability into the
-source-facing convergent-half mean wrapper, then prove the same
-identity(*)/ratio-monotonicity annulus estimate supplying the scalar
-truncated-square kernel majorization, and finally assemble the Feller
-dichotomy wrapper.
+finite-identity bridge, or the solved source mean/original endpoint bridge.
+Next aggressive target: prove the scalar truncated-square kernel majorization
+from identity(*) and ratio monotonicity, package the ratio hypothesis from the
+textbook monotonicity of `a_n / n`, and then assemble the Feller dichotomy
+wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V462 plugs the V461 source mass summability into the
+convergent-half mean and original endpoint route.  New compiled anchors
+include:
+`durrett2019_theorem_2_5_13_baseAbsTruncIntegral_bound_of_monotone_annulus`,
+`durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_tail_summable_and_monotone`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_monotone`,
+`durrett2019_theorem_2_5_13_iid_tail_tsum_ne_top_of_real_tail_summable`, and
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_monotone`.
+The remaining blocker is no longer the source mean endpoint; it is the
+truncated-square scalar kernel majorization plus packaging the ratio
+monotonicity hypothesis from Durrett's `a_n / n` assumption.
 
 Latest verified target V461 proves the finite-prefix identity(*) inequality
 from monotone half-open annulus partitions and connects it to the existing
@@ -128,9 +144,8 @@ mass-weight summability consumers.  New compiled anchors include:
 `durrett2019_theorem_2_5_13_mass_weight_summable_of_tail_summable_and_monotone`,
 and
 `durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_tail_summable_and_monotone`.
-The remaining blocker is no longer identity(*) summability plumbing; it is to
-feed this source theorem into the mean endpoint and then prove the
-truncated-square scalar kernel majorization.
+The remaining blocker after V461 was to feed this source theorem into the mean
+endpoint, which V462 discharges.
 
 Latest verified target V459 adds the deterministic summable-tail layer for the
 identity(*) mass weights.  New compiled anchors include:

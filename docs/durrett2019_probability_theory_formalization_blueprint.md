@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V461`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V462`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -98,6 +98,11 @@ half-open annulus partition: the weighted prefix is converted to a triangular
 finite sum, finite annulus unions are disjoint and contained in the
 corresponding large-jump tail event, and the resulting source theorem supplies
 mass-weight summability and the weighted base annulus tail bound directly.
+V462 plugs that source theorem into the convergent-half mean route: the
+monotone annulus partition supplies the base truncated-integral bound, finite
+base tail summability plus monotone cutoffs prove the truncated means normalize
+to zero, and the scalar-kernel moving-truncated/original endpoints now consume
+those source hypotheses directly.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -115,7 +120,13 @@ absolute finite-annulus partition/integral bridge, or the solved
 annulus-first-moment-to-identity-mass bridge, or the solved
 mass-weight-summable-to-shifted-tail-bound bridge, or the solved
 finite-prefix-identity(*) consumer, or the solved monotone-annulus
-finite-identity bridge.  New compiled anchors through V461:
+finite-identity bridge, or the solved source mean/original endpoint bridge.
+New compiled anchors through V462:
+`durrett2019_theorem_2_5_13_baseAbsTruncIntegral_bound_of_monotone_annulus`,
+`durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_tail_summable_and_monotone`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_monotone`,
+`durrett2019_theorem_2_5_13_iid_tail_tsum_ne_top_of_real_tail_summable`,
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_monotone`,
 `durrett2019_theorem_2_5_13_range_nat_mul_eq_triangular_Icc_sum`,
 `durrett2019_theorem_2_5_13_baseAbsAnnulus_pairwiseDisjoint`,
 `durrett2019_theorem_2_5_13_baseAbsAnnulus_biUnion_subset_tail`,

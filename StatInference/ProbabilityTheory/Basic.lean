@@ -13702,6 +13702,208 @@ theorem durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_tail_su
       (P := P) (X0 := X0) (a := a) ha_mono hX0_meas htail_summable)
 
 /--
+Durrett 2019, Theorem 2.5.13 mean-annulus support: the monotone annulus
+partition supplies the base-truncated-integral bound in the exact shape
+consumed by the truncated-mean bridge.
+-/
+theorem durrett2019_theorem_2_5_13_baseAbsTruncIntegral_bound_of_monotone_annulus
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (hX0_meas : Measurable X0) :
+    ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        ∀ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_baseAbsTruncIntegral P X0 a (k + 1) ≤
+            |a N| +
+              ∑ r ∈ Finset.Icc (N + 1) n,
+                durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r := by
+  intro N
+  filter_upwards [eventually_ge_atTop N] with n hNn k hk
+  have hk_le : k + 1 ≤ n := Nat.succ_le_of_lt (Finset.mem_range.mp hk)
+  have hbound :=
+    durrett2019_theorem_2_5_13_baseAbsTruncIntegral_le_cutoff_add_annulusIntegral_sum
+      (P := P) (X0 := X0) (a := a)
+      ha_pos ha_mono hX0_meas (N := N) (n := n) (k := k + 1) hNn hk_le
+  simpa [abs_of_pos (ha_pos N)] using hbound
+
+/--
+Durrett 2019, Theorem 2.5.13 source mean bridge: finite base tail series and
+monotone cutoffs now supply the whole textbook truncated-mean estimate.  The
+remaining external ratio hypothesis is exactly Durrett's `a_n / n` monotonicity
+rewritten in the form used by the finite-annulus mean bridge.
+-/
+theorem durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_tail_summable_and_monotone
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (hX_meas : ∀ k : ℕ, Measurable (X k)) (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hratio : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        ∀ r ∈ Finset.Icc (N + 1) n,
+          (n : ℝ) / a n ≤ (r : ℝ) / a r)
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n)
+      atTop (𝓝 0) := by
+  let u : ℕ -> ℝ := fun r : ℕ =>
+    durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r
+  let c : ℕ -> ℝ := fun r : ℕ =>
+    (r : ℝ) * P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}
+  have hc_summable : Summable c := by
+    simpa [c] using
+      (durrett2019_theorem_2_5_13_mass_weight_summable_of_tail_summable_and_monotone
+        (P := P) (X0 := X0) (a := a) ha_mono hX0_meas htail_summable)
+  have hbase_bound : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        ∀ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_baseAbsTruncIntegral P X0 a (k + 1) ≤
+            |a N| + ∑ r ∈ Finset.Icc (N + 1) n, u r := by
+    simpa [u] using
+      (durrett2019_theorem_2_5_13_baseAbsTruncIntegral_bound_of_monotone_annulus
+        (P := P) (X0 := X0) (a := a) ha_pos ha_mono hX0_meas)
+  have hweighted_tail : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        (∑ r ∈ Finset.Icc (N + 1) n, ((r : ℝ) / a r) * u r) ≤
+          ∑' j : ℕ, c (j + N + 1) := by
+    simpa [u, c] using
+      (durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_tail_summable_and_monotone
+        (P := P) (X0 := X0) (a := a)
+        ha_pos ha_mono hX0_meas htail_summable)
+  exact
+    durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_prefix_annulus_bound
+      (P := P) (X := X) (a := a) (B := a) (u := u) (c := c)
+      hn_over_a_tendsto_zero hc_summable
+      (durrett2019_theorem_2_5_13_prefix_annulus_mean_bound_of_baseAbsTruncIntegral_bound
+        (P := P) (X := X) (X0 := X0) (a := a) (B := a) (u := u)
+        ha_pos hX_meas hX_ident hbase_bound)
+      (fun _N _n r _hr =>
+        durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral_nonneg
+          (P := P) (X0 := X0) (a := a) r)
+      hratio hweighted_tail
+
+/--
+Durrett 2019, Theorem 2.5.13 moving-truncated endpoint with the mean estimate
+discharged from finite base tail summability and monotone annulus cutoffs.
+-/
+theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_monotone
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x))
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hratio : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        ∀ r ∈ Finset.Icc (N + 1) n,
+          (n : ℝ) / a n ≤ (r : ℝ) / a r)
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_mean_tendsto
+    (P := P) (X := X) (X0 := X0) (a := a) (g := g)
+    hX_indep hX_meas hX0_meas hX_ident hg_int hg_nonneg hkernel_bound
+    (fun k => ne_of_gt (ha_pos (k + 1)))
+    ha_increment_nonneg ha_shift_atTop
+    (durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_tail_summable_and_monotone
+      (P := P) (X := X) (X0 := X0) (a := a)
+      ha_pos ha_mono hX_meas hX0_meas hX_ident
+      hn_over_a_tendsto_zero hratio htail_summable)
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent-half support: real summability of the
+base tail probabilities gives the finite ENNReal one-based tail series used by
+the Borel-Cantelli moving-truncation handoff.
+-/
+theorem durrett2019_theorem_2_5_13_iid_tail_tsum_ne_top_of_real_tail_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) ≠ ∞ := by
+  have hshift :
+      Summable fun n : ℕ => P.real {ω : Ω | a (n + 1) ≤ |X0 ω|} := by
+    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using
+      ((summable_nat_add_iff
+        (f := fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) 1).2 htail_summable)
+  have hne :
+      (∑' n : ℕ,
+        ENNReal.ofReal (P.real {ω : Ω | a (n + 1) ≤ |X0 ω|})) ≠ ∞ :=
+    hshift.tsum_ofReal_ne_top
+  simpa [measureReal_def] using hne
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent-half source wrapper: finite base tail
+series, monotone cutoffs, and the scalar truncated-square kernel bound imply the
+original normalized-sum endpoint.
+-/
+theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_monotone
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x))
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto a atTop atTop)
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hratio : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        ∀ r ∈ Finset.Icc (N + 1) n,
+          (n : ℝ) / a n ≤ (r : ℝ) / a r)
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, X (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_iid_tail_tsum_ne_top
+    (P := P) (X := X) (X0 := X0) (a := a) ha_atTop hX_ident
+    (durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_monotone
+      (P := P) (X := X) (X0 := X0) (a := a) (g := g)
+      hX_indep hX_meas hX0_meas hX_ident hg_int hg_nonneg hkernel_bound
+      ha_pos ha_mono ha_increment_nonneg ha_shift_atTop
+      hn_over_a_tendsto_zero hratio htail_summable)
+    (durrett2019_theorem_2_5_13_iid_tail_tsum_ne_top_of_real_tail_summable
+      (P := P) (X0 := X0) (a := a) htail_summable)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
