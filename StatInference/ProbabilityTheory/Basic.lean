@@ -2261,6 +2261,210 @@ theorem durrett2019_theorem_2_1_11_canonical_iid_shift_range_cylinder_prob
       (A := A) hCoord.1 hCoord.2.1 n hA
 
 /--
+Durrett 2019, Theorem 2.1.11, finite-prefix closed half-line cylinder
+probabilities from iid source hypotheses.
+-/
+theorem durrett2019_theorem_2_1_11_iid_real_Iic_range_cylinder_prob_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ {ω | ∀ i, i ∈ Finset.range n -> X i ω ≤ x i} =
+      ∏ i ∈ Finset.range n, ν (Set.Iic (x i)) := by
+  simpa [Set.mem_Iic] using
+    durrett2019_theorem_2_1_11_iid_range_cylinder_prob_of_iIndepFun
+      (ν := ν) (X := X) (A := fun i : ℕ => Set.Iic (x i))
+      hLaw hindep n (fun _ _ => measurableSet_Iic)
+
+/--
+Durrett 2019, Theorem 2.1.11, finite-prefix open half-line cylinder
+probabilities from iid source hypotheses.
+-/
+theorem durrett2019_theorem_2_1_11_iid_real_Iio_range_cylinder_prob_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ {ω | ∀ i, i ∈ Finset.range n -> X i ω < x i} =
+      ∏ i ∈ Finset.range n, ν (Set.Iio (x i)) := by
+  simpa [Set.mem_Iio] using
+    durrett2019_theorem_2_1_11_iid_range_cylinder_prob_of_iIndepFun
+      (ν := ν) (X := X) (A := fun i : ℕ => Set.Iio (x i))
+      hLaw hindep n (fun _ _ => measurableSet_Iio)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based finite-prefix closed half-line
+cylinder probabilities from iid source hypotheses.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_real_Iic_range_cylinder_prob_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ {ω | ∀ i, i ∈ Finset.range n -> X (i + 1) ω ≤ x i} =
+      ∏ i ∈ Finset.range n, ν (Set.Iic (x i)) := by
+  simpa [Set.mem_Iic] using
+    durrett2019_theorem_2_1_11_iid_shift_range_cylinder_prob_of_iIndepFun
+      (ν := ν) (X := X) (A := fun i : ℕ => Set.Iic (x i))
+      hLaw hindep n (fun _ _ => measurableSet_Iic)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based finite-prefix open half-line cylinder
+probabilities from iid source hypotheses.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_real_Iio_range_cylinder_prob_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ {ω | ∀ i, i ∈ Finset.range n -> X (i + 1) ω < x i} =
+      ∏ i ∈ Finset.range n, ν (Set.Iio (x i)) := by
+  simpa [Set.mem_Iio] using
+    durrett2019_theorem_2_1_11_iid_shift_range_cylinder_prob_of_iIndepFun
+      (ν := ν) (X := X) (A := fun i : ℕ => Set.Iio (x i))
+      hLaw hindep n (fun _ _ => measurableSet_Iio)
+
+/--
+Durrett 2019, Theorem 2.1.11, finite-prefix closed half-line cylinder
+probabilities from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_real_Iic_range_cylinder_prob_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ {ω | ∀ i, i ∈ Finset.range n -> X i ω ≤ x i} =
+      ∏ i ∈ Finset.range n, ν (Set.Iic (x i)) := by
+  simpa [Set.mem_Iic] using
+    durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_range_cylinder_prob
+      (ν := ν) (X := X) (A := fun i : ℕ => Set.Iic (x i))
+      hJoint n (fun _ _ => measurableSet_Iic)
+
+/--
+Durrett 2019, Theorem 2.1.11, finite-prefix open half-line cylinder
+probabilities from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_real_Iio_range_cylinder_prob_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ {ω | ∀ i, i ∈ Finset.range n -> X i ω < x i} =
+      ∏ i ∈ Finset.range n, ν (Set.Iio (x i)) := by
+  simpa [Set.mem_Iio] using
+    durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_range_cylinder_prob
+      (ν := ν) (X := X) (A := fun i : ℕ => Set.Iio (x i))
+      hJoint n (fun _ _ => measurableSet_Iio)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based finite-prefix closed half-line
+cylinder probabilities from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_real_Iic_range_cylinder_prob_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ {ω | ∀ i, i ∈ Finset.range n -> X (i + 1) ω ≤ x i} =
+      ∏ i ∈ Finset.range n, ν (Set.Iic (x i)) := by
+  simpa [Set.mem_Iic] using
+    durrett2019_theorem_2_1_11_iid_shift_range_cylinder_prob_of_hasLaw_infinitePi
+      (ν := ν) (X := X) (A := fun i : ℕ => Set.Iic (x i))
+      hJoint n (fun _ _ => measurableSet_Iic)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based finite-prefix open half-line cylinder
+probabilities from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_real_Iio_range_cylinder_prob_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ {ω | ∀ i, i ∈ Finset.range n -> X (i + 1) ω < x i} =
+      ∏ i ∈ Finset.range n, ν (Set.Iio (x i)) := by
+  simpa [Set.mem_Iio] using
+    durrett2019_theorem_2_1_11_iid_shift_range_cylinder_prob_of_hasLaw_infinitePi
+      (ν := ν) (X := X) (A := fun i : ℕ => Set.Iio (x i))
+      hJoint n (fun _ _ => measurableSet_Iio)
+
+/--
+Durrett 2019, Theorem 2.1.11, canonical finite-prefix closed half-line
+cylinder probabilities on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_real_Iic_range_cylinder_prob
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ) (x : ℕ -> ℝ) :
+    (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+        {sample | ∀ i, i ∈ Finset.range n -> sample i ≤ x i} =
+      ∏ i ∈ Finset.range n, (ν : Measure ℝ) (Set.Iic (x i)) := by
+  simpa [Set.mem_Iic] using
+    durrett2019_theorem_2_1_11_canonical_iid_range_cylinder_prob
+      (ν := ν) (A := fun i : ℕ => Set.Iic (x i))
+      n (fun _ _ => measurableSet_Iic)
+
+/--
+Durrett 2019, Theorem 2.1.11, canonical finite-prefix open half-line cylinder
+probabilities on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_real_Iio_range_cylinder_prob
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ) (x : ℕ -> ℝ) :
+    (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+        {sample | ∀ i, i ∈ Finset.range n -> sample i < x i} =
+      ∏ i ∈ Finset.range n, (ν : Measure ℝ) (Set.Iio (x i)) := by
+  simpa [Set.mem_Iio] using
+    durrett2019_theorem_2_1_11_canonical_iid_range_cylinder_prob
+      (ν := ν) (A := fun i : ℕ => Set.Iio (x i))
+      n (fun _ _ => measurableSet_Iio)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based canonical finite-prefix closed
+half-line cylinder probabilities on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_shift_real_Iic_range_cylinder_prob
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ) (x : ℕ -> ℝ) :
+    (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+        {sample | ∀ i, i ∈ Finset.range n -> sample (i + 1) ≤ x i} =
+      ∏ i ∈ Finset.range n, (ν : Measure ℝ) (Set.Iic (x i)) := by
+  simpa [Set.mem_Iic] using
+    durrett2019_theorem_2_1_11_canonical_iid_shift_range_cylinder_prob
+      (ν := ν) (A := fun i : ℕ => Set.Iic (x i))
+      n (fun _ _ => measurableSet_Iic)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based canonical finite-prefix open
+half-line cylinder probabilities on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_shift_real_Iio_range_cylinder_prob
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ) (x : ℕ -> ℝ) :
+    (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+        {sample | ∀ i, i ∈ Finset.range n -> sample (i + 1) < x i} =
+      ∏ i ∈ Finset.range n, (ν : Measure ℝ) (Set.Iio (x i)) := by
+  simpa [Set.mem_Iio] using
+    durrett2019_theorem_2_1_11_canonical_iid_shift_range_cylinder_prob
+      (ν := ν) (A := fun i : ℕ => Set.Iio (x i))
+      n (fun _ _ => measurableSet_Iio)
+
+/--
 Durrett 2019, Theorem 2.1.11, one-based iid finite cylinder probabilities on
 the literal index set `{1, ..., n}`.
 -/
