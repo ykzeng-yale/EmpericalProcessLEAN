@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V454`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V455`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -65,11 +65,15 @@ truncated-mean `Tendsto` assumption by proving the Kronecker-style
 mean-normalization bridge from scaled truncated-mean summability, plus
 absolute-scaled summability and scalar-kernel endpoint wrappers.  V454 adds
 the deterministic textbook prefix-plus-tail mean squeeze and endpoint wrappers
-that consume it.  The next source work is to instantiate the V454 mean bound
-from annulus first-moment estimates, prove the identity
-(*)/ratio-monotonicity annulus estimate supplying scalar truncated-square
-kernel majorization from finite large-jump tail series, and then assemble the
-source-facing Feller dichotomy wrapper.  Do not route back into
+that consume it.  V455 adds the deterministic finite-annulus bridge: ratio
+monotonicity moves `(n/a_n)` inside finite annulus sums as `(m/a_m)`, and a
+prefix-plus-finite-annulus mean estimate plus weighted tail bound feeds the
+V454 mean squeeze and scalar-kernel endpoint wrappers.  The next source work
+is to prove the measure/integral annulus decomposition that supplies the V455
+finite-annulus assumptions, prove the identity (*)/ratio-monotonicity annulus
+estimate supplying scalar truncated-square kernel majorization from finite
+large-jump tail series, and then assemble the source-facing Feller dichotomy
+wrapper.  Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
 integer-to-real threshold bridge, the solved countable a.e. all-threshold
@@ -80,7 +84,12 @@ transfer, the solved moving-truncation Kronecker assembly, or the solved
 scaled-variance-to-base-truncated-square handoff, or the solved
 scalar-kernel-to-original-endpoint handoff, or the solved
 scaled-mean-summability-to-mean-normalization handoff, or the solved
-textbook-prefix-plus-tail mean squeeze.  New compiled anchors through V454:
+textbook-prefix-plus-tail mean squeeze, or the solved finite-annulus
+ratio/tail bridge.  New compiled anchors through V455:
+`durrett2019_theorem_2_5_13_ratio_mul_annulus_sum_le_weighted_annulus_sum`,
+`durrett2019_theorem_2_5_13_textbook_mean_bound_of_prefix_annulus_bound`,
+`durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_prefix_annulus_bound`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_prefix_annulus_mean_bound`,
 `durrett2019_theorem_2_5_13_mean_normalized_sum_tendsto_zero_of_textbook_tail_bound`,
 `durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_textbook_tail_bound`,
 `durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_textbook_mean_bound`,

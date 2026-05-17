@@ -12600,6 +12600,157 @@ theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_sc
     htail
 
 /--
+Durrett 2019, Theorem 2.5.13 deterministic annulus support: on a finite
+annulus block, the ratio monotonicity estimate moves the common factor
+`n / a_n` inside the sum as `(m / a_m)`.
+-/
+theorem durrett2019_theorem_2_5_13_ratio_mul_annulus_sum_le_weighted_annulus_sum
+    {a u : ℕ -> ℝ} {N n : ℕ}
+    (hu_nonneg : ∀ m ∈ Finset.Icc (N + 1) n, 0 ≤ u m)
+    (hratio : ∀ m ∈ Finset.Icc (N + 1) n,
+      (n : ℝ) / a n ≤ (m : ℝ) / a m) :
+    ((n : ℝ) / a n) *
+        (∑ m ∈ Finset.Icc (N + 1) n, u m) ≤
+      ∑ m ∈ Finset.Icc (N + 1) n, ((m : ℝ) / a m) * u m := by
+  calc
+    ((n : ℝ) / a n) * (∑ m ∈ Finset.Icc (N + 1) n, u m) =
+        ∑ m ∈ Finset.Icc (N + 1) n, ((n : ℝ) / a n) * u m := by
+          rw [Finset.mul_sum]
+    _ ≤ ∑ m ∈ Finset.Icc (N + 1) n, ((m : ℝ) / a m) * u m := by
+          exact Finset.sum_le_sum fun m hm =>
+            mul_le_mul_of_nonneg_right (hratio m hm) (hu_nonneg m hm)
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic mean layer: a prefix-plus-finite
+annulus estimate gives the V454 textbook mean bound once ratio monotonicity
+and a weighted annulus tail bound are supplied.
+-/
+theorem durrett2019_theorem_2_5_13_textbook_mean_bound_of_prefix_annulus_bound
+    {m a B u c : ℕ -> ℝ}
+    (hprefix_annulus : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        |(∑ k ∈ Finset.range n, m (k + 1)) / a n| ≤
+          |B N| * ((n : ℝ) / a n) +
+            ((n : ℝ) / a n) * ∑ r ∈ Finset.Icc (N + 1) n, u r)
+    (hu_nonneg : ∀ N n r : ℕ, r ∈ Finset.Icc (N + 1) n -> 0 ≤ u r)
+    (hratio : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        ∀ r ∈ Finset.Icc (N + 1) n,
+          (n : ℝ) / a n ≤ (r : ℝ) / a r)
+    (hweighted_tail : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        (∑ r ∈ Finset.Icc (N + 1) n, ((r : ℝ) / a r) * u r) ≤
+          ∑' j : ℕ, c (j + N + 1)) :
+    ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        |(∑ k ∈ Finset.range n, m (k + 1)) / a n| ≤
+          |B N| * ((n : ℝ) / a n) + ∑' j : ℕ, c (j + N + 1) := by
+  intro N
+  filter_upwards [hprefix_annulus N, hratio N, hweighted_tail N] with
+    n hprefix hratio_n htail_n
+  have hannulus :
+      ((n : ℝ) / a n) * (∑ r ∈ Finset.Icc (N + 1) n, u r) ≤
+        ∑ r ∈ Finset.Icc (N + 1) n, ((r : ℝ) / a r) * u r :=
+    durrett2019_theorem_2_5_13_ratio_mul_annulus_sum_le_weighted_annulus_sum
+      (a := a) (u := u) (N := N) (n := n)
+      (fun r hr => hu_nonneg N n r hr) hratio_n
+  exact hprefix.trans (add_le_add le_rfl (hannulus.trans htail_n))
+
+/--
+Durrett 2019, Theorem 2.5.13 truncated-mean layer: the normalized
+truncated-mean contribution vanishes from the textbook prefix-annulus estimate
+plus a weighted annulus tail bound.
+-/
+theorem durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_prefix_annulus_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {a B u c : ℕ -> ℝ}
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hc_summable : Summable c)
+    (hprefix_annulus : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        |(∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n| ≤
+          |B N| * ((n : ℝ) / a n) +
+            ((n : ℝ) / a n) * ∑ r ∈ Finset.Icc (N + 1) n, u r)
+    (hu_nonneg : ∀ N n r : ℕ, r ∈ Finset.Icc (N + 1) n -> 0 ≤ u r)
+    (hratio : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        ∀ r ∈ Finset.Icc (N + 1) n,
+          (n : ℝ) / a n ≤ (r : ℝ) / a r)
+    (hweighted_tail : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        (∑ r ∈ Finset.Icc (N + 1) n, ((r : ℝ) / a r) * u r) ≤
+          ∑' j : ℕ, c (j + N + 1)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n)
+      atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_textbook_tail_bound
+    (P := P) (X := X) (a := a) (B := B) (c := c)
+    hn_over_a_tendsto_zero hc_summable
+    (durrett2019_theorem_2_5_13_textbook_mean_bound_of_prefix_annulus_bound
+      (m := fun n : ℕ => durrett2019_theorem_2_5_13_truncatedMean P X a n)
+      (a := a) (B := B) (u := u) (c := c)
+      hprefix_annulus hu_nonneg hratio hweighted_tail)
+
+/--
+Durrett 2019, Theorem 2.5.13 moving-truncated endpoint with the mean estimate
+stated in the finite-annulus form that appears in the textbook proof.
+-/
+theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_prefix_annulus_mean_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a B u c : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x))
+    (ha_nonzero : ∀ k : ℕ, a (k + 1) ≠ 0)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hc_summable : Summable c)
+    (hprefix_annulus : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        |(∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n| ≤
+          |B N| * ((n : ℝ) / a n) +
+            ((n : ℝ) / a n) * ∑ r ∈ Finset.Icc (N + 1) n, u r)
+    (hu_nonneg : ∀ N n r : ℕ, r ∈ Finset.Icc (N + 1) n -> 0 ≤ u r)
+    (hratio : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        ∀ r ∈ Finset.Icc (N + 1) n,
+          (n : ℝ) / a n ≤ (r : ℝ) / a r)
+    (hweighted_tail : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        (∑ r ∈ Finset.Icc (N + 1) n, ((r : ℝ) / a r) * u r) ≤
+          ∑' j : ℕ, c (j + N + 1)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_mean_tendsto
+    (P := P) (X := X) (X0 := X0) (a := a) (g := g)
+    hX_indep hX_meas hX0_meas hX_ident hg_int hg_nonneg hkernel_bound
+    ha_nonzero ha_increment_nonneg ha_shift_atTop
+    (durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_prefix_annulus_bound
+      (P := P) (X := X) (a := a) (B := B) (u := u) (c := c)
+      hn_over_a_tendsto_zero hc_summable hprefix_annulus hu_nonneg
+      hratio hweighted_tail)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
