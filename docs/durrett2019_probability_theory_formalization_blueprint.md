@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V443`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V444`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -38,13 +38,16 @@ Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.  The V443 bridge
 uses the already-compiled scaled sample-tail Borel-Cantelli limsup event to
 prove the textbook partial-sum inequality consequence
 `max |S_n| |S_{n+1}| >= |X_{n+1}| / 2`, giving a.e. frequently large
-one-based normalized partial sums at level `k / 2`.  The next source
-work is all-`k` packaging: turn the V443 fixed-`k` frequently-large statements
-into a formal `limsup_n |S_n| / a_n = ∞` endpoint for the divergent half, then
-connect it to the source-facing Feller dichotomy wrapper.  Do not route back
-into solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
-transfer, or the solved fixed-`k` Borel-Cantelli partial-sum bridge.  New
-compiled anchors through V443:
+one-based normalized partial sums at level `k / 2`.  V444 adds the
+deterministic bridge from all positive integer half-thresholds to frequent
+largeness above every real bound.  The next source work is countable a.e.
+aggregation and the formal `limsup_n |S_n| / a_n = ∞` endpoint for the
+divergent half, then the source-facing Feller dichotomy wrapper.  Do not route
+back into solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13
+tail-series transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge,
+or the solved integer-to-real threshold bridge.  New compiled anchors through
+V444:
+`durrett2019_theorem_2_5_13_frequently_above_real_of_frequently_nat_halves`,
 `durrett2019_theorem_2_5_13_oneBased_partial_sum_large_frequently_of_mem_scaled_tail_limsup`,
 `durrett2019_theorem_2_5_13_ae_frequently_oneBased_partial_sum_large_of_scaled_tail_limsup_ae`,
 `durrett2019_theorem_2_5_13_ae_frequently_oneBased_partial_sum_large_of_tail_tsum_eq_top`,

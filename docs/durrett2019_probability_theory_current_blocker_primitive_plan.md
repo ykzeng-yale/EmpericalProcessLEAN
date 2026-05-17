@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V443
+## Live In-Thread Goal Prompt V444
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -17,16 +17,26 @@ Theorem 2.5.13 (Feller infinite-mean dichotomy): the V443 bridge uses the
 already-compiled scaled sample-tail Borel-Cantelli limsup event to prove the
 textbook partial-sum inequality consequence
 `max |S_n| |S_{n+1}| >= |X_{n+1}| / 2`, giving a.e. frequently large
-one-based normalized partial sums at level `k / 2`.  Do not reroute to solved
+one-based normalized partial sums at level `k / 2`.  V444 adds the
+deterministic integer-half to arbitrary real-threshold frequent-largeness
+bridge.  Do not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
-or the solved fixed-`k` Borel-Cantelli partial-sum bridge.  Next aggressive
-target: package the all-`k` endpoint by proving that the V443 fixed-`k`
-frequently-large results imply `limsup_n |S_n| / a_n = ∞` in the divergent
-half, then connect it to the source-facing Feller dichotomy wrapper.
+the solved fixed-`k` Borel-Cantelli partial-sum bridge, or the solved
+integer-to-real threshold bridge.  Next aggressive target: package the
+countable a.e. all-`k` endpoint and formalize the divergent-half display as
+`limsup_n |S_n| / a_n = ∞`, then connect it to the source-facing Feller
+dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V444 adds the deterministic all-threshold bridge:
+`durrett2019_theorem_2_5_13_frequently_above_real_of_frequently_nat_halves`.
+It converts fixed integer-half frequent largeness for every positive `k` into
+frequent largeness above every real bound.  The remaining blocker is countable
+a.e. aggregation of the fixed-`k` results and the formal infinite-limsup
+endpoint for the divergent half.
 
 Latest verified target V443 adds the sample-tail-limsup to partial-sum-limsup
 bridge for Theorem 2.5.13.  New compiled anchors:
@@ -34,7 +44,8 @@ bridge for Theorem 2.5.13.  New compiled anchors:
 `durrett2019_theorem_2_5_13_ae_frequently_oneBased_partial_sum_large_of_scaled_tail_limsup_ae`,
 and
 `durrett2019_theorem_2_5_13_ae_frequently_oneBased_partial_sum_large_of_tail_tsum_eq_top`.
-The remaining blocker is all-`k` packaging into a formal `limsup = ∞`
+The integer-to-real threshold substep is discharged by V444; the live
+remaining blocker is countable a.e. aggregation plus the formal `limsup = ∞`
 statement for the divergent half.
 
 Latest verified target V442 adds the probability-tail and Borel-Cantelli

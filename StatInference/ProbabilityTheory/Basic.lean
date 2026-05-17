@@ -10921,6 +10921,28 @@ theorem durrett2019_theorem_2_5_13_ae_frequently_oneBased_partial_sum_large_of_t
       (P := P) (X := X) (a := a) (k := k) ha_pos ha_mono (by simpa [A] using hlimsup_ae)
 
 /--
+Durrett 2019, Theorem 2.5.13 divergent-half support: fixed integer
+half-threshold frequent largeness for every positive `k` implies frequent
+largeness above every real threshold.
+-/
+theorem durrett2019_theorem_2_5_13_frequently_above_real_of_frequently_nat_halves
+    {f : ℕ -> ℝ}
+    (hfreq : ∀ k : ℕ, 0 < k -> ∃ᶠ n in atTop, (k : ℝ) / 2 ≤ f n) :
+    ∀ B : ℝ, ∃ᶠ n in atTop, B ≤ f n := by
+  intro B
+  obtain ⟨k, hk_gt⟩ := exists_nat_gt (max (0 : ℝ) (2 * B))
+  have hk_pos_real : (0 : ℝ) < k :=
+    lt_of_le_of_lt (le_max_left (0 : ℝ) (2 * B)) hk_gt
+  have hk_pos : 0 < k := by
+    exact_mod_cast hk_pos_real
+  have hB_le : B ≤ (k : ℝ) / 2 := by
+    have h2B_le : 2 * B ≤ max (0 : ℝ) (2 * B) :=
+      le_max_right (0 : ℝ) (2 * B)
+    have h2B_lt_k : 2 * B < k := lt_of_le_of_lt h2B_le hk_gt
+    nlinarith
+  exact (hfreq k hk_pos).mono fun _ hn => hB_le.trans hn
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
