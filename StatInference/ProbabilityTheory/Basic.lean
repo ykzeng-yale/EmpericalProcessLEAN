@@ -10404,6 +10404,38 @@ theorem durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_fi
       hX_pow_int0 hX_int0 hX_mean_zero0 hX_ident
 
 /--
+Durrett 2019, Theorem 2.5.12 textbook display for `1 < p < 2`: iid
+mean-zero variables with finite base `p`-moment satisfy
+`S_n / n^(1/p) -> 0` almost surely, where the one-based partial sums are
+written as `sum_{k < n} X_{k+1}`.
+-/
+theorem durrett2019_theorem_2_5_12_textbook_ae_normalized_sum_tendsto_zero_of_finite_p_moment
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_gt_one : 1 < p) (hp_lt_two : p < 2)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hX_mean_zero0 : ∫ ω, X 0 ω ∂P = 0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n, X (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p n)
+        atTop (𝓝 0) := by
+  filter_upwards [
+    durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_finite_p_moment
+      (P := P) (X := X) (p := p) hp_gt_one hp_lt_two hX_indep hX_meas
+      hX_pow_int0 hX_mean_zero0 hX_ident] with ω hω
+  exact
+    (tendsto_add_atTop_iff_nat
+      (f := fun n : ℕ =>
+        (∑ k ∈ Finset.range n, X (k + 1) ω) /
+          durrett2019_theorem_2_5_12_normalizer p n) 1).mp hω
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

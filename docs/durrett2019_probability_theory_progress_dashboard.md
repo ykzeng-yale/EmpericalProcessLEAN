@@ -32,19 +32,24 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V437` in
+Route from `Live In-Thread Goal Prompt V438` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
-V437 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
-`1 < p < 2`.  In addition to the V421-V436 endpoint, Tonelli/Fubini,
-scalar-kernel, scalar-summability, canonical threshold, standard rpow,
-finite-prefix, unscaled reducers, corrected small-`x` split, explicit
-tail-first bound, and explicit truncated-square bound, the two scalar kernel
-estimates now compose through the base summability wrappers and yield the
-original normalized-sum endpoint under iid, finite base `p`-moment, and
-mean-zero source assumptions.  The ordinary integrability of `X 0` is derived
-from the finite `p`-moment for `1 < p`.  New compiled anchors through V437:
+V438 completes the exact textbook-display wrapper for Durrett Theorem 2.5.12
+Marcinkiewicz-Zygmund rate for `1 < p < 2`: under iid, finite base
+`p`-moment, and mean-zero source assumptions, the one-based partial sums
+`sum_{k < n} X (k + 1) / n^(1/p)` tend to zero almost surely.  This wrapper
+uses the V437 finite-`p` endpoint plus `tendsto_add_atTop_iff_nat`; it does not
+reopen scalar p-series, threshold, reindex, source-composition,
+integrability-removal, or explicit-kernel estimates.  The Durrett source
+statement for Theorem 2.5.12 is the `1 < p < 2` case, so boundary/low-`p`
+variants should not be treated as unresolved parts of this theorem unless a
+fresh source search identifies a different named statement.  Next source work:
+either add only a cheap `S_n` alias/display wrapper if useful, or move directly
+to the next Chapter 2.5 theorem after source/API search.  New compiled anchors
+through V438:
+`durrett2019_theorem_2_5_12_textbook_ae_normalized_sum_tendsto_zero_of_finite_p_moment`,
 `durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
@@ -137,11 +142,13 @@ and
 `durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscaled_bound`,
 `durrett2019_theorem_2_5_12_truncatedSq_unscaled_rpow_indicator_summable`, and
 `durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_unscaled_rpow_indicator`,
-`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_zero_of_rpow_le_one`, and
-`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscaled_bound_ge_one`.
-The current blocker is now remaining full Theorem 2.5.12 coverage beyond the
-compiled `1 < p < 2` branch: exact display wrappers, boundary cases, or the
-low-`p` Marcinkiewicz-Zygmund branch.
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_zero_of_rpow_le_one`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscaled_bound_ge_one`,
+and
+`durrett2019_theorem_2_5_12_textbook_ae_normalized_sum_tendsto_zero_of_finite_p_moment`.
+The current blocker is no longer Theorem 2.5.12 itself.  After a quick source
+and API search, move to the next Chapter 2.5 theorem unless a cheap `S_n`
+alias/display wrapper is immediately useful.
 
 Verified route history below is provenance, not live prompt text.  V425 added
 the truncated-mean Kronecker layer reducing normalized mean convergence to
