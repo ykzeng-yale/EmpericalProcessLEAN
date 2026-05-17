@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V47`, this file's top
+   the full book is complete, route from `Live Goal Prompt V48`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V47
+## Live Goal Prompt V48
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -618,12 +618,39 @@ environment has `tectonic` but not `pandoc`, `pdftoppm`, or `pdfinfo`, so no
 formal `Reports/Optimization_13_16_.../` folder should be created until the
 source screenshot and `scripts/compile_report_pdf.sh` gates can actually pass.
 
-Next theorem-sized target: either create the Chewi Lemma 13.16 report only
-after the PDF screenshot and report compilation tools are available, or move
-to the next Chapter 13 source theorem layer that can consume the V47 aliases
-without exposing internal selector/minimizer machinery.  Search first for
-existing Chapter 13 theorem surfaces, `Reports/Optimization_*` folders,
-source markdown/PDF anchors, and current `InteriorPoint.lean` endpoint names.
+Current V48 packet starts the reusable Appendix A matrix-order layer in
+`StatInference/Optimization/AppendixA.lean` and imports it from
+`StatInference.lean`.  New compiled declarations:
+`chewiA4_loewnerOrder_iff_quadraticForm_le` and
+`chewiA4_quadraticForm_lt_of_posDef_sub`, plus the first Definition A.5
+operator-norm substrate declarations `chewiA5_transpose_mul_self_posSemidef`
+and `chewiA5_dotProduct_mulVec_self_eq_transpose_mul_self_quadratic`.  These
+formalize Chewi Definition A.4's Loewner/PSD quadratic-form display, the
+strict positive-definite direction, and the displayed identity
+`||A v||^2 = <v, A^T A v>` in dot-product form, using mathlib's matrix order
+and PSD matrix library rather than duplicating foundations.
+
+Search-first reuse for V48: mathlib `MatrixOrder`, `Matrix.le_iff`,
+`Matrix.PosSemidef.dotProduct_mulVec_nonneg`,
+`Matrix.PosSemidef.of_dotProduct_mulVec_nonneg`,
+`Matrix.PosDef.dotProduct_mulVec_pos`, `Matrix.IsHermitian.sub`,
+`Matrix.sub_mulVec`, and the unqualified dot-product subtraction theorem
+`dotProduct_sub`; the A.5 substrate additionally reuses
+`Matrix.posSemidef_conjTranspose_mul_self`, `Matrix.dotProduct_mulVec`, and
+`Matrix.vecMul_mulVec`.  Local search confirmed existing matrix/PSD and
+operator-norm usage in `StatInference/Optimization/Ellipsoid.lean` and
+`InteriorPoint.lean` but no source-facing Appendix A wrappers.
+
+Next theorem-sized target: continue Appendix A from Definition A.5 by proving a
+source-shaped operator-norm/eigenvalue bound wrapper, preferably connecting
+`A^T A <= C^2 I`, unit-vector quadratic-form bounds, and/or symmetric
+`-C I <= A <= C I` to an operator-norm statement.  Search first through
+mathlib spectral/operator-norm APIs (`Analysis/Matrix/Spectrum`,
+`ContinuousLinearMap.opNorm_*`, Rayleigh quotient lemmas) and local
+`Ellipsoid.lean`/`InteriorPoint.lean` matrix bridges.  Create the Chewi Lemma
+13.16 report only after the PDF screenshot
+and report compilation tools are available.  Do not reopen the completed
+§13.16 proof surface unless a regression breaks it.
 Do not reintroduce supplied central-path selectors, supplied minimizers,
 supplied slack-floor/linear-bound selectors, or any closed-feasible-range
 compactness premise in the final source statement.
@@ -632,12 +659,13 @@ feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
 bridge/consumer wrappers, the weighted kernel route, or the one-plus Riccati
 lower/Hessian-lower discharge, or the generic mixed-third objective-gap
-consumers.  Search first near existing `*_standardPath` wrappers,
+consumers.  The old §13.16 search surface near `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
-terminal centrality/Hessian-derivative wrappers; then
-formalize only the genuinely missing final source theorem/report certificate.
-Older paragraphs below are cached route history and must not override this V46
+terminal centrality/Hessian-derivative wrappers is only relevant if a later run
+returns to the report/tooling gate; the active V48 Lean proof target is
+Appendix A matrix infrastructure.
+Older paragraphs below are cached route history and must not override this V48
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

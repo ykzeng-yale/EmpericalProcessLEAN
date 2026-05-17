@@ -25,10 +25,10 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V47` near the top of
+  `Live Goal Prompt V48` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
-  history and must not override the current Chapter 13 frontier.
+  history and must not override the current Chapter 13/Appendix A frontier.
 - Collaboration policy: for broad future packets, use isolated `git worktree`
   checkouts per book/lane when several local agents are active, then merge only
   scoped verified work back to shared `main`.
@@ -43,6 +43,24 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current proof worktree: use `/private/tmp/chewi-dual-seminorm` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
+- Latest Appendix A frontier: `StatInference/Optimization/AppendixA.lean` now
+  starts the source-facing matrix-order layer and is imported by
+  `StatInference.lean`.  Compiled declarations
+  `chewiA4_loewnerOrder_iff_quadraticForm_le` and
+  `chewiA4_quadraticForm_lt_of_posDef_sub` formalize Chewi Definition A.4's
+  Loewner/PSD quadratic-form equivalence and strict positive-definite
+  quadratic-form direction; `chewiA5_transpose_mul_self_posSemidef` and
+  `chewiA5_dotProduct_mulVec_self_eq_transpose_mul_self_quadratic` start
+  Definition A.5 by proving `A^T A` is PSD and packaging
+  `||A v||^2 = <v, A^T A v>` in dot-product form.  Search-first reuse came
+  from mathlib
+  `MatrixOrder`, `Matrix.le_iff`, PSD/PD dot-product APIs, Hermitian
+  subtraction, `Matrix.sub_mulVec`, `dotProduct_sub`,
+  `Matrix.posSemidef_conjTranspose_mul_self`, `Matrix.dotProduct_mulVec`, and
+  `Matrix.vecMul_mulVec`; local search found matrix PSD/operator-norm
+  infrastructure in `Ellipsoid.lean` and `InteriorPoint.lean` but no Appendix
+  A wrappers.  Next Appendix A step is an operator-norm/eigenvalue bound
+  wrapper after a bounded mathlib spectral/operator-norm search.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations
