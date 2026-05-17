@@ -1929,6 +1929,47 @@ theorem durrett2019_theorem_2_1_11_iid_shift_range_cylinder_prob_of_iIndepFun
       (A := A) (hJoint := hJoint) n hA
 
 /--
+Durrett 2019, Theorem 2.1.11, one-based iid finite prefix cylinder
+probabilities from a joint iid infinite product law, with the cylinder sets
+indexed by the displayed finite prefix.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_range_cylinder_prob_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S} {A : ℕ -> Set S}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ) (hA : ∀ i, i ∈ Finset.range n -> MeasurableSet (A i)) :
+    μ {ω | ∀ i, i ∈ Finset.range n -> X (i + 1) ω ∈ A i} =
+      ∏ i ∈ Finset.range n, ν (A i) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_11_iid_shift_range_cylinder_prob_of_iIndepFun
+      hSource.1 hSource.2 n hA
+
+/--
+Durrett 2019, Theorem 2.1.11, canonical one-based finite prefix cylinder
+probabilities on `ν^ℕ`, with cylinder sets indexed by `Finset.range n`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_shift_range_cylinder_prob
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S)
+    {A : ℕ -> Set S} (n : ℕ)
+    (hA : ∀ i, i ∈ Finset.range n -> MeasurableSet (A i)) :
+    (Measure.infinitePi fun _ : ℕ => (ν : Measure S))
+        {sample | ∀ i, i ∈ Finset.range n -> sample (i + 1) ∈ A i} =
+      ∏ i ∈ Finset.range n, (ν : Measure S) (A i) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_11_iid_shift_range_cylinder_prob_of_iIndepFun
+      (X := fun i : ℕ => fun sample : ℕ -> S => sample i)
+      (A := A) hCoord.1 hCoord.2.1 n hA
+
+/--
 Durrett 2019, Theorem 2.1.11, one-based iid finite cylinder probabilities on
 the literal index set `{1, ..., n}`.
 -/
@@ -1949,6 +1990,24 @@ theorem durrett2019_theorem_2_1_11_iid_oneBased_Icc_cylinder_prob_of_iIndepFun
   exact
     durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_finite_cylinder_prob
       (hJoint := hJoint) (s := Finset.Icc 1 n) hA
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based iid finite cylinder probabilities on
+the literal index set `{1, ..., n}` from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_oneBased_Icc_cylinder_prob_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S} {A : ℕ -> Set S}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ) (hA : ∀ i, i ∈ Finset.Icc 1 n -> MeasurableSet (A i)) :
+    μ {ω | ∀ i, i ∈ Finset.Icc 1 n -> X i ω ∈ A i} =
+      ∏ i ∈ Finset.Icc 1 n, ν (A i) :=
+  durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_finite_cylinder_prob
+    (hJoint := hJoint) (s := Finset.Icc 1 n) hA
 
 /--
 Durrett 2019, Theorem 2.1.11, one-based iid finite cylinder probabilities from
