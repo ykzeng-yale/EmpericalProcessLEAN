@@ -20,26 +20,35 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    instructions to replay.
 
 Current frontier: Theorem 5.41 now has a compiled positive-sample common-core
-right-inverse source. It states the limit theorem for the explicit estimator
+right-inverse coordinate source. It states the limit theorem for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine display
-and a common-core right inverse, packages it as exact-root-set membership,
+and a common-core right inverse, derives coordinate measurability of the
+explicit inverse estimator from primitive right-inverse and offset
+measurability, packages the finite equation as exact-root-set membership,
 prepends `theta0` at sample size zero, feeds the existing exact-root-set source
 endpoint, and shifts the distributional conclusion back along `Nat.succ`.
 This keeps the live route focused on actual positive sample sizes instead of
-forcing sample-size-zero inverse, uniqueness, direct root-set-membership, or
-external finite-sum-zero hypotheses.
+forcing sample-size-zero inverse, uniqueness, estimator-coordinate
+measurability, direct root-set-membership, or external finite-sum-zero
+hypotheses.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseCoordinateSource`.
 
 The newest wrapper adds
+`vaart1998_positiveCommonObservationCoreInverseEstimator_coordinate_measurable`
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseCoordinateSource`.
+The next proof layer should discharge consistency in probability for the
+explicit inverse estimator, preferably using an existing law-of-large-numbers
+or continuous-mapping route, or instantiate the endpoint on a concrete model's
+algebraic estimating equation.
+
+The previous wrapper adds
 `vaart1998PositiveCommonObservationCoreInverseEstimator`,
 `vaart1998_positiveCommonObservationCoreInverseEstimator_sum_zero`, and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseSource`.
-The next proof layer should discharge measurability and consistency for the
-explicit inverse estimator, or instantiate it on a concrete model's algebraic
-estimating equation.
 
 The previous wrapper adds
 `vaart1998_theorem_5_41_positiveSample_sumRootSource`.  The next proof layer

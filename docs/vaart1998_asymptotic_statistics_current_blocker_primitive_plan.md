@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseCoordinateSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -27,16 +27,27 @@ pointwise common-core affine display
 `observationEstimatingMap observation theta =
 commonObservationCore theta + observationOffset observation` and a right
 inverse
-`commonObservationCore (commonObservationCoreRightInverse y) = y`.  It proves
-the textbook finite estimating-equation identity internally, packages it as
-exact root-set membership, prepends `theta0` at sample size zero, applies the
-compiled exact-root-set Theorem 5.41 source endpoint, and then shifts the
+`commonObservationCore (commonObservationCoreRightInverse y) = y`, plus
+coordinate measurability of the common-core right inverse and the observation
+offset.  It derives coordinate measurability of the explicit inverse estimator,
+proves the textbook finite estimating-equation identity internally, packages it
+as exact root-set membership, prepends `theta0` at sample size zero, applies
+the compiled exact-root-set Theorem 5.41 source endpoint, and then shifts the
 convergence-in-distribution conclusion back along `Nat.succ`.  This removes
 the artificial `n = 0` left-inverse/root-uniqueness obstruction and no longer
-asks the caller to state either root-set membership or finite-sum zero
-directly.
+asks the caller to state estimator coordinate measurability, root-set
+membership, or finite-sum zero directly.
 
-The newest common-core inverse packet adds
+The newest coordinate-source packet adds
+`vaart1998_positiveCommonObservationCoreInverseEstimator_coordinate_measurable`
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseCoordinateSource`.
+It builds the inverse-estimator measurability field from
+`Finset.measurable_fun_sum`, `measurable_pi_lambda`, finite real-vector
+Borel/product compatibility, and composition with the coordinate-measurable
+right inverse.
+
+The previous common-core inverse packet adds
 `vaart1998PositiveCommonObservationCoreInverseEstimator`,
 `vaart1998_positiveCommonObservationCoreInverseEstimator_sum_zero`, and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseSource`.
@@ -58,15 +69,16 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: discharge the remaining model-facing fields for the
-explicit common-core inverse estimator, especially coordinate measurability and
-consistency in probability, or instantiate the endpoint on a concrete
-estimating equation from the textbook. Do not route back to sample-size zero
+Next aggressive target: discharge consistency in probability for the explicit
+common-core inverse estimator from a law-of-large-numbers or continuous-mapping
+source, or instantiate the endpoint on a concrete estimating equation from the
+textbook. Do not route back to sample-size zero
 inverses, arbitrary canonical-selector measurability, direct root uniqueness,
 raw finite-sum-map injectivity, a raw left inverse, aggregate finite-sample
 affine-display hypotheses, arbitrary observation-dependent cores, direct
-root-set membership, or an external finite-sum-zero assumption when the
-common-core right-inverse route is available.
+root-set membership, external finite-sum-zero assumptions, or estimator
+coordinate-measurability assumptions when the common-core right-inverse
+coordinate route is available.
 
 The previous common-core packet adds
 `vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core
