@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V53` near the top of
+  `Live Goal Prompt V54` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -99,11 +99,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   Search-first reuse found mathlib singular values via `T†T`, but no direct
   rectangular matrix theorem for `A^T A` versus `A A^T`; the proof uses the
   V50 arbitrary-constant op-norm bridge, V52 scalar eigenvalue bounds, PSD
-  eigenvalue nonnegativity, and `Finset.sup'`.
-  Next Appendix A step, if staying in Appendix A, is the remaining rectangular
-  singular-value/eigenvalue relationship between `A^T A` and `A A^T`;
-  otherwise return to the highest-impact main-text theorem/report gate that
-  consumes these matrix facts.
+  eigenvalue nonnegativity, and `Finset.sup'`.  The V54 layer adds
+  `chewiA5_charpoly_padding_transpose_mul_self_mul_self_transpose`,
+  `chewiA5_charpoly_transpose_mul_self_eq_X_pow_mul_self_transpose_of_card_le`,
+  `chewiA5_charpoly_mul_self_transpose_eq_X_pow_transpose_mul_self_of_card_le`,
+  and `chewiA5_charpoly_transpose_mul_self_eq_mul_self_transpose_of_card_eq`,
+  closing the source statement that `A^T A` and `A A^T` have the same
+  eigenvalues except zero multiplicity in characteristic-polynomial padding
+  form.  Search-first reuse found the exact mathlib rectangular API
+  `Matrix.charpoly_mul_comm'` plus `Matrix.charpoly_mul_comm_of_le`; do not
+  redo this with determinant blocks or sorted eigenvalue lists unless a later
+  theorem requires root-level membership.  Next high-impact step is to consume
+  these Appendix A facts in a main-text theorem/report gate, or add a thin
+  root/eigenvalue corollary only if needed downstream.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V53` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V54` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,7 +30,7 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V53 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V54 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved to Appendix A matrix infrastructure.  The new module
 `StatInference/Optimization/AppendixA.lean` compiles and is root-imported,
@@ -80,11 +80,18 @@ closing the rectangular Definition A.5 display
 Search-first reuse found mathlib singular values via `T†T`, but no direct
 rectangular matrix theorem for `A^T A` versus `A A^T`; the proof uses the V50
 arbitrary-constant op-norm bridge, V52 scalar eigenvalue bounds, PSD eigenvalue
-nonnegativity, `Real.sq_sqrt`, `Real.sqrt_le_sqrt`, and `Finset.sup'`.
-Next source-shaped work, if staying in Appendix A, should continue searching
-linear-map/block-matrix APIs for the remaining rectangular singular-value
-relationship between `A^T A` and `A A^T`; otherwise return to the
-highest-impact main-text theorem/report gate that consumes these matrix facts.
+nonnegativity, `Real.sq_sqrt`, `Real.sqrt_le_sqrt`, and `Finset.sup'`.  The
+V54 layer adds
+`chewiA5_charpoly_padding_transpose_mul_self_mul_self_transpose`,
+`chewiA5_charpoly_transpose_mul_self_eq_X_pow_mul_self_transpose_of_card_le`,
+`chewiA5_charpoly_mul_self_transpose_eq_X_pow_transpose_mul_self_of_card_le`,
+and `chewiA5_charpoly_transpose_mul_self_eq_mul_self_transpose_of_card_eq`,
+using mathlib's exact rectangular APIs `Matrix.charpoly_mul_comm'` and
+`Matrix.charpoly_mul_comm_of_le` to formalize the source claim that `A^T A`
+and `A A^T` have the same eigenvalues except zero multiplicity.  Next
+source-shaped work should consume the Appendix A matrix facts in a main-text
+theorem/report gate, or add a root/eigenvalue membership corollary only if a
+downstream theorem needs more than the characteristic-polynomial padding form.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source

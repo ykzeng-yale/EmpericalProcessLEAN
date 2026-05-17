@@ -1,6 +1,7 @@
 import Mathlib.Analysis.Matrix.Order
 import Mathlib.Analysis.CStarAlgebra.Matrix
 import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Basic
 import StatInference.Optimization.Basic
 
 /-!
@@ -12,6 +13,7 @@ A.4's Loewner/PSD order display using mathlib's `MatrixOrder` instance.
 -/
 
 open Matrix
+open Polynomial
 open scoped MatrixOrder Matrix.Norms.L2Operator
 
 namespace StatInference
@@ -478,6 +480,55 @@ theorem chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_transpose_mul_self
       (chewiA5_transpose_mul_self_posSemidef A).eigenvalues_nonneg]
   rw [hsup_abs]
   exact chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_transpose_mul_self A
+
+/--
+Chewi Definition A.5, rectangular product spectrum padding.  This is the
+source-facing characteristic-polynomial form of the statement that `A^T A`
+and `A A^T` have the same nonzero eigenvalues, with only zero multiplicities
+changed by the rectangular dimensions.
+-/
+theorem chewiA5_charpoly_padding_transpose_mul_self_mul_self_transpose
+    [DecidableEq m] [DecidableEq n] (A : Matrix m n ℝ) :
+    X ^ Fintype.card m * (Aᵀ * A).charpoly =
+      X ^ Fintype.card n * (A * Aᵀ).charpoly := by
+  simpa using Matrix.charpoly_mul_comm' (A := Aᵀ) (B := A)
+
+/--
+If the row index type is no larger than the column index type, `A^T A` has
+the extra zero eigenvalues.  This is the one-sided padded characteristic
+polynomial version of Chewi Definition A.5.
+-/
+theorem chewiA5_charpoly_transpose_mul_self_eq_X_pow_mul_self_transpose_of_card_le
+    [DecidableEq m] [DecidableEq n] (A : Matrix m n ℝ)
+    (hcard : Fintype.card m ≤ Fintype.card n) :
+    (Aᵀ * A).charpoly =
+      X ^ (Fintype.card n - Fintype.card m) * (A * Aᵀ).charpoly := by
+  simpa using Matrix.charpoly_mul_comm_of_le (A := Aᵀ) (B := A) hcard
+
+/--
+If the column index type is no larger than the row index type, `A A^T` has
+the extra zero eigenvalues.  This is the opposite one-sided padded
+characteristic-polynomial version of Chewi Definition A.5.
+-/
+theorem chewiA5_charpoly_mul_self_transpose_eq_X_pow_transpose_mul_self_of_card_le
+    [DecidableEq m] [DecidableEq n] (A : Matrix m n ℝ)
+    (hcard : Fintype.card n ≤ Fintype.card m) :
+    (A * Aᵀ).charpoly =
+      X ^ (Fintype.card m - Fintype.card n) * (Aᵀ * A).charpoly := by
+  simpa using Matrix.charpoly_mul_comm_of_le (A := A) (B := Aᵀ) hcard
+
+/--
+When the rectangular matrix is square up to a cardinal equality of index
+types, the two Gram products have exactly the same characteristic polynomial.
+-/
+theorem chewiA5_charpoly_transpose_mul_self_eq_mul_self_transpose_of_card_eq
+    [DecidableEq m] [DecidableEq n] (A : Matrix m n ℝ)
+    (hcard : Fintype.card m = Fintype.card n) :
+    (Aᵀ * A).charpoly = (A * Aᵀ).charpoly := by
+  have hpad :=
+    chewiA5_charpoly_padding_transpose_mul_self_mul_self_transpose A
+  rw [hcard] at hpad
+  exact (isRegular_X_pow (R := ℝ) (Fintype.card n)).left.eq_iff.mp hpad
 
 /--
 For symmetric real matrices, an absolute quadratic-form bound controls the
