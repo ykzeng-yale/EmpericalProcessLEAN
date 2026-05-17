@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V467
+## Live In-Thread Goal Prompt V468
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -117,6 +117,12 @@ prefix and `2*m` on annulus `m` now dominates the scalar kernel `tsum`, feeds
 the weighted base second-moment summability handoff, and feeds the
 moving/original convergent-half endpoint wrappers under the existing finite
 base tail and ratio-monotone hypotheses.
+V468 defines the concrete annulus-series majorant
+`2 + tsum_m 2*m*1_{a_{m-1} <= |x| < a_m}`, proves its pointwise finite
+support and summability when `a_n -> infinity`, proves its nonnegativity and
+prefix/annulus domination properties, and adds base-variance plus
+moving/original endpoint wrappers where the only remaining majorant-side input
+is integrability of this concrete majorant composed with `X_0`.
 Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
@@ -140,15 +146,35 @@ finite-identity bridge, or the solved source mean/original endpoint bridge, or
 the solved ratio packaging from Durrett's `a_n / n` monotonicity, or the
 solved reciprocal-square p-series/tail estimate, or the solved annulus-wise
 scalar-kernel bound, or the solved low-prefix scalar-kernel bound, or the
-solved prefix-plus-annulus pointwise majorant and endpoint handoff.
-Next aggressive target: construct the concrete prefix-plus-annulus majorant
-`g` from the half-open annulus indicators and prove its nonnegativity and
-integrability from identity(*) mass-weight summability plus finite base tail
-summability, then instantiate the V467 endpoint wrappers and assemble the
-Feller dichotomy wrapper.
+solved prefix-plus-annulus pointwise majorant and endpoint handoff, or the
+solved concrete annulus-series majorant pointwise/endpoint wrappers.
+Next aggressive target: prove integrability of
+`fun omega => annulusKernelMajorant a (X0 omega)` from identity(*) mass-weight
+summability plus finite base tail summability, using Bochner
+`integral_tsum_of_summable_integral_norm` or an equivalent lintegral/Fubini
+argument over the half-open annulus indicators.  Then instantiate the V468
+endpoint wrappers and assemble the Feller dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V468 defines and packages the concrete annulus-series
+majorant.  New compiled anchors include:
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_nonneg`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_hasFiniteSupport`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_summable`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant_nonneg`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant_prefix_bound`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant_annulus_bound`,
+`durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_annulusKernelMajorant_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_annulusKernelMajorant_integrable_and_ratio_mono`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_annulusKernelMajorant_integrable_tail_summable_and_ratio_mono`, and
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_annulusKernelMajorant_integrable_tail_summable_and_ratio_mono`.
+The remaining blocker is no longer constructing the majorant or proving its
+pointwise kernel domination; it is proving the concrete majorant's integrability
+from identity(*) mass summability.
 
 Latest verified target V467 proves the global deterministic cover and the
 source-shaped scalar-kernel majorant handoff.  New compiled anchors include:

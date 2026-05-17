@@ -13619,6 +13619,196 @@ theorem durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_majora
       hg_prefix hg_annulus)
 
 /--
+Durrett 2019, Theorem 2.5.13 notation: the concrete annulus-series term used
+as the source-shaped scalar-kernel majorant.
+-/
+noncomputable def durrett2019_theorem_2_5_13_annulusKernelMajorantTerm
+    (a : ℕ -> ℝ) (x : ℝ) (m : ℕ) : ℝ :=
+  Set.indicator {y : ℝ | a (m - 1) ≤ |y| ∧ |y| < a m}
+    (fun _ : ℝ => 2 * (m : ℝ)) x
+
+/--
+Durrett 2019, Theorem 2.5.13 notation: the concrete low-prefix plus annulus
+majorant for the arbitrary-normalizer truncated-square scalar kernel.
+-/
+noncomputable def durrett2019_theorem_2_5_13_annulusKernelMajorant
+    (a : ℕ -> ℝ) (x : ℝ) : ℝ :=
+  2 + ∑' m : ℕ,
+    durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a x m
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: every annulus-series
+term is nonnegative.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_nonneg
+    {a : ℕ -> ℝ} (x : ℝ) (m : ℕ) :
+    0 ≤ durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a x m := by
+  by_cases hx : x ∈ {y : ℝ | a (m - 1) ≤ |y| ∧ |y| < a m}
+  · simp [durrett2019_theorem_2_5_13_annulusKernelMajorantTerm, hx]
+  · simp [durrett2019_theorem_2_5_13_annulusKernelMajorantTerm, hx]
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: for each fixed `x`,
+the annulus-series terms have finite support once `a_n -> ∞`.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_hasFiniteSupport
+    {a : ℕ -> ℝ} (ha_atTop : Tendsto a atTop atTop) (x : ℝ) :
+    (Function.support fun m : ℕ =>
+      durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a x m).Finite := by
+  have hpred_atTop : Tendsto (fun m : ℕ => a (m - 1)) atTop atTop :=
+    ha_atTop.comp (tendsto_sub_atTop_nat 1)
+  have hlarge :
+      ∀ᶠ m : ℕ in atTop, |x| + 1 ≤ a (m - 1) :=
+    hpred_atTop.eventually_ge_atTop (|x| + 1)
+  rcases hlarge.exists_forall_of_atTop with ⟨N, hN⟩
+  refine (Set.finite_lt_nat N).subset ?_
+  intro m hm
+  by_contra hmN
+  have hm_large : |x| + 1 ≤ a (m - 1) := hN m (le_of_not_gt hmN)
+  have hlt : |x| < a (m - 1) :=
+    (lt_add_of_pos_right |x| zero_lt_one).trans_le hm_large
+  have hx_not : x ∉ {y : ℝ | a (m - 1) ≤ |y| ∧ |y| < a m} := by
+    exact fun hx_mem => not_lt_of_ge hx_mem.1 hlt
+  exact hm (by
+    simp [durrett2019_theorem_2_5_13_annulusKernelMajorantTerm, hx_not])
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: the annulus-series
+terms are summable pointwise once `a_n -> ∞`.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_summable
+    {a : ℕ -> ℝ} (ha_atTop : Tendsto a atTop atTop) (x : ℝ) :
+    Summable fun m : ℕ =>
+      durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a x m :=
+  summable_of_hasFiniteSupport
+    (durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_hasFiniteSupport
+      (a := a) ha_atTop x)
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: the concrete
+annulus-series majorant is nonnegative.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorant_nonneg
+    {a : ℕ -> ℝ} (x : ℝ) :
+    0 ≤ durrett2019_theorem_2_5_13_annulusKernelMajorant a x := by
+  have htsum_nonneg :
+      0 ≤ ∑' m : ℕ,
+        durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a x m :=
+    tsum_nonneg fun m =>
+      durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_nonneg
+        (a := a) x m
+  dsimp [durrett2019_theorem_2_5_13_annulusKernelMajorant]
+  linarith
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: the concrete majorant
+dominates the low-prefix bound.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorant_prefix_bound
+    {a : ℕ -> ℝ} (x : ℝ) (_hx : |x| < a 1) :
+    2 ≤ durrett2019_theorem_2_5_13_annulusKernelMajorant a x := by
+  have htsum_nonneg :
+      0 ≤ ∑' m : ℕ,
+        durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a x m :=
+    tsum_nonneg fun m =>
+      durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_nonneg
+        (a := a) x m
+  dsimp [durrett2019_theorem_2_5_13_annulusKernelMajorant]
+  linarith
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: the concrete majorant
+dominates the `2*m` annulus bound on `[a_{m-1}, a_m)`.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorant_annulus_bound
+    {a : ℕ -> ℝ} (ha_atTop : Tendsto a atTop atTop)
+    (m : ℕ) (x : ℝ) (_hm : 1 ≤ m)
+    (hx_lower : a (m - 1) ≤ |x|) (hx_upper : |x| < a m) :
+    2 * (m : ℝ) ≤ durrett2019_theorem_2_5_13_annulusKernelMajorant a x := by
+  have hsummable :
+      Summable fun r : ℕ =>
+        durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a x r :=
+    durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_summable
+      (a := a) ha_atTop x
+  have hsingle :
+      (∑ r ∈ ({m} : Finset ℕ),
+        durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a x r) ≤
+        ∑' r : ℕ,
+          durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a x r :=
+    hsummable.sum_le_tsum ({m} : Finset ℕ) fun r _hr =>
+      durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_nonneg
+        (a := a) x r
+  have hterm :
+      durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a x m =
+        2 * (m : ℝ) := by
+    simp [durrett2019_theorem_2_5_13_annulusKernelMajorantTerm,
+      hx_lower, hx_upper]
+  have hle_tsum :
+      2 * (m : ℝ) ≤
+        ∑' r : ℕ,
+          durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a x r := by
+    simpa [hterm] using hsingle
+  dsimp [durrett2019_theorem_2_5_13_annulusKernelMajorant]
+  linarith
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: the concrete
+annulus-series majorant dominates the scalar truncated-square kernel `tsum`.
+-/
+theorem durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_annulusKernelMajorant_of_ratio_mono
+    {a : ℕ -> ℝ}
+    (ha_pos : ∀ n : ℕ, 0 < a n) (ha_mono : Monotone a)
+    (ha_atTop : Tendsto a atTop atTop)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop) :
+    ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_annulusKernelMajorant a x) :=
+  durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_majorant_of_ratio_mono
+    (a := a) (g := durrett2019_theorem_2_5_13_annulusKernelMajorant a)
+    ha_pos ha_mono hratio_mono ha_shift_atTop
+    (durrett2019_theorem_2_5_13_annulusKernelMajorant_prefix_bound
+      (a := a))
+    (durrett2019_theorem_2_5_13_annulusKernelMajorant_annulus_bound
+      (a := a) ha_atTop)
+
+/--
+Durrett 2019, Theorem 2.5.13 variance support: integrability of the concrete
+annulus-series majorant is now enough to discharge the weighted base
+moving-truncation second-moment summability.
+-/
+theorem durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_annulusKernelMajorant_integrable_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX0_meas : Measurable X0)
+    (hg_int :
+      Integrable
+        (fun ω : Ω =>
+          durrett2019_theorem_2_5_13_annulusKernelMajorant a (X0 ω)) P)
+    (ha_pos : ∀ n : ℕ, 0 < a n) (ha_mono : Monotone a)
+    (ha_atTop : Tendsto a atTop atTop)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop) :
+    Summable fun k : ℕ =>
+      (((a (k + 1)) ^ 2)⁻¹) *
+        ∫ ω,
+          (durrett2019_theorem_2_5_13_truncated (fun _ : ℕ => X0) a (k + 1) ω) ^ 2 ∂P :=
+  durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_scalar_kernel_bound
+    (P := P) (X0 := X0) (a := a)
+    (g := durrett2019_theorem_2_5_13_annulusKernelMajorant a)
+    hX0_meas hg_int
+    (ae_of_all P fun ω =>
+      durrett2019_theorem_2_5_13_annulusKernelMajorant_nonneg
+        (a := a) (X0 ω))
+    (durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_annulusKernelMajorant_of_ratio_mono
+      (a := a) ha_pos ha_mono ha_atTop hratio_mono ha_shift_atTop)
+
+/--
 Durrett 2019, Theorem 2.5.13 annulus support: the scalar truncated absolute
 value at any cutoff `a_k` below `a_n` is bounded by the prefix cutoff plus the
 finite annulus sum up to `n`.
@@ -14743,6 +14933,98 @@ theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_ma
       hg_prefix hg_annulus)
     ha_pos ha_mono ha_increment_nonneg ha_atTop ha_shift_atTop
     hn_over_a_tendsto_zero hratio_mono htail_summable
+
+/--
+Durrett 2019, Theorem 2.5.13 moving-truncated endpoint with the concrete
+annulus-series majorant.  The only remaining majorant-side analytic input is
+integrability of that concrete majorant composed with `X_0`.
+-/
+theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_annulusKernelMajorant_integrable_tail_summable_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int :
+      Integrable
+        (fun ω : Ω =>
+          durrett2019_theorem_2_5_13_annulusKernelMajorant a (X0 ω)) P)
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto a atTop atTop)
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_majorant_tail_summable_and_ratio_mono
+    (P := P) (X := X) (X0 := X0) (a := a)
+    (g := durrett2019_theorem_2_5_13_annulusKernelMajorant a)
+    hX_indep hX_meas hX0_meas hX_ident hg_int
+    (ae_of_all P fun ω =>
+      durrett2019_theorem_2_5_13_annulusKernelMajorant_nonneg
+        (a := a) (X0 ω))
+    ha_pos ha_mono ha_increment_nonneg ha_shift_atTop
+    hn_over_a_tendsto_zero hratio_mono htail_summable
+    (durrett2019_theorem_2_5_13_annulusKernelMajorant_prefix_bound
+      (a := a))
+    (durrett2019_theorem_2_5_13_annulusKernelMajorant_annulus_bound
+      (a := a) ha_atTop)
+
+/--
+Durrett 2019, Theorem 2.5.13 original normalized-sum endpoint with the
+concrete annulus-series majorant.  This isolates the remaining source
+obligation to integrability of the concrete majorant.
+-/
+theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_annulusKernelMajorant_integrable_tail_summable_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int :
+      Integrable
+        (fun ω : Ω =>
+          durrett2019_theorem_2_5_13_annulusKernelMajorant a (X0 ω)) P)
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto a atTop atTop)
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, X (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_majorant_tail_summable_and_ratio_mono
+    (P := P) (X := X) (X0 := X0) (a := a)
+    (g := durrett2019_theorem_2_5_13_annulusKernelMajorant a)
+    hX_indep hX_meas hX0_meas hX_ident hg_int
+    (ae_of_all P fun ω =>
+      durrett2019_theorem_2_5_13_annulusKernelMajorant_nonneg
+        (a := a) (X0 ω))
+    ha_pos ha_mono ha_increment_nonneg ha_atTop ha_shift_atTop
+    hn_over_a_tendsto_zero hratio_mono htail_summable
+    (durrett2019_theorem_2_5_13_annulusKernelMajorant_prefix_bound
+      (a := a))
+    (durrett2019_theorem_2_5_13_annulusKernelMajorant_annulus_bound
+      (a := a) ha_atTop)
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the

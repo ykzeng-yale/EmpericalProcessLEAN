@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V467` in
+Route from `Live In-Thread Goal Prompt V468` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -129,6 +129,12 @@ prefix and `2*m` on annulus `m` now dominates the scalar kernel `tsum`, feeds
 the weighted base second-moment summability handoff, and feeds the
 moving/original convergent-half endpoint wrappers under the existing finite
 base tail and ratio-monotone hypotheses.
+V468 defines the concrete annulus-series majorant
+`2 + tsum_m 2*m*1_{a_{m-1} <= |x| < a_m}`, proves its pointwise finite
+support and summability when `a_n -> infinity`, proves its nonnegativity and
+prefix/annulus domination properties, and adds base-variance plus
+moving/original endpoint wrappers where the only remaining majorant-side input
+is integrability of this concrete majorant composed with `X_0`.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -150,8 +156,21 @@ finite-identity bridge, or the solved source mean/original endpoint bridge, or
 the solved ratio packaging from Durrett's `a_n / n` monotonicity, or the
 solved reciprocal-square p-series/tail estimate, or the solved annulus-wise
 scalar-kernel bound, or the solved low-prefix scalar-kernel bound, or the
-solved prefix-plus-annulus pointwise majorant and endpoint handoff.
-New compiled anchors through V467:
+solved prefix-plus-annulus pointwise majorant and endpoint handoff, or the
+solved concrete annulus-series majorant pointwise/endpoint wrappers.
+New compiled anchors through V468:
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_nonneg`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_hasFiniteSupport`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_summable`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant_nonneg`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant_prefix_bound`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant_annulus_bound`,
+`durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_annulusKernelMajorant_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_annulusKernelMajorant_integrable_and_ratio_mono`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_annulusKernelMajorant_integrable_tail_summable_and_ratio_mono`,
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_annulusKernelMajorant_integrable_tail_summable_and_ratio_mono`,
 `durrett2019_theorem_2_5_13_abs_lt_prefix_or_exists_annulus_of_shift_atTop`,
 `durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_majorant_of_ratio_mono`,
 `durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_majorant_and_ratio_mono`,
