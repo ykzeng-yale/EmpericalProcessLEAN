@@ -1089,6 +1089,25 @@ theorem durrett2019_theorem_2_1_12_product_integral_mul
     ν κ f g
 
 /--
+Durrett 2019, Theorem 2.1.12, integrable separated product-measure form.
+
+This packages the source hypothesis that both expectations exist while still
+reusing mathlib's product-integral factorization.
+-/
+theorem durrett2019_theorem_2_1_12_product_integral_mul_of_integrable
+    {S : Type u} [MeasurableSpace S]
+    {T : Type v} [MeasurableSpace T]
+    {𝕜 : Type*} [RCLike 𝕜]
+    {ν : Measure S} {κ : Measure T} [SFinite ν] [SFinite κ]
+    {f : S -> 𝕜} {g : T -> 𝕜}
+    (hf : Integrable f ν) (hg : Integrable g κ) :
+    ∫ z, f z.1 * g z.2 ∂ν.prod κ =
+      (∫ x, f x ∂ν) * ∫ y, g y ∂κ := by
+  have _ : Integrable (fun z : S × T => f z.1 * g z.2) (ν.prod κ) :=
+    hf.mul_prod hg
+  exact MeasureTheory.integral_prod_mul (μ := ν) (ν := κ) f g
+
+/--
 Durrett 2019, Theorem 2.1.12, nonnegative separated product-measure form.
 
 This is the Tonelli `lintegral` analogue of the separated product-expectation
@@ -1162,6 +1181,111 @@ theorem durrett2019_theorem_2_1_12_indepFun_lintegral_ofReal_mul_eq_mul_lintegra
       durrett2019_theorem_2_1_12_indepFun_lintegral_mul_eq_mul_lintegral
         (P := P) (X := X) (Y := Y) hXY hX hY
         (hf := hf.ennreal_ofReal) (hg := hg.ennreal_ofReal)
+
+/--
+Durrett 2019, Theorem 2.1.12, law-side nonnegative independent
+separated-product form.
+
+This is the source-facing law version: if `X` and `Y` have laws `μ` and `ν`,
+then nonnegative functions of them factor in expectation.
+-/
+theorem durrett2019_theorem_2_1_12_indepFun_lintegral_law_mul_eq_mul_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {T : Type w} [MeasurableSpace T]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {μ : Measure S} {ν : Measure T} [SFinite ν]
+    {X : Ω -> S} {Y : Ω -> T}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X μ P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y ν P)
+    {f : S -> ℝ≥0∞} {g : T -> ℝ≥0∞}
+    (hf : AEMeasurable f μ) (hg : AEMeasurable g ν) :
+    ∫⁻ ω, f (X ω) * g (Y ω) ∂P =
+      (∫⁻ x, f x ∂μ) * ∫⁻ y, g y ∂ν := by
+  have hpair :
+      _root_.ProbabilityTheory.HasLaw (fun ω => (X ω, Y ω)) (μ.prod ν) P :=
+    hXY.hasLaw_prod hX hY
+  have hfg :
+      AEMeasurable (fun z : S × T => f z.1 * g z.2) (μ.prod ν) :=
+    (hf.comp_fst).mul hg.comp_snd
+  calc
+    ∫⁻ ω, f (X ω) * g (Y ω) ∂P =
+        ∫⁻ z, f z.1 * g z.2 ∂μ.prod ν := by
+      simpa [Function.comp_def] using hpair.lintegral_comp hfg
+    _ = (∫⁻ x, f x ∂μ) * ∫⁻ y, g y ∂ν :=
+      durrett2019_theorem_2_1_12_product_lintegral_mul hf hg
+
+/--
+Durrett 2019, Theorem 2.1.12, law-side real nonnegative independent
+separated-product form.
+
+This is the same law-side display for real-valued nonnegative functions,
+encoded through `ENNReal.ofReal`.
+-/
+theorem durrett2019_theorem_2_1_12_indepFun_lintegral_law_ofReal_mul_eq_mul_lintegral_ofReal
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {T : Type w} [MeasurableSpace T]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {μ : Measure S} {ν : Measure T} [SFinite ν]
+    {X : Ω -> S} {Y : Ω -> T}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X μ P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y ν P)
+    {f : S -> ℝ} {g : T -> ℝ}
+    (hf : AEMeasurable f μ) (hg : AEMeasurable g ν)
+    (hf_nonneg : ∀ x, 0 ≤ f x) (_hg_nonneg : ∀ y, 0 ≤ g y) :
+    ∫⁻ ω, ENNReal.ofReal (f (X ω) * g (Y ω)) ∂P =
+      (∫⁻ x, ENNReal.ofReal (f x) ∂μ) *
+        ∫⁻ y, ENNReal.ofReal (g y) ∂ν := by
+  calc
+    ∫⁻ ω, ENNReal.ofReal (f (X ω) * g (Y ω)) ∂P =
+        ∫⁻ ω, ENNReal.ofReal (f (X ω)) *
+          ENNReal.ofReal (g (Y ω)) ∂P := by
+      congr with ω
+      exact ENNReal.ofReal_mul (hf_nonneg (X ω))
+    _ = (∫⁻ x, ENNReal.ofReal (f x) ∂μ) *
+        ∫⁻ y, ENNReal.ofReal (g y) ∂ν :=
+      durrett2019_theorem_2_1_12_indepFun_lintegral_law_mul_eq_mul_lintegral
+        (P := P) (μ := μ) (ν := ν) (X := X) (Y := Y)
+        hXY hX hY hf.ennreal_ofReal hg.ennreal_ofReal
+
+/--
+Durrett 2019, Theorem 2.1.12, law-side integrable independent
+separated-product form.
+
+This packages the integrable branch of the textbook display
+`E[f(X) g(Y)] = E[f(X)] E[g(Y)]` from the laws of `X` and `Y`.
+-/
+theorem durrett2019_theorem_2_1_12_indepFun_integral_law_mul_eq_mul_integral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {T : Type w} [MeasurableSpace T]
+    {𝕜 : Type*} [RCLike 𝕜]
+    {P : Measure Ω} [IsFiniteMeasure P]
+    {μ : Measure S} {ν : Measure T} [SFinite μ] [SFinite ν]
+    {X : Ω -> S} {Y : Ω -> T}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : _root_.ProbabilityTheory.HasLaw X μ P)
+    (hY : _root_.ProbabilityTheory.HasLaw Y ν P)
+    {f : S -> 𝕜} {g : T -> 𝕜}
+    (hf : Integrable f μ) (hg : Integrable g ν) :
+    ∫ ω, f (X ω) * g (Y ω) ∂P =
+      (∫ x, f x ∂μ) * ∫ y, g y ∂ν := by
+  have hpair :
+      _root_.ProbabilityTheory.HasLaw (fun ω => (X ω, Y ω)) (μ.prod ν) P :=
+    hXY.hasLaw_prod hX hY
+  have hfg_int :
+      Integrable (fun z : S × T => f z.1 * g z.2) (μ.prod ν) :=
+    hf.mul_prod hg
+  calc
+    ∫ ω, f (X ω) * g (Y ω) ∂P =
+        ∫ z, f z.1 * g z.2 ∂μ.prod ν := by
+      simpa [Function.comp_def] using
+        hpair.integral_comp hfg_int.aestronglyMeasurable
+    _ = (∫ x, f x ∂μ) * ∫ y, g y ∂ν :=
+      durrett2019_theorem_2_1_12_product_integral_mul_of_integrable hf hg
 
 /--
 Durrett 2019, Theorem 2.1.13, two-variable expectation factorization.
