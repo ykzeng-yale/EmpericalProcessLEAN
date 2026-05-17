@@ -15,22 +15,26 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: positive-sample common-core continuous-linear
-two-sided inverse affine mean-zero observation-law offset source for Theorem 5.41.
+Latest verified packet: positive-sample common-core continuous-linear-map
+injective equal-finrank affine mean-zero observation-law offset source for
+Theorem 5.41.
 The live endpoint now states the asymptotic-normality handoff for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine
-display and a continuous linear two-sided inverse for the common core, derives
-coordinate measurability and continuity of that inverse from mathlib's
-continuous linear map API, derives coordinate measurability of the explicit
-inverse estimator from primitive measurability of the observation offset,
-derives the canonical
+display and a common core supplied as an injective continuous linear map
+between finite coordinate spaces of equal finrank, derives the ker/range
+nonsingularity facts from mathlib's linear-map finite-dimensional API, builds
+the continuous linear equivalence used by the explicit inverse estimator,
+derives coordinate measurability and continuity of that inverse from
+mathlib's continuous linear map API, derives coordinate measurability of the
+explicit inverse estimator from primitive measurability of the observation
+offset, derives the canonical
 product-space offset integrability, independence, identical distribution, and
 positive-sample offset-average convergence from observation-law coordinate
 integrability, derives target convergence and consistency from that average
 convergence plus local inverse stability derived from ordinary continuity at
-the limiting target, derives common-core injectivity from the left-inverse
-law, derives the limiting inverse value from the inverse laws, and derives the
+the limiting target, derives the limiting inverse value from the inverse
+laws, and derives the
 population common-core equation from the affine display plus the coordinate
 mean-zero estimating equation, turns the finite equation into exact root-set
 membership,
@@ -41,21 +45,30 @@ obstruction plus the offset-average, product-space offset-iid, raw local
 inverse-stability, common-core-target, estimator-consistency,
 estimator-coordinate-measurability, direct root-set-membership, and
 finite-sum-zero hypotheses, the inverse coordinate-measurability hypothesis,
-the raw common-core injectivity hypothesis, the raw population common-core
-equation, and the raw right-inverse-value hypothesis from the current route.
+the raw common-core injectivity-as-left-inverse hypothesis, the raw population
+common-core equation, the raw right-inverse-value hypothesis, and the raw
+ker/range nonsingularity hypotheses from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapKerRangeAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveFinrankAffineMeanZeroOffsetSource`.
 
-The new continuous-linear-map ker/range packet adds
+The newest injective equal-finrank packet adds
+`vaart1998_commonObservationCoreLinear_ker_eq_bot_of_injective`,
+`vaart1998_commonObservationCoreLinear_range_eq_top_of_injective_finrank_eq`,
+`vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_finrank_eq`,
+`vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_finrank_eq_apply`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveFinrankAffineMeanZeroOffsetSource`.
+The next blocker is to derive injectivity and the equal finite-dimensional
+rank condition from a concrete matrix, determinant, nonsingularity, or
+textbook estimating-equation source, or to discharge a live
+observation-offset field for that endpoint.
+
+The previous continuous-linear-map ker/range packet adds
 `vaart1998_commonObservationCoreContinuousLinearEquiv_of_ker_range`,
 `vaart1998_commonObservationCoreContinuousLinearEquiv_of_ker_range_apply`,
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapKerRangeAffineMeanZeroOffsetSource`.
-The next blocker is to derive the trivial-kernel and full-range facts from a
-concrete linear/common-core model, finite matrix nonsingularity source, or
-textbook estimating equation, or to discharge a live observation-offset field
-for that endpoint.
 
 The previous continuous-linear-equivalence packet adds
 `vaart1998_commonObservationCore_rightInverse_of_continuousLinearEquiv`,
@@ -1167,11 +1180,12 @@ from the pointwise-Taylor Theorem 5.41 action endpoint.
 
 Superseded blocker note: the derivative-transform measurability
 fixed-`theta0` route has been replaced by the positive-sample common-core
-continuous-linear two-sided inverse affine mean-zero observation-law offset
+continuous-linear-map injective equal-finrank affine mean-zero observation-law offset
 source. The current live blocker is recorded at the top of this dashboard and
-in the current blocker plan: derive the common-core trivial-kernel/full-range
-facts from a concrete model or instantiate a concrete textbook estimating
-equation.
+in the current blocker plan: derive common-core injectivity and the equal
+finite-dimensional rank condition from a concrete model, determinant,
+nonsingularity, or textbook estimating-equation source, or instantiate a
+concrete textbook estimating equation.
 Do not replay the centered derivative-coordinate residual algebra,
 smooth/raw/scaled Taylor transfer, score-at-theta0 vector scaling transfer,
 estimator-definition a.e. wrappers, raw-root a.e. wrappers, selected

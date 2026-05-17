@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapKerRangeAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveFinrankAffineMeanZeroOffsetSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -28,12 +28,15 @@ pointwise common-core affine display
 commonObservationCoreLinear theta + observationOffset observation` and a
 common core supplied as a continuous linear map
 `commonObservationCoreLinear :
-  (Param -> ℝ) →L[ℝ] (Coord -> ℝ)` with
-`commonObservationCoreLinear.ker = ⊥` and
-`commonObservationCoreLinear.range = ⊤`. It builds the common-core continuous
-linear equivalence via `LinearEquiv.ofBijective` and
-`LinearEquiv.toContinuousLinearEquiv`, then uses the equivalence inverse in
-the explicit estimator. It derives both inverse laws from
+  (Param -> ℝ) →L[ℝ] (Coord -> ℝ)`, injectivity of this map, and equality of
+the finite coordinate dimensions
+`Module.finrank ℝ (Param -> ℝ) = Module.finrank ℝ (Coord -> ℝ)`. It derives
+`commonObservationCoreLinear.ker = ⊥` from injectivity and
+`commonObservationCoreLinear.range = ⊤` from injectivity plus equal finrank,
+then builds the common-core continuous linear equivalence via
+`LinearEquiv.ofBijective` and `LinearEquiv.toContinuousLinearEquiv`. It uses
+the equivalence inverse in the explicit estimator and derives both inverse
+laws from
 `ContinuousLinearEquiv.apply_symm_apply` and
 `ContinuousLinearEquiv.symm_apply_apply`, derives the coordinate
 measurability and `ContinuousAt` fields for the inverse from the continuous
@@ -63,7 +66,18 @@ membership, finite-sum zero, inverse coordinate measurability, raw local
 inverse continuity, raw common-core injectivity, raw population common-core
 equation, or raw right-inverse value directly.
 
-The newest continuous-linear-map ker/range packet adds
+The newest injective equal-finrank packet adds
+`vaart1998_commonObservationCoreLinear_ker_eq_bot_of_injective`,
+`vaart1998_commonObservationCoreLinear_range_eq_top_of_injective_finrank_eq`,
+`vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_finrank_eq`,
+`vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_finrank_eq_apply`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveFinrankAffineMeanZeroOffsetSource`.
+It removes the raw trivial-kernel and full-range hypotheses when the common
+core is supplied as an injective continuous linear map between finite
+coordinate spaces of equal dimension.
+
+The previous continuous-linear-map ker/range packet adds
 `vaart1998_commonObservationCoreContinuousLinearEquiv_of_ker_range`,
 `vaart1998_commonObservationCoreContinuousLinearEquiv_of_ker_range_apply`, and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapKerRangeAffineMeanZeroOffsetSource`.
@@ -186,9 +200,10 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: derive the trivial-kernel/full-range facts from an
-explicit finite matrix inverse, determinant/nonsingularity source, or
-textbook estimating-equation algebra; derive offset coordinate
+Next aggressive target: derive common-core injectivity and the equal
+finite-dimensional rank condition from an explicit finite matrix inverse,
+determinant/nonsingularity source, or textbook estimating-equation algebra;
+derive offset coordinate
 measurability/integrability from a more concrete model source when available;
 or instantiate the endpoint on a concrete estimating equation from the
 textbook.
@@ -204,7 +219,7 @@ identical-distribution, inverse coordinate-measurability,
 raw local inverse-stability, raw common-core injectivity, raw population
 common-core equation, raw right-inverse value assumptions, or already-bundled
 continuous-linear-equivalence assumptions when the common-core linear-map
-ker/range route is available.
+injective equal-finrank route is available.
 
 The previous common-core packet adds
 `vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core
@@ -1692,7 +1707,8 @@ endpoint.
 Continuation recipe:
 
 1. Check `git status`, the Vaart diff, and the live hypotheses of the
-   positive-sample common-core continuous-linear-map ker/range endpoint.
+   positive-sample common-core continuous-linear-map injective equal-finrank
+   endpoint.
 2. If an unfinished local Vaart Lean diff exists, either finish and verify it
    immediately, or remove it from the packet before editing route docs.
 3. Choose exactly one source hypothesis feeding the endpoint and discharge it
@@ -1700,15 +1716,16 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Derive the trivial-kernel/full-range facts from a concrete common-core
-   model, explicit finite matrix inverse, nonsingularity certificate, or
-   textbook estimating-equation algebra.
-2. If the ker/range construction is not immediately available, derive a live
+1. Derive common-core injectivity and the equal finite-dimensional rank
+   condition from a concrete common-core model, explicit finite matrix
+   inverse, nonsingularity certificate, determinant source, or textbook
+   estimating-equation algebra.
+2. If the injectivity/rank construction is not immediately available, derive a live
    observation-offset field for the same endpoint: coordinate measurability,
    coordinate integrability, or the coordinate mean-zero equation at `theta0`.
 3. Instantiate the compiled endpoint for the first concrete textbook
    Theorem 5.41 example that can provide the affine display, offset fields,
-   and common-core ker/range facts.
+   common-core injectivity, and the equal finite-dimensional rank condition.
 
 Do not replay the vector score-representation or vector score common-law
 transfers, derivative-table common-law transfer, centered
@@ -2997,26 +3014,28 @@ compiling:
    feeds that display into the finite Taylor-zero action-bound endpoint.
 
 Latest verified Vaart frontier before the next packet:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapKerRangeAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveFinrankAffineMeanZeroOffsetSource`.
 
-The latest theorem-sized packet removes the already-bundled common-core
-continuous-linear-equivalence assumption by building it from a continuous
-linear common core with trivial kernel and full range. The live route now
+The latest theorem-sized packet removes the raw common-core ker/range
+nonsingularity assumptions by deriving them from injectivity of the common
+core and equality of the finite coordinate dimensions. The live route now
 assumes the pointwise affine estimating-equation display against that
-continuous linear map, the ker/range nonsingularity facts, coordinate
-measurability and coordinate integrability of the observation offset, and the
-coordinate mean-zero equation at `theta0`.
+continuous linear map, common-core injectivity, the equal finite-dimensional
+rank condition, coordinate measurability and coordinate integrability of the
+observation offset, and the coordinate mean-zero equation at `theta0`.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint. Priority order:
 
-1. Derive the trivial-kernel/full-range facts from a concrete
-   linear/common-core model, matrix nonsingularity source, or textbook
-   finite-dimensional estimating equation.
+1. Derive common-core injectivity and the equal finite-dimensional rank
+   condition from a concrete linear/common-core model, matrix nonsingularity
+   source, determinant source, or textbook finite-dimensional estimating
+   equation.
 2. Derive observation-offset coordinate measurability and integrability from a
    concrete score/estimating-map model.
 3. Instantiate the endpoint for the first source-shaped textbook example of
-   Theorem 5.41 that can reuse the compiled positive-sample ker/range route.
+   Theorem 5.41 that can reuse the compiled positive-sample injective
+   equal-finrank route.
 
 Do not route back to the earlier second-derivative-kernel endpoint,
 fixed-`theta0` derivative joint measurability, direct second-derivative joint
