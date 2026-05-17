@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V44`, this file's top
+   the full book is complete, route from `Live Goal Prompt V45`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V44
+## Live Goal Prompt V45
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -582,18 +582,27 @@ closed source polytope, then uses compact-image transport to remove the
 previously supplied closed-feasible-range compactness from the compact
 closed-polytope source endpoint.
 
-Next theorem-sized target: promote the V44 compact-closed-polytope endpoint
-into the highest-level source theorem/report route for Chewi Theorem 13.16:
-search first for existing `*_closedPolytopeCompact`, `*_compactClosedPolytope`,
-standard preliminary/main-stage wrappers, and any theorem-report source
-anchors before adding new statements.  If the remaining source statement only
-needs compactness from bounded closed polytope in a proper finite-dimensional
-space, reuse
-`chewi1316_polytopeSlackNegLog_closedPolytope_isCompact_of_isBounded` and the
-V44 endpoint rather than reopening selector/minimizer/slack-floor machinery.
-Do not reintroduce supplied central-path selectors, supplied minimizers, or
-supplied slack-floor/linear-bound selectors: V44 already eliminates those for
-the compact closed-polytope source hypothesis.
+Current V45 packet promotes V44 from compact closed polytope to bounded closed
+polytope in a proper ambient space.  New compiled declarations:
+`chewi1316RangeCentralPathClosedFeasibleRange_isCompact_of_closedPolytope_isBounded`
+and
+`chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedPolytopeBounded`.
+Search-first reuse for V45: local
+`chewi1316_polytopeSlackNegLog_closedPolytope_isCompact_of_isBounded`, the V44
+closed-feasible-range compactness bridge, and the V44
+`*_of_closedFeasibleRangeCompact` bounded-closed-polytope endpoint.  No new
+topology or selector/minimizer machinery was needed.
+
+Next theorem-sized target: promote the V45 bounded-closed-polytope endpoint
+into the highest-level exact source theorem/report route for Chewi Theorem
+13.16.  Search first for existing `*_closedPolytopeBounded`,
+`*_closedPolytopeCompact`, `*_compactClosedPolytope`, standard
+preliminary/main-stage wrappers, and any theorem-report source anchors before
+adding new statements.  If the theorem statement needs a finite-dimensional
+ambient assumption, route through `[ProperSpace F]` plus V45; if it needs an
+already compact closed polytope, route through V44.  Do not reintroduce
+supplied central-path selectors, supplied minimizers, or supplied
+slack-floor/linear-bound selectors.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
@@ -604,7 +613,7 @@ consumers.  Search first near existing `*_standardPath` wrappers,
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers; then
 formalize only the genuinely missing final source theorem/report certificate.
-Older paragraphs below are cached route history and must not override this V44
+Older paragraphs below are cached route history and must not override this V45
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

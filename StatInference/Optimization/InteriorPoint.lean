@@ -37124,6 +37124,17 @@ theorem chewi1316RangeCentralPathClosedFeasibleRange_isCompact_of_closedPolytope
   rw [chewi1316RangeCentralPathClosedFeasibleRange_eq_rangeRestrict_image_closedPolytopeSlackSet]
   exact hcompact.image (ContinuousLinearMap.continuous _)
 
+theorem chewi1316RangeCentralPathClosedFeasibleRange_isCompact_of_closedPolytope_isBounded
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [ProperSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (hbounded : Bornology.IsBounded (closedPolytopeSlackSet aRow bSlack)) :
+    IsCompact (chewi1316RangeCentralPathClosedFeasibleRange aRow bSlack) :=
+  chewi1316RangeCentralPathClosedFeasibleRange_isCompact_of_closedPolytope_isCompact
+    aRow bSlack
+    (chewi1316_polytopeSlackNegLog_closedPolytope_isCompact_of_isBounded
+      aRow bSlack hbounded)
+
 /--
 Sublevel slack-floor selector for the finite-row central-path value.  This is
 the exact quantitative barrier-blowup gate left after the compact-envelope
@@ -53230,6 +53241,33 @@ theorem chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_ma
     hxbar0Set hoptimum_mem hcompact_closed
     (chewi1316RangeCentralPathClosedFeasibleRange_isCompact_of_closedPolytope_isCompact
       aRow bSlack hcompact_closed)
+    hc0_pos hc0_le heps_pos
+
+theorem chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedPolytopeBounded
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+      [ProperSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hbounded_closed : Bornology.IsBounded (closedPolytopeSlackSet aRow bSlack))
+    {eps c0 : ℝ}
+    (hc0_pos : 0 < c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (heps_pos : 0 < eps) :
+    Chewi1316StandardSourceMainStageExistsCenterObjectiveGapConclusion
+      aRow bSlack aObj optimum
+      (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+      eps c0 :=
+  chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedFeasibleRangeCompact
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (optimum := optimum)
+    hxbar0Set hoptimum_mem hbounded_closed
+    (chewi1316RangeCentralPathClosedFeasibleRange_isCompact_of_closedPolytope_isBounded
+      aRow bSlack hbounded_closed)
     hc0_pos hc0_le heps_pos
 
 /--

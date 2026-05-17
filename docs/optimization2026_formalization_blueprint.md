@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V44` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V45` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -253,6 +253,15 @@ wrappers, and
 It reuses local closed-polytope membership bridges and mathlib compact image
 transport, so future Chapter 13 work should route through this compact
 closed-polytope endpoint instead of exposing selector or slack-floor premises.
+The V45 packet further promotes this route from compact closed polytope to
+bounded closed polytope under `[ProperSpace F]`:
+`chewi1316RangeCentralPathClosedFeasibleRange_isCompact_of_closedPolytope_isBounded`
+and
+`chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedPolytopeBounded`.
+It reuses the existing proper-space Heine-Borel bridge
+`chewi1316_polytopeSlackNegLog_closedPolytope_isCompact_of_isBounded`; future
+source theorem/report packaging should route through V45 for bounded closed
+polytopes and V44 for already compact closed polytopes.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

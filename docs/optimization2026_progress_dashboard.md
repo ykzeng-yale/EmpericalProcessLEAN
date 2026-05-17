@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V44` near the top of
+  `Live Goal Prompt V45` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -294,13 +294,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   Search-first reuse for V44: local closed polytope/source-range membership
   APIs and mathlib compact image transport through
   `ContinuousLinearMap.continuous`.
+  The V45 packet derives compactness from bounded closed polytope under
+  `[ProperSpace F]` and exposes the bounded-closed source endpoint:
+  `chewi1316RangeCentralPathClosedFeasibleRange_isCompact_of_closedPolytope_isBounded`
+  and
+  `chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedPolytopeBounded`.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
   `hxseq_mem` or per-step decrement premise.  Next proof target: promote this
-  to the final source theorem/report surface for Chewi Theorem 13.16, or derive
-  compact closed-polytope hypotheses from bounded closed polytope via the
-  already compiled proper-space compactness bridge; do not re-open supplied
-  minimizer, central-path selector, or slack-floor premises.
+  to the final exact source theorem/report surface for Chewi Theorem 13.16; do
+  not re-open supplied minimizer, central-path selector, or slack-floor
+  premises.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge
