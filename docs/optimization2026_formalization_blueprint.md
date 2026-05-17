@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V45` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V46` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -259,9 +259,15 @@ bounded closed polytope under `[ProperSpace F]`:
 and
 `chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedPolytopeBounded`.
 It reuses the existing proper-space Heine-Borel bridge
-`chewi1316_polytopeSlackNegLog_closedPolytope_isCompact_of_isBounded`; future
-source theorem/report packaging should route through V45 for bounded closed
-polytopes and V44 for already compact closed polytopes.
+`chewi1316_polytopeSlackNegLog_closedPolytope_isCompact_of_isBounded`; this is
+the internal boundedness-to-compactness step for bounded closed polytopes.
+The V46 packet then hides those internal premise-suffix endpoints behind the
+no-extra-suffix source-facing declarations
+`chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps`
+and
+`chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps`.
+Use these V46 names as the preferred §13.16 report/source surface, adding only
+a thin source-numbered alias if the report crosswalk needs one.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

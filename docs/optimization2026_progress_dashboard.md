@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V45` near the top of
+  `Live Goal Prompt V46` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -301,10 +301,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedPolytopeBounded`.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: promote this
-  to the final exact source theorem/report surface for Chewi Theorem 13.16; do
-  not re-open supplied minimizer, central-path selector, or slack-floor
-  premises.
+  `hxseq_mem` or per-step decrement premise.
+  The V46 packet adds the no-extra-suffix source-facing compact and bounded
+  closed-polytope endpoints:
+  `chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps`
+  and
+  `chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps`.
+  These should be the stable source surface for the §13.16 report route or any
+  later source-numbered alias; do not route future work through the internal
+  `_of_closedPolytopeCompact` / `_of_closedPolytopeBounded` names unless the
+  proof specifically needs to expose that premise.  Do not re-open supplied
+  minimizer, central-path selector, or slack-floor premises.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge

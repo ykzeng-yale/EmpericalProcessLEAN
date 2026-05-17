@@ -53271,6 +53271,64 @@ theorem chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_ma
     hc0_pos hc0_le heps_pos
 
 /--
+Source-facing finite-row Chewi §13.16 main-stage endpoint for compact closed
+polytopes.  This wrapper hides the central-path selector and closed feasible
+range compactness construction, exposing only the standard source hypotheses.
+-/
+theorem chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hcompact_closed : IsCompact (closedPolytopeSlackSet aRow bSlack))
+    {eps c0 : ℝ}
+    (hc0_pos : 0 < c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (heps_pos : 0 < eps) :
+    Chewi1316StandardSourceMainStageExistsCenterObjectiveGapConclusion
+      aRow bSlack aObj optimum
+      (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+      eps c0 :=
+  chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedPolytopeCompact
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (optimum := optimum)
+    hxbar0Set hoptimum_mem hcompact_closed hc0_pos hc0_le heps_pos
+
+/--
+Source-facing finite-row Chewi §13.16 main-stage endpoint for bounded closed
+polytopes in a proper ambient space.  The conclusion selects a preliminary
+cutoff, terminal main-stage index, and matching central-path point whose
+standard source iterate has objective gap at most `eps`.
+-/
+theorem chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+      [ProperSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hbounded_closed : Bornology.IsBounded (closedPolytopeSlackSet aRow bSlack))
+    {eps c0 : ℝ}
+    (hc0_pos : 0 < c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (heps_pos : 0 < eps) :
+    Chewi1316StandardSourceMainStageExistsCenterObjectiveGapConclusion
+      aRow bSlack aObj optimum
+      (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+      eps c0 :=
+  chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedPolytopeBounded
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (optimum := optimum)
+    hxbar0Set hoptimum_mem hbounded_closed hc0_pos hc0_le heps_pos
+
+/--
 Bounded feasible translated slack ranges yield a source-shaped finite tail
 budget for the actual preliminary Newton initializer.  The boundedness
 certificate supplies a source-centered closed-ball radius; the positive source

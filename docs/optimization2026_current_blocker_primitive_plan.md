@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V45`, this file's top
+   the full book is complete, route from `Live Goal Prompt V46`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V45
+## Live Goal Prompt V46
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -593,16 +593,27 @@ closed-feasible-range compactness bridge, and the V44
 `*_of_closedFeasibleRangeCompact` bounded-closed-polytope endpoint.  No new
 topology or selector/minimizer machinery was needed.
 
-Next theorem-sized target: promote the V45 bounded-closed-polytope endpoint
-into the highest-level exact source theorem/report route for Chewi Theorem
-13.16.  Search first for existing `*_closedPolytopeBounded`,
-`*_closedPolytopeCompact`, `*_compactClosedPolytope`, standard
-preliminary/main-stage wrappers, and any theorem-report source anchors before
-adding new statements.  If the theorem statement needs a finite-dimensional
-ambient assumption, route through `[ProperSpace F]` plus V45; if it needs an
-already compact closed polytope, route through V44.  Do not reintroduce
-supplied central-path selectors, supplied minimizers, or supplied
-slack-floor/linear-bound selectors.
+Current V46 packet adds the no-extra-suffix source-facing endpoint wrappers
+for the compact and bounded closed-polytope §13.16 main-stage result.  New
+compiled declarations:
+`chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps`
+and
+`chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps`.
+Search-first reuse for V46: the existing V44
+`*_of_closedPolytopeCompact` theorem and V45 `*_of_closedPolytopeBounded`
+theorem already discharge all selector, minimizer, closed-feasible-range
+compactness, and slack-floor sublevel machinery, so the new source-facing
+surface is a verified wrapper layer rather than a new proof primitive.
+
+Next theorem-sized target: use the V46 no-suffix bounded/compact
+closed-polytope endpoints as the stable source theorem surface for Chewi Lemma
+13.16 report/source packaging, or, if the report policy still requires a
+closer literal source statement, add only a thin source-numbered alias that
+calls V46.  Search first for existing theorem-report folders, report template
+rules, source markdown/PDF anchors, and existing `chewi1316_` endpoint names.
+Do not reintroduce supplied central-path selectors, supplied minimizers,
+supplied slack-floor/linear-bound selectors, or any closed-feasible-range
+compactness premise in the final source statement.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
@@ -613,7 +624,7 @@ consumers.  Search first near existing `*_standardPath` wrappers,
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers; then
 formalize only the genuinely missing final source theorem/report certificate.
-Older paragraphs below are cached route history and must not override this V45
+Older paragraphs below are cached route history and must not override this V46
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
