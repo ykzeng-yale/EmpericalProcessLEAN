@@ -12933,6 +12933,241 @@ theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_s
     hu_nonneg hratio hweighted_tail
 
 /--
+Durrett 2019, Theorem 2.5.13 notation: the base first-moment contribution of
+the annulus `[a_{r-1}, a_r)`.
+-/
+noncomputable def durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    (P : Measure Ω) (X0 : Ω -> ℝ) (a : ℕ -> ℝ) (r : ℕ) : ℝ :=
+  ∫ ω,
+    Set.indicator
+      {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}
+      (fun ω => |X0 ω|) ω ∂P
+
+/--
+Durrett 2019, Theorem 2.5.13 annulus support: every point below the terminal
+cutoff is either below the prefix cutoff or belongs to one of the finite
+annuli.
+-/
+theorem durrett2019_theorem_2_5_13_abs_lt_prefix_or_mem_annulus
+    {a : ℕ -> ℝ} {N n : ℕ} (hNn : N ≤ n) {x : ℝ}
+    (hx : |x| < a n) :
+    |x| < a N ∨
+      ∃ r ∈ Finset.Icc (N + 1) n, a (r - 1) ≤ |x| ∧ |x| < a r := by
+  induction n with
+  | zero =>
+      have hN0 : N = 0 := Nat.eq_zero_of_le_zero hNn
+      left
+      simpa [hN0] using hx
+  | succ n ih =>
+      by_cases hNle : N ≤ n
+      · by_cases hx_n : |x| < a n
+        · rcases ih hNle hx_n with hprefix | ⟨r, hr, hrlo, hrhi⟩
+          · exact Or.inl hprefix
+          · exact Or.inr
+              ⟨r,
+                Finset.mem_Icc.mpr
+                  ⟨(Finset.mem_Icc.mp hr).1,
+                    Nat.le_succ_of_le (Finset.mem_Icc.mp hr).2⟩,
+                hrlo, hrhi⟩
+        · right
+          refine ⟨n + 1, Finset.mem_Icc.mpr ⟨Nat.succ_le_succ hNle, le_rfl⟩, ?_, hx⟩
+          simpa using le_of_not_gt hx_n
+      · have hN_eq : N = n + 1 := by omega
+        left
+        simpa [hN_eq] using hx
+
+/--
+Durrett 2019, Theorem 2.5.13 annulus support: the scalar truncated absolute
+value at any cutoff `a_k` below `a_n` is bounded by the prefix cutoff plus the
+finite annulus sum up to `n`.
+-/
+theorem durrett2019_theorem_2_5_13_abs_trunc_indicator_le_cutoff_add_annulus_sum
+    {a : ℕ -> ℝ} (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    {N n k : ℕ} (hNn : N ≤ n) (hkn : k ≤ n) (x : ℝ) :
+    Set.indicator {y : ℝ | |y| < a k} (fun y => |y|) x ≤
+      a N +
+        ∑ r ∈ Finset.Icc (N + 1) n,
+          Set.indicator {y : ℝ | a (r - 1) ≤ |y| ∧ |y| < a r}
+            (fun y => |y|) x := by
+  have hann_nonneg :
+      0 ≤
+        ∑ r ∈ Finset.Icc (N + 1) n,
+          Set.indicator {y : ℝ | a (r - 1) ≤ |y| ∧ |y| < a r}
+            (fun y => |y|) x := by
+    refine Finset.sum_nonneg fun r _hr => ?_
+    by_cases hrx : a (r - 1) ≤ |x| ∧ |x| < a r
+    · simp [hrx]
+    · simp [hrx]
+  by_cases hxk : |x| < a k
+  · have hxn : |x| < a n :=
+      lt_of_lt_of_le hxk (ha_mono hkn)
+    rcases
+      durrett2019_theorem_2_5_13_abs_lt_prefix_or_mem_annulus
+        (a := a) hNn hxn with hprefix | ⟨r, hr, hrlo, hrhi⟩
+    · calc
+        Set.indicator {y : ℝ | |y| < a k} (fun y => |y|) x = |x| := by
+          simp [hxk]
+        _ ≤ a N := hprefix.le
+        _ ≤ a N +
+            ∑ r ∈ Finset.Icc (N + 1) n,
+              Set.indicator {y : ℝ | a (r - 1) ≤ |y| ∧ |y| < a r}
+                (fun y => |y|) x := le_add_of_nonneg_right hann_nonneg
+    · have hterm_nonneg :
+          ∀ s ∈ Finset.Icc (N + 1) n,
+            0 ≤
+              Set.indicator {y : ℝ | a (s - 1) ≤ |y| ∧ |y| < a s}
+                (fun y => |y|) x := by
+        intro s _hs
+        by_cases hsx : a (s - 1) ≤ |x| ∧ |x| < a s
+        · simp [hsx]
+        · simp [hsx]
+      have hterm_le_sum :
+          |x| ≤
+            ∑ s ∈ Finset.Icc (N + 1) n,
+              Set.indicator {y : ℝ | a (s - 1) ≤ |y| ∧ |y| < a s}
+                (fun y => |y|) x := by
+        have hsingle :=
+          Finset.single_le_sum hterm_nonneg hr
+        have hterm_eq :
+            Set.indicator {y : ℝ | a (r - 1) ≤ |y| ∧ |y| < a r}
+              (fun y => |y|) x = |x| := by
+          simp [hrlo, hrhi]
+        exact hterm_eq ▸ hsingle
+      calc
+        Set.indicator {y : ℝ | |y| < a k} (fun y => |y|) x = |x| := by
+          simp [hxk]
+        _ ≤ ∑ s ∈ Finset.Icc (N + 1) n,
+              Set.indicator {y : ℝ | a (s - 1) ≤ |y| ∧ |y| < a s}
+                (fun y => |y|) x := hterm_le_sum
+        _ ≤ a N +
+            ∑ s ∈ Finset.Icc (N + 1) n,
+              Set.indicator {y : ℝ | a (s - 1) ≤ |y| ∧ |y| < a s}
+                (fun y => |y|) x := by
+              exact le_add_of_nonneg_left (ha_pos N).le
+  · calc
+      Set.indicator {y : ℝ | |y| < a k} (fun y => |y|) x = 0 := by
+        simp [hxk]
+      _ ≤ a N +
+          ∑ r ∈ Finset.Icc (N + 1) n,
+            Set.indicator {y : ℝ | a (r - 1) ≤ |y| ∧ |y| < a r}
+              (fun y => |y|) x :=
+            add_nonneg (ha_pos N).le hann_nonneg
+
+/--
+Durrett 2019, Theorem 2.5.13 annulus support: the base absolute truncated
+integrand is integrable because it is bounded by its cutoff.
+-/
+theorem durrett2019_theorem_2_5_13_integrable_baseAbsTruncIntegrand
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ} (hX0_meas : Measurable X0) (n : ℕ) :
+    Integrable
+      (fun ω : Ω =>
+        Set.indicator {ω : Ω | |X0 ω| < a n} (fun ω => |X0 ω|) ω) P := by
+  refine Integrable.of_bound
+    ((hX0_meas.abs.indicator
+      (measurableSet_lt hX0_meas.abs measurable_const)).aestronglyMeasurable)
+    |a n| ?_
+  exact Eventually.of_forall fun ω => by
+    by_cases hsmall : |X0 ω| < a n
+    · have hle : |X0 ω| ≤ |a n| := hsmall.le.trans (le_abs_self (a n))
+      simpa [hsmall, Real.norm_eq_abs, abs_of_nonneg (abs_nonneg (X0 ω))] using hle
+    · simp [hsmall]
+
+/--
+Durrett 2019, Theorem 2.5.13 annulus support: each base absolute annulus
+integrand is integrable because it is bounded by its upper cutoff.
+-/
+theorem durrett2019_theorem_2_5_13_integrable_baseAbsAnnulusIntegrand
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ} (hX0_meas : Measurable X0) (r : ℕ) :
+    Integrable
+      (fun ω : Ω =>
+        Set.indicator
+          {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}
+          (fun ω => |X0 ω|) ω) P := by
+  have hset :
+      MeasurableSet {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r} :=
+    (measurableSet_le measurable_const hX0_meas.abs).inter
+      (measurableSet_lt hX0_meas.abs measurable_const)
+  refine Integrable.of_bound
+    ((hX0_meas.abs.indicator hset).aestronglyMeasurable)
+    |a r| ?_
+  exact Eventually.of_forall fun ω => by
+    by_cases hmem : a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r
+    · have hle : |X0 ω| ≤ |a r| := hmem.2.le.trans (le_abs_self (a r))
+      simpa [hmem, Real.norm_eq_abs, abs_of_nonneg (abs_nonneg (X0 ω))] using hle
+    · simp [hmem]
+
+/--
+Durrett 2019, Theorem 2.5.13 annulus support: the actual finite annulus
+partition bounds the base absolute truncated integral by the prefix cutoff
+and finite annulus first moments.
+-/
+theorem durrett2019_theorem_2_5_13_baseAbsTruncIntegral_le_cutoff_add_annulusIntegral_sum
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (hX0_meas : Measurable X0) {N n k : ℕ} (hNn : N ≤ n) (hkn : k ≤ n) :
+    durrett2019_theorem_2_5_13_baseAbsTruncIntegral P X0 a k ≤
+      a N +
+        ∑ r ∈ Finset.Icc (N + 1) n,
+          durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r := by
+  let left : Ω -> ℝ := fun ω =>
+    Set.indicator {ω : Ω | |X0 ω| < a k} (fun ω => |X0 ω|) ω
+  let ann : ℕ -> Ω -> ℝ := fun r ω =>
+    Set.indicator
+      {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}
+      (fun ω => |X0 ω|) ω
+  let right : Ω -> ℝ := fun ω =>
+    a N + ∑ r ∈ Finset.Icc (N + 1) n, ann r ω
+  have hleft_int : Integrable left P :=
+    durrett2019_theorem_2_5_13_integrable_baseAbsTruncIntegrand
+      (P := P) (X0 := X0) (a := a) hX0_meas k
+  have hann_int : ∀ r : ℕ, Integrable (ann r) P := by
+    intro r
+    exact
+      durrett2019_theorem_2_5_13_integrable_baseAbsAnnulusIntegrand
+        (P := P) (X0 := X0) (a := a) hX0_meas r
+  have hright_int : Integrable right P := by
+    exact (integrable_const (a N)).add
+      (integrable_finsetSum (Finset.Icc (N + 1) n) fun r _hr => hann_int r)
+  have hsum_int :
+      Integrable (fun ω : Ω => ∑ r ∈ Finset.Icc (N + 1) n, ann r ω) P :=
+    integrable_finsetSum (Finset.Icc (N + 1) n) fun r _hr => hann_int r
+  have hpoint : ∀ ω : Ω, left ω ≤ right ω := by
+    intro ω
+    exact
+      durrett2019_theorem_2_5_13_abs_trunc_indicator_le_cutoff_add_annulus_sum
+        (a := a) ha_pos ha_mono hNn hkn (X0 ω)
+  have hintegral_le : ∫ ω, left ω ∂P ≤ ∫ ω, right ω ∂P :=
+    integral_mono hleft_int hright_int hpoint
+  have hright_integral :
+      (∫ ω, right ω ∂P) =
+        a N +
+          ∑ r ∈ Finset.Icc (N + 1) n,
+            durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r := by
+    calc
+      (∫ ω, right ω ∂P) =
+          ∫ ω, a N + ∑ r ∈ Finset.Icc (N + 1) n, ann r ω ∂P := by
+            rfl
+      _ =
+          (∫ _ω : Ω, a N ∂P) +
+            ∫ ω, ∑ r ∈ Finset.Icc (N + 1) n, ann r ω ∂P := by
+            rw [integral_add (integrable_const (a N)) hsum_int]
+      _ =
+          a N + ∑ r ∈ Finset.Icc (N + 1) n, ∫ ω, ann r ω ∂P := by
+            rw [integral_finsetSum (Finset.Icc (N + 1) n) fun r _hr => hann_int r]
+            simp [integral_const, probReal_univ, smul_eq_mul]
+      _ =
+          a N +
+            ∑ r ∈ Finset.Icc (N + 1) n,
+              durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r := by
+            simp [ann, durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral]
+  simpa [left, durrett2019_theorem_2_5_13_baseAbsTruncIntegral, hright_integral]
+    using hintegral_le
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

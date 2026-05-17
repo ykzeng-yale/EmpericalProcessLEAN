@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V456` in
+Route from `Live In-Thread Goal Prompt V457` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -73,9 +73,13 @@ prefix-plus-finite-annulus mean estimate plus weighted tail bound feeds the
 V454 mean squeeze and scalar-kernel endpoint wrappers.  V456 reduces this mean
 estimate to the base absolute truncated integral: identical distribution now
 proves `|E Y_k|` is bounded by the base absolute truncated integral, and that
-integral bound feeds the scalar-kernel moving-truncated endpoint wrapper.  The
-next source work is to prove the actual annulus partition bound for that base
-absolute truncated integral, prove the weighted annulus tail summability from
+integral bound feeds the scalar-kernel moving-truncated endpoint wrapper.  V457
+discharges the actual finite-annulus partition for that base integral: it
+defines the base absolute annulus integral, proves the scalar finite-annulus
+cover, proves integrability of the bounded truncated/annulus indicators, and
+proves the integrated bound
+`baseAbsTruncIntegral k <= a_N + sum_{r=N+1}^n baseAbsAnnulusIntegral r`.
+The next source work is to prove the weighted annulus tail summability from
 identity (*) and finite large-jump tail series, prove the same annulus
 calculus supplies scalar truncated-square kernel majorization, and then
 assemble the source-facing Feller dichotomy wrapper.  Do not route back into
@@ -90,8 +94,15 @@ scaled-variance-to-base-truncated-square handoff, or the solved
 scalar-kernel-to-original-endpoint handoff, or the solved
 scaled-mean-summability-to-mean-normalization handoff, or the solved
 textbook-prefix-plus-tail mean squeeze, the solved finite-annulus ratio/tail
-bridge, or the solved base-truncated-integral-to-mean bridge.  New compiled
-anchors through V456:
+bridge, the solved base-truncated-integral-to-mean bridge, or the solved base
+absolute finite-annulus partition/integral bridge.  New compiled anchors
+through V457:
+`durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral`,
+`durrett2019_theorem_2_5_13_abs_lt_prefix_or_mem_annulus`,
+`durrett2019_theorem_2_5_13_abs_trunc_indicator_le_cutoff_add_annulus_sum`,
+`durrett2019_theorem_2_5_13_integrable_baseAbsTruncIntegrand`,
+`durrett2019_theorem_2_5_13_integrable_baseAbsAnnulusIntegrand`,
+`durrett2019_theorem_2_5_13_baseAbsTruncIntegral_le_cutoff_add_annulusIntegral_sum`,
 `durrett2019_theorem_2_5_13_baseAbsTruncIntegral`,
 `durrett2019_theorem_2_5_13_abs_truncatedMean_le_baseAbsTruncIntegral_of_identDistrib`,
 `durrett2019_theorem_2_5_13_prefix_annulus_mean_bound_of_baseAbsTruncIntegral_bound`,
