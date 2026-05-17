@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V495
+## Live In-Thread Goal Prompt V496
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -43,7 +43,9 @@ joint-law, and one-based canonical iid forms.  V494 adds finite-prefix
 closed/open real half-line cylinder probability displays for source,
 joint-law, and canonical iid forms.  V495 adds literal one-based
 `{1, ..., n}` closed/open real half-line cylinder probability displays for
-source, joint-law, identical-distribution, and canonical iid forms.
+source, joint-law, identical-distribution, and canonical iid forms.  V496 adds
+real-valued CDF and CDF-left-limit finite-product displays over `Finset.range n`
+and literal one-based `Finset.Icc 1 n` source/canonical forms.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -69,7 +71,24 @@ solved finite-prefix real half-line cylinder probability displays for
 closed/open empirical-CDF events,
 solved literal one-based `{1, ..., n}` real half-line cylinder probability
 displays for closed/open empirical-CDF events,
+solved CDF and CDF-left-limit real-valued finite-product displays for
+closed/open empirical-CDF cylinder events,
 or old app-level stale prompts.
+
+Latest verified target V496 promotes the half-line cylinder probabilities to
+real-valued CDF notation:
+`durrett2019_cdf_leftLim_eq_real_Iio`,
+`durrett2019_theorem_2_1_11_iid_real_Iic_range_cdf_prod_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_real_Iio_range_cdfLeftLim_prod_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_shift_real_Iic_range_cdf_prod_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_shift_real_Iio_range_cdfLeftLim_prod_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_real_Iic_oneBased_Icc_cdf_prod_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_real_Iio_oneBased_Icc_cdfLeftLim_prod_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_canonical_iid_real_Iic_oneBased_Icc_cdf_prod`, and
+`durrett2019_theorem_2_1_11_canonical_iid_real_Iio_oneBased_Icc_cdfLeftLim_prod`.
+These wrappers replace raw factors `ν (Set.Iic x_i)` and `ν (Set.Iio x_i)`
+with `cdf ν x_i` and `Function.leftLim (cdf ν) x_i`, matching Durrett's
+distribution-function notation in Theorem 2.1.11 and Example 2.4.8.
 
 Latest verified target V495 specializes Durrett Theorem 2.1.11 cylinder
 probabilities on the literal one-based index set `{1, ..., n}` to the
@@ -4572,6 +4591,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V495` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V496` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
