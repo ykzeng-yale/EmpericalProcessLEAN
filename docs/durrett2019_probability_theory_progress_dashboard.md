@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V462` in
+Route from `Live In-Thread Goal Prompt V463` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -105,6 +105,10 @@ monotone annulus partition supplies the base truncated-integral bound, finite
 base tail summability plus monotone cutoffs prove the truncated means normalize
 to zero, and the scalar-kernel moving-truncated/original endpoints now consume
 those source hypotheses directly.
+V463 packages Durrett's textbook monotonicity of `a_n / n` into the
+eventual finite-annulus ratio estimate `(n/a_n) <= (r/a_r)`, and adds
+mean, moving-truncated, and original endpoint wrappers that consume the
+source-shaped `a_n / n` monotonicity hypothesis directly.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -122,8 +126,14 @@ absolute finite-annulus partition/integral bridge, or the solved
 annulus-first-moment-to-identity-mass bridge, or the solved
 mass-weight-summable-to-shifted-tail-bound bridge, or the solved
 finite-prefix-identity(*) consumer, or the solved monotone-annulus
-finite-identity bridge, or the solved source mean/original endpoint bridge.
-New compiled anchors through V462:
+finite-identity bridge, or the solved source mean/original endpoint bridge, or
+the solved ratio packaging from Durrett's `a_n / n` monotonicity.
+New compiled anchors through V463:
+`durrett2019_theorem_2_5_13_n_over_a_le_m_over_a_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_ratio_eventually_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_tail_summable_and_ratio_mono`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_ratio_mono`,
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_ratio_mono`,
 `durrett2019_theorem_2_5_13_baseAbsTruncIntegral_bound_of_monotone_annulus`,
 `durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_tail_summable_and_monotone`,
 `durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_monotone`,

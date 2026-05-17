@@ -10491,6 +10491,47 @@ theorem durrett2019_theorem_2_5_13_tail_measure_le_scaled_tail_measure_of_ratio_
       (X := X) (a := a) hk hn hratio_mono)
 
 /--
+Durrett 2019, Theorem 2.5.13 deterministic support: the textbook monotonicity
+of `a_n / n` on positive indices is equivalently the ratio estimate
+`n / a_n <= m / a_m` for positive `m <= n`.
+-/
+theorem durrett2019_theorem_2_5_13_n_over_a_le_m_over_a_of_ratio_mono
+    {a : ℕ -> ℝ} (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    {m n : ℕ} (hm_pos : 0 < m) (hmn : m ≤ n) :
+    (n : ℝ) / a n ≤ (m : ℝ) / a m := by
+  have hn_pos : 0 < n := hm_pos.trans_le hmn
+  have hm_real_pos : 0 < (m : ℝ) := Nat.cast_pos.mpr hm_pos
+  have hn_real_pos : 0 < (n : ℝ) := Nat.cast_pos.mpr hn_pos
+  have hratio := hratio_mono hm_pos hmn
+  have hcross : a m * (n : ℝ) ≤ a n * (m : ℝ) := by
+    rwa [div_le_div_iff₀ hm_real_pos hn_real_pos] at hratio
+  rw [div_le_div_iff₀ (ha_pos n) (ha_pos m)]
+  nlinarith
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic support: the ratio estimate needed
+by the finite-annulus mean bridge is an immediate eventual consequence of the
+textbook monotonicity of `a_n / n`.
+-/
+theorem durrett2019_theorem_2_5_13_ratio_eventually_of_ratio_mono
+    {a : ℕ -> ℝ} (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ)) :
+    ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        ∀ r ∈ Finset.Icc (N + 1) n,
+          (n : ℝ) / a n ≤ (r : ℝ) / a r := by
+  intro N
+  exact Eventually.of_forall fun n r hr => by
+    have hr_bounds := Finset.mem_Icc.mp hr
+    have hr_pos : 0 < r := by omega
+    exact
+      durrett2019_theorem_2_5_13_n_over_a_le_m_over_a_of_ratio_mono
+        (a := a) ha_pos hratio_mono hr_pos hr_bounds.2
+
+/--
 Durrett 2019, Theorem 2.5.13 deterministic support: an antitone nonnegative
 tail sequence has each block `[kn, k(n+1))` bounded by `k` times its first
 selected subsequence value.
@@ -13902,6 +13943,122 @@ theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_sc
       hn_over_a_tendsto_zero hratio htail_summable)
     (durrett2019_theorem_2_5_13_iid_tail_tsum_ne_top_of_real_tail_summable
       (P := P) (X0 := X0) (a := a) htail_summable)
+
+/--
+Durrett 2019, Theorem 2.5.13 source mean bridge: the textbook monotonicity of
+`a_n / n` supplies the finite-annulus ratio hypothesis used by the truncated
+mean estimate.
+-/
+theorem durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_tail_summable_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (hX_meas : ∀ k : ℕ, Measurable (X k)) (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n)
+      atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_tail_summable_and_monotone
+    (P := P) (X := X) (X0 := X0) (a := a)
+    ha_pos ha_mono hX_meas hX0_meas hX_ident hn_over_a_tendsto_zero
+    (durrett2019_theorem_2_5_13_ratio_eventually_of_ratio_mono
+      (a := a) ha_pos hratio_mono)
+    htail_summable
+
+/--
+Durrett 2019, Theorem 2.5.13 moving-truncated endpoint with the finite-annulus
+ratio hypothesis discharged from the textbook monotonicity of `a_n / n`.
+-/
+theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x))
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_monotone
+    (P := P) (X := X) (X0 := X0) (a := a) (g := g)
+    hX_indep hX_meas hX0_meas hX_ident hg_int hg_nonneg hkernel_bound
+    ha_pos ha_mono ha_increment_nonneg ha_shift_atTop
+    hn_over_a_tendsto_zero
+    (durrett2019_theorem_2_5_13_ratio_eventually_of_ratio_mono
+      (a := a) ha_pos hratio_mono)
+    htail_summable
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent-half source wrapper: finite base tail
+series, monotone cutoffs, scalar truncated-square kernel control, and the
+textbook monotonicity of `a_n / n` imply the original normalized-sum endpoint.
+-/
+theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x))
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto a atTop atTop)
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, X (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_monotone
+    (P := P) (X := X) (X0 := X0) (a := a) (g := g)
+    hX_indep hX_meas hX0_meas hX_ident hg_int hg_nonneg hkernel_bound
+    ha_pos ha_mono ha_increment_nonneg ha_atTop ha_shift_atTop
+    hn_over_a_tendsto_zero
+    (durrett2019_theorem_2_5_13_ratio_eventually_of_ratio_mono
+      (a := a) ha_pos hratio_mono)
+    htail_summable
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the

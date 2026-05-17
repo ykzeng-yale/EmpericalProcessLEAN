@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V462
+## Live In-Thread Goal Prompt V463
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -93,6 +93,10 @@ the monotone annulus partition now supplies the base truncated-integral bound,
 finite base tail summability plus monotone cutoffs prove the truncated means
 normalize to zero, and the scalar-kernel moving-truncated/original endpoints
 now consume those source hypotheses directly.
+V463 packages Durrett's textbook monotonicity of `a_n / n` into the
+eventual finite-annulus ratio estimate `(n/a_n) <= (r/a_r)`, and adds
+mean, moving-truncated, and original endpoint wrappers that consume the
+source-shaped `a_n / n` monotonicity hypothesis directly.
 Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
@@ -112,14 +116,27 @@ absolute finite-annulus partition/integral bridge, or the solved
 annulus-first-moment-to-identity-mass bridge, or the solved
 mass-weight-summable-to-shifted-tail-bound bridge, or the solved
 finite-prefix-identity(*) consumer, or the solved monotone-annulus
-finite-identity bridge, or the solved source mean/original endpoint bridge.
+finite-identity bridge, or the solved source mean/original endpoint bridge, or
+the solved ratio packaging from Durrett's `a_n / n` monotonicity.
 Next aggressive target: prove the scalar truncated-square kernel majorization
-from identity(*) and ratio monotonicity, package the ratio hypothesis from the
-textbook monotonicity of `a_n / n`, and then assemble the Feller dichotomy
-wrapper.
+from identity(*) and ratio monotonicity, including the p-series/tail estimate
+`sum_{n=m}^infty a_n^{-2} <= C * m / a_m^2`, and then assemble the Feller
+dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V463 packages the finite-annulus ratio estimate from
+Durrett's source monotonicity of `a_n / n` and threads it through the
+convergent-half endpoints.  New compiled anchors include:
+`durrett2019_theorem_2_5_13_n_over_a_le_m_over_a_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_ratio_eventually_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_tail_summable_and_ratio_mono`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_ratio_mono`, and
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_ratio_mono`.
+The remaining blocker is no longer the source ratio hypothesis; it is the
+scalar truncated-square kernel majorization plus the p-series/tail estimate
+needed to instantiate the kernel bound from identity(*).
 
 Latest verified target V462 plugs the V461 source mass summability into the
 convergent-half mean and original endpoint route.  New compiled anchors
@@ -129,9 +146,9 @@ include:
 `durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_monotone`,
 `durrett2019_theorem_2_5_13_iid_tail_tsum_ne_top_of_real_tail_summable`, and
 `durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_monotone`.
-The remaining blocker is no longer the source mean endpoint; it is the
-truncated-square scalar kernel majorization plus packaging the ratio
-monotonicity hypothesis from Durrett's `a_n / n` assumption.
+The source ratio packaging is discharged by V463; future cycles should target
+the truncated-square scalar kernel majorization, not another mean endpoint or
+ratio wrapper.
 
 Latest verified target V461 proves the finite-prefix identity(*) inequality
 from monotone half-open annulus partitions and connects it to the existing
