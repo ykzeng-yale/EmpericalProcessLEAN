@@ -27,20 +27,21 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V474`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V475`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V474: prove the remaining analytic core of the
-infinite-mean growth handoff: finite positive linear-grid tail summability
-forces integrability of `|X_0|` via the local layer-cake lemmas.  Then
-instantiate the V474 bounded-ratio integrability handoff.  Do not return to
-scalar-kernel estimates, annulus mass summability, concrete majorant
-integrability, display-wrapper plumbing, branch-combination plumbing,
-reciprocal-growth conversion, monotone-convergence shell, linear-tail
-transfer, or easy growth cleanup unless exact source-side cleanup exposes a
-missing handoff.
+Current immediate target after V475: polish the exact source-facing statement
+of Durrett Theorem 2.5.13.  The infinite-mean growth handoff is compiled, so
+the next packet should package any remaining display mismatch around
+`¬ Integrable |X_0|` versus expectation/lintegral infinite mean and exact
+tail-series indexing, then move to the next Durrett Chapter 2 theorem lane.
+Do not return to scalar-kernel estimates, annulus mass summability, concrete
+majorant integrability, display-wrapper plumbing, branch-combination plumbing,
+reciprocal-growth conversion, monotone-convergence shell, linear-tail transfer,
+layer-cake/counting plumbing, or easy growth cleanup unless exact source-side
+cleanup exposes a missing handoff.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
 consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V443 advances
@@ -173,6 +174,11 @@ core: monotone convergence plus non-integrability now force
 integrable, the Feller dichotomy derives that growth only in the finite-tail
 branch, and bounded ratios now transfer finite Durrett tail summability to
 finite positive linear-grid tail summability.
+V475 closes that analytic core: a `Nat.floor` scalar grid-count bound and
+`lintegral_tsum` counting bridge prove finite positive linear-grid tail
+summability gives `Integrable |X_0|`; bounded-ratio finite Durrett tails now
+force integrability; and the infinite-mean source Feller dichotomy consumes
+`¬ Integrable |X_0|` without an abstract handoff.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -201,8 +207,14 @@ extended-real display wrapper, or the solved two-branch Feller dichotomy
 assembly, or the solved easy growth cleanup from monotonicity and
 `n / a_n -> 0`, or the solved source-growth wrapper from `a_n / n -> infinity`
 to `n / a_n -> 0`, or the solved monotone-convergence contradiction shell, or
-the solved bounded-ratio linear-tail transfer.
-New compiled anchors through V474:
+the solved bounded-ratio linear-tail transfer, or the solved
+linear-grid layer-cake/counting bridge.
+New compiled anchors through V475:
+`durrett2019_theorem_2_5_13_linear_grid_count_bound`,
+`durrett2019_theorem_2_5_13_integrable_abs_of_linear_tail_count_bound`,
+`durrett2019_theorem_2_5_13_integrable_abs_of_linear_tail_summable`,
+`durrett2019_theorem_2_5_13_integrable_abs_of_bounded_ratio_tail_summable`,
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_not_integrable_abs_tail_summable_or_tail_tsum_top_and_ratio_mono`,
 `durrett2019_theorem_2_5_13_ratio_tendsto_atTop_of_not_integrable_abs_of_bounded_ratio_tail_integrable`,
 `durrett2019_theorem_2_5_13_linear_tail_measureReal_le_of_ratio_bound`,
 `durrett2019_theorem_2_5_13_linear_tail_summable_of_ratio_bound`,

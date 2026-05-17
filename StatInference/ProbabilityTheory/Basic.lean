@@ -15607,6 +15607,237 @@ theorem durrett2019_theorem_2_5_13_linear_tail_tsum_ne_top_of_ratio_bound
   simpa [measureReal_def] using hne
 
 /--
+Durrett 2019, Theorem 2.5.13 source-growth scalar support: a positive linear
+grid controls every nonnegative real by one grid step plus the number of
+positive grid points below it.
+-/
+theorem durrett2019_theorem_2_5_13_linear_grid_count_bound
+    {C y : ℝ} (hC_pos : 0 < C) (hy_nonneg : 0 ≤ y) :
+    ENNReal.ofReal y ≤
+      ENNReal.ofReal C *
+        (1 + ∑' n : ℕ,
+          Set.indicator
+            {m : ℕ | C * ((m + 1 : ℕ) : ℝ) ≤ y}
+            (fun _ : ℕ => (1 : ℝ≥0∞)) n) := by
+  classical
+  let B : ℕ -> ℝ≥0∞ := fun n =>
+    Set.indicator
+      {m : ℕ | C * ((m + 1 : ℕ) : ℝ) ≤ y}
+      (fun _ : ℕ => (1 : ℝ≥0∞)) n
+  change ENNReal.ofReal y ≤ ENNReal.ofReal C * (1 + ∑' n : ℕ, B n)
+  let N : ℕ := Nat.floor (y / C)
+  have hu_nonneg : 0 ≤ y / C := div_nonneg hy_nonneg hC_pos.le
+  have hfloor_le : (N : ℝ) ≤ y / C := by
+    simpa [N] using Nat.floor_le hu_nonneg
+  have hlt_floor_succ : y / C < ((N + 1 : ℕ) : ℝ) := by
+    simpa [N, Nat.cast_add, Nat.cast_one] using
+      (Nat.lt_floor_add_one (y / C) : y / C < ((Nat.floor (y / C) : ℕ) : ℝ) + 1)
+  have hy_le_grid : y ≤ C * ((N + 1 : ℕ) : ℝ) := by
+    have hmul := mul_lt_mul_of_pos_left hlt_floor_succ hC_pos
+    have hcancel : C * (y / C) = y := by
+      field_simp [hC_pos.ne']
+    have hy_lt_grid : y < C * ((N + 1 : ℕ) : ℝ) := by
+      simpa [hcancel, mul_comm, mul_left_comm, mul_assoc] using hmul
+    exact hy_lt_grid.le
+  have hprefix :
+      (∑ n ∈ Finset.range N, B n) = (N : ℝ≥0∞) := by
+    calc
+      (∑ n ∈ Finset.range N, B n) =
+          ∑ _n ∈ Finset.range N, (1 : ℝ≥0∞) := by
+            refine Finset.sum_congr rfl ?_
+            intro n hn
+            have hn_lt : n < N := by
+              simpa [Finset.mem_range] using hn
+            have hn_succ_le_N : n + 1 ≤ N := Nat.succ_le_of_lt hn_lt
+            have hn_succ_le_N_real : (((n + 1 : ℕ) : ℝ)) ≤ (N : ℝ) := by
+              exact_mod_cast hn_succ_le_N
+            have hn_succ_le_y_div : (((n + 1 : ℕ) : ℝ)) ≤ y / C :=
+              hn_succ_le_N_real.trans hfloor_le
+            have hgrid_le_y : C * ((n + 1 : ℕ) : ℝ) ≤ y := by
+              have hmul :=
+                mul_le_mul_of_nonneg_left hn_succ_le_y_div hC_pos.le
+              have hcancel : C * (y / C) = y := by
+                field_simp [hC_pos.ne']
+              simpa [hcancel, mul_comm, mul_left_comm, mul_assoc] using hmul
+            have hn_mem :
+                n ∈ {m : ℕ | C * ((m + 1 : ℕ) : ℝ) ≤ y} := hgrid_le_y
+            simpa [B] using
+              (Set.indicator_of_mem hn_mem (fun _ : ℕ => (1 : ℝ≥0∞)))
+      _ = (N : ℝ≥0∞) := by
+          simp [Finset.sum_const, nsmul_eq_mul]
+  have hprefix_le_tsum :
+      (N : ℝ≥0∞) ≤ ∑' n : ℕ, B n := by
+    have hsum_le : (∑ n ∈ Finset.range N, B n) ≤ ∑' n : ℕ, B n :=
+      ENNReal.sum_le_tsum (s := Finset.range N) (f := B)
+    rwa [hprefix] at hsum_le
+  have hcount_ge :
+      ENNReal.ofReal (((N + 1 : ℕ) : ℝ)) ≤
+        1 + ∑' n : ℕ, B n := by
+    have hN :
+        ((N + 1 : ℕ) : ℝ≥0∞) ≤ 1 + ∑' n : ℕ, B n := by
+      calc
+        ((N + 1 : ℕ) : ℝ≥0∞) = 1 + (N : ℝ≥0∞) := by
+            simp [Nat.cast_add, add_comm]
+        _ ≤ 1 + ∑' n : ℕ, B n := by
+            exact add_le_add le_rfl hprefix_le_tsum
+    have hcast :
+        ENNReal.ofReal (((N + 1 : ℕ) : ℝ)) = ((N + 1 : ℕ) : ℝ≥0∞) := by
+      simpa [Nat.cast_add, Nat.cast_one] using
+        (ENNReal.ofReal_natCast (N + 1))
+    rw [hcast]
+    exact hN
+  calc
+    ENNReal.ofReal y ≤ ENNReal.ofReal (C * ((N + 1 : ℕ) : ℝ)) :=
+      ENNReal.ofReal_le_ofReal hy_le_grid
+    _ = ENNReal.ofReal C * ENNReal.ofReal (((N + 1 : ℕ) : ℝ)) := by
+      rw [ENNReal.ofReal_mul hC_pos.le]
+    _ ≤ ENNReal.ofReal C * (1 + ∑' n : ℕ, B n) := by
+      gcongr
+
+/--
+Durrett 2019, Theorem 2.5.13 source-growth support: a pointwise scalar
+linear-grid counting bound turns finite positive linear-grid tail series into
+integrability of `|X_0|`.
+
+The remaining source arithmetic is the scalar fact that this counting bound
+holds for every `C > 0`; this lemma packages the measure-theoretic layer-cake
+and `lintegral_tsum` part.
+-/
+theorem durrett2019_theorem_2_5_13_integrable_abs_of_linear_tail_count_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X0 : Ω -> ℝ} {C : ℝ}
+    (hX0_meas : Measurable X0)
+    (hcount : ∀ y : ℝ, 0 ≤ y ->
+      ENNReal.ofReal y ≤
+        ENNReal.ofReal C *
+          (1 + ∑' n : ℕ,
+            Set.indicator
+              {m : ℕ | C * ((m + 1 : ℕ) : ℝ) ≤ y}
+              (fun _ : ℕ => (1 : ℝ≥0∞)) n))
+    (htail_tsum :
+      (∑' n : ℕ,
+        P {ω : Ω | C * ((n + 1 : ℕ) : ℝ) ≤ |X0 ω|}) ≠ ∞) :
+    Integrable (fun ω : Ω => |X0 ω|) P := by
+  let Y : Ω -> ℝ := fun ω => |X0 ω|
+  let A : ℕ -> Set Ω := fun n =>
+    {ω : Ω | C * ((n + 1 : ℕ) : ℝ) ≤ Y ω}
+  let I : ℕ -> Ω -> ℝ≥0∞ := fun n ω =>
+    Set.indicator (A n) (fun _ : Ω => (1 : ℝ≥0∞)) ω
+  have hY_aesm : AEStronglyMeasurable Y P :=
+    hX0_meas.abs.aestronglyMeasurable
+  have hY_nonneg : 0 ≤ᵐ[P] Y :=
+    ae_of_all P fun ω => abs_nonneg (X0 ω)
+  refine (lintegral_ofReal_ne_top_iff_integrable hY_aesm hY_nonneg).1 ?_
+  have hA_meas : ∀ n : ℕ, MeasurableSet (A n) := by
+    intro n
+    exact measurableSet_le measurable_const hX0_meas.abs
+  have hI_meas : ∀ n : ℕ, Measurable (I n) := by
+    intro n
+    exact measurable_const.indicator (hA_meas n)
+  have hsum_meas : Measurable fun ω : Ω => ∑' n : ℕ, I n ω :=
+    Measurable.ennreal_tsum hI_meas
+  have hpoint :
+      ∀ ω : Ω,
+        ENNReal.ofReal (Y ω) ≤
+          ENNReal.ofReal C * (1 + ∑' n : ℕ, I n ω) := by
+    intro ω
+    simpa [Y, A, I] using hcount (Y ω) (abs_nonneg (X0 ω))
+  have hlin_le :
+      (∫⁻ ω : Ω, ENNReal.ofReal (Y ω) ∂P) ≤
+        ∫⁻ ω : Ω,
+          ENNReal.ofReal C * (1 + ∑' n : ℕ, I n ω) ∂P :=
+    lintegral_mono hpoint
+  have htail_tsum_I :
+      (∑' n : ℕ, ∫⁻ ω : Ω, I n ω ∂P) =
+        ∑' n : ℕ, P (A n) := by
+    apply tsum_congr
+    intro n
+    simpa [I] using
+      (lintegral_indicator_one (μ := P) (hA_meas n))
+  have hrhs_eq :
+      (∫⁻ ω : Ω,
+          ENNReal.ofReal C * (1 + ∑' n : ℕ, I n ω) ∂P) =
+        ENNReal.ofReal C *
+          (P Set.univ + ∑' n : ℕ, P (A n)) := by
+    rw [lintegral_const_mul'
+      (μ := P) (r := ENNReal.ofReal C)
+      (f := fun ω : Ω => 1 + ∑' n : ℕ, I n ω)
+      ENNReal.ofReal_ne_top]
+    rw [lintegral_add_left measurable_const]
+    rw [lintegral_const]
+    rw [lintegral_tsum]
+    · rw [htail_tsum_I]
+      simp
+    · intro n
+      exact (hI_meas n).aemeasurable
+  have htail_tsum_A :
+      (∑' n : ℕ, P (A n)) ≠ ∞ := by
+    simpa [A, Y] using htail_tsum
+  have hrhs_ne_top :
+      ENNReal.ofReal C * (P Set.univ + ∑' n : ℕ, P (A n)) ≠ ∞ := by
+    exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top
+      (ENNReal.add_ne_top.2 ⟨measure_ne_top P Set.univ, htail_tsum_A⟩)
+  rw [hrhs_eq] at hlin_le
+  exact ne_top_of_le_ne_top hrhs_ne_top hlin_le
+
+/--
+Durrett 2019, Theorem 2.5.13 source-growth support: finite positive
+linear-grid tail summability implies integrability of `|X_0|`.
+-/
+theorem durrett2019_theorem_2_5_13_integrable_abs_of_linear_tail_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X0 : Ω -> ℝ} {C : ℝ}
+    (hX0_meas : Measurable X0) (hC_pos : 0 < C)
+    (hlinear_tail_summable :
+      Summable fun n : ℕ =>
+        P.real {ω : Ω | C * ((n + 1 : ℕ) : ℝ) ≤ |X0 ω|}) :
+    Integrable (fun ω : Ω => |X0 ω|) P := by
+  have htail_tsum :
+      (∑' n : ℕ,
+        P {ω : Ω | C * ((n + 1 : ℕ) : ℝ) ≤ |X0 ω|}) ≠ ∞ := by
+    have hne :
+        (∑' n : ℕ,
+          ENNReal.ofReal
+            (P.real {ω : Ω | C * ((n + 1 : ℕ) : ℝ) ≤ |X0 ω|})) ≠ ∞ :=
+      hlinear_tail_summable.tsum_ofReal_ne_top
+    simpa [measureReal_def] using hne
+  exact
+    durrett2019_theorem_2_5_13_integrable_abs_of_linear_tail_count_bound
+      (P := P) (X0 := X0) (C := C) hX0_meas
+      (fun y hy_nonneg =>
+        durrett2019_theorem_2_5_13_linear_grid_count_bound
+          (C := C) (y := y) hC_pos hy_nonneg)
+      htail_tsum
+
+/--
+Durrett 2019, Theorem 2.5.13 source-growth support: if the textbook ratios
+`a_n / n` are bounded by `C`, then finite Durrett tail summability forces
+integrability of `|X_0|`.
+-/
+theorem durrett2019_theorem_2_5_13_integrable_abs_of_bounded_ratio_tail_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {C : ℝ}
+    (ha_pos : ∀ m : ℕ, 0 < a m) (hX0_meas : Measurable X0)
+    (hbound : ∀ n : ℕ, 1 ≤ n -> a n / (n : ℝ) ≤ C)
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    Integrable (fun ω : Ω => |X0 ω|) P := by
+  have hC_pos : 0 < C := by
+    have ha1_le_C : a 1 ≤ C := by
+      simpa using hbound 1 (by norm_num)
+    exact (ha_pos 1).trans_le ha1_le_C
+  have hlinear_tail_summable :
+      Summable fun n : ℕ =>
+        P.real {ω : Ω | C * ((n + 1 : ℕ) : ℝ) ≤ |X0 ω|} :=
+    durrett2019_theorem_2_5_13_linear_tail_summable_of_ratio_bound
+      (P := P) (X0 := X0) (a := a) (C := C)
+      hbound htail_summable
+  exact
+    durrett2019_theorem_2_5_13_integrable_abs_of_linear_tail_summable
+      (P := P) (X0 := X0) (C := C)
+      hX0_meas hC_pos hlinear_tail_summable
+
+/--
 Durrett 2019, Theorem 2.5.13 source-growth support: divergence of `a_n`
 implies divergence of the shifted normalizer `a_{n+1}`.
 -/
@@ -15915,6 +16146,47 @@ theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_d
       durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_top_of_iid_tail_tsum_eq_top
         (P := P) (X := X) (X0 := X0) (a := a)
         hX_indep hX_meas hX_ident ha_pos ha_mono htail_mono hratio_mono htail_top
+
+/--
+Durrett 2019, Theorem 2.5.13 Feller dichotomy assembly in the infinite-mean
+source shape.  In the finite-tail branch, non-integrability of `|X_0|` and the
+new linear-grid layer-cake bridge force `a_n / n -> ∞`; the divergent branch
+uses the existing large-jump Borel-Cantelli route.
+-/
+theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_not_integrable_abs_tail_summable_or_tail_tsum_top_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (hX0_not_integrable_abs : ¬ Integrable (fun ω : Ω => |X0 ω|) P)
+    (htail_mono : Antitone fun n : ℕ => (P {ω : Ω | a n ≤ |X0 ω|}).toReal)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ)) :
+    (Summable (fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) ->
+      ∀ᵐ ω ∂P,
+        limsup
+          (fun n : ℕ =>
+            ((|∑ k ∈ Finset.range n, X (k + 1) ω| / a n : ℝ) : EReal))
+          atTop = 0) ∧
+    ((∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) = ∞ ->
+      ∀ᵐ ω ∂P,
+        limsup
+          (fun n : ℕ =>
+            ((|∑ k ∈ Finset.range n, X (k + 1) ω| / a n : ℝ) : EReal))
+          atTop = ⊤) :=
+  durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_bounded_ratio_tail_integrable
+    (P := P) (X := X) (X0 := X0) (a := a)
+    hX_indep hX_meas hX0_meas hX_ident ha_pos ha_mono
+    hX0_not_integrable_abs
+    (fun C hbound htail_summable =>
+      durrett2019_theorem_2_5_13_integrable_abs_of_bounded_ratio_tail_summable
+        (P := P) (X0 := X0) (a := a) (C := C)
+        ha_pos hX0_meas hbound htail_summable)
+    htail_mono hratio_mono
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V474
+## Live In-Thread Goal Prompt V475
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -156,6 +156,11 @@ summability imply integrability of `|X_0|`; the Feller source dichotomy now
 derives `a_n / n -> infinity` inside the finite-tail branch only.  V474 also
 proves that a bounded ratio transfers finite Durrett tail summability to
 finite positive linear-grid tail summability.
+V475 closes that analytic core: a `Nat.floor` scalar grid-count bound and a
+`lintegral_tsum` layer-cake style counting bridge prove that finite positive
+linear-grid tail summability implies `Integrable |X_0|`; bounded-ratio finite
+Durrett tails now imply integrability; and the infinite-mean source Feller
+dichotomy no longer needs the abstract bounded-ratio handoff.
 Do not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -185,17 +190,33 @@ or the solved convergent-half extended-real display wrapper, or the solved
 two-branch Feller dichotomy assembly, or the solved easy growth cleanup from
 monotonicity and `n / a_n -> 0`, or the solved source-growth wrapper from
 `a_n / n -> infinity` to `n / a_n -> 0`, or the solved monotone-convergence
-contradiction shell, or the solved bounded-ratio linear-tail transfer.
-Next aggressive target: finish the remaining analytic core of the
-infinite-mean growth handoff by proving that finite positive linear-grid tail
-summability forces integrability of `|X_0|` through the local layer-cake
-lemmas, then instantiate the V474 bounded-ratio integrability handoff.  Do
-not return to scalar kernel, annulus mass, majorant integrability,
-display-wrapper, branch-combination, reciprocal-growth conversion, monotone
-convergence shell, or linear-tail transfer.
+contradiction shell, or the solved bounded-ratio linear-tail transfer, or the
+solved linear-grid layer-cake/counting bridge, or the solved bounded-ratio
+integrability instantiation.
+Next aggressive target: polish the V475 source theorem toward the exact
+textbook Theorem 2.5.13 statement by packaging any remaining source-display
+mismatch, especially whether the final public wrapper should state infinite
+mean as `¬ Integrable (fun ω => |X_0 ω|)` or through an expectation/lintegral
+display, and whether the tail series should be zero-based or one-based.  If
+that is already immediate, add the exact named source wrapper/report and move
+to the next Durrett Chapter 2 theorem lane.  Do not return to scalar kernel,
+annulus mass, majorant integrability, display-wrapper, branch-combination,
+reciprocal-growth conversion, monotone convergence shell, linear-tail
+transfer, or layer-cake/counting plumbing.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V475 closes the infinite-mean growth handoff:
+`durrett2019_theorem_2_5_13_linear_grid_count_bound`,
+`durrett2019_theorem_2_5_13_integrable_abs_of_linear_tail_count_bound`,
+`durrett2019_theorem_2_5_13_integrable_abs_of_linear_tail_summable`,
+`durrett2019_theorem_2_5_13_integrable_abs_of_bounded_ratio_tail_summable`,
+and
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_not_integrable_abs_tail_summable_or_tail_tsum_top_and_ratio_mono`.
+The previous layer-cake/counting blocker is closed; the remaining work is
+source polish around the exact infinite-mean/tail-series display, then moving
+to the next Durrett theorem lane.
 
 Latest verified target V474 adds the infinite-mean growth contradiction shell
 and the first linear-tail transfer layer:
@@ -204,8 +225,7 @@ and the first linear-tail transfer layer:
 `durrett2019_theorem_2_5_13_linear_tail_summable_of_ratio_bound`,
 `durrett2019_theorem_2_5_13_linear_tail_tsum_ne_top_of_ratio_bound`, and
 `durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_bounded_ratio_tail_integrable`.
-The remaining blocker is now narrow: prove the layer-cake/integer-grid lemma
-that finite positive linear-grid tails imply `Integrable (fun ω => |X_0 ω|)`.
+This blocker is closed by V475.
 
 Latest verified target V473 adds textbook source-growth wrappers:
 `durrett2019_theorem_2_5_13_n_over_a_tendsto_zero_of_ratio_tendsto_atTop`,
@@ -4448,6 +4468,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V474` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V475` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
