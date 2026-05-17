@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V450` in
+Route from `Live In-Thread Goal Prompt V451` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -55,17 +55,27 @@ from the moving truncations back to the original one-based partial sums using
 that eventual equality and `a_n -> ∞`.  V450 proves the moving-truncated
 endpoint from summable scaled variances of centered moving truncations plus
 normalized convergence of the truncated means, reusing the existing Theorem
-2.5.11 Kronecker layer.  The next source work is to discharge those two
-analytic assumptions from the textbook scalar/tail estimates and then assemble
-the source-facing Feller dichotomy wrapper.  Do not route back into
+2.5.11 Kronecker layer.  V451 discharges the scaled-variance assumption down to
+the textbook weighted base moving-truncation second-moment summability by
+combining variance domination, iid transfer of the truncated-square integral,
+and endpoint wrappers feeding the V450 Kronecker assembly.  The next source
+work is to prove the textbook tail-layer bound giving weighted base
+truncated-square summability, prove truncated-mean normalization, and then
+assemble the source-facing Feller dichotomy wrapper.  Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
 integer-to-real threshold bridge, the solved countable a.e. all-threshold
 wrapper, the solved extended-real limsup display, the solved iid
 divergent-half scaled-tail plumbing, the solved convergent-half Borel-Cantelli
 moving-truncation handoff, or the solved eventual-equality normalized-sum
-transfer, or the solved moving-truncation Kronecker assembly.  New compiled
-anchors through V450:
+transfer, the solved moving-truncation Kronecker assembly, or the solved
+scaled-variance-to-base-truncated-square handoff.  New compiled anchors
+through V451:
+`durrett2019_theorem_2_5_13_variance_scaledCenteredTruncated_le_truncated_sq`,
+`durrett2019_theorem_2_5_13_integral_truncated_sq_eq_base_truncated_sq_of_identDistrib`,
+`durrett2019_theorem_2_5_13_scaled_variance_summable_of_base_truncated_sq_summable`,
+`durrett2019_theorem_2_5_13_ae_centered_truncated_oneBased_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto`,
 `durrett2019_theorem_2_5_13_truncatedMean`,
 `durrett2019_theorem_2_5_13_centeredTruncated`,
 `durrett2019_theorem_2_5_13_scaledCenteredTruncated`,

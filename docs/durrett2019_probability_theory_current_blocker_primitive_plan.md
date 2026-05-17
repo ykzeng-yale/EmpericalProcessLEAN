@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V450
+## Live In-Thread Goal Prompt V451
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -36,7 +36,10 @@ normalized-sum endpoint from the moving truncations back to the original
 one-based partial sums whenever `a_n -> ∞`.  V450 proves the moving-truncated
 endpoint from the two remaining analytic assumptions: summable scaled
 variances of the centered moving truncations and normalized convergence of the
-truncated means.  Do
+truncated means.  V451 discharges the scaled-variance assumption down to the
+textbook weighted base moving-truncation second-moment summability, using
+variance domination, iid transfer of the truncated square integral, and
+endpoint wrappers that feed the V450 Kronecker assembly.  Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -45,13 +48,27 @@ integer-to-real threshold bridge, or the solved countable a.e. all-threshold
 wrapper, or the solved extended-real limsup display, or the solved iid
 divergent-half scaled-tail plumbing, or the solved convergent-half
 Borel-Cantelli moving-truncation handoff, or the solved eventual-equality
-normalized-sum transfer, or the solved moving-truncation Kronecker assembly.
-Next aggressive target: discharge the scaled-variance summability and
-truncated-mean normalization assumptions from the textbook tail-layer
-estimates, then assemble the source-facing Feller dichotomy wrapper.
+normalized-sum transfer, or the solved moving-truncation Kronecker assembly,
+or the solved scaled-variance-to-base-truncated-square handoff.
+Next aggressive target: prove the textbook tail-layer bound giving weighted
+base truncated-square summability from identity (*)/ratio monotonicity, prove
+truncated-mean normalization, then assemble the source-facing Feller dichotomy
+wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V451 discharges the scaled-variance assumption in the
+convergent half of Durrett Theorem 2.5.13 down to weighted base
+moving-truncation second-moment summability.  New compiled anchors include:
+`durrett2019_theorem_2_5_13_variance_scaledCenteredTruncated_le_truncated_sq`,
+`durrett2019_theorem_2_5_13_integral_truncated_sq_eq_base_truncated_sq_of_identDistrib`,
+`durrett2019_theorem_2_5_13_scaled_variance_summable_of_base_truncated_sq_summable`,
+`durrett2019_theorem_2_5_13_ae_centered_truncated_oneBased_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`, and
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto`.
+The remaining blocker is now the textbook scalar/tail work proving weighted
+base truncated-square summability and truncated-mean normalization, then the
+source-facing Feller dichotomy wrapper.
 
 Latest verified target V450 adds the moving-truncated Kronecker assembly for
 the convergent half of Durrett Theorem 2.5.13.  New compiled anchors include:
@@ -64,9 +81,9 @@ the convergent half of Durrett Theorem 2.5.13.  New compiled anchors include:
 `durrett2019_theorem_2_5_13_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`, and
 `durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scaled_variance_summable_and_mean_tendsto`.
 They reuse the existing Theorem 2.5.11 Kronecker endpoint instead of rebuilding
-random-series convergence.  The remaining blocker is the textbook scalar/tail
-work proving the scaled-variance summability and truncated-mean normalization
-assumptions for this wrapper.
+random-series convergence.  The scaled-variance handoff is discharged by V451;
+future cycles should not ask for summable scaled variances directly unless a
+lower-level theorem needs that exact abstraction boundary.
 
 Latest verified target V449 adds the convergent-half eventual-equality
 transfer layer for Durrett Theorem 2.5.13.  New compiled anchors:
