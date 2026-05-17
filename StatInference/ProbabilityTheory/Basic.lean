@@ -16189,6 +16189,102 @@ theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_d
     htail_mono hratio_mono
 
 /--
+Durrett 2019, Theorem 2.5.13 source-display support: the textbook
+infinite-mean hypothesis, stated as an infinite nonnegative `lintegral` of
+`|X_0|`, implies non-integrability of `|X_0|`.
+-/
+theorem durrett2019_theorem_2_5_13_not_integrable_abs_of_lintegral_abs_eq_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X0 : Ω -> ℝ}
+    (hX0_meas : Measurable X0)
+    (hX0_lintegral_abs_eq_top :
+      (∫⁻ ω : Ω, ENNReal.ofReal |X0 ω| ∂P) = ∞) :
+    ¬ Integrable (fun ω : Ω => |X0 ω|) P := by
+  intro hX0_integrable_abs
+  have hfinite :
+      (∫⁻ ω : Ω, ENNReal.ofReal |X0 ω| ∂P) ≠ ∞ := by
+    exact
+      (lintegral_ofReal_ne_top_iff_integrable
+        hX0_meas.abs.aestronglyMeasurable
+        (ae_of_all P fun ω : Ω => abs_nonneg (X0 ω))).2
+        hX0_integrable_abs
+  exact hfinite hX0_lintegral_abs_eq_top
+
+/--
+Durrett 2019, Theorem 2.5.13 source-display support: dropping the finite
+zeroth term from an infinite tail-probability series leaves the one-based
+tail-probability series infinite.
+-/
+theorem durrett2019_theorem_2_5_13_oneBased_tail_tsum_eq_top_of_tail_tsum_eq_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (htail_top : (∑' n : ℕ, P {ω : Ω | a n ≤ |X0 ω|}) = ∞) :
+    (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) = ∞ := by
+  let f : ℕ -> ℝ≥0∞ := fun n : ℕ => P {ω : Ω | a n ≤ |X0 ω|}
+  let u : ℕ -> ℝ := fun n : ℕ => (f n).toReal
+  have hu_not_summable : ¬ Summable u := by
+    have hnot :
+        ¬ Summable fun n : ℕ => (f n).toReal :=
+      durrett2019_theorem_2_5_13_not_summable_toReal_of_tsum_eq_top
+        (f := f) (fun n : ℕ => measure_ne_top P _) (by simpa [f] using htail_top)
+    simpa [u] using hnot
+  have hshift_not_summable : ¬ Summable fun n : ℕ => u (n + 1) := by
+    intro hshift_summable
+    exact hu_not_summable ((summable_nat_add_iff (f := u) 1).1 hshift_summable)
+  exact
+    durrett2019_theorem_2_5_13_tsum_eq_top_of_not_summable_toReal
+      (f := fun n : ℕ => P {ω : Ω | a (n + 1) ≤ |X0 ω|})
+      (by simpa [u, f] using hshift_not_summable)
+
+/--
+Durrett 2019, Theorem 2.5.13 Feller dichotomy in a textbook-facing
+infinite-mean source shape.  The infinite-mean assumption is stated by the
+nonnegative `lintegral` of `|X_0|`, and the divergent alternative accepts the
+unshifted tail series from the source statement.
+-/
+theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_lintegral_abs_eq_top_tail_summable_or_tail_tsum_top_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (hX0_lintegral_abs_eq_top :
+      (∫⁻ ω : Ω, ENNReal.ofReal |X0 ω| ∂P) = ∞)
+    (htail_mono : Antitone fun n : ℕ => (P {ω : Ω | a n ≤ |X0 ω|}).toReal)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ)) :
+    (Summable (fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) ->
+      ∀ᵐ ω ∂P,
+        limsup
+          (fun n : ℕ =>
+            ((|∑ k ∈ Finset.range n, X (k + 1) ω| / a n : ℝ) : EReal))
+          atTop = 0) ∧
+    ((∑' n : ℕ, P {ω : Ω | a n ≤ |X0 ω|}) = ∞ ->
+      ∀ᵐ ω ∂P,
+        limsup
+          (fun n : ℕ =>
+            ((|∑ k ∈ Finset.range n, X (k + 1) ω| / a n : ℝ) : EReal))
+          atTop = ⊤) := by
+  have hX0_not_integrable_abs :
+      ¬ Integrable (fun ω : Ω => |X0 ω|) P :=
+    durrett2019_theorem_2_5_13_not_integrable_abs_of_lintegral_abs_eq_top
+      (P := P) (X0 := X0) hX0_meas hX0_lintegral_abs_eq_top
+  have hsource :=
+    durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_not_integrable_abs_tail_summable_or_tail_tsum_top_and_ratio_mono
+      (P := P) (X := X) (X0 := X0) (a := a)
+      hX_indep hX_meas hX0_meas hX_ident ha_pos ha_mono
+      hX0_not_integrable_abs htail_mono hratio_mono
+  refine ⟨hsource.1, ?_⟩
+  intro htail_top
+  exact
+    hsource.2
+      (durrett2019_theorem_2_5_13_oneBased_tail_tsum_eq_top_of_tail_tsum_eq_top
+        (P := P) (X0 := X0) (a := a) htail_top)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

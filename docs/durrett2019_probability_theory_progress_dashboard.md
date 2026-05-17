@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V475` in
+Route from `Live In-Thread Goal Prompt V476` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -170,6 +170,11 @@ V475 closes that analytic core: a `Nat.floor` scalar grid-count bound and
 summability gives `Integrable |X_0|`; bounded-ratio finite Durrett tails now
 force integrability; and the infinite-mean source Feller dichotomy consumes
 `¬ Integrable |X_0|` without an abstract handoff.
+V476 closes the source-display polish for Theorem 2.5.13: the public wrapper
+now accepts the textbook infinite-mean display as
+`lintegral (ENNReal.ofReal |X_0|) = infinity`, converts unshifted divergent
+tail series to the existing one-based divergent branch, and returns the
+two-branch extended-real Feller dichotomy directly.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -198,9 +203,13 @@ extended-real display wrapper, or the solved two-branch Feller dichotomy
 assembly, or the solved easy growth cleanup from monotonicity and
 `n / a_n -> 0`, or the solved source-growth wrapper from `a_n / n -> infinity`
 to `n / a_n -> 0`, or the solved monotone-convergence contradiction shell, or
-the solved bounded-ratio linear-tail transfer, or the solved
-linear-grid layer-cake/counting bridge.
-New compiled anchors through V475:
+the solved bounded-ratio linear-tail transfer, the solved
+linear-grid layer-cake/counting bridge, solved infinite-mean source-display
+polish, or solved tail-series indexing polish.
+New compiled anchors through V476:
+`durrett2019_theorem_2_5_13_not_integrable_abs_of_lintegral_abs_eq_top`,
+`durrett2019_theorem_2_5_13_oneBased_tail_tsum_eq_top_of_tail_tsum_eq_top`,
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_lintegral_abs_eq_top_tail_summable_or_tail_tsum_top_and_ratio_mono`,
 `durrett2019_theorem_2_5_13_linear_grid_count_bound`,
 `durrett2019_theorem_2_5_13_integrable_abs_of_linear_tail_count_bound`,
 `durrett2019_theorem_2_5_13_integrable_abs_of_linear_tail_summable`,

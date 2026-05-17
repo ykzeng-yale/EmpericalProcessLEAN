@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V475
+## Live In-Thread Goal Prompt V476
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -161,6 +161,12 @@ V475 closes that analytic core: a `Nat.floor` scalar grid-count bound and a
 linear-grid tail summability implies `Integrable |X_0|`; bounded-ratio finite
 Durrett tails now imply integrability; and the infinite-mean source Feller
 dichotomy no longer needs the abstract bounded-ratio handoff.
+V476 closes the remaining source-display polish for Theorem 2.5.13: the
+textbook infinite-mean hypothesis can now be stated as
+`lintegral (ENNReal.ofReal |X_0|) = infinity`, the unshifted tail-series
+divergent alternative is converted to the existing one-based divergent branch,
+and the public Feller-dichotomy wrapper consumes these source-shaped
+hypotheses directly.
 Do not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -191,21 +197,32 @@ two-branch Feller dichotomy assembly, or the solved easy growth cleanup from
 monotonicity and `n / a_n -> 0`, or the solved source-growth wrapper from
 `a_n / n -> infinity` to `n / a_n -> 0`, or the solved monotone-convergence
 contradiction shell, or the solved bounded-ratio linear-tail transfer, or the
-solved linear-grid layer-cake/counting bridge, or the solved bounded-ratio
-integrability instantiation.
-Next aggressive target: polish the V475 source theorem toward the exact
-textbook Theorem 2.5.13 statement by packaging any remaining source-display
-mismatch, especially whether the final public wrapper should state infinite
-mean as `¬ Integrable (fun ω => |X_0 ω|)` or through an expectation/lintegral
-display, and whether the tail series should be zero-based or one-based.  If
-that is already immediate, add the exact named source wrapper/report and move
-to the next Durrett Chapter 2 theorem lane.  Do not return to scalar kernel,
-annulus mass, majorant integrability, display-wrapper, branch-combination,
-reciprocal-growth conversion, monotone convergence shell, linear-tail
-transfer, or layer-cake/counting plumbing.
+solved linear-grid layer-cake/counting bridge, the solved bounded-ratio
+integrability instantiation, the solved lintegral infinite-mean display, or
+the solved unshifted-to-one-based divergent tail-series display.
+Next aggressive target: move beyond Theorem 2.5.13.  Search the Durrett source
+Markdown/PDF and current `Basic.lean` anchors, then choose the next largest
+Chapter 2 theorem-sized packet that can compile, preferring theorem statements
+whose probability, expectation, summability, independence, or Borel-Cantelli
+infrastructure already exists in mathlib or local `StatInference` files.  Do
+not return to scalar kernel, annulus mass, majorant integrability,
+display-wrapper, branch-combination, reciprocal-growth conversion,
+monotone-convergence shell, linear-tail transfer, layer-cake/counting plumbing,
+infinite-mean source-display polish, or tail-series indexing polish for
+Theorem 2.5.13 unless a focused source check finds a concrete missing
+source-facing wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V476 closes the source-facing display for Durrett
+Theorem 2.5.13:
+`durrett2019_theorem_2_5_13_not_integrable_abs_of_lintegral_abs_eq_top`,
+`durrett2019_theorem_2_5_13_oneBased_tail_tsum_eq_top_of_tail_tsum_eq_top`,
+and
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_lintegral_abs_eq_top_tail_summable_or_tail_tsum_top_and_ratio_mono`.
+The remaining route is no longer 2.5.13 polish; choose the next Durrett
+Chapter 2 theorem lane after a fresh source/local-mathlib search.
 
 Latest verified target V475 closes the infinite-mean growth handoff:
 `durrett2019_theorem_2_5_13_linear_grid_count_bound`,
@@ -214,9 +231,8 @@ Latest verified target V475 closes the infinite-mean growth handoff:
 `durrett2019_theorem_2_5_13_integrable_abs_of_bounded_ratio_tail_summable`,
 and
 `durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_not_integrable_abs_tail_summable_or_tail_tsum_top_and_ratio_mono`.
-The previous layer-cake/counting blocker is closed; the remaining work is
-source polish around the exact infinite-mean/tail-series display, then moving
-to the next Durrett theorem lane.
+The previous layer-cake/counting blocker is closed, and the remaining
+source-display polish is closed by V476.
 
 Latest verified target V474 adds the infinite-mean growth contradiction shell
 and the first linear-tail transfer layer:
@@ -4468,6 +4484,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V475` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V476` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -27,21 +27,22 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V475`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V476`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V475: polish the exact source-facing statement
-of Durrett Theorem 2.5.13.  The infinite-mean growth handoff is compiled, so
-the next packet should package any remaining display mismatch around
-`¬ Integrable |X_0|` versus expectation/lintegral infinite mean and exact
-tail-series indexing, then move to the next Durrett Chapter 2 theorem lane.
+Current immediate target after V476: move beyond Durrett Theorem 2.5.13.  The
+infinite-mean growth handoff and the source-facing lintegral/tail-indexing
+display are compiled, so the next packet should search the Durrett source and
+local/mathlib anchors, then choose the next largest Chapter 2 theorem-sized
+packet that can compile.
 Do not return to scalar-kernel estimates, annulus mass summability, concrete
 majorant integrability, display-wrapper plumbing, branch-combination plumbing,
 reciprocal-growth conversion, monotone-convergence shell, linear-tail transfer,
-layer-cake/counting plumbing, or easy growth cleanup unless exact source-side
-cleanup exposes a missing handoff.
+layer-cake/counting plumbing, easy growth cleanup, infinite-mean display
+polish, or tail-series indexing polish unless a focused source check exposes a
+missing handoff.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
 consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V443 advances
@@ -179,6 +180,11 @@ V475 closes that analytic core: a `Nat.floor` scalar grid-count bound and
 summability gives `Integrable |X_0|`; bounded-ratio finite Durrett tails now
 force integrability; and the infinite-mean source Feller dichotomy consumes
 `¬ Integrable |X_0|` without an abstract handoff.
+V476 closes the source-display polish for Theorem 2.5.13: the public wrapper
+now accepts the textbook infinite-mean display as
+`lintegral (ENNReal.ofReal |X_0|) = infinity`, converts unshifted divergent
+tail series to the existing one-based divergent branch, and returns the
+two-branch extended-real Feller dichotomy directly.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -207,9 +213,13 @@ extended-real display wrapper, or the solved two-branch Feller dichotomy
 assembly, or the solved easy growth cleanup from monotonicity and
 `n / a_n -> 0`, or the solved source-growth wrapper from `a_n / n -> infinity`
 to `n / a_n -> 0`, or the solved monotone-convergence contradiction shell, or
-the solved bounded-ratio linear-tail transfer, or the solved
-linear-grid layer-cake/counting bridge.
-New compiled anchors through V475:
+the solved bounded-ratio linear-tail transfer, the solved
+linear-grid layer-cake/counting bridge, solved infinite-mean source-display
+polish, or solved tail-series indexing polish.
+New compiled anchors through V476:
+`durrett2019_theorem_2_5_13_not_integrable_abs_of_lintegral_abs_eq_top`,
+`durrett2019_theorem_2_5_13_oneBased_tail_tsum_eq_top_of_tail_tsum_eq_top`,
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_lintegral_abs_eq_top_tail_summable_or_tail_tsum_top_and_ratio_mono`,
 `durrett2019_theorem_2_5_13_linear_grid_count_bound`,
 `durrett2019_theorem_2_5_13_integrable_abs_of_linear_tail_count_bound`,
 `durrett2019_theorem_2_5_13_integrable_abs_of_linear_tail_summable`,
