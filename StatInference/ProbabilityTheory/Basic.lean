@@ -1142,6 +1142,121 @@ theorem durrett2019_theorem_2_1_11_sequence_of_hasLaw_infinitePi
       (μ := μ) (S := S) (ν := ν) (X := X) hLaw).2 hJoint
 
 /--
+Durrett 2019, Theorem 2.1.11, arbitrary finite-dimensional product-law form.
+
+For any finite index set `s`, the subfamily `(X_i)_{i ∈ s}` has the
+corresponding finite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iIndepFun_finite_restrict_hasLaw_pi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {ν : ∀ i, Measure (S i)}
+    {X : ∀ i, Ω -> S i}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (ν i) μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (s : Finset ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : s => X i ω)
+      (Measure.pi fun i : s => ν i) μ := by
+  have hLawS : ∀ i : s,
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω => X i ω) (ν i) μ := by
+    intro i
+    exact hLaw i
+  have hindepS :
+      _root_.ProbabilityTheory.iIndepFun
+        (μ := μ) (fun i : s => fun ω => X i ω) := by
+    simpa using
+      hindep.precomp (g := fun i : s => (i : ℕ)) Subtype.val_injective
+  exact
+    durrett2019_theorem_2_1_11_iIndepFun_hasLaw_pi
+      (P := μ) (S := fun i : s => S i)
+      (X := fun i : s => fun ω => X i ω)
+      (ν := fun i : s => ν i) hindepS hLawS
+
+/--
+Durrett 2019, Theorem 2.1.11, arbitrary finite-dimensional cylinder
+probabilities from source independence and marginal-law hypotheses.
+-/
+theorem durrett2019_theorem_2_1_11_iIndepFun_finite_cylinder_prob
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {ν : ∀ i, Measure (S i)}
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {X : ∀ i, Ω -> S i} {A : ∀ i, Set (S i)}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (ν i) μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (s : Finset ℕ) (hA : ∀ i, i ∈ s -> MeasurableSet (A i)) :
+    μ {ω | ∀ i, i ∈ s -> X i ω ∈ A i} =
+      ∏ i ∈ s, ν i (A i) := by
+  have hJoint :
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω => fun i : ℕ => X i ω) (Measure.infinitePi ν) μ :=
+    durrett2019_theorem_2_1_11_iIndepFun_hasLaw_infinitePi hLaw hindep
+  exact
+    durrett2019_theorem_2_1_11_hasLaw_infinitePi_finite_cylinder_prob
+      (ν := ν) (X := X) (A := A) hJoint s hA
+
+/--
+Durrett 2019, Theorem 2.1.11, iid arbitrary finite-dimensional product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_finite_restrict_hasLaw_pi_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (s : Finset ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : s => X i ω)
+      (Measure.pi fun _ : s => ν) μ :=
+  durrett2019_theorem_2_1_11_iIndepFun_finite_restrict_hasLaw_pi
+    (S := fun _ : ℕ => S) (ν := fun _ : ℕ => ν)
+    (X := X) hLaw hindep s
+
+/--
+Durrett 2019, Theorem 2.1.11, iid arbitrary finite-dimensional product law
+from the common identical-distribution source shape.
+-/
+theorem durrett2019_theorem_2_1_11_iid_finite_restrict_hasLaw_pi_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (s : Finset ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : s => X i ω)
+      (Measure.pi fun _ : s => ν) μ :=
+  durrett2019_theorem_2_1_11_iid_finite_restrict_hasLaw_pi_of_iIndepFun
+    (X := X)
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep s
+
+/--
+Durrett 2019, Theorem 2.1.11, iid arbitrary finite-dimensional cylinder
+probabilities from source independence and marginal-law hypotheses.
+-/
+theorem durrett2019_theorem_2_1_11_iid_finite_cylinder_prob_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S} {A : ℕ -> Set S}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (s : Finset ℕ) (hA : ∀ i, i ∈ s -> MeasurableSet (A i)) :
+    μ {ω | ∀ i, i ∈ s -> X i ω ∈ A i} =
+      ∏ i ∈ s, ν (A i) := by
+  simpa using
+    durrett2019_theorem_2_1_11_iIndepFun_finite_cylinder_prob
+      (S := fun _ : ℕ => S) (ν := fun _ : ℕ => ν)
+      (X := X) (A := A) hLaw hindep s hA
+
+/--
 Durrett 2019, Theorem 2.1.11, general finite prefix product-law form.
 
 For a sequence of independent variables with coordinate laws `ν_i`, the vector

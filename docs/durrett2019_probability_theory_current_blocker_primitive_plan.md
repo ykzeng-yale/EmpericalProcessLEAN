@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V486
+## Live In-Thread Goal Prompt V487
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -26,7 +26,8 @@ cylinder probability wrappers from iid source hypotheses.  V485 adds `Fin n`
 finite-prefix product-law `HasLaw` wrappers from iid source hypotheses and
 canonical infinite-product coordinates.  V486 adds the corresponding
 general/non-iid finite-prefix product-law and joint infinite-product extraction
-wrappers.
+wrappers.  V487 adds arbitrary finite-index-set product-law and cylinder
+probability wrappers from source independence/marginal laws.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -37,7 +38,19 @@ supports 2.4.9 or the adjacent Kolmogorov-maximal route.  Do not return to
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
 cylinder source wrappers, solved `Fin n` finite-prefix product-law wrappers,
 solved general/non-iid finite-prefix product-law wrappers,
+solved arbitrary finite-index-set product-law/cylinder wrappers,
 or old app-level stale prompts.
+
+Latest verified target V487 adds arbitrary finite-dimensional distribution
+support for Durrett Theorem 2.1.11:
+`durrett2019_theorem_2_1_11_iIndepFun_finite_restrict_hasLaw_pi`,
+`durrett2019_theorem_2_1_11_iIndepFun_finite_cylinder_prob`,
+`durrett2019_theorem_2_1_11_iid_finite_restrict_hasLaw_pi_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_finite_restrict_hasLaw_pi_of_identDistrib`,
+and `durrett2019_theorem_2_1_11_iid_finite_cylinder_prob_of_iIndepFun`.
+These wrappers handle an arbitrary finite set `s : Finset ℕ`, complementing
+the V485/V486 finite-prefix vector statements and the V483 joint-law finite
+restriction layer.
 
 Latest verified target V486 adds the general/non-iid finite-prefix product-law
 branch of Durrett Theorem 2.1.11:
@@ -4425,6 +4438,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V486` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V487` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
