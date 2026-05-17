@@ -1146,6 +1146,118 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_prod_integr
       simpa using (Finset.prod_attach s (fun i : ι => ∫ ω, X i ω ∂P))
 
 /--
+Durrett 2019, Theorem 2.1.13, nonnegative finite-subfamily expectation
+factorization.
+
+This is the `X_i >= 0` branch of the textbook theorem, stated as an
+extended-nonnegative integral identity.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_prod_eq_prod_lintegral
+    {Ω : Type u} {ι : Type v} [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ι -> Ω -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (s : Finset ι) :
+    ∫⁻ ω, ∏ i ∈ s, X i ω ∂P = ∏ i ∈ s, ∫⁻ ω, X i ω ∂P := by
+  exact
+    _root_.ProbabilityTheory.lintegral_prod_eq_prod_lintegral_of_indepFun
+      s X hX mX
+
+/--
+Durrett 2019, Theorem 2.1.13, nonnegative initial-range expectation
+factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_prod_eq_prod_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.range n, X i ω ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ ω, X i ω ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_prod_eq_prod_lintegral
+    (P := P) (X := X) hX mX (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13, nonnegative interval-block expectation
+factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_prod_eq_prod_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (m n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Ico m n, X i ω ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ ω, X i ω ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_prod_eq_prod_lintegral
+    (P := P) (X := X) hX mX (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13, real nonnegative finite-subfamily expectation
+factorization.  The real nonnegative variables are encoded by
+`ENNReal.ofReal`, matching the nonnegative expectation branch of the source
+statement without requiring ordinary integrability assumptions.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_ofReal_prod_eq_prod_lintegral_ofReal
+    {Ω : Type u} {ι : Type v} [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ι -> Ω -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hX_nonneg : ∀ i ω, 0 ≤ X i ω)
+    (s : Finset ι) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ s, X i ω) ∂P =
+      ∏ i ∈ s, ∫⁻ ω, ENNReal.ofReal (X i ω) ∂P := by
+  let Xenn : ι -> Ω -> ℝ≥0∞ := fun i ω => ENNReal.ofReal (X i ω)
+  have hXenn_indep : _root_.ProbabilityTheory.iIndepFun Xenn P :=
+    durrett2019_theorem_2_1_10_iIndepFun_comp
+      (P := P) (X := X) hX (fun _ => ENNReal.measurable_ofReal)
+  have hXenn_meas : ∀ i, Measurable (Xenn i) := fun i =>
+    (mX i).ennreal_ofReal
+  calc
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ s, X i ω) ∂P =
+        ∫⁻ ω, ∏ i ∈ s, Xenn i ω ∂P := by
+          refine lintegral_congr_ae ?_
+          exact ae_of_all P fun ω =>
+            ENNReal.ofReal_prod_of_nonneg
+              (fun i _hi => hX_nonneg i ω)
+    _ = ∏ i ∈ s, ∫⁻ ω, Xenn i ω ∂P :=
+        durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_prod_eq_prod_lintegral
+          (P := P) (X := Xenn) hXenn_indep hXenn_meas s
+
+/--
+Durrett 2019, Theorem 2.1.13, real nonnegative initial-range expectation
+factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_ofReal_prod_eq_prod_lintegral_ofReal
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hX_nonneg : ∀ i ω, 0 ≤ X i ω)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.range n, X i ω) ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ ω, ENNReal.ofReal (X i ω) ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_ofReal_prod_eq_prod_lintegral_ofReal
+    (P := P) (X := X) hX mX hX_nonneg (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13, real nonnegative interval-block expectation
+factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_ofReal_prod_eq_prod_lintegral_ofReal
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hX_nonneg : ∀ i ω, 0 ≤ X i ω)
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.Ico m n, X i ω) ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ ω, ENNReal.ofReal (X i ω) ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_ofReal_prod_eq_prod_lintegral_ofReal
+    (P := P) (X := X) hX mX hX_nonneg (Finset.Ico m n)
+
+/--
 Durrett 2019, Theorem 2.1.13, zero-mean finite-product corollary.
 
 If one factor in a finite independent product has expectation zero, then the

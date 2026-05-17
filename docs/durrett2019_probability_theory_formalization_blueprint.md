@@ -27,25 +27,29 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V476`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V477`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V476: move beyond Durrett Theorem 2.5.13.  The
-infinite-mean growth handoff and the source-facing lintegral/tail-indexing
-display are compiled, so the next packet should search the Durrett source and
-local/mathlib anchors, then choose the next largest Chapter 2 theorem-sized
-packet that can compile.
+Current immediate target after V477: stay on Durrett Theorem 2.4.9
+Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
+expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
+compiled, and V477 adds the nonnegative `lintegral` branch of Theorem 2.1.13,
+so the next packet should close only a proved-missing 2.4.9 display or add the
+next Chapter 2.1 product-law/product-expectation wrapper that directly
+supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 Do not return to scalar-kernel estimates, annulus mass summability, concrete
 majorant integrability, display-wrapper plumbing, branch-combination plumbing,
 reciprocal-growth conversion, monotone-convergence shell, linear-tail transfer,
 layer-cake/counting plumbing, easy growth cleanup, infinite-mean display
-polish, or tail-series indexing polish unless a focused source check exposes a
-missing handoff.
+polish, tail-series indexing polish, or the new nonnegative finite-product
+expectation wrappers unless a focused source check exposes a missing handoff.
 
-Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V443 advances
+Current active frontier for this goal cycle: Durrett Theorem 2.4.9
+Glivenko-Cantelli and Chapter 2.1 support in
+`StatInference/ProbabilityTheory/Basic.lean`.  Historical compiled inventory
+from the preceding Chapter 2.5 lane follows for provenance.  V443 advances
 Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.  The V443 bridge
 uses the already-compiled scaled sample-tail Borel-Cantelli limsup event to
 prove the textbook partial-sum inequality consequence
@@ -185,6 +189,10 @@ now accepts the textbook infinite-mean display as
 `lintegral (ENNReal.ofReal |X_0|) = infinity`, converts unshifted divergent
 tail series to the existing one-based divergent branch, and returns the
 two-branch extended-real Feller dichotomy directly.
+V477 returns the active lane to Durrett Theorem 2.4.9 plus Chapter 2.1 support:
+it adds finite/range/Ico nonnegative product-expectation factorization under
+`lintegral`, both for `ℝ≥0∞` variables and real nonnegative variables encoded
+by `ENNReal.ofReal`.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -215,8 +223,15 @@ assembly, or the solved easy growth cleanup from monotonicity and
 to `n / a_n -> 0`, or the solved monotone-convergence contradiction shell, or
 the solved bounded-ratio linear-tail transfer, the solved
 linear-grid layer-cake/counting bridge, solved infinite-mean source-display
-polish, or solved tail-series indexing polish.
-New compiled anchors through V476:
+polish, solved tail-series indexing polish, or solved nonnegative finite-
+product expectation wrappers.
+New compiled anchors through V477:
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_ofReal_prod_eq_prod_lintegral_ofReal`,
 `durrett2019_theorem_2_5_13_not_integrable_abs_of_lintegral_abs_eq_top`,
 `durrett2019_theorem_2_5_13_oneBased_tail_tsum_eq_top_of_tail_tsum_eq_top`,
 `durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_lintegral_abs_eq_top_tail_summable_or_tail_tsum_top_and_ratio_mono`,

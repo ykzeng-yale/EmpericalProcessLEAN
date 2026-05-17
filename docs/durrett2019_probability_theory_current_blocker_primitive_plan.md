@@ -4,169 +4,23 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V476
+## Live In-Thread Goal Prompt V477
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
 below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
-synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V443 advances Durrett
-Theorem 2.5.13 (Feller infinite-mean dichotomy): the V443 bridge uses the
-already-compiled scaled sample-tail Borel-Cantelli limsup event to prove the
-textbook partial-sum inequality consequence
-`max |S_n| |S_{n+1}| >= |X_{n+1}| / 2`, giving a.e. frequently large
-one-based normalized partial sums at level `k / 2`.  V444 adds the
-deterministic integer-half to arbitrary real-threshold frequent-largeness
-bridge.  V445 aggregates the fixed-`k` a.e. statements over the countable
-positive integer scales and packages the uniform-in-`k` Durrett source wrapper
-that gives a.e. frequent largeness above every real bound.  V446 packages this
-as the formal extended-real divergent-half display
-`limsup_n |S_n| / a_n = +∞`.  V447 removes the remaining manual scaled-tail
-plumbing for the divergent half by deriving the scaled-tail law from
-`IdentDistrib`, the scaled-tail event measurability from Borel threshold
-measurability, and the scaled-tail event independence from `iIndepFun`.  V448
-starts the convergent half by defining the moving truncation
-`Y_n = X_n 1_{|X_n| < a_n}` and proving that finite one-based tail series give
-a.e. eventual equality between `X_{n+1}` and its moving truncation, including
-the iid `IdentDistrib` source wrapper.  V449 adds the deterministic and a.e.
-transfer layer showing that this eventual equality transfers a zero
-normalized-sum endpoint from the moving truncations back to the original
-one-based partial sums whenever `a_n -> ∞`.  V450 proves the moving-truncated
-endpoint from the two remaining analytic assumptions: summable scaled
-variances of the centered moving truncations and normalized convergence of the
-truncated means.  V451 discharges the scaled-variance assumption down to the
-textbook weighted base moving-truncation second-moment summability, using
-variance domination, iid transfer of the truncated square integral, and
-endpoint wrappers that feed the V450 Kronecker assembly.  V452 packages the
-arbitrary-normalizer truncated-square scalar kernel, proves that pointwise
-ENNReal kernel majorization by an integrable nonnegative majorant gives the
-weighted base second-moment summability, and adds moving/original normalized
-sum endpoint wrappers that consume that scalar kernel bound.  V453 removes the
-remaining opaque truncated-mean `Tendsto` assumption by proving the
-Kronecker-style mean-normalization bridge from scaled truncated-mean
-summability, plus absolute-scaled summability and scalar-kernel endpoint
-wrappers.  V454 adds the deterministic textbook prefix-plus-tail mean squeeze:
-if the moving truncated means satisfy Durrett's fixed-`N` prefix bound plus a
-summable annulus tail, then the normalized mean contribution tends to zero;
-it also adds scalar-kernel endpoint wrappers consuming this textbook mean
-bound.  V455 adds the deterministic finite-annulus bridge: ratio monotonicity
-moves `(n/a_n)` inside finite annulus sums as `(m/a_m)`, and a
-prefix-plus-finite-annulus mean estimate plus weighted tail bound feeds the
-V454 textbook mean squeeze and scalar-kernel endpoint wrappers.  V456 reduces
-that finite-annulus mean estimate to a source-shaped integral obligation:
-`|E Y_k|` is bounded by the base absolute truncated integral at the same
-cutoff via `IdentDistrib`, and base absolute truncated integral bounds now
-feed the scalar-kernel moving-truncated endpoint wrapper directly.  V457
-discharges the actual finite-annulus partition for that base integral: it
-defines the base absolute annulus integral, proves the scalar finite-annulus
-cover, proves integrability of the bounded truncated/annulus indicators, and
-proves
-`baseAbsTruncIntegral k <= a_N + sum_{r=N+1}^n baseAbsAnnulusIntegral r`
-whenever `N <= n` and `k <= n`.  V458 connects this first-moment annulus
-bridge to Durrett's identity (*) mass series: the base absolute annulus
-integral is nonnegative, is bounded by `a_r` times the annulus probability,
-and after multiplying by `r / a_r` is bounded by `r` times that annulus mass;
-there is also a direct tail-bound transfer from identity(*) mass weights to
-the weighted base absolute annulus integrals consumed by the V455 mean bridge.
-V459 adds the deterministic summable-tail layer for those mass weights:
-finite `Icc (N+1) n` tails are reindexed as shifted range sums, any
-nonnegative summable sequence controls those finite tails by its shifted
-`tsum`, and summability of
-`r * P(a_{r-1} <= |X_0| < a_r)` now directly supplies the exact tail bound for
-the weighted base absolute annulus integrals.
-V460 adds the finite-prefix identity(*) consumer: any nonnegative mass
-sequence whose finite prefixes are bounded by finite prefixes of a summable
-nonnegative tail sequence is summable, and the source-shaped prefix inequality
-for
-`r * P(a_{r-1} <= |X_0| < a_r)` now directly supplies both mass-weight
-summability and the weighted base annulus integral tail bound.
-V461 proves the finite-prefix identity(*) inequality itself from the monotone
-half-open annulus partition: the weighted prefix is rewritten as a triangular
-finite sum, the annuli are pairwise disjoint, their lower-cutoff union is
-contained in the tail event `{a_n <= |X_0|}`, and the resulting finite-prefix
-mass inequality now feeds the V460 summability and weighted-annulus-tail
-consumers directly.
-V462 plugs that source mass summability into the convergent-half mean route:
-the monotone annulus partition now supplies the base truncated-integral bound,
-finite base tail summability plus monotone cutoffs prove the truncated means
-normalize to zero, and the scalar-kernel moving-truncated/original endpoints
-now consume those source hypotheses directly.
-V463 packages Durrett's textbook monotonicity of `a_n / n` into the
-eventual finite-annulus ratio estimate `(n/a_n) <= (r/a_r)`, and adds
-mean, moving-truncated, and original endpoint wrappers that consume the
-source-shaped `a_n / n` monotonicity hypothesis directly.
-V464 proves the deterministic reciprocal-square tail estimate used in the
-variance half of the proof: monotonicity of `a_n / n` gives
-`a_n^{-2} <= (m^2/a_m^2) n^{-2}`, finite `Ico` tails are bounded by
-`2*m/a_m^2`, and the corresponding shifted tail is summable with `tsum`
-bounded by the same constant.
-V465 turns that tail estimate into the annulus-wise scalar-kernel bound:
-if `x` lies in `[a_{m-1}, a_m)`, then finite partial sums, the real `tsum`,
-and the ENNReal `tsum` of Durrett's arbitrary-normalizer truncated-square
-kernel are all bounded by `2*m`.
-V466 closes the low-prefix gap needed for global majorant packaging: if
-`|x| < a_1`, then finite partial sums, the real `tsum`, and the ENNReal
-`tsum` of the same scalar kernel are all bounded by `2`, without any annulus
-lower-bound hypothesis.
-V467 packages the global deterministic cover and source-shaped majorant
-handoff: shifted divergence of `a_{n+1}` puts every real point either in the
-low prefix or in a half-open annulus; any real `g` dominating `2` on the
-prefix and `2*m` on annulus `m` now dominates the scalar kernel `tsum`, feeds
-the weighted base second-moment summability handoff, and feeds the
-moving/original convergent-half endpoint wrappers under the existing finite
-base tail and ratio-monotone hypotheses.
-V468 defines the concrete annulus-series majorant
-`2 + tsum_m 2*m*1_{a_{m-1} <= |x| < a_m}`, proves its pointwise finite
-support and summability when `a_n -> infinity`, proves its nonnegativity and
-prefix/annulus domination properties, and adds base-variance plus
-moving/original endpoint wrappers where the only remaining majorant-side input
-is integrability of this concrete majorant composed with `X_0`.
-V469 proves that remaining concrete-majorant integrability bridge: each
-composed annulus term is measurable and integrable, its integral norm is
-exactly `2*m` times the half-open annulus mass, identity(*) mass-weight
-summability makes those integral norms summable, `lintegral_tsum` and
-`lintegral_ofReal_ne_top_iff_integrable` prove integrability of the real
-annulus series, and the full concrete majorant is now integrable from finite
-tail summability through the existing monotone annulus mass bridge.  The
-moving-truncated and original endpoints now have wrappers with no external
-majorant-integrability hypothesis.
-V470 packages the convergent half in the same extended-real display used by
-the divergent half: real convergence of `S_n / a_n` now gives
-`limsup_n |S_n| / a_n = 0`, and the V469 concrete-majorant endpoint feeds the
-iid one-based partial-sum source wrapper directly.
-V471 assembles the two branch endpoints into a single Feller-dichotomy theorem:
-finite real tail summability gives the zero extended-real limsup display, and
-divergent ENNReal tail series gives the `+∞` extended-real limsup display,
-under the exact iid and growth hypotheses currently consumed by the two
-compiled branch routes.
-V472 removes the easiest remaining explicit growth hypotheses from the
-convergent branch and final assembly: monotonicity of `a_n` supplies increment
-nonnegativity, `n / a_n -> 0` plus positivity supplies `a_n -> infinity`, and
-shifted divergence follows from `a_n -> infinity`.
-V473 packages Durrett's textbook growth display itself into the compiled
-route: `a_n / n -> infinity` implies `n / a_n -> 0`, and the convergent half
-plus final Feller dichotomy now have source wrappers consuming
-`Tendsto (fun n => a n / n) atTop atTop` directly.
-V474 separates the true infinite-mean growth handoff from its remaining
-analytic core: monotone convergence now proves that the bounded-ratio case
-would force integrability once bounded ratios plus finite Durrett tail
-summability imply integrability of `|X_0|`; the Feller source dichotomy now
-derives `a_n / n -> infinity` inside the finite-tail branch only.  V474 also
-proves that a bounded ratio transfers finite Durrett tail summability to
-finite positive linear-grid tail summability.
-V475 closes that analytic core: a `Nat.floor` scalar grid-count bound and a
-`lintegral_tsum` layer-cake style counting bridge prove that finite positive
-linear-grid tail summability implies `Integrable |X_0|`; bounded-ratio finite
-Durrett tails now imply integrability; and the infinite-mean source Feller
-dichotomy no longer needs the abstract bounded-ratio handoff.
-V476 closes the remaining source-display polish for Theorem 2.5.13: the
-textbook infinite-mean hypothesis can now be stated as
-`lintegral (ENNReal.ofReal |X_0|) = infinity`, the unshifted tail-series
-divergent alternative is converted to the existing one-based divergent branch,
-and the public Feller-dichotomy wrapper consumes these source-shaped
-hypotheses directly.
+synced `main`.  Immediate lane: Durrett Theorem 2.4.9 Glivenko-Cantelli plus
+Chapter 2.1 independence/product-law/product-expectation support in
+`StatInference/ProbabilityTheory/Basic.lean`, reusing
+`StatInference/EmpiricalProcess/RealHalfLineGC.lean`,
+`StatInference/ProbabilityMeasure/ProductMeasure.lean`, and mathlib
+independence/Tonelli APIs.  The earlier 2.4.9 source-entry plumbing through
+V390 and the 2.5.13 infinite-mean source display through V476 are compiled.
+V477 adds the nonnegative branch of Durrett Theorem 2.1.13: independent
+finite/range/Ico products factor under `lintegral`, both for `ℝ≥0∞` variables
+and real nonnegative variables encoded by `ENNReal.ofReal`.
 Do not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -198,22 +52,29 @@ monotonicity and `n / a_n -> 0`, or the solved source-growth wrapper from
 `a_n / n -> infinity` to `n / a_n -> 0`, or the solved monotone-convergence
 contradiction shell, or the solved bounded-ratio linear-tail transfer, or the
 solved linear-grid layer-cake/counting bridge, the solved bounded-ratio
-integrability instantiation, the solved lintegral infinite-mean display, or
-the solved unshifted-to-one-based divergent tail-series display.
-Next aggressive target: move beyond Theorem 2.5.13.  Search the Durrett source
-Markdown/PDF and current `Basic.lean` anchors, then choose the next largest
-Chapter 2 theorem-sized packet that can compile, preferring theorem statements
-whose probability, expectation, summability, independence, or Borel-Cantelli
-infrastructure already exists in mathlib or local `StatInference` files.  Do
-not return to scalar kernel, annulus mass, majorant integrability,
-display-wrapper, branch-combination, reciprocal-growth conversion,
-monotone-convergence shell, linear-tail transfer, layer-cake/counting plumbing,
-infinite-mean source-display polish, or tail-series indexing polish for
-Theorem 2.5.13 unless a focused source check finds a concrete missing
-source-facing wrapper.
-Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
-V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
-search proves a concrete missing source display.
+integrability instantiation, the solved lintegral infinite-mean display, the
+solved unshifted-to-one-based divergent tail-series display, or the solved
+nonnegative finite-product expectation wrappers.
+Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
+Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
+mathlib, and the Durrett source before editing.  Close one missing
+source-facing 2.4.9 display only if search proves it is absent; otherwise add
+the next Chapter 2.1 product-law/product-expectation wrapper that directly
+supports 2.4.9 or the adjacent Kolmogorov-maximal route.  Do not return to
+2.5.13 or old app-level stale prompts.
+
+Latest verified target V477 adds the nonnegative branch of Durrett Theorem
+2.1.13:
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_ofReal_prod_eq_prod_lintegral_ofReal`,
+and
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_ofReal_prod_eq_prod_lintegral_ofReal`.
+These wrappers reuse mathlib's independent finite-product `lintegral`
+factorization and keep the live route focused on 2.4.9 plus Chapter 2.1
+support.
 
 Latest verified target V476 closes the source-facing display for Durrett
 Theorem 2.5.13:
@@ -4484,6 +4345,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V476` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V477` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

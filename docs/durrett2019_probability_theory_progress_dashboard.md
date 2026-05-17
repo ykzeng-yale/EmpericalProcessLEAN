@@ -32,10 +32,15 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V476` in
+Route from `Live In-Thread Goal Prompt V477` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
-The active immediate lane for this goal cycle is Durrett Chapter 2.5
-random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
+The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
+Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
+product-expectation support in `StatInference/ProbabilityTheory/Basic.lean`.
+Theorem 2.4.9 source-entry plumbing through V390 is compiled; V477 adds the
+nonnegative `lintegral` product-expectation branch of Theorem 2.1.13.  The
+historical compiled inventory from the preceding 2.5.13 lane follows for
+provenance.
 V443 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.
 The V443 bridge uses the already-compiled scaled sample-tail Borel-Cantelli
 limsup event to prove the textbook partial-sum inequality consequence
@@ -175,6 +180,10 @@ now accepts the textbook infinite-mean display as
 `lintegral (ENNReal.ofReal |X_0|) = infinity`, converts unshifted divergent
 tail series to the existing one-based divergent branch, and returns the
 two-branch extended-real Feller dichotomy directly.
+V477 returns the active lane to Durrett Theorem 2.4.9 plus Chapter 2.1 support:
+it adds finite/range/Ico nonnegative product-expectation factorization under
+`lintegral`, both for `ℝ≥0∞` variables and real nonnegative variables encoded
+by `ENNReal.ofReal`.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -205,8 +214,15 @@ assembly, or the solved easy growth cleanup from monotonicity and
 to `n / a_n -> 0`, or the solved monotone-convergence contradiction shell, or
 the solved bounded-ratio linear-tail transfer, the solved
 linear-grid layer-cake/counting bridge, solved infinite-mean source-display
-polish, or solved tail-series indexing polish.
-New compiled anchors through V476:
+polish, solved tail-series indexing polish, or solved nonnegative finite-
+product expectation wrappers.
+New compiled anchors through V477:
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_ofReal_prod_eq_prod_lintegral_ofReal`,
 `durrett2019_theorem_2_5_13_not_integrable_abs_of_lintegral_abs_eq_top`,
 `durrett2019_theorem_2_5_13_oneBased_tail_tsum_eq_top_of_tail_tsum_eq_top`,
 `durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_lintegral_abs_eq_top_tail_summable_or_tail_tsum_top_and_ratio_mono`,
