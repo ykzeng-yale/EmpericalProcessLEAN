@@ -2854,6 +2854,280 @@ theorem durrett2019_theorem_2_1_11_canonical_iid_real_Iio_oneBased_Icc_cdfLeftLi
       (P := (ν : Measure ℝ)) (c := x i)).symm
 
 /--
+Durrett 2019, Theorem 2.1.11, finite-prefix closed half-line CDF product
+display from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_real_Iic_range_cdf_prod_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ.real {ω | ∀ i, i ∈ Finset.range n -> X i ω ≤ x i} =
+      ∏ i ∈ Finset.range n, ProbabilityTheory.cdf ν (x i) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_11_iid_real_Iic_range_cdf_prod_of_iIndepFun
+      hSource.1 hSource.2 n x
+
+/--
+Durrett 2019, Theorem 2.1.11, finite-prefix open half-line CDF-left-limit
+product display from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_real_Iio_range_cdfLeftLim_prod_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ.real {ω | ∀ i, i ∈ Finset.range n -> X i ω < x i} =
+      ∏ i ∈ Finset.range n,
+        Function.leftLim (ProbabilityTheory.cdf ν) (x i) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_11_iid_real_Iio_range_cdfLeftLim_prod_of_iIndepFun
+      hSource.1 hSource.2 n x
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based finite-prefix closed half-line CDF
+product display from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_real_Iic_range_cdf_prod_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ.real {ω | ∀ i, i ∈ Finset.range n -> X (i + 1) ω ≤ x i} =
+      ∏ i ∈ Finset.range n, ProbabilityTheory.cdf ν (x i) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_11_iid_shift_real_Iic_range_cdf_prod_of_iIndepFun
+      hSource.1 hSource.2 n x
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based finite-prefix open half-line
+CDF-left-limit product display from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_real_Iio_range_cdfLeftLim_prod_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ.real {ω | ∀ i, i ∈ Finset.range n -> X (i + 1) ω < x i} =
+      ∏ i ∈ Finset.range n,
+        Function.leftLim (ProbabilityTheory.cdf ν) (x i) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_11_iid_shift_real_Iio_range_cdfLeftLim_prod_of_iIndepFun
+      hSource.1 hSource.2 n x
+
+/--
+Durrett 2019, Theorem 2.1.11, literal one-based closed half-line CDF product
+display from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_real_Iic_oneBased_Icc_cdf_prod_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ.real {ω | ∀ i, i ∈ Finset.Icc 1 n -> X i ω ≤ x i} =
+      ∏ i ∈ Finset.Icc 1 n, ProbabilityTheory.cdf ν (x i) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_11_iid_real_Iic_oneBased_Icc_cdf_prod_of_iIndepFun
+      hSource.1 hSource.2 n x
+
+/--
+Durrett 2019, Theorem 2.1.11, literal one-based open half-line CDF-left-limit
+product display from a joint iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_real_Iio_oneBased_Icc_cdfLeftLim_prod_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ.real {ω | ∀ i, i ∈ Finset.Icc 1 n -> X i ω < x i} =
+      ∏ i ∈ Finset.Icc 1 n,
+        Function.leftLim (ProbabilityTheory.cdf ν) (x i) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_11_iid_real_Iio_oneBased_Icc_cdfLeftLim_prod_of_iIndepFun
+      hSource.1 hSource.2 n x
+
+/--
+Durrett 2019, Theorem 2.1.11, finite-prefix closed half-line CDF product
+display from the common identical-distribution source shape.
+-/
+theorem durrett2019_theorem_2_1_11_iid_real_Iic_range_cdf_prod_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ.real {ω | ∀ i, i ∈ Finset.range n -> X i ω ≤ x i} =
+      ∏ i ∈ Finset.range n, ProbabilityTheory.cdf ν (x i) :=
+  durrett2019_theorem_2_1_11_iid_real_Iic_range_cdf_prod_of_iIndepFun
+    (X := X)
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep n x
+
+/--
+Durrett 2019, Theorem 2.1.11, finite-prefix open half-line CDF-left-limit
+product display from the common identical-distribution source shape.
+-/
+theorem durrett2019_theorem_2_1_11_iid_real_Iio_range_cdfLeftLim_prod_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ.real {ω | ∀ i, i ∈ Finset.range n -> X i ω < x i} =
+      ∏ i ∈ Finset.range n,
+        Function.leftLim (ProbabilityTheory.cdf ν) (x i) :=
+  durrett2019_theorem_2_1_11_iid_real_Iio_range_cdfLeftLim_prod_of_iIndepFun
+    (X := X)
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep n x
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based finite-prefix closed half-line CDF
+product display from the common identical-distribution source shape.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_real_Iic_range_cdf_prod_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ.real {ω | ∀ i, i ∈ Finset.range n -> X (i + 1) ω ≤ x i} =
+      ∏ i ∈ Finset.range n, ProbabilityTheory.cdf ν (x i) :=
+  durrett2019_theorem_2_1_11_iid_shift_real_Iic_range_cdf_prod_of_iIndepFun
+    (X := X)
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep n x
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based finite-prefix open half-line
+CDF-left-limit product display from the common identical-distribution source
+shape.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_real_Iio_range_cdfLeftLim_prod_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) (x : ℕ -> ℝ) :
+    μ.real {ω | ∀ i, i ∈ Finset.range n -> X (i + 1) ω < x i} =
+      ∏ i ∈ Finset.range n,
+        Function.leftLim (ProbabilityTheory.cdf ν) (x i) :=
+  durrett2019_theorem_2_1_11_iid_shift_real_Iio_range_cdfLeftLim_prod_of_iIndepFun
+    (X := X)
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep n x
+
+/--
+Durrett 2019, Theorem 2.1.11, canonical finite-prefix closed half-line CDF
+product display on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_real_Iic_range_cdf_prod
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ) (x : ℕ -> ℝ) :
+    (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)).real
+        {sample | ∀ i, i ∈ Finset.range n -> sample i ≤ x i} =
+      ∏ i ∈ Finset.range n,
+        ProbabilityTheory.cdf (ν : Measure ℝ) (x i) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_11_iid_real_Iic_range_cdf_prod_of_iIndepFun
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hCoord.1 hCoord.2.1 n x
+
+/--
+Durrett 2019, Theorem 2.1.11, canonical finite-prefix open half-line
+CDF-left-limit product display on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_real_Iio_range_cdfLeftLim_prod
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ) (x : ℕ -> ℝ) :
+    (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)).real
+        {sample | ∀ i, i ∈ Finset.range n -> sample i < x i} =
+      ∏ i ∈ Finset.range n,
+        Function.leftLim (ProbabilityTheory.cdf (ν : Measure ℝ)) (x i) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_11_iid_real_Iio_range_cdfLeftLim_prod_of_iIndepFun
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hCoord.1 hCoord.2.1 n x
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based canonical finite-prefix closed
+half-line CDF product display on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_shift_real_Iic_range_cdf_prod
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ) (x : ℕ -> ℝ) :
+    (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)).real
+        {sample | ∀ i, i ∈ Finset.range n -> sample (i + 1) ≤ x i} =
+      ∏ i ∈ Finset.range n,
+        ProbabilityTheory.cdf (ν : Measure ℝ) (x i) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_11_iid_shift_real_Iic_range_cdf_prod_of_iIndepFun
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hCoord.1 hCoord.2.1 n x
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based canonical finite-prefix open
+half-line CDF-left-limit product display on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_shift_real_Iio_range_cdfLeftLim_prod
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ) (x : ℕ -> ℝ) :
+    (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)).real
+        {sample | ∀ i, i ∈ Finset.range n -> sample (i + 1) < x i} =
+      ∏ i ∈ Finset.range n,
+        Function.leftLim (ProbabilityTheory.cdf (ν : Measure ℝ)) (x i) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_11_iid_shift_real_Iio_range_cdfLeftLim_prod_of_iIndepFun
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hCoord.1 hCoord.2.1 n x
+
+/--
 Durrett 2019, Theorem 2.1.12 product-measure/Fubini form.
 
 This is the reusable product-measure integral identity behind the independent
