@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V48` near the top of
+  `Live Goal Prompt V49` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -59,7 +59,11 @@ This dashboard tracks the Chewi optimization formalization lane for
   `Matrix.posSemidef_conjTranspose_mul_self`, `Matrix.dotProduct_mulVec`, and
   `Matrix.vecMul_mulVec`; local search found matrix PSD/operator-norm
   infrastructure in `Ellipsoid.lean` and `InteriorPoint.lean` but no Appendix
-  A wrappers.  Next Appendix A step is an operator-norm/eigenvalue bound
+  A wrappers.  The V49 layer adds
+  `chewiA5_transpose_mul_self_le_scalar_one_iff_dotProduct_bound` and
+  `chewiA5_unit_dotProduct_mulVec_self_le_of_transpose_mul_self_le_scalar_one`,
+  proving the all-vector and unit-vector `A^T A <= C^2 I` quadratic bound
+  forms.  Next Appendix A step is the actual operator-norm/eigenvalue bound
   wrapper after a bounded mathlib spectral/operator-norm search.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in

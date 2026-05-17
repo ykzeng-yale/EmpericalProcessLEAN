@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V48` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V49` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,7 +30,7 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V48 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V49 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved to Appendix A matrix infrastructure.  The new module
 `StatInference/Optimization/AppendixA.lean` compiles and is root-imported,
@@ -40,10 +40,13 @@ Loewner/PSD quadratic-form bridge via mathlib `MatrixOrder` and PSD/PD
 dot-product APIs.  It also starts Definition A.5 with
 `chewiA5_transpose_mul_self_posSemidef` and
 `chewiA5_dotProduct_mulVec_self_eq_transpose_mul_self_quadratic`, proving the
-PSD and quadratic-form substrate for `A^T A`.  Next source-shaped work should
-continue with operator-norm/eigenvalue bound wrappers after a bounded search
-of mathlib spectral/operator-norm APIs and local `Ellipsoid.lean`/
-`InteriorPoint.lean` matrix bridges.
+PSD and quadratic-form substrate for `A^T A`.  The V49 layer adds
+`chewiA5_transpose_mul_self_le_scalar_one_iff_dotProduct_bound` and
+`chewiA5_unit_dotProduct_mulVec_self_le_of_transpose_mul_self_le_scalar_one`,
+so the source all-vector/unit-vector `A^T A <= C^2 I` bound is now compiled.
+Next source-shaped work should continue with the actual operator-norm/eigenvalue
+bound wrappers after a bounded search of mathlib spectral/operator-norm APIs
+and local `Ellipsoid.lean`/`InteriorPoint.lean` matrix bridges.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source

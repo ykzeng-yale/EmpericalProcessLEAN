@@ -101,5 +101,63 @@ theorem chewiA5_dotProduct_mulVec_self_eq_transpose_mul_self_quadratic
   rw [← Matrix.vecMul_mulVec]
   rw [← Matrix.dotProduct_mulVec]
 
+/--
+Chewi Definition A.5, Loewner form of the squared operator-norm bound.  The
+matrix inequality `Aᵀ A <= C^2 I` is exactly the coordinate-vector estimate
+`||A v||^2 <= C^2 ||v||^2`, written here with mathlib's finite-vector
+`dotProduct`.
+-/
+theorem chewiA5_transpose_mul_self_le_scalar_one_iff_dotProduct_bound
+    [DecidableEq n] (A : Matrix m n ℝ) (C : ℝ) :
+    (Aᵀ * A) ≤ (C ^ (2 : ℕ)) • (1 : Matrix n n ℝ) ↔
+      ∀ v : n -> ℝ,
+        dotProduct (A *ᵥ v) (A *ᵥ v) ≤
+          C ^ (2 : ℕ) * dotProduct v v := by
+  have hright :
+      ((C ^ (2 : ℕ)) • (1 : Matrix n n ℝ)).IsHermitian := by
+    exact Matrix.isHermitian_one.smul
+      (show IsSelfAdjoint (C ^ (2 : ℕ) : ℝ) by
+        simp [isSelfAdjoint_iff])
+  have hleft : (Aᵀ * A).IsHermitian :=
+    (chewiA5_transpose_mul_self_posSemidef A).isHermitian
+  rw [chewiA4_loewnerOrder_iff_quadraticForm_le hright hleft]
+  constructor
+  · intro h v
+    have hv := h v
+    have hquad :
+        dotProduct v ((Aᵀ * A) *ᵥ v) =
+          dotProduct (A *ᵥ v) (A *ᵥ v) :=
+      (chewiA5_dotProduct_mulVec_self_eq_transpose_mul_self_quadratic A v).symm
+    have hscalar :
+        dotProduct v (((C ^ (2 : ℕ)) • (1 : Matrix n n ℝ)) *ᵥ v) =
+          C ^ (2 : ℕ) * dotProduct v v := by
+      simp [Matrix.smul_mulVec]
+    simpa [hquad, hscalar] using hv
+  · intro h v
+    have hv := h v
+    have hquad :
+        dotProduct (A *ᵥ v) (A *ᵥ v) =
+          dotProduct v ((Aᵀ * A) *ᵥ v) :=
+      chewiA5_dotProduct_mulVec_self_eq_transpose_mul_self_quadratic A v
+    have hscalar :
+        C ^ (2 : ℕ) * dotProduct v v =
+          dotProduct v (((C ^ (2 : ℕ)) • (1 : Matrix n n ℝ)) *ᵥ v) := by
+      simp [Matrix.smul_mulVec]
+    simpa [hquad, hscalar] using hv
+
+/--
+Chewi Definition A.5, unit-vector form.  From `Aᵀ A <= C^2 I`, every unit
+coordinate vector satisfies `||A v||^2 <= C^2`, written in dot-product form.
+-/
+theorem chewiA5_unit_dotProduct_mulVec_self_le_of_transpose_mul_self_le_scalar_one
+    [DecidableEq n] {A : Matrix m n ℝ} {C : ℝ}
+    (hA : (Aᵀ * A) ≤ (C ^ (2 : ℕ)) • (1 : Matrix n n ℝ)) :
+    ∀ v : n -> ℝ, dotProduct v v = 1 ->
+      dotProduct (A *ᵥ v) (A *ᵥ v) ≤ C ^ (2 : ℕ) := by
+  intro v hv
+  have hbound :=
+    (chewiA5_transpose_mul_self_le_scalar_one_iff_dotProduct_bound A C).mp hA v
+  simpa [hv] using hbound
+
 end Optimization
 end StatInference
