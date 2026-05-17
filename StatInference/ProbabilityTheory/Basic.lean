@@ -13296,6 +13296,121 @@ theorem durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_mass_we
   exact hsum_le.trans hmass_n
 
 /--
+Durrett 2019, Theorem 2.5.13 deterministic tail support: a finite interval
+tail starting at `N + 1` is the corresponding shifted initial range sum.
+-/
+theorem durrett2019_theorem_2_5_13_Icc_succ_tail_sum_eq_range
+    {c : ℕ -> ℝ} {N n : ℕ} (hNn : N ≤ n) :
+    (∑ r ∈ Finset.Icc (N + 1) n, c r) =
+      ∑ j ∈ Finset.range (n - N), c (j + N + 1) := by
+  induction n generalizing N with
+  | zero =>
+      have hN0 : N = 0 := Nat.eq_zero_of_le_zero hNn
+      simp [hN0]
+  | succ n ih =>
+      by_cases hNle : N ≤ n
+      · rw [Finset.sum_Icc_succ_top
+          (by omega : N + 1 ≤ n + 1) (fun r : ℕ => c r)]
+        rw [ih hNle]
+        have hsub : n + 1 - N = (n - N) + 1 := by omega
+        rw [hsub, Finset.sum_range_succ]
+        have hlast : n - N + N + 1 = n + 1 := by omega
+        simp [hlast]
+      · have hN_eq : N = n + 1 := by omega
+        simp [hN_eq]
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic tail support: if a nonnegative
+sequence is summable, every finite tail interval is bounded by the matching
+shifted infinite tail.
+-/
+theorem durrett2019_theorem_2_5_13_Icc_succ_tail_sum_le_tsum_tail_of_summable
+    {c : ℕ -> ℝ} (hc_nonneg : ∀ r : ℕ, 0 ≤ c r) (hc_summable : Summable c) :
+    ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        (∑ r ∈ Finset.Icc (N + 1) n, c r) ≤
+          ∑' j : ℕ, c (j + N + 1) := by
+  intro N
+  filter_upwards [eventually_ge_atTop N] with n hNn
+  rw [durrett2019_theorem_2_5_13_Icc_succ_tail_sum_eq_range
+    (c := c) hNn]
+  have htail_summable : Summable fun j : ℕ => c (j + (N + 1)) :=
+    (summable_nat_add_iff (f := c) (N + 1)).2 hc_summable
+  exact htail_summable.sum_le_tsum
+    (Finset.range (n - N))
+    (fun j _hj => hc_nonneg (j + N + 1))
+
+/--
+Durrett 2019, Theorem 2.5.13 identity(*) support: summability of the annulus
+mass weights gives the finite shifted tail bound used by the mean bridge.
+-/
+theorem durrett2019_theorem_2_5_13_mass_weight_tail_bound_of_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hmass_summable :
+      Summable fun r : ℕ =>
+        (r : ℝ) *
+          P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) :
+    ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        (∑ r ∈ Finset.Icc (N + 1) n,
+          (r : ℝ) *
+            P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) ≤
+          ∑' j : ℕ,
+            ((j + N + 1 : ℕ) : ℝ) *
+              P.real {ω : Ω |
+                a (j + N + 1 - 1) ≤ |X0 ω| ∧ |X0 ω| < a (j + N + 1)} := by
+  let c : ℕ -> ℝ := fun r : ℕ =>
+    (r : ℝ) * P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}
+  have hc_nonneg : ∀ r : ℕ, 0 ≤ c r := by
+    intro r
+    exact mul_nonneg (Nat.cast_nonneg r) measureReal_nonneg
+  have htail :=
+    durrett2019_theorem_2_5_13_Icc_succ_tail_sum_le_tsum_tail_of_summable
+      (c := c) hc_nonneg (by simpa [c] using hmass_summable)
+  simpa [c] using htail
+
+/--
+Durrett 2019, Theorem 2.5.13 identity(*) support: once the annulus mass
+weights are summable, the weighted base absolute annulus integrals satisfy
+the exact shifted tail bound consumed by the V455 mean bridge.
+-/
+theorem durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_mass_weight_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_pos : ∀ m : ℕ, 0 < a m) (hX0_meas : Measurable X0)
+    (hmass_summable :
+      Summable fun r : ℕ =>
+        (r : ℝ) *
+          P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) :
+    ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        (∑ r ∈ Finset.Icc (N + 1) n,
+          ((r : ℝ) / a r) *
+            durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r) ≤
+          ∑' j : ℕ,
+            ((j + N + 1 : ℕ) : ℝ) *
+              P.real {ω : Ω |
+                a (j + N + 1 - 1) ≤ |X0 ω| ∧ |X0 ω| < a (j + N + 1)} :=
+by
+  let c : ℕ -> ℝ := fun r : ℕ =>
+    (r : ℝ) * P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}
+  have hmass_tail : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        (∑ r ∈ Finset.Icc (N + 1) n,
+          (r : ℝ) *
+            P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) ≤
+          ∑' j : ℕ, c (j + N + 1) := by
+    simpa [c] using
+      (durrett2019_theorem_2_5_13_mass_weight_tail_bound_of_summable
+        (P := P) (X0 := X0) (a := a) hmass_summable)
+  have h :=
+    durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_mass_weight_tail_bound
+      (P := P) (X0 := X0) (a := a) (c := c)
+      ha_pos hX0_meas hmass_tail
+  simpa [c] using h
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

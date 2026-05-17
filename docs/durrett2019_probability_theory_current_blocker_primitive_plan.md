@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V458
+## Live In-Thread Goal Prompt V459
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -70,6 +70,12 @@ integral is nonnegative, is bounded by `a_r` times the annulus probability,
 and after multiplying by `r / a_r` is bounded by `r` times that annulus mass;
 there is also a direct tail-bound transfer from identity(*) mass weights to
 the weighted base absolute annulus integrals consumed by the V455 mean bridge.
+V459 adds the deterministic summable-tail layer for those mass weights:
+finite `Icc (N+1) n` tails are reindexed as shifted range sums, any
+nonnegative summable sequence controls those finite tails by its shifted
+`tsum`, and summability of
+`r * P(a_{r-1} <= |X_0| < a_r)` now directly supplies the exact tail bound for
+the weighted base absolute annulus integrals.
 Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
@@ -86,14 +92,28 @@ scaled-mean-summability-to-mean-normalization handoff, or the solved
 textbook-prefix-plus-tail mean squeeze, the solved finite-annulus ratio/tail
 bridge, the solved base-truncated-integral-to-mean bridge, or the solved base
 absolute finite-annulus partition/integral bridge, or the solved
-annulus-first-moment-to-identity-mass bridge.
-Next aggressive target: prove the identity (*) mass-tail summability from the
-finite large-jump tail series, prove the same identity(*)/ratio-monotonicity
-annulus estimate supplying scalar truncated-square kernel majorization, then
-assemble the source-facing Feller dichotomy wrapper.
+annulus-first-moment-to-identity-mass bridge, or the solved
+mass-weight-summable-to-shifted-tail-bound bridge.
+Next aggressive target: prove `Summable (fun r =>
+r * P(a_{r-1} <= |X_0| < a_r))` from Durrett identity (*) and the finite
+large-jump tail series, prove the same identity(*)/ratio-monotonicity annulus
+estimate supplying scalar truncated-square kernel majorization, then assemble
+the source-facing Feller dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V459 adds the deterministic summable-tail layer for the
+identity(*) mass weights.  New compiled anchors include:
+`durrett2019_theorem_2_5_13_Icc_succ_tail_sum_eq_range`,
+`durrett2019_theorem_2_5_13_Icc_succ_tail_sum_le_tsum_tail_of_summable`,
+`durrett2019_theorem_2_5_13_mass_weight_tail_bound_of_summable`, and
+`durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_mass_weight_summable`.
+The remaining blocker is now sharper: prove summability of the annulus mass
+weights from Durrett identity (*) plus the finite large-jump tail series, then
+reuse the mass calculus for the scalar truncated-square kernel majorization.
+Do not spend another cycle proving that a summable mass-weight sequence gives
+the shifted tail bound.
 
 Latest verified target V458 connects the V457 annulus first-moment bridge to
 Durrett's identity (*) mass weights.  New compiled anchors include:
@@ -102,11 +122,9 @@ Durrett's identity (*) mass weights.  New compiled anchors include:
 `durrett2019_theorem_2_5_13_weighted_baseAbsAnnulusIntegral_le_mass_weight`,
 and
 `durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_mass_weight_tail_bound`.
-The remaining blocker is now the identity (*) mass-tail package itself:
-prove summability/tail smallness of
-`r * P(a_{r-1} <= |X_0| < a_r)` from the finite large-jump tail series, then
-reuse that mass calculus for the truncated-square kernel majorization.  Do
-not spend another cycle proving first-moment domination by annulus mass.
+The source mass-weight summable-to-tail bridge is discharged by V459; future
+cycles should target identity(*) summability itself and truncated-square
+kernel majorization, not first-moment domination by annulus mass.
 
 Latest verified target V457 adds the actual finite-annulus partition and
 integral bridge for the base absolute truncated integral in the convergent

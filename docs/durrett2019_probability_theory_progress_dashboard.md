@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V458` in
+Route from `Live In-Thread Goal Prompt V459` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -87,6 +87,11 @@ transfer into the V455 mean bridge.  The next source work is to prove the
 identity (*) mass-tail summability from finite large-jump tail series, prove
 the same annulus calculus supplies scalar truncated-square kernel
 majorization, and then assemble the source-facing Feller dichotomy wrapper.
+V459 adds the deterministic summable-tail layer: finite `Icc (N+1) n` tails
+are reindexed as shifted range sums, any nonnegative summable sequence
+controls those finite tails by its shifted `tsum`, and summability of
+`r * P(a_{r-1} <= |X_0| < a_r)` now directly supplies the exact shifted tail
+bound for the weighted base absolute annulus integrals.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -101,8 +106,13 @@ scaled-mean-summability-to-mean-normalization handoff, or the solved
 textbook-prefix-plus-tail mean squeeze, the solved finite-annulus ratio/tail
 bridge, the solved base-truncated-integral-to-mean bridge, or the solved base
 absolute finite-annulus partition/integral bridge, or the solved
-annulus-first-moment-to-identity-mass bridge.  New compiled anchors through
-V458:
+annulus-first-moment-to-identity-mass bridge, or the solved
+mass-weight-summable-to-shifted-tail-bound bridge.  New compiled anchors
+through V459:
+`durrett2019_theorem_2_5_13_Icc_succ_tail_sum_eq_range`,
+`durrett2019_theorem_2_5_13_Icc_succ_tail_sum_le_tsum_tail_of_summable`,
+`durrett2019_theorem_2_5_13_mass_weight_tail_bound_of_summable`,
+`durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_mass_weight_summable`,
 `durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral_nonneg`,
 `durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral_le_cutoff_mul_measureReal`,
 `durrett2019_theorem_2_5_13_weighted_baseAbsAnnulusIntegral_le_mass_weight`,
