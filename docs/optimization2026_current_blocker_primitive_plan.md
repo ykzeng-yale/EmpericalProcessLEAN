@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V37`, this file's top
+   the full book is complete, route from `Live Goal Prompt V38`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V37
+## Live Goal Prompt V38
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -465,17 +465,27 @@ translated slack-coordinate continuity pattern.  Do not ask again for a
 separate `barrierAffineRangeSet ... ∈ 𝓝 center` premise when the point is in
 the positive slack range.
 
-Next theorem-sized target: construct a
-`Chewi1316RangeCentralPathValueFeasibleMinimizerSelector` for the finite-row
-central-path value from compact/closed feasible-range hypotheses, then feed it
-through the V37 bridge to obtain `Chewi1316RangeCentralPathSelector`.  Search
-mathlib first for `IsCompact.exists_isMinOn`,
-`ContinuousOn.exists_isMinOn'`, `IsClosed`, compact subtype/minimizer APIs,
-continuous-on sum/log APIs on the positive orthant, and local compact
-feasible-range wrappers.  If the raw feasible positive range is open and not
-compact, formalize the standard compact sublevel/envelope argument explicitly:
-state the informal proof in this doc, isolate the coercive/barrier-blowup
-lemma, and only then prove the feasible minimizer selector.
+Current V38 packet constructs the compact feasible-range minimizer selector
+layer.  New compiled declarations:
+`chewi1316RangeCentralPathValue_continuousOn`,
+`chewi1316_rangeCentralPathValueFeasibleMinimizerSelector_of_isCompact`, and
+`chewi1316_rangeCentralPathSelector_of_isCompact_feasibleRange`.
+Search-first result: reuse mathlib `HasGradientAt.continuousOn` to get
+continuity of the concrete central-path value on the positive slack range, and
+reuse `IsCompact.exists_isMinOn` for the compact minimum.  This proves the
+central-path selector from compactness and nonemptiness of the feasible slack
+range; do not reintroduce a per-parameter supplied minimizer when a compact
+feasible range hypothesis is available.
+
+Next theorem-sized target: discharge the compactness/nonemptiness hypotheses
+needed by V38 in source-facing forms.  First prove nonemptiness from any
+standard preliminary feasible point or explicit strict-feasible witness.  Then
+either prove a compact feasible-range wrapper from an actual compact set
+already used in the bounded/closed-polytope endpoints, or formalize the
+standard compact sublevel/envelope argument for the open positive slack range:
+state the informal proof here, isolate the coercive/barrier-blowup lemma for
+`positiveOrthantNegLogBarrier`, and only then turn it into a feasible
+minimizer selector.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model

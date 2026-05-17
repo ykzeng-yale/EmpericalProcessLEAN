@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V37` near the top of
+  `Live Goal Prompt V38` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -222,12 +222,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   This closes the positive-slack-range neighborhood blocker from actual
   feasibility and gives the live route a cleaner feasible-minimizer selector
   surface.
+  The V38 packet adds
+  `chewi1316RangeCentralPathValue_continuousOn`,
+  `chewi1316_rangeCentralPathValueFeasibleMinimizerSelector_of_isCompact`, and
+  `chewi1316_rangeCentralPathSelector_of_isCompact_feasibleRange`.
+  This proves the central-path selector from compactness and nonemptiness of
+  the feasible slack range by reusing mathlib `HasGradientAt.continuousOn` and
+  `IsCompact.exists_isMinOn`.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: construct a
-  `Chewi1316RangeCentralPathValueFeasibleMinimizerSelector` from compact/closed
-  feasible-range hypotheses or a compact sublevel/envelope argument, then feed
-  it through the V37 bridge to obtain the central-path selector.
+  `hxseq_mem` or per-step decrement premise.  Next proof target: discharge the
+  V38 compactness/nonemptiness hypotheses in source-facing forms, first from
+  strict-feasible witnesses and compact wrappers, then from the compact
+  sublevel/envelope barrier-blowup argument for the open positive range.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge

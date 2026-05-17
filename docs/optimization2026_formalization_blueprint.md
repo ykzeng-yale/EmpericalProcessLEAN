@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V37` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V38` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -176,10 +176,14 @@ and `chewi1316_rangeCentralPathSelector_of_valueFeasibleMinimizerSelector`.
 Search-first reuse for V37: mathlib `IsOpen.preimage`,
 `isOpen_iInter_of_finite`, `isOpen_lt`, `PiLp.continuous_apply`, and
 `IsOpen.mem_nhds`, plus the local translated slack-coordinate continuity
-pattern.  Next finite-row work should construct a feasible minimizer selector
-from compact/closed feasible-range hypotheses or a compact sublevel/envelope
-argument, then feed it through the V37 bridge to recover central-path
-centrality.
+pattern.  The V38 packet adds
+`chewi1316RangeCentralPathValue_continuousOn`,
+`chewi1316_rangeCentralPathValueFeasibleMinimizerSelector_of_isCompact`, and
+`chewi1316_rangeCentralPathSelector_of_isCompact_feasibleRange`.  Search-first
+reuse for V38: mathlib `HasGradientAt.continuousOn` and
+`IsCompact.exists_isMinOn`.  Next finite-row work should discharge the compact
+and nonempty feasible-range hypotheses in source-facing forms, then formalize
+the compact sublevel/envelope barrier-blowup proof for the open positive range.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

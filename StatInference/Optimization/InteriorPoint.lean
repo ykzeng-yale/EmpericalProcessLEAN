@@ -36875,6 +36875,18 @@ theorem chewi1316RangeCentralPathValue_hasGradientAt
   ext v
   simp [InnerProductSpace.toDual_apply_apply, smul_eq_mul]
 
+theorem chewi1316RangeCentralPathValue_continuousOn
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (t : ℝ) (aObj : (polytopeSlackCLM aRow).range) :
+    ContinuousOn (chewi1316RangeCentralPathValue aRow bSlack t aObj)
+      (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m))) := by
+  exact HasGradientAt.continuousOn fun center hcenter_mem =>
+    chewi1316RangeCentralPathValue_hasGradientAt
+      aRow bSlack t aObj hcenter_mem
+
 /--
 Source-shaped minimizer certificate for the finite-row central path.  For each
 positive barrier parameter it supplies a feasible range point that globally
@@ -36980,6 +36992,24 @@ def Chewi1316RangeCentralPathValueFeasibleMinimizerSelector
       IsMinOn (chewi1316RangeCentralPathValue aRow bSlack t aObj)
         (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
           (positiveOrthant (d := m))) center
+
+theorem chewi1316_rangeCentralPathValueFeasibleMinimizerSelector_of_isCompact
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range)
+    (hcompact :
+      IsCompact (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m))))
+    (hnonempty :
+      (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m))).Nonempty) :
+    Chewi1316RangeCentralPathValueFeasibleMinimizerSelector aRow bSlack aObj := by
+  intro t _ht
+  rcases hcompact.exists_isMinOn hnonempty
+      (chewi1316RangeCentralPathValue_continuousOn aRow bSlack t aObj) with
+    ⟨center, hcenter_mem, hmin⟩
+  exact ⟨center, hcenter_mem, hmin⟩
 
 theorem chewi1316_rangeCentralPathValueLocalMinimizerSelector_of_valueMinimizerSelector
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
@@ -37088,6 +37118,22 @@ theorem chewi1316_rangeCentralPathSelector_of_valueFeasibleMinimizerSelector
   chewi1316_rangeCentralPathSelector_of_valueDomainMinimizerSelector aRow bSlack aObj
     (chewi1316_rangeCentralPathValueDomainMinimizerSelector_of_feasibleMinimizerSelector
       aRow bSlack aObj hselector)
+
+theorem chewi1316_rangeCentralPathSelector_of_isCompact_feasibleRange
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range)
+    (hcompact :
+      IsCompact (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m))))
+    (hnonempty :
+      (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m))).Nonempty) :
+    Chewi1316RangeCentralPathSelector aRow bSlack aObj :=
+  chewi1316_rangeCentralPathSelector_of_valueFeasibleMinimizerSelector aRow bSlack aObj
+    (chewi1316_rangeCentralPathValueFeasibleMinimizerSelector_of_isCompact
+      aRow bSlack aObj hcompact hnonempty)
 
 theorem chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_centralPathSelector
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
