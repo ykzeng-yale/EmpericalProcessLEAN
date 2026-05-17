@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V55`, this file's top
+   the full book is complete, route from `Live Goal Prompt V56`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,12 +132,30 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V55
+## Live Goal Prompt V56
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: the concrete standard preliminary stage now feeds a
+Current active frontier: V56 proves the Theorem 13.1 matrix perturbation
+bridge in `StatInference/Optimization/AppendixA.lean`, consuming the V51
+symmetric operator-norm/Loewner sandwich.  Newly compiled declarations are
+`chewiA5_loewner_lower_of_l2_opNorm_sub_le`,
+`chewiA5_loewner_upper_of_l2_opNorm_sub_le`,
+`chewiA5_loewner_sandwich_of_l2_opNorm_sub_le`,
+`chewiA4_scalar_one_le_scalar_one_of_le`,
+`chewi131_hessian_lower_half_of_l2_opNorm_sub_le`, and
+`chewi131_hessian_lower_half_of_lipschitz_opNorm`.  These package the
+source proof step
+`lambda_min(nabla^2 f(x_n)) >= lambda_min(nabla^2 f(x_star)) -
+gamma ||x_n - x_star|| >= alpha / 2` in scalar Loewner form.  Next
+theorem-sized target: stay in Theorem 13.1 and prove the inverse-norm
+consequence from `(alpha / 2) I <= H`, then assemble the Newton local
+quadratic recurrence under a supplied Taylor/integral identity.  Only add
+another Appendix A eigenvalue-root corollary if that inverse-norm bridge needs
+it.
+
+Older dependency cache: the concrete standard preliminary stage now feeds a
 concrete source-coordinate standard main-stage Newton recursion for §13.16
 objective-gap accuracy.  Previously compiled handoff declarations include:
 `Chewi1316SourceMainStageObjectiveGapHandoff`,
@@ -716,7 +734,7 @@ not apply directly to real matrices because it requires a `CStarAlgebra`
 instance; the verified finite-max proof instead reuses the V52 arbitrary-`C`
 operator-norm/eigenvalue iff plus `Finset.sup'_le`/`Finset.le_sup'`.
 
-Current V53-V55 packets close Chewi Definition A.5's rectangular source
+Current V53-V56 packets close Chewi Definition A.5's rectangular source
 display.  V53 adds
 `chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_transpose_mul_self` and
 `chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_transpose_mul_self`,
@@ -732,24 +750,36 @@ zero-multiplicity padding via characteristic polynomials.  V55 adds
 `chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_mul_self_transpose`, and
 `chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_mul_self_transpose`,
 closing the source sentence that `||A||_op` is also the square root of the
-largest absolute eigenvalue of `A A^T`.
+largest absolute eigenvalue of `A A^T`.  V56 returns these Appendix A facts to
+main-text use by proving the Theorem 13.1 operator-norm perturbation bridge:
+`chewiA5_loewner_lower_of_l2_opNorm_sub_le`,
+`chewiA5_loewner_upper_of_l2_opNorm_sub_le`,
+`chewiA5_loewner_sandwich_of_l2_opNorm_sub_le`,
+`chewiA4_scalar_one_le_scalar_one_of_le`,
+`chewi131_hessian_lower_half_of_l2_opNorm_sub_le`, and
+`chewi131_hessian_lower_half_of_lipschitz_opNorm`.
 
-Search-first reuse for V53-V55: source Definition A.5; mathlib singular values
+Search-first reuse for V53-V56: source Definition A.5 and Theorem 13.1;
+mathlib singular values
 via `T†T`; `spectrum.nonzero_mul_comm` for same-algebra square products;
 local V50 `A^T A <= C^2 I <-> ||A||_op <= C`; V52 scalar eigenvalue bounds
 and PSD eigenvalue nonnegativity; V54
 `Matrix.charpoly_mul_comm'`/`Matrix.charpoly_mul_comm_of_le`, which are the
 right rectangular matrix product APIs; and V55 `Matrix.l2_opNorm_conjTranspose`
-applied to `Aᵀ`, which avoids reproving the `A A^T` display.  Do not rebuild
-the rectangular zero-padding theorem from determinant blocks or sorted
-eigenvalue lists unless the next source theorem truly needs a root-level
-statement.
+applied to `Aᵀ`, which avoids reproving the `A A^T` display.  V56 reuses the
+V51 symmetric `||D||_op <= eps <-> -eps I <= D <= eps I` theorem with
+`D = B - A`, mathlib `add_le_add`, matrix additive-group normalization via
+`abel`, and mathlib `smul_le_smul_of_nonneg_right` plus the `MatrixOrder`
+`0 <= 1` instance for scalar identity monotonicity.
+Do not rebuild the rectangular zero-padding theorem from determinant blocks or
+sorted eigenvalue lists unless the next source theorem truly needs a
+root-level statement.
 
-Next theorem-sized target: return to the highest-impact main-text theorem or
-report gate that consumes the now-compiled Appendix A matrix facts.  If staying
-in Appendix A, translate the V54 characteristic-polynomial padding into a
-root/eigenvalue membership corollary only if a downstream theorem needs that
-exact surface.  Create
+Next theorem-sized target: stay in Chewi Theorem 13.1 and prove the
+inverse-operator-norm consequence from `(alpha / 2) I <= H`, preferably by
+searching mathlib/local CStar/matrix inverse-order APIs before introducing a
+new spectral primitive.  Then assemble the Newton local quadratic recurrence
+under a supplied Taylor/integral identity.  Create
 the Chewi Lemma 13.16 report only after the PDF screenshot
 and report compilation tools are available.  Do not reopen the completed
 §13.16 proof surface unless a regression breaks it.
@@ -765,9 +795,9 @@ consumers.  The old §13.16 search surface near `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers is only relevant if a later run
-returns to the report/tooling gate; the active V55 Lean proof target is
-Appendix A matrix infrastructure.
-Older paragraphs below are cached route history and must not override this V55
+returns to the report/tooling gate; the active V56 Lean proof target is
+Theorem 13.1 inverse norm and recurrence assembly.
+Older paragraphs below are cached route history and must not override this V56
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

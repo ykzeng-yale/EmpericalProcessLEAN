@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V55` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V56` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,9 +30,10 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V55 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V56 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
-work has moved to Appendix A matrix infrastructure.  The new module
+work has moved through Appendix A matrix infrastructure into Theorem 13.1's
+local Newton-convergence matrix step.  The module
 `StatInference/Optimization/AppendixA.lean` compiles and is root-imported,
 with `chewiA4_loewnerOrder_iff_quadraticForm_le` and
 `chewiA4_quadraticForm_lt_of_posDef_sub` formalizing Definition A.4's
@@ -94,10 +95,20 @@ adds `chewiA5_mul_self_transpose_posSemidef`,
 `chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_mul_self_transpose`,
 using V53 on `Aᵀ` plus mathlib `Matrix.l2_opNorm_conjTranspose` to close the
 source sentence that the same operator norm is also the square root of the
-largest absolute eigenvalue of `A A^T`.  Next source-shaped work should consume
-the Appendix A matrix facts in a main-text theorem/report gate, or add a
-root/eigenvalue membership corollary only if a downstream theorem needs more
-than the characteristic-polynomial padding form.
+largest absolute eigenvalue of `A A^T`.  The V56 layer consumes the V51
+symmetric op-norm/Loewner sandwich in Theorem 13.1's Hessian perturbation
+display, adding `chewiA5_loewner_lower_of_l2_opNorm_sub_le`,
+`chewiA5_loewner_upper_of_l2_opNorm_sub_le`,
+`chewiA5_loewner_sandwich_of_l2_opNorm_sub_le`,
+`chewiA4_scalar_one_le_scalar_one_of_le`,
+`chewi131_hessian_lower_half_of_l2_opNorm_sub_le`, and
+`chewi131_hessian_lower_half_of_lipschitz_opNorm`.  Search-first reuse came
+from V51, mathlib `add_le_add`, `abel`, and
+`smul_le_smul_of_nonneg_right` under `MatrixOrder`.  Next source-shaped work
+should prove the inverse-operator-norm consequence from `(alpha / 2) I <= H`,
+then assemble Theorem 13.1's Newton local quadratic recurrence under a
+supplied Taylor/integral identity.  Add a root/eigenvalue membership corollary
+only if that inverse-norm bridge needs more than the current Loewner surface.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source

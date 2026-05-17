@@ -734,6 +734,108 @@ theorem chewiA5_symmetric_l2_opNorm_le_iff_neg_scalar_one_le_and_le_scalar_one
     exact abs_le.mpr ⟨hlower, hupper⟩
 
 /--
+Chewi Theorem 13.1, matrix perturbation primitive.  If a symmetric matrix `B`
+is within `eps` of a symmetric matrix `A` in Euclidean operator norm, then a
+lower Loewner bound on `A` degrades by at most `eps`.
+-/
+theorem chewiA5_loewner_lower_of_l2_opNorm_sub_le
+    [DecidableEq n] {A B : Matrix n n ℝ} (hA : A.IsHermitian)
+    (hB : B.IsHermitian) {alpha eps : ℝ} (heps : 0 ≤ eps)
+    (hlower : alpha • (1 : Matrix n n ℝ) ≤ A) (hnorm : ‖B - A‖ ≤ eps) :
+    (alpha - eps) • (1 : Matrix n n ℝ) ≤ B := by
+  have hD_lower :
+      (-eps) • (1 : Matrix n n ℝ) ≤ B - A :=
+    ((chewiA5_symmetric_l2_opNorm_le_iff_neg_scalar_one_le_and_le_scalar_one
+      (A := B - A) (hB.sub hA) heps).mp hnorm).1
+  calc
+    (alpha - eps) • (1 : Matrix n n ℝ)
+        = alpha • (1 : Matrix n n ℝ) + (-eps) • (1 : Matrix n n ℝ) := by
+          rw [sub_eq_add_neg, add_smul]
+    _ ≤ A + (B - A) := add_le_add hlower hD_lower
+    _ = B := by
+      abel
+
+/--
+Chewi Theorem 13.1, matrix perturbation primitive.  If a symmetric matrix `B`
+is within `eps` of a symmetric matrix `A` in Euclidean operator norm, then an
+upper Loewner bound on `A` degrades by at most `eps`.
+-/
+theorem chewiA5_loewner_upper_of_l2_opNorm_sub_le
+    [DecidableEq n] {A B : Matrix n n ℝ} (hA : A.IsHermitian)
+    (hB : B.IsHermitian) {beta eps : ℝ} (heps : 0 ≤ eps)
+    (hupper : A ≤ beta • (1 : Matrix n n ℝ)) (hnorm : ‖B - A‖ ≤ eps) :
+    B ≤ (beta + eps) • (1 : Matrix n n ℝ) := by
+  have hD_upper :
+      B - A ≤ eps • (1 : Matrix n n ℝ) :=
+    ((chewiA5_symmetric_l2_opNorm_le_iff_neg_scalar_one_le_and_le_scalar_one
+      (A := B - A) (hB.sub hA) heps).mp hnorm).2
+  calc
+    B = A + (B - A) := by
+      abel
+    _ ≤ beta • (1 : Matrix n n ℝ) + eps • (1 : Matrix n n ℝ) :=
+      add_le_add hupper hD_upper
+    _ = (beta + eps) • (1 : Matrix n n ℝ) := by
+      rw [add_smul]
+
+/--
+Chewi Theorem 13.1, two-sided perturbation primitive.  A symmetric
+operator-norm perturbation widens a scalar Loewner sandwich by `eps`.
+-/
+theorem chewiA5_loewner_sandwich_of_l2_opNorm_sub_le
+    [DecidableEq n] {A B : Matrix n n ℝ} (hA : A.IsHermitian)
+    (hB : B.IsHermitian) {alpha beta eps : ℝ} (heps : 0 ≤ eps)
+    (hlower : alpha • (1 : Matrix n n ℝ) ≤ A)
+    (hupper : A ≤ beta • (1 : Matrix n n ℝ)) (hnorm : ‖B - A‖ ≤ eps) :
+    (alpha - eps) • (1 : Matrix n n ℝ) ≤ B ∧
+      B ≤ (beta + eps) • (1 : Matrix n n ℝ) := by
+  exact
+    ⟨chewiA5_loewner_lower_of_l2_opNorm_sub_le hA hB heps hlower hnorm,
+      chewiA5_loewner_upper_of_l2_opNorm_sub_le hA hB heps hupper hnorm⟩
+
+/--
+Scalar monotonicity for source-facing Loewner bounds.
+-/
+theorem chewiA4_scalar_one_le_scalar_one_of_le
+    [DecidableEq n] {c d : ℝ} (hcd : c ≤ d) :
+    c • (1 : Matrix n n ℝ) ≤ d • (1 : Matrix n n ℝ) := by
+  exact smul_le_smul_of_nonneg_right hcd (zero_le_one (α := Matrix n n ℝ))
+
+/--
+Chewi Theorem 13.1, Hessian lower-bound perturbation step.  This packages the
+display `lambda_min(H) >= lambda_min(Hstar) - eps >= alpha / 2` in Loewner
+form, ready for the Newton-method recurrence proof.
+-/
+theorem chewi131_hessian_lower_half_of_l2_opNorm_sub_le
+    [DecidableEq n] {Hstar H : Matrix n n ℝ} (hHstar : Hstar.IsHermitian)
+    (hH : H.IsHermitian) {alpha eps : ℝ} (heps : 0 ≤ eps)
+    (hlower : alpha • (1 : Matrix n n ℝ) ≤ Hstar)
+    (hnorm : ‖H - Hstar‖ ≤ eps) (hhalf : eps ≤ alpha / 2) :
+    (alpha / 2) • (1 : Matrix n n ℝ) ≤ H := by
+  have hlower_degraded :
+      (alpha - eps) • (1 : Matrix n n ℝ) ≤ H :=
+    chewiA5_loewner_lower_of_l2_opNorm_sub_le hHstar hH heps hlower hnorm
+  have hscalar : alpha / 2 ≤ alpha - eps := by
+    nlinarith
+  exact
+    (chewiA4_scalar_one_le_scalar_one_of_le (n := n) hscalar).trans
+      hlower_degraded
+
+/--
+Chewi Theorem 13.1, Lipschitz-Hessian source display.  If the operator-norm
+Hessian error is bounded by `gamma * r` and `gamma * r <= alpha / 2`, the
+current Hessian keeps the lower bound `(alpha / 2) I`.
+-/
+theorem chewi131_hessian_lower_half_of_lipschitz_opNorm
+    [DecidableEq n] {Hstar H : Matrix n n ℝ} (hHstar : Hstar.IsHermitian)
+    (hH : H.IsHermitian) {alpha gamma r : ℝ} (hgr_nonneg : 0 ≤ gamma * r)
+    (hlower : alpha • (1 : Matrix n n ℝ) ≤ Hstar)
+    (hclose : ‖H - Hstar‖ ≤ gamma * r) (hhalf : gamma * r ≤ alpha / 2) :
+    (alpha / 2) • (1 : Matrix n n ℝ) ≤ H := by
+  exact
+    chewi131_hessian_lower_half_of_l2_opNorm_sub_le hHstar hH hgr_nonneg
+      hlower hclose hhalf
+
+/--
 Chewi Definition A.5, symmetric eigenvalue form.  For a symmetric real matrix,
 `||A||_op <= C` is equivalent to the source statement that all eigenvalues of
 `A` have absolute value at most `C`.
