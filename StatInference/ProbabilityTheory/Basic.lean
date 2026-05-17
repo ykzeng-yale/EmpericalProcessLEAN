@@ -1112,6 +1112,137 @@ theorem durrett2019_theorem_2_1_11_iid_shift_hasLaw_infinitePi_of_identDistrib
     hindep
 
 /--
+Durrett 2019, Theorem 2.1.11, event-independence form.
+
+Independent random variables make measurable coordinate-preimage events
+independent.  This is the reusable event-facing bridge behind
+Borel-Cantelli-style consumers.
+-/
+theorem durrett2019_theorem_2_1_11_iIndepSet_preimage_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {X : ∀ i, Ω -> S i} {A : ∀ i, Set (S i)}
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hA : ∀ i, MeasurableSet (A i)) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {ω : Ω | X i ω ∈ A i}) μ := by
+  have hIndep :
+      _root_.ProbabilityTheory.iIndep
+        (fun i : ℕ =>
+          MeasurableSpace.comap (X i)
+            (inferInstance : MeasurableSpace (S i))) μ :=
+    hindep.iIndep
+  have hπ :
+      _root_.ProbabilityTheory.iIndepSets
+        (fun i : ℕ =>
+          {s : Set Ω |
+            MeasurableSet[
+              MeasurableSpace.comap (X i)
+                (inferInstance : MeasurableSpace (S i))] s}) μ :=
+    hIndep.iIndepSets'
+  refine
+    _root_.ProbabilityTheory.iIndepSets.iIndepSet_of_mem
+      (μ := μ)
+      (π := fun i : ℕ =>
+        {s : Set Ω |
+          MeasurableSet[
+            MeasurableSpace.comap (X i)
+              (inferInstance : MeasurableSpace (S i))] s})
+      (f := fun i : ℕ => {ω : Ω | X i ω ∈ A i}) ?_ ?_ hπ
+  · intro i
+    exact (MeasurableSpace.measurableSet_comap).2
+      ⟨A i, hA i, rfl⟩
+  · intro i
+    exact hX_meas i (hA i)
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based event-independence form.
+
+The shifted Durrett-indexed events `{X_{i+1} ∈ A_i}` are independent whenever
+the source sequence is independent.
+-/
+theorem durrett2019_theorem_2_1_11_iIndepSet_shift_preimage_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {X : ∀ i, Ω -> S i} {A : ∀ i, Set (S (i + 1))}
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hA : ∀ i, MeasurableSet (A i)) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {ω : Ω | X (i + 1) ω ∈ A i}) μ := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (μ := μ) (fun i : ℕ => fun ω : Ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hindep)
+  exact
+    durrett2019_theorem_2_1_11_iIndepSet_preimage_of_iIndepFun
+      (S := fun i : ℕ => S (i + 1))
+      (X := fun i : ℕ => fun ω : Ω => X (i + 1) ω)
+      (A := A) hShift_indep (fun i => hX_meas (i + 1)) hA
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based event-independence form from a joint
+iid infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_iIndepSet_shift_preimage_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S} {A : ℕ -> Set S}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hA : ∀ i, MeasurableSet (A i)) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {ω : Ω | X (i + 1) ω ∈ A i}) μ := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_11_iIndepSet_shift_preimage_of_iIndepFun
+      (S := fun _ : ℕ => S) (X := X) (A := A)
+      hSource.2 hX_meas hA
+
+/--
+Durrett 2019, Theorem 2.1.11, canonical iid event-independence form on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_preimage_iIndepSet
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S)
+    {A : ℕ -> Set S} (hA : ∀ i, MeasurableSet (A i)) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {sample : ℕ -> S | sample i ∈ A i})
+      (Measure.infinitePi fun _ : ℕ => (ν : Measure S)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_11_iIndepSet_preimage_of_iIndepFun
+      (S := fun _ : ℕ => S)
+      (X := fun i : ℕ => fun sample : ℕ -> S => sample i)
+      (A := A) hCoord.2.1 (fun i => measurable_pi_apply i) hA
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based canonical iid event-independence form
+on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_shift_preimage_iIndepSet
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S)
+    {A : ℕ -> Set S} (hA : ∀ i, MeasurableSet (A i)) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {sample : ℕ -> S | sample (i + 1) ∈ A i})
+      (Measure.infinitePi fun _ : ℕ => (ν : Measure S)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_11_iIndepSet_shift_preimage_of_iIndepFun
+      (S := fun _ : ℕ => S)
+      (X := fun i : ℕ => fun sample : ℕ -> S => sample i)
+      (A := A) hCoord.2.1 (fun i => measurable_pi_apply i) hA
+
+/--
 Durrett 2019, Theorem 2.1.11, general infinite product-law source extraction.
 
 If a sequence-valued random variable has joint law `∏ᵢ ν_i`, then its
@@ -1140,6 +1271,28 @@ theorem durrett2019_theorem_2_1_11_sequence_of_hasLaw_infinitePi
   exact
     (durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_infinitePi
       (μ := μ) (S := S) (ν := ν) (X := X) hLaw).2 hJoint
+
+/--
+Durrett 2019, Theorem 2.1.11, event-independence form from a joint infinite
+product law.
+-/
+theorem durrett2019_theorem_2_1_11_iIndepSet_preimage_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {ν : ∀ i, Measure (S i)}
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {X : ∀ i, Ω -> S i} {A : ∀ i, Set (S i)}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω) (Measure.infinitePi ν) μ)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hA : ∀ i, MeasurableSet (A i)) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun i : ℕ => {ω : Ω | X i ω ∈ A i}) μ := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_11_iIndepSet_preimage_of_iIndepFun
+      hSource.2 hX_meas hA
 
 /--
 Durrett 2019, Theorem 2.1.11, arbitrary finite-dimensional product-law form.

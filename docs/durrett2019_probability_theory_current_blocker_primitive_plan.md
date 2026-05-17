@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V491
+## Live In-Thread Goal Prompt V492
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -35,7 +35,9 @@ probability wrappers from joint infinite-product law hypotheses.  V490 adds
 canonical iid arbitrary finite-index-set product-law and cylinder probability
 wrappers for the infinite product coordinate process.  V491 adds one-based
 finite-prefix cylinder displays from joint infinite-product laws and canonical
-coordinates with prefix-indexed cylinder sets.
+coordinates with prefix-indexed cylinder sets.  V492 adds reusable
+event-independence extraction wrappers from `iIndepFun`, joint
+`Measure.infinitePi` laws, and canonical product coordinates.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -53,7 +55,21 @@ wrappers,
 solved canonical iid arbitrary finite-index-set product-law/cylinder wrappers,
 solved one-based finite-prefix joint/canonical cylinder displays with
 prefix-indexed sets,
+solved event-independence extraction wrappers from source/joint/canonical
+product-law hypotheses,
 or old app-level stale prompts.
+
+Latest verified target V492 adds event-independence support for Durrett
+Theorem 2.1.11:
+`durrett2019_theorem_2_1_11_iIndepSet_preimage_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iIndepSet_shift_preimage_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iIndepSet_preimage_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_11_iid_iIndepSet_shift_preimage_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_11_canonical_iid_preimage_iIndepSet`, and
+`durrett2019_theorem_2_1_11_canonical_iid_shift_preimage_iIndepSet`.
+These wrappers promote the specialized 2.5.13 tail-event independence pattern
+to a reusable Chapter 2.1 bridge for Borel-Cantelli and Kolmogorov-style
+consumers.
 
 Latest verified target V491 adds prefix-indexed one-based finite-prefix
 cylinder displays for Durrett Theorem 2.1.11:
@@ -4497,6 +4513,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V491` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V492` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
