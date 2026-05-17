@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V494
+## Live In-Thread Goal Prompt V495
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -41,7 +41,9 @@ event-independence extraction wrappers from `iIndepFun`, joint
 closed/open real half-line event-independence wrappers for source, one-based
 joint-law, and one-based canonical iid forms.  V494 adds finite-prefix
 closed/open real half-line cylinder probability displays for source,
-joint-law, and canonical iid forms.
+joint-law, and canonical iid forms.  V495 adds literal one-based
+`{1, ..., n}` closed/open real half-line cylinder probability displays for
+source, joint-law, identical-distribution, and canonical iid forms.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -65,7 +67,24 @@ solved real half-line event-independence wrappers for closed/open empirical-CDF
 events,
 solved finite-prefix real half-line cylinder probability displays for
 closed/open empirical-CDF events,
+solved literal one-based `{1, ..., n}` real half-line cylinder probability
+displays for closed/open empirical-CDF events,
 or old app-level stale prompts.
+
+Latest verified target V495 specializes Durrett Theorem 2.1.11 cylinder
+probabilities on the literal one-based index set `{1, ..., n}` to the
+closed/open real half-line events used by Theorem 2.4.9:
+`durrett2019_theorem_2_1_11_iid_real_Iic_oneBased_Icc_cylinder_prob_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_real_Iio_oneBased_Icc_cylinder_prob_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_real_Iic_oneBased_Icc_cylinder_prob_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_11_iid_real_Iio_oneBased_Icc_cylinder_prob_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_11_iid_real_Iic_oneBased_Icc_cylinder_prob_of_identDistrib`,
+`durrett2019_theorem_2_1_11_iid_real_Iio_oneBased_Icc_cylinder_prob_of_identDistrib`,
+`durrett2019_theorem_2_1_11_canonical_iid_real_Iic_oneBased_Icc_cylinder_prob`,
+and `durrett2019_theorem_2_1_11_canonical_iid_real_Iio_oneBased_Icc_cylinder_prob`.
+These wrappers match the textbook notation `X_1, ..., X_n` and expose finite
+products of `ν ((-∞, x_i])` and `ν ((-∞, x_i))` directly over
+`Finset.Icc 1 n`.
 
 Latest verified target V494 specializes Durrett Theorem 2.1.11 finite-prefix
 cylinder probabilities to the real half-line events used by Theorem 2.4.9:
@@ -4553,6 +4572,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V494` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V495` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

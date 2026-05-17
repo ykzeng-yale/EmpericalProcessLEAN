@@ -27,12 +27,12 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V494`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V495`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V494: stay on Durrett Theorem 2.4.9
+Current immediate target after V495: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -64,7 +64,9 @@ event-independence extraction wrappers from `iIndepFun`, joint
 closed/open real half-line event-independence wrappers for the empirical-CDF
 and left-limit events used by Theorem 2.4.9; V494 adds matching finite-prefix
 closed/open real half-line cylinder probability displays over `Finset.range n`
-for source, joint-law, and canonical iid forms.  The
+for source, joint-law, and canonical iid forms; V495 adds matching literal
+one-based `{1, ..., n}` half-line cylinder displays over `Finset.Icc 1 n`,
+including identical-distribution source wrappers.  The
 next packet should close only a proved-missing
 2.4.9 display or add the next Chapter 2.1 product-law/product-expectation
 wrapper that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
