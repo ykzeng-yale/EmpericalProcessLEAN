@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V464` in
+Route from `Live In-Thread Goal Prompt V465` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -114,6 +114,10 @@ variance half of the proof: monotonicity of `a_n / n` gives
 `a_n^{-2} <= (m^2/a_m^2) n^{-2}`, finite `Ico` tails are bounded by
 `2*m/a_m^2`, and the corresponding shifted tail is summable with `tsum`
 bounded by the same constant.
+V465 turns that tail estimate into the annulus-wise scalar-kernel bound:
+if `x` lies in `[a_{m-1}, a_m)`, then finite partial sums, the real `tsum`,
+and the ENNReal `tsum` of Durrett's arbitrary-normalizer truncated-square
+kernel are all bounded by `2*m`.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -133,8 +137,14 @@ mass-weight-summable-to-shifted-tail-bound bridge, or the solved
 finite-prefix-identity(*) consumer, or the solved monotone-annulus
 finite-identity bridge, or the solved source mean/original endpoint bridge, or
 the solved ratio packaging from Durrett's `a_n / n` monotonicity, or the
-solved reciprocal-square p-series/tail estimate.
-New compiled anchors through V464:
+solved reciprocal-square p-series/tail estimate, or the solved annulus-wise
+scalar-kernel bound.
+New compiled anchors through V465:
+`durrett2019_theorem_2_5_13_truncatedSqKernel_nonneg`,
+`durrett2019_theorem_2_5_13_truncatedSqKernel_range_sum_le_annulus_index_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_truncatedSqKernel_summable_of_annulus_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_truncatedSqKernel_tsum_le_annulus_index_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_annulus_index_of_ratio_mono`,
 `durrett2019_theorem_2_5_13_inv_sq_le_scaled_nat_inv_sq_of_ratio_mono`,
 `durrett2019_theorem_2_5_13_inv_sq_Ico_sum_le_ratio_tail_of_ratio_mono`,
 `durrett2019_theorem_2_5_13_inv_sq_shift_range_sum_le_ratio_tail_of_ratio_mono`,
