@@ -10807,6 +10807,120 @@ theorem durrett2019_theorem_2_5_13_borelCantelli_scaled_tail_limsup_eq_one
       hscaled_meas hscaled_indep hscaled_actual_top
 
 /--
+Durrett 2019, Theorem 2.5.13 divergent-half support: the source inequality
+`max |S_n| |S_{n+1}| >= |X_{n+1}| / 2` turns infinitely many scaled sample-tail
+events into frequently large normalized one-based partial sums.
+-/
+theorem durrett2019_theorem_2_5_13_oneBased_partial_sum_large_frequently_of_mem_scaled_tail_limsup
+    {Ω : Type u} [MeasurableSpace Ω] {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ}
+    {k : ℕ} {ω : Ω}
+    (ha_pos : ∀ n : ℕ, 0 < a n)
+    (ha_mono : Monotone a)
+    (hω : ω ∈ limsup
+      (fun n : ℕ => {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|})
+      atTop) :
+    ∃ᶠ n in atTop,
+      (k : ℝ) / 2 ≤ |∑ i ∈ Finset.range n, X (i + 1) ω| / a n := by
+  have hfreq :
+      ∃ᶠ n in atTop, (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω| := by
+    simpa using (Filter.mem_limsup_iff_frequently_mem.mp hω)
+  rw [Filter.frequently_atTop] at hfreq ⊢
+  intro N
+  rcases hfreq N with ⟨n, hnN, hn_large⟩
+  let S : ℕ -> ℝ := fun m : ℕ => ∑ i ∈ Finset.range m, X (i + 1) ω
+  have hS_succ : S (n + 1) = S n + X (n + 1) ω := by
+    simp [S, Finset.sum_range_succ]
+  have hX_diff : X (n + 1) ω = S (n + 1) - S n := by
+    rw [hS_succ]
+    ring
+  have htri : |X (n + 1) ω| ≤ |S (n + 1)| + |S n| := by
+    rw [hX_diff]
+    exact abs_sub (S (n + 1)) (S n)
+  have hsum_large : (k : ℝ) * a (n + 1) ≤ |S (n + 1)| + |S n| :=
+    hn_large.trans htri
+  have hmax_large : ((k : ℝ) * a (n + 1)) / 2 ≤
+      max |S n| |S (n + 1)| := by
+    have hSn_le : |S n| ≤ max |S n| |S (n + 1)| := le_max_left _ _
+    have hSsucc_le : |S (n + 1)| ≤ max |S n| |S (n + 1)| :=
+      le_max_right _ _
+    nlinarith
+  rcases le_max_iff.mp hmax_large with hprev | hnext
+  · refine ⟨n, hnN, ?_⟩
+    have ha_le : a n ≤ a (n + 1) := ha_mono (Nat.le_succ n)
+    have htarget_mul : ((k : ℝ) / 2) * a n ≤ |S n| := by
+      have hk_nonneg : 0 ≤ (k : ℝ) := Nat.cast_nonneg k
+      nlinarith
+    have ha_pos_n : 0 < a n := ha_pos n
+    rw [le_div_iff₀ ha_pos_n]
+    simpa [S] using htarget_mul
+  · refine ⟨n + 1, by omega, ?_⟩
+    have htarget_mul : ((k : ℝ) / 2) * a (n + 1) ≤ |S (n + 1)| := by
+      nlinarith
+    have ha_pos_succ : 0 < a (n + 1) := ha_pos (n + 1)
+    rw [le_div_iff₀ ha_pos_succ]
+    simpa [S] using htarget_mul
+
+/--
+Durrett 2019, Theorem 2.5.13 divergent-half support: a measure-one scaled
+sample-tail limsup statement gives the corresponding a.e. frequently-large
+partial-sum statement.
+-/
+theorem durrett2019_theorem_2_5_13_ae_frequently_oneBased_partial_sum_large_of_scaled_tail_limsup_ae
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ} {k : ℕ}
+    (ha_pos : ∀ n : ℕ, 0 < a n)
+    (ha_mono : Monotone a)
+    (hlimsup_ae : ∀ᵐ ω ∂P, ω ∈ limsup
+      (fun n : ℕ => {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|})
+      atTop) :
+    ∀ᵐ ω ∂P, ∃ᶠ n in atTop,
+      (k : ℝ) / 2 ≤ |∑ i ∈ Finset.range n, X (i + 1) ω| / a n := by
+  filter_upwards [hlimsup_ae] with ω hω
+  exact
+    durrett2019_theorem_2_5_13_oneBased_partial_sum_large_frequently_of_mem_scaled_tail_limsup
+      (X := X) (a := a) (k := k) ha_pos ha_mono hω
+
+/--
+Durrett 2019, Theorem 2.5.13 divergent-half support: the V442
+Borel-Cantelli bridge and the source partial-sum inequality combine to give
+a.e. frequently large normalized one-based partial sums at level `k / 2`.
+-/
+theorem durrett2019_theorem_2_5_13_ae_frequently_oneBased_partial_sum_large_of_tail_tsum_eq_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {k : ℕ}
+    (hk : 0 < k)
+    (ha_pos : ∀ n : ℕ, 0 < a n)
+    (ha_mono : Monotone a)
+    (htail_mono : Antitone fun n : ℕ => (P {ω : Ω | a n ≤ |X0 ω|}).toReal)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_top : (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) = ∞)
+    (hscaled_tail_law : ∀ n : ℕ,
+      P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|} =
+        P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X0 ω|})
+    (hscaled_meas : ∀ n : ℕ,
+      MeasurableSet {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|})
+    (hscaled_indep : _root_.ProbabilityTheory.iIndepSet
+      (fun n : ℕ => {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|}) P) :
+    ∀ᵐ ω ∂P, ∃ᶠ n in atTop,
+      (k : ℝ) / 2 ≤ |∑ i ∈ Finset.range n, X (i + 1) ω| / a n := by
+  let A : ℕ -> Set Ω :=
+    fun n : ℕ => {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|}
+  have hlimsup_one : P (limsup A atTop) = 1 := by
+    simpa [A] using
+      durrett2019_theorem_2_5_13_borelCantelli_scaled_tail_limsup_eq_one
+        (P := P) (X := X) (X0 := X0) (a := a) (k := k) hk htail_mono
+        hratio_mono htail_top hscaled_tail_law hscaled_meas hscaled_indep
+  have hlimsup_meas : MeasurableSet (limsup A atTop) :=
+    MeasurableSet.measurableSet_limsup (s := A) (by simpa [A] using hscaled_meas)
+  haveI : IsProbabilityMeasure P := hscaled_indep.isProbabilityMeasure
+  have hlimsup_ae : ∀ᵐ ω ∂P, ω ∈ limsup A atTop := by
+    exact (MeasureTheory.mem_ae_iff_prob_eq_one hlimsup_meas).2 hlimsup_one
+  exact
+    durrett2019_theorem_2_5_13_ae_frequently_oneBased_partial_sum_large_of_scaled_tail_limsup_ae
+      (P := P) (X := X) (a := a) (k := k) ha_pos ha_mono (by simpa [A] using hlimsup_ae)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
