@@ -836,6 +836,77 @@ theorem chewi131_hessian_lower_half_of_lipschitz_opNorm
       hlower hclose hhalf
 
 /--
+A positive scalar Loewner lower bound makes a symmetric matrix positive
+definite.
+-/
+theorem chewiA5_posDef_of_pos_scalar_one_le
+    [DecidableEq n] {A : Matrix n n ℝ} (hA : A.IsHermitian) {alpha : ℝ}
+    (halpha : 0 < alpha) (hlower : alpha • (1 : Matrix n n ℝ) ≤ A) :
+    A.PosDef := by
+  rw [hA.posDef_iff_eigenvalues_pos]
+  intro i
+  exact
+    halpha.trans_le
+      ((chewiA3_scalar_one_le_iff_le_eigenvalues hA).mp hlower i)
+
+/--
+For a nonnegative symmetric matrix, an upper scalar Loewner bound is enough to
+bound the Euclidean operator norm.
+-/
+theorem chewiA5_symmetric_l2_opNorm_le_of_nonneg_le_scalar_one
+    [DecidableEq n] {A : Matrix n n ℝ} (hA : A.IsHermitian) {C : ℝ}
+    (hC : 0 ≤ C) (hnonneg : 0 ≤ A)
+    (hupper : A ≤ C • (1 : Matrix n n ℝ)) :
+    ‖A‖ ≤ C := by
+  have hlower : (-C) • (1 : Matrix n n ℝ) ≤ A := by
+    have hneg_le_zero : -C ≤ 0 := neg_nonpos.mpr hC
+    have hneg_scalar_le_zero :
+        (-C) • (1 : Matrix n n ℝ) ≤
+          (0 : ℝ) • (1 : Matrix n n ℝ) :=
+      chewiA4_scalar_one_le_scalar_one_of_le (n := n) hneg_le_zero
+    have hzero_le : (0 : ℝ) • (1 : Matrix n n ℝ) ≤ A := by
+      simpa using hnonneg
+    exact hneg_scalar_le_zero.trans hzero_le
+  exact
+    (chewiA5_symmetric_l2_opNorm_le_iff_neg_scalar_one_le_and_le_scalar_one
+      hA hC).mpr
+      ⟨hlower, hupper⟩
+
+/--
+Chewi Theorem 13.1, supplied inverse-Loewner gate for the reciprocal
+operator-norm bound.
+-/
+theorem chewi131_inverse_l2_opNorm_le_two_div_alpha_of_inverse_loewner_upper
+    [DecidableEq n] {H : Matrix n n ℝ} (hH : H.IsHermitian) {alpha : ℝ}
+    (halpha : 0 < alpha) (hinv_nonneg : 0 ≤ H⁻¹)
+    (hinv_upper : H⁻¹ ≤ (2 / alpha) • (1 : Matrix n n ℝ)) :
+    ‖H⁻¹‖ ≤ 2 / alpha := by
+  have hC : 0 ≤ 2 / alpha := by
+    positivity
+  exact
+    chewiA5_symmetric_l2_opNorm_le_of_nonneg_le_scalar_one hH.inv hC
+      hinv_nonneg hinv_upper
+
+/--
+Chewi Theorem 13.1, inverse-operator-norm bound with the positive-definiteness
+part discharged from the half-radius Hessian lower estimate.  The remaining
+supplied gate is the standard inverse Loewner upper bound.
+-/
+theorem chewi131_inverse_l2_opNorm_le_two_div_alpha_of_hessian_lower_half_and_inverse_loewner_upper
+    [DecidableEq n] {H : Matrix n n ℝ} (hH : H.IsHermitian) {alpha : ℝ}
+    (halpha : 0 < alpha)
+    (hlower : (alpha / 2) • (1 : Matrix n n ℝ) ≤ H)
+    (hinv_upper : H⁻¹ ≤ (2 / alpha) • (1 : Matrix n n ℝ)) :
+    ‖H⁻¹‖ ≤ 2 / alpha := by
+  have hhalf_pos : 0 < alpha / 2 := by
+    positivity
+  have hH_posDef : H.PosDef :=
+    chewiA5_posDef_of_pos_scalar_one_le hH hhalf_pos hlower
+  exact
+    chewi131_inverse_l2_opNorm_le_two_div_alpha_of_inverse_loewner_upper
+      hH halpha hH_posDef.inv.posSemidef.nonneg hinv_upper
+
+/--
 Chewi Definition A.5, symmetric eigenvalue form.  For a symmetric real matrix,
 `||A||_op <= C` is equivalent to the source statement that all eigenvalues of
 `A` have absolute value at most `C`.

@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V56`, this file's top
+   the full book is complete, route from `Live Goal Prompt V57`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,14 +132,33 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V56
+## Live Goal Prompt V57
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V56 proves the Theorem 13.1 matrix perturbation
-bridge in `StatInference/Optimization/AppendixA.lean`, consuming the V51
-symmetric operator-norm/Loewner sandwich.  Newly compiled declarations are
+Current active frontier: V57 advances Chewi Theorem 13.1's inverse-norm layer
+without hiding the remaining inverse-order gate.  Newly compiled declarations
+in `StatInference/Optimization/AppendixA.lean` are
+`chewiA5_posDef_of_pos_scalar_one_le`,
+`chewiA5_symmetric_l2_opNorm_le_of_nonneg_le_scalar_one`,
+`chewi131_inverse_l2_opNorm_le_two_div_alpha_of_inverse_loewner_upper`, and
+`chewi131_inverse_l2_opNorm_le_two_div_alpha_of_hessian_lower_half_and_inverse_loewner_upper`.
+These prove that a positive scalar lower Loewner bound makes a symmetric
+matrix positive definite, that nonnegativity plus an upper scalar Loewner
+bound implies the Euclidean operator-norm bound, and that the Theorem 13.1
+`||H^{-1}||_op <= 2 / alpha` display follows once the standard inverse
+Loewner upper gate `H^{-1} <= (2 / alpha) I` is supplied.  Search-first result:
+direct attempts to discharge this inverse Loewner gate from `(alpha / 2) I <=
+H` using mathlib `CStarAlgebra.inv_le_inv` and
+`CStarAlgebra.rpow_neg_one_le_rpow_neg_one` timed out in
+`AppendixA.lean` even with a local 1M heartbeat budget, so the next route
+should either prove the inverse-order fact in a smaller dedicated module/API
+surface or use a lower-level eigenvalue/spectrum inverse theorem if found.
+
+V56 dependency cache: V56 proves the Theorem 13.1 matrix perturbation bridge
+in `StatInference/Optimization/AppendixA.lean`, consuming the V51 symmetric
+operator-norm/Loewner sandwich.  Compiled declarations are
 `chewiA5_loewner_lower_of_l2_opNorm_sub_le`,
 `chewiA5_loewner_upper_of_l2_opNorm_sub_le`,
 `chewiA5_loewner_sandwich_of_l2_opNorm_sub_le`,
@@ -149,11 +168,10 @@ symmetric operator-norm/Loewner sandwich.  Newly compiled declarations are
 source proof step
 `lambda_min(nabla^2 f(x_n)) >= lambda_min(nabla^2 f(x_star)) -
 gamma ||x_n - x_star|| >= alpha / 2` in scalar Loewner form.  Next
-theorem-sized target: stay in Theorem 13.1 and prove the inverse-norm
-consequence from `(alpha / 2) I <= H`, then assemble the Newton local
-quadratic recurrence under a supplied Taylor/integral identity.  Only add
-another Appendix A eigenvalue-root corollary if that inverse-norm bridge needs
-it.
+theorem-sized target: discharge the V57 inverse Loewner upper gate
+`H^{-1} <= (2 / alpha) I` from `(alpha / 2) I <= H` without replaying the
+timed-out CStar route, then assemble the Newton local quadratic recurrence
+under a supplied Taylor/integral identity.
 
 Older dependency cache: the concrete standard preliminary stage now feeds a
 concrete source-coordinate standard main-stage Newton recursion for §13.16
@@ -757,9 +775,15 @@ main-text use by proving the Theorem 13.1 operator-norm perturbation bridge:
 `chewiA5_loewner_sandwich_of_l2_opNorm_sub_le`,
 `chewiA4_scalar_one_le_scalar_one_of_le`,
 `chewi131_hessian_lower_half_of_l2_opNorm_sub_le`, and
-`chewi131_hessian_lower_half_of_lipschitz_opNorm`.
+`chewi131_hessian_lower_half_of_lipschitz_opNorm`.  V57 adds
+`chewiA5_posDef_of_pos_scalar_one_le`,
+`chewiA5_symmetric_l2_opNorm_le_of_nonneg_le_scalar_one`,
+`chewi131_inverse_l2_opNorm_le_two_div_alpha_of_inverse_loewner_upper`, and
+`chewi131_inverse_l2_opNorm_le_two_div_alpha_of_hessian_lower_half_and_inverse_loewner_upper`,
+reducing Chewi Theorem 13.1's inverse-norm display to the precise inverse
+Loewner upper gate `H^{-1} <= (2 / alpha) I`.
 
-Search-first reuse for V53-V56: source Definition A.5 and Theorem 13.1;
+Search-first reuse for V53-V57: source Definition A.5 and Theorem 13.1;
 mathlib singular values
 via `T†T`; `spectrum.nonzero_mul_comm` for same-algebra square products;
 local V50 `A^T A <= C^2 I <-> ||A||_op <= C`; V52 scalar eigenvalue bounds
@@ -770,16 +794,24 @@ applied to `Aᵀ`, which avoids reproving the `A A^T` display.  V56 reuses the
 V51 symmetric `||D||_op <= eps <-> -eps I <= D <= eps I` theorem with
 `D = B - A`, mathlib `add_le_add`, matrix additive-group normalization via
 `abel`, and mathlib `smul_le_smul_of_nonneg_right` plus the `MatrixOrder`
-`0 <= 1` instance for scalar identity monotonicity.
+`0 <= 1` instance for scalar identity monotonicity.  V57 reuses V52
+eigenvalue scalar lower bounds, mathlib `Matrix.PosDef.inv`, and V51's
+symmetric sandwich to avoid duplicating operator-norm theory.  Timed-out
+attempted APIs for the remaining exact inverse-order discharge:
+`CStarAlgebra.inv_le_inv` on Units and
+`CStarAlgebra.rpow_neg_one_le_rpow_neg_one` after
+`Matrix.nonsing_inv_eq_ringInverse`; both hit deterministic heartbeat
+timeouts in this heavy Appendix A import context, so try a smaller module or a
+direct eigenvalue-inverse/spectrum route before retrying them here.
 Do not rebuild the rectangular zero-padding theorem from determinant blocks or
 sorted eigenvalue lists unless the next source theorem truly needs a
 root-level statement.
 
-Next theorem-sized target: stay in Chewi Theorem 13.1 and prove the
-inverse-operator-norm consequence from `(alpha / 2) I <= H`, preferably by
-searching mathlib/local CStar/matrix inverse-order APIs before introducing a
-new spectral primitive.  Then assemble the Newton local quadratic recurrence
-under a supplied Taylor/integral identity.  Create
+Next theorem-sized target: stay in Chewi Theorem 13.1 and discharge the
+inverse Loewner upper gate `H^{-1} <= (2 / alpha) I` from `(alpha / 2) I <= H`
+using a route that avoids the timed-out CStar attempt, then assemble the
+Newton local quadratic recurrence under a supplied Taylor/integral identity.
+Create
 the Chewi Lemma 13.16 report only after the PDF screenshot
 and report compilation tools are available.  Do not reopen the completed
 §13.16 proof surface unless a regression breaks it.
@@ -795,9 +827,9 @@ consumers.  The old §13.16 search surface near `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers is only relevant if a later run
-returns to the report/tooling gate; the active V56 Lean proof target is
-Theorem 13.1 inverse norm and recurrence assembly.
-Older paragraphs below are cached route history and must not override this V56
+returns to the report/tooling gate; the active V57 Lean proof target is
+Theorem 13.1 inverse Loewner upper discharge and recurrence assembly.
+Older paragraphs below are cached route history and must not override this V57
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

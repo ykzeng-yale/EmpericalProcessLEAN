@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V56` near the top of
+  `Live Goal Prompt V57` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -126,8 +126,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi131_hessian_lower_half_of_lipschitz_opNorm`.  Search-first reuse came
   from V51's symmetric op-norm/Loewner sandwich, mathlib `add_le_add`,
   `abel`, and `smul_le_smul_of_nonneg_right` under the `MatrixOrder` scoped
-  order.  Next high-impact step is to prove the inverse-operator-norm
-  consequence from `(alpha / 2) I <= H`, then assemble Theorem 13.1's local
+  order.  The V57 layer adds
+  `chewiA5_posDef_of_pos_scalar_one_le`,
+  `chewiA5_symmetric_l2_opNorm_le_of_nonneg_le_scalar_one`,
+  `chewi131_inverse_l2_opNorm_le_two_div_alpha_of_inverse_loewner_upper`, and
+  `chewi131_inverse_l2_opNorm_le_two_div_alpha_of_hessian_lower_half_and_inverse_loewner_upper`,
+  reducing the inverse-norm display to the exact inverse Loewner upper gate
+  `H^{-1} <= (2 / alpha) I`.  Search-first result: direct attempts with
+  mathlib `CStarAlgebra.inv_le_inv` and
+  `CStarAlgebra.rpow_neg_one_le_rpow_neg_one` timed out in this module even
+  with a local 1M heartbeat budget.  Next high-impact step is to discharge
+  that inverse Loewner upper gate in a smaller API surface or via an
+  eigenvalue/spectrum inverse theorem, then assemble Theorem 13.1's local
   Newton quadratic recurrence under a supplied Taylor/integral identity.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in

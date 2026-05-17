@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V56` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V57` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,7 +30,7 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V56 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V57 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -104,11 +104,21 @@ display, adding `chewiA5_loewner_lower_of_l2_opNorm_sub_le`,
 `chewi131_hessian_lower_half_of_l2_opNorm_sub_le`, and
 `chewi131_hessian_lower_half_of_lipschitz_opNorm`.  Search-first reuse came
 from V51, mathlib `add_le_add`, `abel`, and
-`smul_le_smul_of_nonneg_right` under `MatrixOrder`.  Next source-shaped work
-should prove the inverse-operator-norm consequence from `(alpha / 2) I <= H`,
-then assemble Theorem 13.1's Newton local quadratic recurrence under a
-supplied Taylor/integral identity.  Add a root/eigenvalue membership corollary
-only if that inverse-norm bridge needs more than the current Loewner surface.
+`smul_le_smul_of_nonneg_right` under `MatrixOrder`.  The V57 layer adds
+`chewiA5_posDef_of_pos_scalar_one_le`,
+`chewiA5_symmetric_l2_opNorm_le_of_nonneg_le_scalar_one`,
+`chewi131_inverse_l2_opNorm_le_two_div_alpha_of_inverse_loewner_upper`, and
+`chewi131_inverse_l2_opNorm_le_two_div_alpha_of_hessian_lower_half_and_inverse_loewner_upper`,
+so the inverse-norm display now follows from the exact supplied inverse
+Loewner upper gate `H^{-1} <= (2 / alpha) I`; positive-definiteness and
+nonnegativity of the inverse are discharged from the half-radius Hessian lower
+bound.  Search-first result: direct attempts using mathlib
+`CStarAlgebra.inv_le_inv` and `CStarAlgebra.rpow_neg_one_le_rpow_neg_one`
+timed out in `AppendixA.lean` even with a local 1M heartbeat budget.  Next
+source-shaped work should discharge the inverse Loewner upper gate in a
+smaller dedicated module/API surface or via a lower-level eigenvalue/spectrum
+inverse theorem, then assemble Theorem 13.1's Newton local quadratic
+recurrence under a supplied Taylor/integral identity.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source
