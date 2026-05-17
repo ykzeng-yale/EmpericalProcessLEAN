@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V471
+## Live In-Thread Goal Prompt V472
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -141,6 +141,10 @@ finite real tail summability gives the zero extended-real limsup display, and
 divergent ENNReal tail series gives the `+∞` extended-real limsup display,
 under the exact iid and growth hypotheses currently consumed by the two
 compiled branch routes.
+V472 removes the easiest remaining explicit growth hypotheses from the
+convergent branch and final assembly: monotonicity of `a_n` supplies increment
+nonnegativity, `n / a_n -> 0` plus positivity supplies `a_n -> infinity`, and
+shifted divergence follows from `a_n -> infinity`.
 Do not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -167,22 +171,33 @@ solved prefix-plus-annulus pointwise majorant and endpoint handoff, or the
 solved concrete annulus-series majorant pointwise/endpoint wrappers, or the
 solved concrete majorant integrability bridge from identity(*) mass weights,
 or the solved convergent-half extended-real display wrapper, or the solved
-two-branch Feller dichotomy assembly.
-Next aggressive target: reduce the remaining explicit growth side conditions
-in the V471 Feller dichotomy assembly toward Durrett's textbook source
-assumptions, especially deriving the convergent branch's `a_n -> infinity`,
-shifted divergence, increments, and `n/a_n -> 0` handoffs from the monotone
-`a_n / n` plus infinite-mean/finite-tail hypotheses when possible.  Do not
-return to scalar kernel, annulus mass, majorant integrability, display-wrapper,
-or branch-combination plumbing.
+two-branch Feller dichotomy assembly, or the solved easy growth cleanup from
+monotonicity and `n / a_n -> 0`.
+Next aggressive target: prove the textbook infinite-mean growth handoff that
+finite tail summability plus monotone `a_n / n` and `E|X_1| = infinity`
+force `a_n / n -> infinity` (equivalently `n / a_n -> 0`) in the source shape
+needed by the V472 Feller dichotomy assembly.  Do not return to scalar kernel,
+annulus mass, majorant integrability, display-wrapper, branch-combination, or
+easy growth plumbing.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
 
+Latest verified target V472 adds source-growth cleanup anchors:
+`durrett2019_theorem_2_5_13_increment_nonneg_of_monotone`,
+`durrett2019_theorem_2_5_13_tendsto_atTop_of_n_over_a_tendsto_zero`,
+`durrett2019_theorem_2_5_13_shift_atTop_of_atTop`,
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono_of_n_over_a_tendsto_zero`,
+and
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_annulusKernelMajorant_tail_summable_or_tail_tsum_top_and_ratio_mono_of_n_over_a_tendsto_zero`.
+The remaining blocker is the textbook infinite-mean implication
+`a_n / n -> infinity`, not the mechanical growth facts derived from
+`n / a_n -> 0`.
+
 Latest verified target V471 adds the two-branch theorem assembly
 `durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_annulusKernelMajorant_tail_summable_or_tail_tsum_top_and_ratio_mono`.
-The remaining blocker is no longer branch assembly; it is source-side growth
-cleanup toward the exact textbook assumptions.
+This blocker is closed; do not reopen branch assembly unless a later theorem
+requires a strictly sharper statement.
 
 Latest verified target V470 adds the deterministic and source-facing
 convergent-half extended-real display layer.  New compiled anchors include:
@@ -4400,6 +4415,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V471` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V472` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

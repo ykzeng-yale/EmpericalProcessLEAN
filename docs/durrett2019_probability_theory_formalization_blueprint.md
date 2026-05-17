@@ -27,16 +27,18 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V471`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V472`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V471: reduce the remaining explicit growth side
-conditions in the Feller dichotomy assembly toward Durrett's textbook source
-assumptions.  Do not return to scalar-kernel estimates, annulus mass
-summability, concrete majorant integrability, display-wrapper plumbing, or
-branch-combination plumbing unless exact source-side cleanup exposes a missing
+Current immediate target after V472: prove the textbook infinite-mean growth
+handoff that finite tail summability plus monotone `a_n / n` and
+`E|X_1| = infinity` force `a_n / n -> infinity`, equivalently
+`n / a_n -> 0`, in the source shape consumed by the Feller dichotomy assembly.
+Do not return to scalar-kernel estimates, annulus mass summability, concrete
+majorant integrability, display-wrapper plumbing, branch-combination plumbing,
+or easy growth cleanup unless exact source-side cleanup exposes a missing
 handoff.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
@@ -156,6 +158,10 @@ finite real tail summability gives the zero extended-real limsup display, and
 divergent ENNReal tail series gives the `+∞` extended-real limsup display,
 under the exact iid and growth hypotheses currently consumed by the branch
 routes.
+V472 removes the easiest remaining explicit growth hypotheses from the
+convergent branch and final assembly: monotonicity supplies increment
+nonnegativity, `n / a_n -> 0` plus positivity supplies `a_n -> infinity`, and
+shifted divergence follows from `a_n -> infinity`.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -181,8 +187,14 @@ solved prefix-plus-annulus pointwise majorant and endpoint handoff, or the
 solved concrete annulus-series majorant pointwise/endpoint wrappers, or the
 solved concrete majorant integrability bridge, or the solved convergent-half
 extended-real display wrapper, or the solved two-branch Feller dichotomy
-assembly.
-New compiled anchors through V471:
+assembly, or the solved easy growth cleanup from monotonicity and
+`n / a_n -> 0`.
+New compiled anchors through V472:
+`durrett2019_theorem_2_5_13_increment_nonneg_of_monotone`,
+`durrett2019_theorem_2_5_13_tendsto_atTop_of_n_over_a_tendsto_zero`,
+`durrett2019_theorem_2_5_13_shift_atTop_of_atTop`,
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono_of_n_over_a_tendsto_zero`,
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_annulusKernelMajorant_tail_summable_or_tail_tsum_top_and_ratio_mono_of_n_over_a_tendsto_zero`,
 `durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_annulusKernelMajorant_tail_summable_or_tail_tsum_top_and_ratio_mono`,
 `durrett2019_theorem_2_5_13_ereal_limsup_abs_eq_zero_of_tendsto_zero`,
 `durrett2019_theorem_2_5_13_ereal_limsup_abs_div_eq_zero_of_tendsto_div_zero`,
