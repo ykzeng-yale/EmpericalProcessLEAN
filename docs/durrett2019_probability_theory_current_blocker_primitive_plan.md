@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V440
+## Live In-Thread Goal Prompt V441
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,20 +12,28 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V440 advances Durrett
-Theorem 2.5.13 (Feller infinite-mean dichotomy): the V439 block comparison is
-now promoted to a contiguous finite tail-prefix identity and the exact
-textbook-oriented estimate
-`(1/k) * sum_{m=k}^{k(N+1)-1} u_m <= sum_{n=1}^N u_{kn}` for antitone
-nonnegative tail sequences.  Do not reroute to solved Theorem 2.5.12 scalar
-p-series, threshold, reindex, source-composition, integrability, or
-display-wrapper work.  Next aggressive target: prove the infinite
-tail-series transfer/contrapositive from the V440 finite prefix comparison,
-then connect the divergent half to Borel-Cantelli/limsup machinery already
-available in `ProbabilityMeasure.BorelCantelli` and local limsup wrappers.
+in `StatInference/ProbabilityTheory/Basic.lean`.  V441 advances Durrett
+Theorem 2.5.13 (Feller infinite-mean dichotomy): the V440 finite prefix
+comparison now yields the infinite transfer.  For a nonnegative antitone tail
+sequence, summability of the positive `k`-th subsequence forces summability of
+the full sequence, and contrapositively a nonsummable full sequence gives a
+nonsummable positive `k`-th subsequence.  Do not reroute to solved Theorem
+2.5.12 scalar p-series, threshold, reindex, source-composition,
+integrability, or display-wrapper work.  Next aggressive target: instantiate
+the V441 transfer with Theorem 2.5.13 tail probabilities and connect the
+divergent half to Borel-Cantelli/limsup machinery already available in
+`ProbabilityMeasure.BorelCantelli` and local limsup wrappers.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V441 adds the infinite tail-series transfer layer for
+Theorem 2.5.13.  New compiled anchors:
+`durrett2019_theorem_2_5_13_subsequence_Icc_sum_eq_range`,
+`durrett2019_theorem_2_5_13_summable_of_antitone_subsequence_summable`, and
+`durrett2019_theorem_2_5_13_not_summable_subsequence_of_not_summable`.  The
+remaining blocker is now probability-tail instantiation plus the
+Borel-Cantelli/limsup bridge for the divergent half.
 
 Latest verified target V440 adds the finite tail-series transfer layer for
 Theorem 2.5.13.  New compiled anchors:

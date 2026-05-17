@@ -32,17 +32,21 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V440` in
+Route from `Live In-Thread Goal Prompt V441` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
-V440 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.  The
-V439 block comparison is now promoted to a contiguous finite tail-prefix
-identity and the exact textbook-oriented estimate
-`(1/k) * sum_{m=k}^{k(N+1)-1} u_m <= sum_{n=1}^N u_{kn}` for antitone tail
-sequences.  The next source work is the infinite tail-series
-transfer/contrapositive, then the Borel-Cantelli/limsup bridge.  Do not route
-back into solved Theorem 2.5.12 plumbing.  New compiled anchors through V440:
+V441 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.  The
+V440 finite prefix comparison now yields the infinite transfer: for a
+nonnegative antitone tail sequence, summability of the positive `k`-th
+subsequence forces summability of the full sequence, and contrapositively a
+nonsummable full sequence gives a nonsummable positive `k`-th subsequence.
+The next source work is probability-tail instantiation plus the
+Borel-Cantelli/limsup bridge.  Do not route back into solved Theorem 2.5.12
+plumbing.  New compiled anchors through V441:
+`durrett2019_theorem_2_5_13_subsequence_Icc_sum_eq_range`,
+`durrett2019_theorem_2_5_13_summable_of_antitone_subsequence_summable`,
+`durrett2019_theorem_2_5_13_not_summable_subsequence_of_not_summable`,
 `durrett2019_theorem_2_5_13_block_sums_eq_Ico_tail`,
 `durrett2019_theorem_2_5_13_antitone_Ico_tail_sum_le`,
 `durrett2019_theorem_2_5_13_inv_mul_Ico_tail_sum_le_subsequence_sum`,

@@ -10585,6 +10585,108 @@ theorem durrett2019_theorem_2_5_13_inv_mul_Ico_tail_sum_le_subsequence_sum
           field_simp [ne_of_gt hk_real_pos]
 
 /--
+Durrett 2019, Theorem 2.5.13 deterministic support: the selected positive
+subsequence prefix over `1, ..., N` is the ordinary initial prefix of
+`n -> u (k * (n + 1))`.
+-/
+theorem durrett2019_theorem_2_5_13_subsequence_Icc_sum_eq_range
+    {u : ℕ -> ℝ} (k N : ℕ) :
+    (∑ n ∈ Finset.Icc 1 N, u (k * n)) =
+      ∑ n ∈ Finset.range N, u (k * (n + 1)) := by
+  induction N with
+  | zero =>
+      simp
+  | succ N ih =>
+      rw [Finset.sum_Icc_succ_top (by omega : 1 ≤ N + 1)]
+      rw [Finset.sum_range_succ]
+      rw [ih]
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic support: for a nonnegative
+antitone tail sequence, summability of every positive `k`-th subsequence
+forces summability of the original sequence.
+-/
+theorem durrett2019_theorem_2_5_13_summable_of_antitone_subsequence_summable
+    {u : ℕ -> ℝ} (hu_nonneg : ∀ n : ℕ, 0 ≤ u n) (hu : Antitone u)
+    {k : ℕ} (hk : 0 < k)
+    (hsub : Summable fun n : ℕ => u (k * (n + 1))) :
+    Summable u := by
+  refine summable_of_sum_range_le
+    (c := (∑ i ∈ Finset.range k, u i) +
+      (k : ℝ) * ∑' n : ℕ, u (k * (n + 1))) hu_nonneg ?_
+  intro M
+  have hM_le_big : M ≤ k * (M + 1) := by
+    calc
+      M ≤ 1 * (M + 1) := by omega
+      _ ≤ k * (M + 1) := Nat.mul_le_mul_right (M + 1) hk
+  have hsub_prefix_le :
+      (∑ n ∈ Finset.Icc 1 M, u (k * n)) ≤
+        ∑' n : ℕ, u (k * (n + 1)) := by
+    rw [durrett2019_theorem_2_5_13_subsequence_Icc_sum_eq_range (u := u) k M]
+    exact hsub.sum_le_tsum (Finset.range M)
+      (fun n _hn => hu_nonneg (k * (n + 1)))
+  have htail_le :
+      (∑ m ∈ Finset.Ico k (k * (M + 1)), u m) ≤
+        (k : ℝ) * ∑ n ∈ Finset.Icc 1 M, u (k * n) :=
+    durrett2019_theorem_2_5_13_antitone_Ico_tail_sum_le (u := u) hu
+  have htail_le_tsum :
+      (∑ m ∈ Finset.Ico k (k * (M + 1)), u m) ≤
+        (k : ℝ) * ∑' n : ℕ, u (k * (n + 1)) :=
+    htail_le.trans
+      (mul_le_mul_of_nonneg_left hsub_prefix_le (Nat.cast_nonneg k))
+  have hrange_le :
+      (∑ i ∈ Finset.range M, u i) ≤
+        (∑ i ∈ Finset.range k, u i) +
+          ∑ m ∈ Finset.Ico k (k * (M + 1)), u m := by
+    by_cases hMk : M ≤ k
+    · have hsubset : Finset.range M ⊆ Finset.range k := by
+        intro i hi
+        exact Finset.mem_range.mpr ((Finset.mem_range.mp hi).trans_le hMk)
+      have hprefix_le :
+          (∑ i ∈ Finset.range M, u i) ≤
+            ∑ i ∈ Finset.range k, u i :=
+        Finset.sum_le_sum_of_subset_of_nonneg hsubset
+          (fun i _hi _hnot => hu_nonneg i)
+      have htail_nonneg :
+          0 ≤ ∑ m ∈ Finset.Ico k (k * (M + 1)), u m :=
+        Finset.sum_nonneg fun m _hm => hu_nonneg m
+      exact hprefix_le.trans (le_add_of_nonneg_right htail_nonneg)
+    · have hkM : k ≤ M := le_of_not_ge hMk
+      have hsplit :
+          (∑ i ∈ Finset.range M, u i) =
+            (∑ i ∈ Finset.range k, u i) + ∑ i ∈ Finset.Ico k M, u i := by
+        have h :=
+          Finset.sum_Ico_consecutive (fun i : ℕ => u i)
+            (m := 0) (n := k) (k := M) (Nat.zero_le k) hkM
+        simpa [← Finset.range_eq_Ico] using h.symm
+      have hIco_subset : Finset.Ico k M ⊆ Finset.Ico k (k * (M + 1)) := by
+        intro i hi
+        exact Finset.mem_Ico.mpr ⟨(Finset.mem_Ico.mp hi).1,
+          (Finset.mem_Ico.mp hi).2.trans_le hM_le_big⟩
+      have htail_subset_le :
+          (∑ i ∈ Finset.Ico k M, u i) ≤
+            ∑ i ∈ Finset.Ico k (k * (M + 1)), u i :=
+        Finset.sum_le_sum_of_subset_of_nonneg hIco_subset
+          (fun i _hi _hnot => hu_nonneg i)
+      rw [hsplit]
+      exact add_le_add le_rfl htail_subset_le
+  exact hrange_le.trans (add_le_add le_rfl htail_le_tsum)
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic support: contrapositive form of
+the infinite tail-series transfer.  If the original nonnegative antitone tail
+series is not summable, then no positive `k`-th subsequence is summable.
+-/
+theorem durrett2019_theorem_2_5_13_not_summable_subsequence_of_not_summable
+    {u : ℕ -> ℝ} (hu_nonneg : ∀ n : ℕ, 0 ≤ u n) (hu : Antitone u)
+    {k : ℕ} (hk : 0 < k) (hu_not_summable : ¬ Summable u) :
+    ¬ Summable fun n : ℕ => u (k * (n + 1)) := by
+  intro hsub
+  exact hu_not_summable
+    (durrett2019_theorem_2_5_13_summable_of_antitone_subsequence_summable
+      (u := u) hu_nonneg hu hk hsub)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
