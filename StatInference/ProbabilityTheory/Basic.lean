@@ -13411,6 +13411,91 @@ by
   simpa [c] using h
 
 /--
+Durrett 2019, Theorem 2.5.13 deterministic identity(*) support: if the finite
+prefix sums of a nonnegative sequence are bounded by the corresponding finite
+prefix sums of a summable nonnegative tail sequence, then the first sequence is
+summable.  This is the abstract consumer for the finite-prefix form of
+identity (*).
+-/
+theorem durrett2019_theorem_2_5_13_summable_of_prefix_le_summable_prefix
+    {mass tail : ℕ -> ℝ}
+    (hmass_nonneg : ∀ r : ℕ, 0 ≤ mass r)
+    (htail_nonneg : ∀ n : ℕ, 0 ≤ tail n)
+    (htail_summable : Summable tail)
+    (hprefix : ∀ M : ℕ,
+      (∑ r ∈ Finset.range M, mass r) ≤
+        ∑ n ∈ Finset.range M, tail n) :
+    Summable mass := by
+  refine summable_of_sum_range_le
+    (c := ∑' n : ℕ, tail n) hmass_nonneg ?_
+  intro M
+  exact (hprefix M).trans
+    (htail_summable.sum_le_tsum (Finset.range M)
+      (fun n _hn => htail_nonneg n))
+
+/--
+Durrett 2019, Theorem 2.5.13 identity(*) support: the finite-prefix form of
+identity (*) plus summability of the base tail probabilities implies
+summability of the annulus mass weights.
+-/
+theorem durrett2019_theorem_2_5_13_mass_weight_summable_of_prefix_identity_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|})
+    (hprefix_identity : ∀ M : ℕ,
+      (∑ r ∈ Finset.range M,
+        (r : ℝ) *
+          P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) ≤
+        ∑ n ∈ Finset.range M,
+          P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    Summable fun r : ℕ =>
+      (r : ℝ) *
+        P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r} := by
+  exact
+    durrett2019_theorem_2_5_13_summable_of_prefix_le_summable_prefix
+      (mass := fun r : ℕ =>
+        (r : ℝ) *
+          P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r})
+      (tail := fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|})
+      (fun r => mul_nonneg (Nat.cast_nonneg r) measureReal_nonneg)
+      (fun n => measureReal_nonneg)
+      htail_summable
+      hprefix_identity
+
+/--
+Durrett 2019, Theorem 2.5.13 identity(*) support: the finite-prefix form of
+identity (*) and summable base tail probabilities supply the exact shifted
+tail bound for the weighted base absolute annulus integrals.
+-/
+theorem durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_prefix_identity_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_pos : ∀ m : ℕ, 0 < a m) (hX0_meas : Measurable X0)
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|})
+    (hprefix_identity : ∀ M : ℕ,
+      (∑ r ∈ Finset.range M,
+        (r : ℝ) *
+          P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) ≤
+        ∑ n ∈ Finset.range M,
+          P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        (∑ r ∈ Finset.Icc (N + 1) n,
+          ((r : ℝ) / a r) *
+            durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r) ≤
+          ∑' j : ℕ,
+            ((j + N + 1 : ℕ) : ℝ) *
+              P.real {ω : Ω |
+                a (j + N + 1 - 1) ≤ |X0 ω| ∧ |X0 ω| < a (j + N + 1)} :=
+  durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_mass_weight_summable
+    (P := P) (X0 := X0) (a := a)
+    ha_pos hX0_meas
+    (durrett2019_theorem_2_5_13_mass_weight_summable_of_prefix_identity_bound
+      (P := P) (X0 := X0) (a := a) htail_summable hprefix_identity)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

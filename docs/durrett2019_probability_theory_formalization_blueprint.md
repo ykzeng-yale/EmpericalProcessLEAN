@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V459`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V460`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -90,6 +90,11 @@ are reindexed as shifted range sums, any nonnegative summable sequence
 controls those finite tails by its shifted `tsum`, and summability of
 `r * P(a_{r-1} <= |X_0| < a_r)` now directly supplies the exact shifted tail
 bound for the weighted base absolute annulus integrals.
+V460 adds the finite-prefix identity(*) consumer: any nonnegative mass
+sequence whose finite prefixes are bounded by finite prefixes of a summable
+nonnegative tail sequence is summable, and the source-shaped prefix inequality
+for the annulus mass weights now directly supplies both mass-weight
+summability and the weighted base annulus integral tail bound.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -105,8 +110,11 @@ textbook-prefix-plus-tail mean squeeze, the solved finite-annulus ratio/tail
 bridge, the solved base-truncated-integral-to-mean bridge, or the solved base
 absolute finite-annulus partition/integral bridge, or the solved
 annulus-first-moment-to-identity-mass bridge, or the solved
-mass-weight-summable-to-shifted-tail-bound bridge.  New compiled anchors
-through V459:
+mass-weight-summable-to-shifted-tail-bound bridge, or the solved
+finite-prefix-identity(*) consumer.  New compiled anchors through V460:
+`durrett2019_theorem_2_5_13_summable_of_prefix_le_summable_prefix`,
+`durrett2019_theorem_2_5_13_mass_weight_summable_of_prefix_identity_bound`,
+`durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_prefix_identity_bound`,
 `durrett2019_theorem_2_5_13_Icc_succ_tail_sum_eq_range`,
 `durrett2019_theorem_2_5_13_Icc_succ_tail_sum_le_tsum_tail_of_summable`,
 `durrett2019_theorem_2_5_13_mass_weight_tail_bound_of_summable`,

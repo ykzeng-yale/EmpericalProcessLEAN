@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V459
+## Live In-Thread Goal Prompt V460
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -76,6 +76,12 @@ nonnegative summable sequence controls those finite tails by its shifted
 `tsum`, and summability of
 `r * P(a_{r-1} <= |X_0| < a_r)` now directly supplies the exact tail bound for
 the weighted base absolute annulus integrals.
+V460 adds the finite-prefix identity(*) consumer: any nonnegative mass
+sequence whose finite prefixes are bounded by finite prefixes of a summable
+nonnegative tail sequence is summable, and the source-shaped prefix inequality
+for
+`r * P(a_{r-1} <= |X_0| < a_r)` now directly supplies both mass-weight
+summability and the weighted base annulus integral tail bound.
 Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
@@ -93,15 +99,28 @@ textbook-prefix-plus-tail mean squeeze, the solved finite-annulus ratio/tail
 bridge, the solved base-truncated-integral-to-mean bridge, or the solved base
 absolute finite-annulus partition/integral bridge, or the solved
 annulus-first-moment-to-identity-mass bridge, or the solved
-mass-weight-summable-to-shifted-tail-bound bridge.
-Next aggressive target: prove `Summable (fun r =>
-r * P(a_{r-1} <= |X_0| < a_r))` from Durrett identity (*) and the finite
-large-jump tail series, prove the same identity(*)/ratio-monotonicity annulus
-estimate supplying scalar truncated-square kernel majorization, then assemble
-the source-facing Feller dichotomy wrapper.
+mass-weight-summable-to-shifted-tail-bound bridge, or the solved
+finite-prefix-identity(*) consumer.
+Next aggressive target: prove the finite-prefix identity(*) inequality itself
+from the monotone half-open annulus partition
+`[a_{r-1}, a_r)`, then use the resulting mass summability in the
+source-facing mean wrapper; after that prove the same
+identity(*)/ratio-monotonicity annulus estimate supplying scalar
+truncated-square kernel majorization and assemble the Feller dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V460 adds the finite-prefix identity(*) consumer.  New
+compiled anchors include:
+`durrett2019_theorem_2_5_13_summable_of_prefix_le_summable_prefix`,
+`durrett2019_theorem_2_5_13_mass_weight_summable_of_prefix_identity_bound`,
+and
+`durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_prefix_identity_bound`.
+The remaining blocker is now the actual finite-prefix identity(*) inequality
+from monotone half-open annulus partitions.  Do not spend another cycle
+re-proving that a prefix identity plus a summable tail implies mass-weight
+summability.
 
 Latest verified target V459 adds the deterministic summable-tail layer for the
 identity(*) mass weights.  New compiled anchors include:
@@ -109,11 +128,9 @@ identity(*) mass weights.  New compiled anchors include:
 `durrett2019_theorem_2_5_13_Icc_succ_tail_sum_le_tsum_tail_of_summable`,
 `durrett2019_theorem_2_5_13_mass_weight_tail_bound_of_summable`, and
 `durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_mass_weight_summable`.
-The remaining blocker is now sharper: prove summability of the annulus mass
-weights from Durrett identity (*) plus the finite large-jump tail series, then
-reuse the mass calculus for the scalar truncated-square kernel majorization.
-Do not spend another cycle proving that a summable mass-weight sequence gives
-the shifted tail bound.
+The source finite-prefix identity consumer is discharged by V460; future
+cycles should target the monotone annulus partition identity itself and the
+truncated-square kernel estimate, not the shifted-tail summability plumbing.
 
 Latest verified target V458 connects the V457 annulus first-moment bridge to
 Durrett's identity (*) mass weights.  New compiled anchors include:
