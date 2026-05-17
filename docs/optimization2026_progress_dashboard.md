@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V50` near the top of
+  `Live Goal Prompt V51` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -66,9 +66,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   forms.  The V50 layer imports mathlib's l2 matrix operator norm and proves
   `chewiA5_l2_opNorm_le_of_transpose_mul_self_le_scalar_one` and
   `chewiA5_transpose_mul_self_le_scalar_one_iff_l2_opNorm_le`, closing
-  `A^T A <= C^2 I <-> ||A||_op <= C` for `C >= 0`.  Next Appendix A step is
-  the symmetric-square corollary `||A||_op <= C <-> -C I <= A <= C I` after a
-  bounded Rayleigh/spectral API search.
+  `A^T A <= C^2 I <-> ||A||_op <= C` for `C >= 0`.  The V51 layer adds
+  `chewiA5_l2_opNorm_le_of_abs_quadraticForm_bound` and
+  `chewiA5_symmetric_l2_opNorm_le_iff_neg_scalar_one_le_and_le_scalar_one`,
+  proving the symmetric-square corollary
+  `||A||_op <= C <-> -C I <= A <= C I` for Hermitian/symmetric real matrices
+  and `C >= 0`.  Search-first reuse came from mathlib Rayleigh quotient APIs,
+  `Matrix.isSymmetric_toEuclideanLin_iff`, `abs_real_inner_le_norm`, Euclidean
+  coordinate rewrites, and the existing V48-V50 Loewner/operator-norm bridge.
+  Next Appendix A step is the eigenvalue/spectral display for symmetric
+  matrices, after a bounded search of `Analysis/Matrix/Spectrum`, Hermitian
+  eigenvalue APIs, and `LinearMap.IsSymmetric` spectral lemmas.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

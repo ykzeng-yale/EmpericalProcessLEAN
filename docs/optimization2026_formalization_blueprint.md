@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V50` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V51` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,7 +30,7 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V50 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V51 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved to Appendix A matrix infrastructure.  The new module
 `StatInference/Optimization/AppendixA.lean` compiles and is root-imported,
@@ -47,10 +47,19 @@ so the source all-vector/unit-vector `A^T A <= C^2 I` bound is now compiled.
 The V50 layer adds `chewiA5_l2_opNorm_le_of_transpose_mul_self_le_scalar_one`
 and `chewiA5_transpose_mul_self_le_scalar_one_iff_l2_opNorm_le`, giving the
 rectangular real-matrix equivalence `A^T A <= C^2 I <-> ||A||_op <= C` for
-`C >= 0`.  Next source-shaped work should continue with the symmetric-square
-corollary `||A||_op <= C <-> -C I <= A <= C I` after a bounded search of
-mathlib Rayleigh/spectral APIs and local `Ellipsoid.lean`/`InteriorPoint.lean`
-matrix bridges.
+`C >= 0`.  The V51 layer adds
+`chewiA5_l2_opNorm_le_of_abs_quadraticForm_bound` and
+`chewiA5_symmetric_l2_opNorm_le_iff_neg_scalar_one_le_and_le_scalar_one`,
+proving the symmetric-square corollary
+`||A||_op <= C <-> -C I <= A <= C I` for Hermitian/symmetric real matrices and
+`C >= 0`.  Search-first reuse came from mathlib Rayleigh quotient APIs,
+`Matrix.isSymmetric_toEuclideanLin_iff`, `abs_real_inner_le_norm`, Euclidean
+coordinate rewrites, and the existing V48-V50 Loewner/operator-norm bridge.
+Next source-shaped work should continue with the eigenvalue/spectral display
+for symmetric matrices after a bounded search of
+`Mathlib.Analysis.Matrix.Spectrum`, Hermitian eigenvalue APIs,
+`LinearMap.IsSymmetric` spectral lemmas, and local `Ellipsoid.lean`/
+`InteriorPoint.lean` matrix bridges.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source

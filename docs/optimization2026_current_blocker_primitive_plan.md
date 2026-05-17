@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V50`, this file's top
+   the full book is complete, route from `Live Goal Prompt V51`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V50
+## Live Goal Prompt V51
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -672,13 +672,30 @@ Search-first reuse for V50: mathlib `Mathlib.Analysis.CStarAlgebra.Matrix`,
 the rectangular A.5 operator-norm side without importing local
 `InteriorPoint.lean`.
 
-Next theorem-sized target: continue Appendix A from Definition A.5 by proving
-the symmetric-matrix corollary `||A||_op <= C <-> -C I <= A <= C I` (or the two
-directions separately) for Hermitian/symmetric square real matrices.  Search
-first through mathlib Rayleigh quotient lemmas,
-`ContinuousLinearMap.norm_eq_iSup_rayleighQuotient`,
-`Matrix.isSymmetric_toEuclideanLin_iff`, `Analysis/Matrix/Spectrum`, and the
-new V50 rectangular bridge before adding any local spectral primitive.  Create
+Current V51 packet proves the symmetric-square form of Chewi Definition A.5.
+New compiled declarations:
+`chewiA5_l2_opNorm_le_of_abs_quadraticForm_bound` and
+`chewiA5_symmetric_l2_opNorm_le_iff_neg_scalar_one_le_and_le_scalar_one`.
+For Hermitian/symmetric square real matrices and `C >= 0`, the second theorem
+gives the source-facing equivalence `||A||_op <= C <-> -C I <= A <= C I`.
+
+Search-first reuse for V51: mathlib Rayleigh quotient API
+`ContinuousLinearMap.norm_eq_iSup_rayleighQuotient`, the bridge
+`Matrix.isSymmetric_toEuclideanLin_iff`, inner-product bounds
+`abs_real_inner_le_norm`, `ContinuousLinearMap.le_opNorm`, Euclidean coordinate
+rewrites `Matrix.toLpLin_apply` and `EuclideanSpace.inner_eq_star_dotProduct`,
+the V48 Loewner/quadratic-form equivalence, and the V49/V50 scalar-matrix and
+operator-norm substrate.  This packet intentionally reuses the small Rayleigh
+argument pattern from local `InteriorPoint.lean` without importing that large
+module.
+
+Next theorem-sized target: continue Appendix A from Definition A.5 toward the
+eigenvalue/spectral display for symmetric matrices, e.g. a source-shaped
+operator-norm-equals-maximum-absolute-eigenvalue wrapper or the next exact
+Appendix A statement after A.5.  Search first through
+`Mathlib.Analysis.Matrix.Spectrum`, Hermitian/eigenvalue APIs,
+`LinearMap.IsSymmetric` spectral lemmas, `Matrix.toEuclideanLin`, and the V51
+Rayleigh/Loewner bridge before adding any local spectral primitive.  Create
 the Chewi Lemma 13.16 report only after the PDF screenshot
 and report compilation tools are available.  Do not reopen the completed
 §13.16 proof surface unless a regression breaks it.
@@ -694,9 +711,9 @@ consumers.  The old §13.16 search surface near `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers is only relevant if a later run
-returns to the report/tooling gate; the active V50 Lean proof target is
+returns to the report/tooling gate; the active V51 Lean proof target is
 Appendix A matrix infrastructure.
-Older paragraphs below are cached route history and must not override this V50
+Older paragraphs below are cached route history and must not override this V51
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

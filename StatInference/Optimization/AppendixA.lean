@@ -239,5 +239,159 @@ theorem chewiA5_transpose_mul_self_le_scalar_one_iff_l2_opNorm_le
           rw [← hx_sq]
           ring
 
+/--
+For symmetric real matrices, an absolute quadratic-form bound controls the
+Euclidean operator norm.  This is the Rayleigh-quotient bridge used in the
+symmetric specialization of Chewi Definition A.5.
+-/
+theorem chewiA5_l2_opNorm_le_of_abs_quadraticForm_bound
+    [DecidableEq n] {A : Matrix n n ℝ} (hA : A.IsHermitian) {C : ℝ}
+    (hC : 0 ≤ C)
+    (hbound : ∀ v : n -> ℝ,
+      |dotProduct v (A *ᵥ v)| ≤ C * dotProduct v v) :
+    ‖A‖ ≤ C := by
+  rw [Matrix.l2_opNorm_def]
+  let T : EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ n :=
+    (Matrix.toEuclideanLin (𝕜 := ℝ) (m := n) (n := n)).trans
+      LinearMap.toContinuousLinearMap A
+  change ‖T‖ ≤ C
+  have hsymm : (T : EuclideanSpace ℝ n →ₗ[ℝ] EuclideanSpace ℝ n).IsSymmetric := by
+    have hsymm_lin : (Matrix.toEuclideanLin A).IsSymmetric :=
+      Matrix.isSymmetric_toEuclideanLin_iff.mpr hA
+    simpa [T] using hsymm_lin
+  rw [ContinuousLinearMap.norm_eq_iSup_rayleighQuotient T hsymm]
+  refine ciSup_le ?_
+  intro x
+  by_cases hx_zero : ‖x‖ = 0
+  · have hx0 : x = 0 := norm_eq_zero.mp hx_zero
+    simpa [ContinuousLinearMap.rayleighQuotient, hx0] using hC
+  · have hden_pos : 0 < ‖x‖ ^ (2 : ℕ) := by positivity
+    have hinner :
+        inner ℝ (T x) x = dotProduct x.ofLp (A *ᵥ x.ofLp) := by
+      simp [T, Matrix.toLpLin_apply, EuclideanSpace.inner_eq_star_dotProduct]
+    have hx_sq : ‖x‖ ^ (2 : ℕ) = dotProduct x.ofLp x.ofLp := by
+      rw [EuclideanSpace.real_norm_sq_eq]
+      simp [dotProduct, pow_two]
+    have hquad :
+        |inner ℝ (T x) x| ≤ C * ‖x‖ ^ (2 : ℕ) := by
+      simpa [hinner, hx_sq] using hbound x.ofLp
+    have hdiv : |inner ℝ (T x) x| / ‖x‖ ^ (2 : ℕ) ≤ C := by
+      rw [div_le_iff₀ hden_pos]
+      exact hquad
+    simpa [ContinuousLinearMap.rayleighQuotient,
+      ContinuousLinearMap.reApplyInnerSelf_apply, abs_div] using hdiv
+
+/--
+Chewi Definition A.5, symmetric-matrix form.  For a symmetric real matrix and
+`C >= 0`, the Euclidean operator-norm bound is equivalent to the Loewner
+sandwich `-C I <= A <= C I`.
+-/
+theorem chewiA5_symmetric_l2_opNorm_le_iff_neg_scalar_one_le_and_le_scalar_one
+    [DecidableEq n] {A : Matrix n n ℝ} (hA : A.IsHermitian) {C : ℝ}
+    (hC : 0 ≤ C) :
+    ‖A‖ ≤ C ↔
+      ((-C) • (1 : Matrix n n ℝ) ≤ A ∧
+        A ≤ C • (1 : Matrix n n ℝ)) := by
+  have hCmat : (C • (1 : Matrix n n ℝ)).IsHermitian := by
+    exact Matrix.isHermitian_one.smul
+      (show IsSelfAdjoint (C : ℝ) by
+        simp [isSelfAdjoint_iff])
+  have hnegCmat : ((-C) • (1 : Matrix n n ℝ)).IsHermitian := by
+    exact Matrix.isHermitian_one.smul
+      (show IsSelfAdjoint (-C : ℝ) by
+        simp [isSelfAdjoint_iff])
+  constructor
+  · intro hnorm
+    let T : EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ n :=
+      (Matrix.toEuclideanLin (𝕜 := ℝ) (m := n) (n := n)).trans
+        LinearMap.toContinuousLinearMap A
+    have hnorm_T : ‖T‖ ≤ C := by
+      simpa [Matrix.l2_opNorm_def, T] using hnorm
+    have hquad_abs :
+        ∀ v : n -> ℝ, |dotProduct v (A *ᵥ v)| ≤ C * dotProduct v v := by
+      intro v
+      let x : EuclideanSpace ℝ n := WithLp.toLp 2 v
+      have hpoint : ‖T x‖ ≤ C * ‖x‖ := by
+        calc
+          ‖T x‖ ≤ ‖T‖ * ‖x‖ := T.le_opNorm x
+          _ ≤ C * ‖x‖ := mul_le_mul_of_nonneg_right hnorm_T (norm_nonneg x)
+      have hinner_bound :
+          |inner ℝ (T x) x| ≤ C * ‖x‖ ^ (2 : ℕ) := by
+        calc
+          |inner ℝ (T x) x| ≤ ‖T x‖ * ‖x‖ := abs_real_inner_le_norm (T x) x
+          _ ≤ (C * ‖x‖) * ‖x‖ :=
+              mul_le_mul_of_nonneg_right hpoint (norm_nonneg x)
+          _ = C * ‖x‖ ^ (2 : ℕ) := by ring
+      have hinner :
+          inner ℝ (T x) x = dotProduct v (A *ᵥ v) := by
+        simp [T, x, Matrix.toLpLin_apply, EuclideanSpace.inner_eq_star_dotProduct]
+      have hx_sq : ‖x‖ ^ (2 : ℕ) = dotProduct v v := by
+        rw [EuclideanSpace.real_norm_sq_eq]
+        simp [x, dotProduct, pow_two]
+      simpa [hinner, hx_sq] using hinner_bound
+    constructor
+    · rw [chewiA4_loewnerOrder_iff_quadraticForm_le hA hnegCmat]
+      intro v
+      have hscalar :
+          dotProduct v (((-C) • (1 : Matrix n n ℝ)) *ᵥ v) =
+            -(C * dotProduct v v) := by
+        calc
+          dotProduct v (((-C) • (1 : Matrix n n ℝ)) *ᵥ v)
+              = (-C) * dotProduct v v := by
+                simp only [Matrix.smul_mulVec, Matrix.one_mulVec, dotProduct_smul,
+                  smul_eq_mul]
+          _ = -(C * dotProduct v v) := by ring
+      have hlow := (abs_le.mp (hquad_abs v)).1
+      have hlow' :
+          dotProduct v (((-C) • (1 : Matrix n n ℝ)) *ᵥ v) ≤
+            dotProduct v (A *ᵥ v) := by
+        rw [hscalar]
+        exact hlow
+      simpa only [neg_smul] using hlow'
+    · rw [chewiA4_loewnerOrder_iff_quadraticForm_le hCmat hA]
+      intro v
+      have hscalar :
+          dotProduct v ((C • (1 : Matrix n n ℝ)) *ᵥ v) =
+            C * dotProduct v v := by
+        simp only [Matrix.smul_mulVec, Matrix.one_mulVec, dotProduct_smul,
+          smul_eq_mul]
+      have hupper := (abs_le.mp (hquad_abs v)).2
+      simpa [hscalar] using hupper
+  · intro hsandwich
+    refine chewiA5_l2_opNorm_le_of_abs_quadraticForm_bound hA hC ?_
+    intro v
+    have hupper_raw :=
+      (chewiA4_loewnerOrder_iff_quadraticForm_le hCmat hA).mp
+        hsandwich.2 v
+    have hupper :
+        dotProduct v (A *ᵥ v) ≤ C * dotProduct v v := by
+      have hscalar :
+          dotProduct v ((C • (1 : Matrix n n ℝ)) *ᵥ v) =
+            C * dotProduct v v := by
+        simp only [Matrix.smul_mulVec, Matrix.one_mulVec, dotProduct_smul,
+          smul_eq_mul]
+      simpa [hscalar] using hupper_raw
+    have hlower_raw :=
+      (chewiA4_loewnerOrder_iff_quadraticForm_le hA hnegCmat).mp
+        hsandwich.1 v
+    have hlower :
+        -(C * dotProduct v v) ≤ dotProduct v (A *ᵥ v) := by
+      have hscalar :
+          dotProduct v (((-C) • (1 : Matrix n n ℝ)) *ᵥ v) =
+            -(C * dotProduct v v) := by
+        calc
+          dotProduct v (((-C) • (1 : Matrix n n ℝ)) *ᵥ v)
+              = (-C) * dotProduct v v := by
+                simp only [Matrix.smul_mulVec, Matrix.one_mulVec, dotProduct_smul,
+                  smul_eq_mul]
+          _ = -(C * dotProduct v v) := by ring
+      have hlower' :
+          dotProduct v (((-C) • (1 : Matrix n n ℝ)) *ᵥ v) ≤
+            dotProduct v (A *ᵥ v) := by
+        simpa only [neg_smul] using hlower_raw
+      rw [← hscalar]
+      exact hlower'
+    exact abs_le.mpr ⟨hlower, hupper⟩
+
 end Optimization
 end StatInference
