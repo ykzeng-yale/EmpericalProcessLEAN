@@ -10943,6 +10943,65 @@ theorem durrett2019_theorem_2_5_13_frequently_above_real_of_frequently_nat_halve
   exact (hfreq k hk_pos).mono fun _ hn => hB_le.trans hn
 
 /--
+Durrett 2019, Theorem 2.5.13 divergent-half support: aggregate the fixed
+integer half-threshold a.e. statements over the countable parameter `k`, then
+use the deterministic threshold bridge pointwise to get frequent largeness
+above every real threshold.
+-/
+theorem durrett2019_theorem_2_5_13_ae_frequently_above_real_of_ae_frequently_nat_halves
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} {f : ℕ -> Ω -> ℝ}
+    (hfreq : ∀ k : ℕ, 0 < k ->
+      ∀ᵐ ω ∂P, ∃ᶠ n in atTop, (k : ℝ) / 2 ≤ f n ω) :
+    ∀ᵐ ω ∂P, ∀ B : ℝ, ∃ᶠ n in atTop, B ≤ f n ω := by
+  have hfreq_all : ∀ᵐ ω ∂P,
+      ∀ k : ℕ, 0 < k -> ∃ᶠ n in atTop, (k : ℝ) / 2 ≤ f n ω := by
+    refine ae_all_iff.2 ?_
+    intro k
+    by_cases hk : 0 < k
+    · exact (hfreq k hk).mono fun _ hω _ => hω
+    · exact Filter.Eventually.of_forall fun _ hkpos => (hk hkpos).elim
+  filter_upwards [hfreq_all] with ω hω
+  exact
+    durrett2019_theorem_2_5_13_frequently_above_real_of_frequently_nat_halves
+      (f := fun n : ℕ => f n ω) hω
+
+/--
+Durrett 2019, Theorem 2.5.13 divergent-half support: if the divergent
+tail-series hypotheses and scaled-tail law/measurability/independence
+assumptions hold uniformly for every positive integer scale `k`, then the
+one-based normalized partial sums are a.e. frequently above every real bound.
+-/
+theorem durrett2019_theorem_2_5_13_ae_forall_real_frequently_oneBased_partial_sum_large_of_tail_tsum_eq_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_pos : ∀ n : ℕ, 0 < a n)
+    (ha_mono : Monotone a)
+    (htail_mono : Antitone fun n : ℕ => (P {ω : Ω | a n ≤ |X0 ω|}).toReal)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_top : (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) = ∞)
+    (hscaled_tail_law : ∀ k : ℕ, 0 < k -> ∀ n : ℕ,
+      P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|} =
+        P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X0 ω|})
+    (hscaled_meas : ∀ k : ℕ, 0 < k -> ∀ n : ℕ,
+      MeasurableSet {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|})
+    (hscaled_indep : ∀ k : ℕ, 0 < k ->
+      _root_.ProbabilityTheory.iIndepSet
+        (fun n : ℕ => {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|}) P) :
+    ∀ᵐ ω ∂P, ∀ B : ℝ, ∃ᶠ n in atTop,
+      B ≤ |∑ i ∈ Finset.range n, X (i + 1) ω| / a n := by
+  refine
+    durrett2019_theorem_2_5_13_ae_frequently_above_real_of_ae_frequently_nat_halves
+      (P := P)
+      (f := fun n ω => |∑ i ∈ Finset.range n, X (i + 1) ω| / a n) ?_
+  intro k hk
+  exact
+    durrett2019_theorem_2_5_13_ae_frequently_oneBased_partial_sum_large_of_tail_tsum_eq_top
+      (P := P) (X := X) (X0 := X0) (a := a) (k := k) hk ha_pos ha_mono
+      htail_mono hratio_mono htail_top (hscaled_tail_law k hk)
+      (hscaled_meas k hk) (hscaled_indep k hk)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

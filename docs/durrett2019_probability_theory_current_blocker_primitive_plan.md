@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V444
+## Live In-Thread Goal Prompt V445
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -19,17 +19,29 @@ textbook partial-sum inequality consequence
 `max |S_n| |S_{n+1}| >= |X_{n+1}| / 2`, giving a.e. frequently large
 one-based normalized partial sums at level `k / 2`.  V444 adds the
 deterministic integer-half to arbitrary real-threshold frequent-largeness
-bridge.  Do not reroute to solved
+bridge.  V445 aggregates the fixed-`k` a.e. statements over the countable
+positive integer scales and packages the uniform-in-`k` Durrett source wrapper
+that gives a.e. frequent largeness above every real bound.  Do not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
 the solved fixed-`k` Borel-Cantelli partial-sum bridge, or the solved
-integer-to-real threshold bridge.  Next aggressive target: package the
-countable a.e. all-`k` endpoint and formalize the divergent-half display as
+integer-to-real threshold bridge, or the solved countable a.e. all-threshold
+wrapper.  Next aggressive target: formalize the divergent-half display as
 `limsup_n |S_n| / a_n = ∞`, then connect it to the source-facing Feller
 dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V445 adds the countable a.e. all-threshold bridge for
+Theorem 2.5.13.  New compiled anchors:
+`durrett2019_theorem_2_5_13_ae_frequently_above_real_of_ae_frequently_nat_halves`
+and
+`durrett2019_theorem_2_5_13_ae_forall_real_frequently_oneBased_partial_sum_large_of_tail_tsum_eq_top`.
+They aggregate the fixed positive-integer `k` statements into a.e. frequent
+largeness above every real bound under uniform scaled-tail assumptions.  The
+remaining blocker is the formal infinite-limsup endpoint and source-facing
+Feller dichotomy wrapper.
 
 Latest verified target V444 adds the deterministic all-threshold bridge:
 `durrett2019_theorem_2_5_13_frequently_above_real_of_frequently_nat_halves`.
