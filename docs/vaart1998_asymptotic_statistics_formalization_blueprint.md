@@ -20,7 +20,7 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    instructions to replay.
 
 Current frontier: Theorem 5.41 now has a compiled positive-sample common-core
-right-inverse observation-law offset source. It states the limit theorem for the explicit estimator
+right-inverse continuous observation-law offset source. It states the limit theorem for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine display
 and a common-core right inverse, derives coordinate measurability of the
@@ -28,20 +28,29 @@ explicit inverse estimator from primitive right-inverse and offset
 measurability, derives product-space offset integrability, independence,
 identical distribution, and positive-sample offset-average convergence from
 observation-law coordinate integrability, derives target convergence and
-consistency from that average convergence and local inverse stability, packages
-the finite equation as exact-root-set membership, prepends `theta0` at sample
-size zero, feeds the existing exact-root-set source endpoint, and shifts the
-distributional conclusion back along `Nat.succ`. This keeps the live route
-focused on actual positive sample sizes instead of forcing sample-size-zero
-inverse, uniqueness, offset-average convergence, product-space offset-iid
-fields, common-core target convergence, estimator consistency,
+consistency from that average convergence and local inverse stability derived
+from ordinary continuity at the limiting target, packages the finite equation
+as exact-root-set membership, prepends `theta0` at sample size zero, feeds the
+existing exact-root-set source endpoint, and shifts the distributional
+conclusion back along `Nat.succ`. This keeps the live route focused on actual
+positive sample sizes instead of forcing sample-size-zero inverse, uniqueness,
+offset-average convergence, product-space offset-iid fields, raw local inverse
+stability, common-core target convergence, estimator consistency,
 estimator-coordinate measurability, direct root-set-membership, or external
 finite-sum-zero hypotheses.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetObservationLawSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetContinuousSource`.
 
 The newest wrapper adds
+`vaart1998_edist_local_of_continuousAt`
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetContinuousSource`.
+The next proof layer should derive the right-inverse value and continuity at
+the negative observation-law offset mean from a concrete inverse-function,
+linear-inverse, or model-specific estimating-equation source.
+
+The previous wrapper adds
 `vaart1998_observationOffset_integrable_infinitePi_eval_zero`,
 `vaart1998_observationOffset_integral_infinitePi_eval_zero_eq`,
 `vaart1998_observationOffset_pairwise_indepFun_infinitePi`,
@@ -49,10 +58,6 @@ The newest wrapper adds
 `vaart1998_positiveObservationOffsetAverage_tendstoInMeasure_of_observationLaw_integrable`,
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetObservationLawSource`.
-The next proof layer should package ordinary continuity of the right inverse
-into the local `edist` inverse-stability condition at the negative
-observation-law offset mean, or instantiate this endpoint on a concrete
-textbook estimating equation.
 
 The previous wrapper adds
 `vaart1998_positiveObservationOffsetAverage_tendstoInMeasure_of_coordinateStrongLaw`

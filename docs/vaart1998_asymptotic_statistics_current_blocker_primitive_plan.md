@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetObservationLawSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetContinuousSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -35,6 +35,9 @@ pairwise independence, identical distribution, and positive-sample
 offset-average convergence from the canonical `Measure.infinitePi`
 observation sequence, then derives common-core target convergence, estimator
 consistency, and coordinate measurability of the explicit inverse estimator.
+It derives the local `edist` inverse-stability field from ordinary
+`ContinuousAt commonObservationCoreRightInverse` at the negative
+observation-law offset mean plus the value of the right inverse at that point.
 It proves the textbook finite estimating-equation identity internally,
 packages it as exact root-set membership, prepends `theta0` at sample size
 zero, applies the compiled exact-root-set Theorem 5.41 source endpoint, and
@@ -42,11 +45,19 @@ then shifts the convergence-in-distribution conclusion back along `Nat.succ`.
 This removes the artificial `n = 0` left-inverse/root-uniqueness obstruction
 and no longer asks the caller to state offset-average convergence,
 product-space offset integrability, offset independence, offset identical
-distribution, common-core target convergence, estimator consistency,
-estimator coordinate measurability, root-set membership, or finite-sum zero
-directly.
+distribution, raw local inverse stability, common-core target convergence,
+estimator consistency, estimator coordinate measurability, root-set
+membership, or finite-sum zero directly.
 
-The newest observation-law offset packet adds
+The newest continuous inverse-stability packet adds
+`vaart1998_edist_local_of_continuousAt` in
+`StatInference/AsymptoticStatistics/Basic.lean` and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetContinuousSource`.
+It reuses mathlib's `EMetric.continuousAt_iff` to turn ordinary continuity
+plus the inverse value at the limiting target into the endpoint's local
+`edist` stability field.
+
+The previous observation-law offset packet adds
 `vaart1998_observationOffset_integrable_infinitePi_eval_zero`,
 `vaart1998_observationOffset_integral_infinitePi_eval_zero_eq`,
 `vaart1998_observationOffset_pairwise_indepFun_infinitePi`,
@@ -115,11 +126,12 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: convert a standard continuity or differentiability
-assumption into the local `edist` inverse-stability field at the negative
-observation-law offset mean, derive offset coordinate integrability from a
-more concrete model source when available, or instantiate the endpoint on a
-concrete estimating equation from the textbook. Do not route back to
+Next aggressive target: derive the right-inverse value and continuity at the
+negative observation-law offset mean from a concrete inverse-function,
+linear-inverse, or model-specific estimating-equation source; derive offset
+coordinate integrability from a more concrete model source when available; or
+instantiate the endpoint on a concrete estimating equation from the textbook.
+Do not route back to
 sample-size zero
 inverses, arbitrary canonical-selector measurability, direct root uniqueness,
 raw finite-sum-map injectivity, a raw left inverse, aggregate finite-sample
@@ -127,8 +139,9 @@ affine-display hypotheses, arbitrary observation-dependent cores, direct
 root-set membership, external finite-sum-zero assumptions, or estimator
 consistency/coordinate-measurability/common-core-target/offset-average,
 product-space offset-integrability, offset-independence, or offset
-identical-distribution assumptions when the common-core right-inverse
-observation-law offset route is available.
+identical-distribution, or raw local inverse-stability assumptions when the
+common-core right-inverse continuous observation-law offset route is
+available.
 
 The previous common-core packet adds
 `vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core

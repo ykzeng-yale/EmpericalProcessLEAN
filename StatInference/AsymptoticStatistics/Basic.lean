@@ -22,7 +22,7 @@ namespace StatInference
 namespace AsymptoticStatistics
 
 open Filter MeasureTheory ProbabilityTheory
-open scoped BigOperators Real Topology
+open scoped BigOperators ENNReal Real Topology
 
 universe u v w x y
 
@@ -355,6 +355,23 @@ theorem vaart1998_tendstoInMeasure_continuousAt_const
     exact not_lt.mp (by
       intro hdist
       exact not_lt_of_ge hω (hδ (x := X i ω) hdist)))
+
+/--
+Continuity at a point gives the local `edist` stability field used by the
+source-shaped Z-estimator endpoints.
+-/
+theorem vaart1998_edist_local_of_continuousAt
+    {E F : Type*} [PseudoEMetricSpace E] [PseudoEMetricSpace F]
+    {g : E -> F} {c : E} {y0 : F}
+    (hg : ContinuousAt g c) (hg_value : g c = y0) :
+    ∀ ε : ℝ≥0∞, 0 < ε ->
+      ∃ δ : ℝ≥0∞, 0 < δ ∧
+        ∀ y : E, edist y c < δ -> edist (g y) y0 < ε := by
+  intro ε hε
+  rw [EMetric.continuousAt_iff] at hg
+  rcases hg ε hε with ⟨δ, hδpos, hδ⟩
+  exact ⟨δ, hδpos, fun y hy => by
+    simpa [hg_value] using hδ hy⟩
 
 /--
 VdV&W tightness of a sequence of laws gives the real-valued norm-tail bound
