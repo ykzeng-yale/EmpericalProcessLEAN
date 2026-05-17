@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V466
+## Live In-Thread Goal Prompt V467
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -110,6 +110,13 @@ V466 closes the low-prefix gap needed for global majorant packaging: if
 `|x| < a_1`, then finite partial sums, the real `tsum`, and the ENNReal
 `tsum` of the same scalar kernel are all bounded by `2`, without any annulus
 lower-bound hypothesis.
+V467 packages the global deterministic cover and source-shaped majorant
+handoff: shifted divergence of `a_{n+1}` puts every real point either in the
+low prefix or in a half-open annulus; any real `g` dominating `2` on the
+prefix and `2*m` on annulus `m` now dominates the scalar kernel `tsum`, feeds
+the weighted base second-moment summability handoff, and feeds the
+moving/original convergent-half endpoint wrappers under the existing finite
+base tail and ratio-monotone hypotheses.
 Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
@@ -132,14 +139,27 @@ finite-prefix-identity(*) consumer, or the solved monotone-annulus
 finite-identity bridge, or the solved source mean/original endpoint bridge, or
 the solved ratio packaging from Durrett's `a_n / n` monotonicity, or the
 solved reciprocal-square p-series/tail estimate, or the solved annulus-wise
-scalar-kernel bound, or the solved low-prefix scalar-kernel bound.
-Next aggressive target: package the low-prefix plus annulus-index scalar
-majorant as an integrable nonnegative majorant from identity(*) and finite base tail
-summability, then feed the existing scalar-kernel endpoint wrappers and
-assemble the Feller dichotomy wrapper.
+scalar-kernel bound, or the solved low-prefix scalar-kernel bound, or the
+solved prefix-plus-annulus pointwise majorant and endpoint handoff.
+Next aggressive target: construct the concrete prefix-plus-annulus majorant
+`g` from the half-open annulus indicators and prove its nonnegativity and
+integrability from identity(*) mass-weight summability plus finite base tail
+summability, then instantiate the V467 endpoint wrappers and assemble the
+Feller dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V467 proves the global deterministic cover and the
+source-shaped scalar-kernel majorant handoff.  New compiled anchors include:
+`durrett2019_theorem_2_5_13_abs_lt_prefix_or_exists_annulus_of_shift_atTop`,
+`durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_majorant_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_majorant_and_ratio_mono`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_majorant_tail_summable_and_ratio_mono`, and
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_majorant_tail_summable_and_ratio_mono`.
+The remaining blocker is no longer pointwise scalar kernel plumbing; it is the
+actual construction of an integrable nonnegative annulus-series majorant `g`
+from identity(*) and finite base tail summability.
 
 Latest verified target V466 proves the low-prefix scalar truncated-square
 kernel majorization needed before the variance route can build a global

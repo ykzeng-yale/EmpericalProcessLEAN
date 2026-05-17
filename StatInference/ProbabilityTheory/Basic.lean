@@ -13529,6 +13529,96 @@ theorem durrett2019_theorem_2_5_13_abs_lt_prefix_or_mem_annulus
         simpa [hN_eq] using hx
 
 /--
+Durrett 2019, Theorem 2.5.13 scalar-kernel support: if the shifted cutoff
+sequence tends to infinity, every real point is either in the low prefix
+`|x| < a_1` or in one of the half-open annuli `[a_{m-1}, a_m)`.
+-/
+theorem durrett2019_theorem_2_5_13_abs_lt_prefix_or_exists_annulus_of_shift_atTop
+    {a : ℕ -> ℝ}
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (x : ℝ) :
+    |x| < a 1 ∨
+      ∃ m : ℕ, 1 ≤ m ∧ a (m - 1) ≤ |x| ∧ |x| < a m := by
+  classical
+  have hlarge :
+      ∀ᶠ n : ℕ in atTop, |x| + 1 ≤ a (n + 1) :=
+    ha_shift_atTop.eventually_ge_atTop (|x| + 1)
+  rcases hlarge.exists with ⟨n, hn⟩
+  have hx_terminal : |x| < a (n + 1) :=
+    (lt_add_of_pos_right |x| zero_lt_one).trans_le hn
+  rcases
+      durrett2019_theorem_2_5_13_abs_lt_prefix_or_mem_annulus
+        (a := a) (N := 1) (n := n + 1) (by omega) hx_terminal with
+    hprefix | hann
+  · exact Or.inl hprefix
+  · rcases hann with ⟨m, hm_mem, hm_lower, hm_upper⟩
+    have hm_left : 1 + 1 ≤ m := (Finset.mem_Icc.mp hm_mem).1
+    exact Or.inr ⟨m, by omega, hm_lower, hm_upper⟩
+
+/--
+Durrett 2019, Theorem 2.5.13 scalar-kernel support: a real majorant that
+dominates `2` on the low prefix and `2*m` on each half-open annulus dominates
+the ENNReal `tsum` of the arbitrary-normalizer truncated-square kernel.
+-/
+theorem durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_majorant_of_ratio_mono
+    {a : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (ha_pos : ∀ n : ℕ, 0 < a n) (ha_mono : Monotone a)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hg_prefix : ∀ x : ℝ, |x| < a 1 -> 2 ≤ g x)
+    (hg_annulus : ∀ (m : ℕ) (x : ℝ), 1 ≤ m ->
+      a (m - 1) ≤ |x| -> |x| < a m -> 2 * (m : ℝ) ≤ g x) :
+    ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x) := by
+  intro x
+  rcases
+      durrett2019_theorem_2_5_13_abs_lt_prefix_or_exists_annulus_of_shift_atTop
+        (a := a) ha_shift_atTop x with
+    hprefix | hann
+  · exact
+      (durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_prefix_one_of_ratio_mono
+        (a := a) ha_pos hratio_mono hprefix).trans
+        (ENNReal.ofReal_le_ofReal (hg_prefix x hprefix))
+  · rcases hann with ⟨m, hm, hm_lower, hm_upper⟩
+    exact
+      (durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_annulus_index_of_ratio_mono
+        (a := a) ha_pos ha_mono hratio_mono hm hm_lower hm_upper).trans
+        (ENNReal.ofReal_le_ofReal (hg_annulus m x hm hm_lower hm_upper))
+
+/--
+Durrett 2019, Theorem 2.5.13 variance support: the prefix-plus-annulus
+majorant hypotheses now feed the weighted base moving-truncation
+second-moment summability handoff directly.
+-/
+theorem durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_majorant_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX0_meas : Measurable X0)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (ha_pos : ∀ n : ℕ, 0 < a n) (ha_mono : Monotone a)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hg_prefix : ∀ x : ℝ, |x| < a 1 -> 2 ≤ g x)
+    (hg_annulus : ∀ (m : ℕ) (x : ℝ), 1 ≤ m ->
+      a (m - 1) ≤ |x| -> |x| < a m -> 2 * (m : ℝ) ≤ g x) :
+    Summable fun k : ℕ =>
+      (((a (k + 1)) ^ 2)⁻¹) *
+        ∫ ω,
+          (durrett2019_theorem_2_5_13_truncated (fun _ : ℕ => X0) a (k + 1) ω) ^ 2 ∂P :=
+  durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_scalar_kernel_bound
+    (P := P) (X0 := X0) (a := a) (g := g)
+    hX0_meas hg_int hg_nonneg
+    (durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_majorant_of_ratio_mono
+      (a := a) (g := g) ha_pos ha_mono hratio_mono ha_shift_atTop
+      hg_prefix hg_annulus)
+
+/--
 Durrett 2019, Theorem 2.5.13 annulus support: the scalar truncated absolute
 value at any cutoff `a_k` below `a_n` is bounded by the prefix cutoff plus the
 finite annulus sum up to `n`.
@@ -14569,6 +14659,90 @@ theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_sc
     (durrett2019_theorem_2_5_13_ratio_eventually_of_ratio_mono
       (a := a) ha_pos hratio_mono)
     htail_summable
+
+/--
+Durrett 2019, Theorem 2.5.13 moving-truncated endpoint: the
+prefix-plus-annulus majorant hypotheses discharge the scalar-kernel bound in
+the finite-tail, ratio-monotone convergent half.
+-/
+theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_majorant_tail_summable_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|})
+    (hg_prefix : ∀ x : ℝ, |x| < a 1 -> 2 ≤ g x)
+    (hg_annulus : ∀ (m : ℕ) (x : ℝ), 1 ≤ m ->
+      a (m - 1) ≤ |x| -> |x| < a m -> 2 * (m : ℝ) ≤ g x) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_ratio_mono
+    (P := P) (X := X) (X0 := X0) (a := a) (g := g)
+    hX_indep hX_meas hX0_meas hX_ident hg_int hg_nonneg
+    (durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_majorant_of_ratio_mono
+      (a := a) (g := g) ha_pos ha_mono hratio_mono ha_shift_atTop
+      hg_prefix hg_annulus)
+    ha_pos ha_mono ha_increment_nonneg ha_shift_atTop
+    hn_over_a_tendsto_zero hratio_mono htail_summable
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent-half source wrapper: finite base tail
+series, monotone cutoffs, the textbook monotonicity of `a_n / n`, and the
+prefix-plus-annulus majorant hypotheses imply the original normalized-sum
+endpoint.
+-/
+theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_majorant_tail_summable_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto a atTop atTop)
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|})
+    (hg_prefix : ∀ x : ℝ, |x| < a 1 -> 2 ≤ g x)
+    (hg_annulus : ∀ (m : ℕ) (x : ℝ), 1 ≤ m ->
+      a (m - 1) ≤ |x| -> |x| < a m -> 2 * (m : ℝ) ≤ g x) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, X (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_ratio_mono
+    (P := P) (X := X) (X0 := X0) (a := a) (g := g)
+    hX_indep hX_meas hX0_meas hX_ident hg_int hg_nonneg
+    (durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_majorant_of_ratio_mono
+      (a := a) (g := g) ha_pos ha_mono hratio_mono ha_shift_atTop
+      hg_prefix hg_annulus)
+    ha_pos ha_mono ha_increment_nonneg ha_atTop ha_shift_atTop
+    hn_over_a_tendsto_zero hratio_mono htail_summable
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
