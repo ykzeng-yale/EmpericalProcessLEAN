@@ -32,13 +32,15 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V477` in
+Route from `Live In-Thread Goal Prompt V478` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
 product-expectation support in `StatInference/ProbabilityTheory/Basic.lean`.
 Theorem 2.4.9 source-entry plumbing through V390 is compiled; V477 adds the
-nonnegative `lintegral` product-expectation branch of Theorem 2.1.13.  The
+nonnegative `lintegral` product-expectation branch of Theorem 2.1.13; and
+V478 adds the nonnegative separated product-measure and independent-pair
+product-expectation branch of Theorem 2.1.12.  The
 historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
 V443 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.

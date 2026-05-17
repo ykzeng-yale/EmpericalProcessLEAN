@@ -1089,6 +1089,81 @@ theorem durrett2019_theorem_2_1_12_product_integral_mul
     ν κ f g
 
 /--
+Durrett 2019, Theorem 2.1.12, nonnegative separated product-measure form.
+
+This is the Tonelli `lintegral` analogue of the separated product-expectation
+display, and is the direct product-measure API behind the nonnegative
+independent-pair wrapper below.
+-/
+theorem durrett2019_theorem_2_1_12_product_lintegral_mul
+    {S : Type u} [MeasurableSpace S]
+    {T : Type v} [MeasurableSpace T]
+    {ν : Measure S} {κ : Measure T} [SFinite κ]
+    {f : S -> ℝ≥0∞} {g : T -> ℝ≥0∞}
+    (hf : AEMeasurable f ν) (hg : AEMeasurable g κ) :
+    ∫⁻ z, f z.1 * g z.2 ∂ν.prod κ =
+      (∫⁻ x, f x ∂ν) * ∫⁻ y, g y ∂κ := by
+  exact lintegral_prod_mul hf hg
+
+/--
+Durrett 2019, Theorem 2.1.12, nonnegative independent separated-product form.
+
+For independent `X` and `Y`, this packages the textbook display
+`E[f(X) g(Y)] = E[f(X)] E[g(Y)]` for nonnegative measurable functions.
+-/
+theorem durrett2019_theorem_2_1_12_indepFun_lintegral_mul_eq_mul_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {T : Type w} [MeasurableSpace T]
+    {P : Measure Ω} {X : Ω -> S} {Y : Ω -> T}
+    {f : S -> ℝ≥0∞} {g : T -> ℝ≥0∞}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : Measurable X) (hY : Measurable Y)
+    (hf : Measurable f) (hg : Measurable g) :
+    ∫⁻ ω, f (X ω) * g (Y ω) ∂P =
+      (∫⁻ ω, f (X ω) ∂P) * ∫⁻ ω, g (Y ω) ∂P := by
+  have hcomp :
+      _root_.ProbabilityTheory.IndepFun (μ := P)
+        (fun ω => f (X ω)) (fun ω => g (Y ω)) := by
+    simpa [Function.comp_def] using hXY.comp hf hg
+  simpa [Pi.mul_apply] using
+    _root_.ProbabilityTheory.lintegral_mul_eq_lintegral_mul_lintegral_of_indepFun
+      (μ := P) (f := fun ω => f (X ω)) (g := fun ω => g (Y ω))
+      (hf.comp hX) (hg.comp hY) hcomp
+
+/--
+Durrett 2019, Theorem 2.1.12, real nonnegative independent
+separated-product form.
+
+This is the same nonnegative product expectation display for real-valued
+nonnegative functions, encoded through `ENNReal.ofReal`.
+-/
+theorem durrett2019_theorem_2_1_12_indepFun_lintegral_ofReal_mul_eq_mul_lintegral_ofReal
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {T : Type w} [MeasurableSpace T]
+    {P : Measure Ω} {X : Ω -> S} {Y : Ω -> T}
+    {f : S -> ℝ} {g : T -> ℝ}
+    (hXY : _root_.ProbabilityTheory.IndepFun (μ := P) X Y)
+    (hX : Measurable X) (hY : Measurable Y)
+    (hf : Measurable f) (hg : Measurable g)
+    (hf_nonneg : ∀ x, 0 ≤ f x) :
+    ∫⁻ ω, ENNReal.ofReal (f (X ω) * g (Y ω)) ∂P =
+      (∫⁻ ω, ENNReal.ofReal (f (X ω)) ∂P) *
+        ∫⁻ ω, ENNReal.ofReal (g (Y ω)) ∂P := by
+  calc
+    ∫⁻ ω, ENNReal.ofReal (f (X ω) * g (Y ω)) ∂P =
+        ∫⁻ ω, ENNReal.ofReal (f (X ω)) *
+          ENNReal.ofReal (g (Y ω)) ∂P := by
+      congr with ω
+      exact ENNReal.ofReal_mul (hf_nonneg (X ω))
+    _ = (∫⁻ ω, ENNReal.ofReal (f (X ω)) ∂P) *
+        ∫⁻ ω, ENNReal.ofReal (g (Y ω)) ∂P :=
+      durrett2019_theorem_2_1_12_indepFun_lintegral_mul_eq_mul_lintegral
+        (P := P) (X := X) (Y := Y) hXY hX hY
+        (hf := hf.ennreal_ofReal) (hg := hg.ennreal_ofReal)
+
+/--
 Durrett 2019, Theorem 2.1.13, two-variable expectation factorization.
 -/
 theorem durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral

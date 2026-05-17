@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V477
+## Live In-Thread Goal Prompt V478
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -18,9 +18,10 @@ Chapter 2.1 independence/product-law/product-expectation support in
 `StatInference/ProbabilityMeasure/ProductMeasure.lean`, and mathlib
 independence/Tonelli APIs.  The earlier 2.4.9 source-entry plumbing through
 V390 and the 2.5.13 infinite-mean source display through V476 are compiled.
-V477 adds the nonnegative branch of Durrett Theorem 2.1.13: independent
-finite/range/Ico products factor under `lintegral`, both for `ℝ≥0∞` variables
-and real nonnegative variables encoded by `ENNReal.ofReal`.
+V477 added the nonnegative finite-product branch of Durrett Theorem 2.1.13.
+V478 adds the nonnegative separated product-measure and independent-pair
+product-expectation branch of Durrett Theorem 2.1.12, including the real
+nonnegative `ENNReal.ofReal` display.
 Do not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -54,7 +55,8 @@ contradiction shell, or the solved bounded-ratio linear-tail transfer, or the
 solved linear-grid layer-cake/counting bridge, the solved bounded-ratio
 integrability instantiation, the solved lintegral infinite-mean display, the
 solved unshifted-to-one-based divergent tail-series display, or the solved
-nonnegative finite-product expectation wrappers.
+nonnegative finite-product and independent-pair separated product-expectation
+wrappers.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -62,6 +64,15 @@ source-facing 2.4.9 display only if search proves it is absent; otherwise add
 the next Chapter 2.1 product-law/product-expectation wrapper that directly
 supports 2.4.9 or the adjacent Kolmogorov-maximal route.  Do not return to
 2.5.13 or old app-level stale prompts.
+
+Latest verified target V478 adds the nonnegative separated-product branch of
+Durrett Theorem 2.1.12:
+`durrett2019_theorem_2_1_12_product_lintegral_mul`,
+`durrett2019_theorem_2_1_12_indepFun_lintegral_mul_eq_mul_lintegral`, and
+`durrett2019_theorem_2_1_12_indepFun_lintegral_ofReal_mul_eq_mul_lintegral_ofReal`.
+These wrappers reuse mathlib's product-measure Tonelli and independent
+`lintegral` product-expectation APIs, and close the direct source-shape
+`E[f(X) g(Y)] = E[f(X)] E[g(Y)]` display for nonnegative functions.
 
 Latest verified target V477 adds the nonnegative branch of Durrett Theorem
 2.1.13:
@@ -4345,6 +4356,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V477` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V478` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
