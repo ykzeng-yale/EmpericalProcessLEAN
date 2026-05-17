@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V457` in
+Route from `Live In-Thread Goal Prompt V458` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -79,10 +79,15 @@ defines the base absolute annulus integral, proves the scalar finite-annulus
 cover, proves integrability of the bounded truncated/annulus indicators, and
 proves the integrated bound
 `baseAbsTruncIntegral k <= a_N + sum_{r=N+1}^n baseAbsAnnulusIntegral r`.
-The next source work is to prove the weighted annulus tail summability from
-identity (*) and finite large-jump tail series, prove the same annulus
-calculus supplies scalar truncated-square kernel majorization, and then
-assemble the source-facing Feller dichotomy wrapper.  Do not route back into
+V458 connects this first-moment annulus bridge to Durrett's identity (*) mass
+series: the base absolute annulus integral is nonnegative, is bounded by
+`a_r` times the annulus probability, and after multiplying by `r / a_r` is
+bounded by `r` times that annulus mass; it also adds the direct tail-bound
+transfer into the V455 mean bridge.  The next source work is to prove the
+identity (*) mass-tail summability from finite large-jump tail series, prove
+the same annulus calculus supplies scalar truncated-square kernel
+majorization, and then assemble the source-facing Feller dichotomy wrapper.
+Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
 integer-to-real threshold bridge, the solved countable a.e. all-threshold
@@ -95,8 +100,13 @@ scalar-kernel-to-original-endpoint handoff, or the solved
 scaled-mean-summability-to-mean-normalization handoff, or the solved
 textbook-prefix-plus-tail mean squeeze, the solved finite-annulus ratio/tail
 bridge, the solved base-truncated-integral-to-mean bridge, or the solved base
-absolute finite-annulus partition/integral bridge.  New compiled anchors
-through V457:
+absolute finite-annulus partition/integral bridge, or the solved
+annulus-first-moment-to-identity-mass bridge.  New compiled anchors through
+V458:
+`durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral_nonneg`,
+`durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral_le_cutoff_mul_measureReal`,
+`durrett2019_theorem_2_5_13_weighted_baseAbsAnnulusIntegral_le_mass_weight`,
+`durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_mass_weight_tail_bound`,
 `durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral`,
 `durrett2019_theorem_2_5_13_abs_lt_prefix_or_mem_annulus`,
 `durrett2019_theorem_2_5_13_abs_trunc_indicator_le_cutoff_add_annulus_sum`,

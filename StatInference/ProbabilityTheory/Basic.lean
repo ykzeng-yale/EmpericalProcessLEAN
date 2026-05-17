@@ -13168,6 +13168,134 @@ theorem durrett2019_theorem_2_5_13_baseAbsTruncIntegral_le_cutoff_add_annulusInt
     using hintegral_le
 
 /--
+Durrett 2019, Theorem 2.5.13 annulus support: the base absolute annulus
+integral is nonnegative.
+-/
+theorem durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral_nonneg
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ} (r : ℕ) :
+    0 ≤ durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r := by
+  refine integral_nonneg fun ω => ?_
+  by_cases hmem : a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r
+  · simp [hmem]
+  · simp [hmem]
+
+/--
+Durrett 2019, Theorem 2.5.13 annulus support: the base absolute first-moment
+contribution on `[a_{r-1}, a_r)` is bounded by the upper cutoff times the
+annulus probability.
+-/
+theorem durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral_le_cutoff_mul_measureReal
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ} (hX0_meas : Measurable X0) (r : ℕ) :
+    durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r ≤
+      a r * P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r} := by
+  let A : Set Ω := {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}
+  have hA : MeasurableSet A :=
+    (measurableSet_le measurable_const hX0_meas.abs).inter
+      (measurableSet_lt hX0_meas.abs measurable_const)
+  have hleft_int :
+      Integrable
+        (Set.indicator A (fun ω : Ω => |X0 ω|)) P :=
+    durrett2019_theorem_2_5_13_integrable_baseAbsAnnulusIntegrand
+      (P := P) (X0 := X0) (a := a) hX0_meas r
+  have hright_int : Integrable (Set.indicator A (fun _ : Ω => a r)) P :=
+    (integrable_const (a r)).indicator hA
+  have hpoint :
+      ∀ ω : Ω,
+        Set.indicator A (fun ω : Ω => |X0 ω|) ω ≤
+          Set.indicator A (fun _ : Ω => a r) ω := by
+    intro ω
+    by_cases hω : ω ∈ A
+    · exact by
+        simpa [A, Set.indicator_of_mem hω] using (show |X0 ω| ≤ a r from hω.2.le)
+    · simp [Set.indicator_of_notMem hω]
+  have hintegral :
+      ∫ ω, Set.indicator A (fun ω : Ω => |X0 ω|) ω ∂P ≤
+        ∫ ω, Set.indicator A (fun _ : Ω => a r) ω ∂P :=
+    integral_mono hleft_int hright_int hpoint
+  have hright :
+      ∫ ω, Set.indicator A (fun _ : Ω => a r) ω ∂P =
+        P.real A * a r := by
+    simpa [smul_eq_mul] using
+      (integral_indicator_const (μ := P) (s := A) (e := a r) hA)
+  calc
+    durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r =
+        ∫ ω, Set.indicator A (fun ω : Ω => |X0 ω|) ω ∂P := by
+          rfl
+    _ ≤ ∫ ω, Set.indicator A (fun _ : Ω => a r) ω ∂P := hintegral
+    _ = a r * P.real A := by
+          rw [hright]
+          ring
+    _ = a r * P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r} := by
+          rfl
+
+/--
+Durrett 2019, Theorem 2.5.13 annulus support: after multiplying by the
+textbook factor `r / a_r`, the base absolute annulus first moment is bounded
+by `r` times the annulus probability mass.  This is the bridge from the
+moving-mean annulus estimate to the identity (*) mass series.
+-/
+theorem durrett2019_theorem_2_5_13_weighted_baseAbsAnnulusIntegral_le_mass_weight
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_pos : ∀ m : ℕ, 0 < a m) (hX0_meas : Measurable X0) (r : ℕ) :
+    ((r : ℝ) / a r) *
+        durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r ≤
+      (r : ℝ) *
+        P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r} := by
+  have hcoef_nonneg : 0 ≤ (r : ℝ) / a r :=
+    div_nonneg (Nat.cast_nonneg r) (ha_pos r).le
+  have hbase :=
+    durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral_le_cutoff_mul_measureReal
+      (P := P) (X0 := X0) (a := a) hX0_meas r
+  calc
+    ((r : ℝ) / a r) *
+        durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r ≤
+      ((r : ℝ) / a r) *
+        (a r * P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) := by
+          exact mul_le_mul_of_nonneg_left hbase hcoef_nonneg
+    _ =
+      (r : ℝ) *
+        P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r} := by
+          field_simp [ne_of_gt (ha_pos r)]
+
+/--
+Durrett 2019, Theorem 2.5.13 annulus support: any eventual tail bound for the
+identity (*) mass weights immediately bounds the weighted base absolute
+annulus integrals consumed by the V455 mean bridge.
+-/
+theorem durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_mass_weight_tail_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a c : ℕ -> ℝ}
+    (ha_pos : ∀ m : ℕ, 0 < a m) (hX0_meas : Measurable X0)
+    (hmass_tail : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        (∑ r ∈ Finset.Icc (N + 1) n,
+          (r : ℝ) *
+            P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) ≤
+          ∑' j : ℕ, c (j + N + 1)) :
+    ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        (∑ r ∈ Finset.Icc (N + 1) n,
+          ((r : ℝ) / a r) *
+            durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r) ≤
+          ∑' j : ℕ, c (j + N + 1) := by
+  intro N
+  filter_upwards [hmass_tail N] with n hmass_n
+  have hsum_le :
+      (∑ r ∈ Finset.Icc (N + 1) n,
+        ((r : ℝ) / a r) *
+          durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r) ≤
+        ∑ r ∈ Finset.Icc (N + 1) n,
+          (r : ℝ) *
+            P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r} := by
+    exact Finset.sum_le_sum fun r _hr =>
+      durrett2019_theorem_2_5_13_weighted_baseAbsAnnulusIntegral_le_mass_weight
+        (P := P) (X0 := X0) (a := a) ha_pos hX0_meas r
+  exact hsum_le.trans hmass_n
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
