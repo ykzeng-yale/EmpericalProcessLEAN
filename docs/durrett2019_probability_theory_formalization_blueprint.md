@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V460`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V461`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -81,10 +81,8 @@ V458 connects this first-moment annulus bridge to Durrett's identity (*) mass
 series: the base absolute annulus integral is nonnegative, is bounded by
 `a_r` times the annulus probability, and after multiplying by `r / a_r` is
 bounded by `r` times that annulus mass; it also adds the direct tail-bound
-transfer into the V455 mean bridge.  The next source work is to prove the
-identity (*) mass-tail summability from finite large-jump tail series, prove
-the same annulus calculus supplies scalar truncated-square kernel
-majorization, and then assemble the source-facing Feller dichotomy wrapper.
+transfer into the V455 mean bridge.  This set up the subsequent identity(*)
+mass-tail summability and source finite-prefix layers.
 V459 adds the deterministic summable-tail layer: finite `Icc (N+1) n` tails
 are reindexed as shifted range sums, any nonnegative summable sequence
 controls those finite tails by its shifted `tsum`, and summability of
@@ -95,6 +93,11 @@ sequence whose finite prefixes are bounded by finite prefixes of a summable
 nonnegative tail sequence is summable, and the source-shaped prefix inequality
 for the annulus mass weights now directly supplies both mass-weight
 summability and the weighted base annulus integral tail bound.
+V461 proves that source-shaped finite-prefix inequality from the monotone
+half-open annulus partition: the weighted prefix is converted to a triangular
+finite sum, finite annulus unions are disjoint and contained in the
+corresponding large-jump tail event, and the resulting source theorem supplies
+mass-weight summability and the weighted base annulus tail bound directly.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -111,7 +114,15 @@ bridge, the solved base-truncated-integral-to-mean bridge, or the solved base
 absolute finite-annulus partition/integral bridge, or the solved
 annulus-first-moment-to-identity-mass bridge, or the solved
 mass-weight-summable-to-shifted-tail-bound bridge, or the solved
-finite-prefix-identity(*) consumer.  New compiled anchors through V460:
+finite-prefix-identity(*) consumer, or the solved monotone-annulus
+finite-identity bridge.  New compiled anchors through V461:
+`durrett2019_theorem_2_5_13_range_nat_mul_eq_triangular_Icc_sum`,
+`durrett2019_theorem_2_5_13_baseAbsAnnulus_pairwiseDisjoint`,
+`durrett2019_theorem_2_5_13_baseAbsAnnulus_biUnion_subset_tail`,
+`durrett2019_theorem_2_5_13_annulus_mass_Icc_tail_le_tail`,
+`durrett2019_theorem_2_5_13_mass_weight_prefix_identity_bound_of_monotone`,
+`durrett2019_theorem_2_5_13_mass_weight_summable_of_tail_summable_and_monotone`,
+`durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_tail_summable_and_monotone`,
 `durrett2019_theorem_2_5_13_summable_of_prefix_le_summable_prefix`,
 `durrett2019_theorem_2_5_13_mass_weight_summable_of_prefix_identity_bound`,
 `durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_prefix_identity_bound`,

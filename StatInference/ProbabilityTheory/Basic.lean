@@ -13496,6 +13496,212 @@ theorem durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_prefix_
       (P := P) (X0 := X0) (a := a) htail_summable hprefix_identity)
 
 /--
+Durrett 2019, Theorem 2.5.13 deterministic identity(*) support: the finite
+weighted prefix `sum r * u_r` can be written as the triangular sum over all
+lower cutoffs `n < r`.
+-/
+theorem durrett2019_theorem_2_5_13_range_nat_mul_eq_triangular_Icc_sum
+    {u : ℕ -> ℝ} (M : ℕ) :
+    (∑ r ∈ Finset.range M, (r : ℝ) * u r) =
+      ∑ n ∈ Finset.range M,
+        ∑ r ∈ Finset.Icc (n + 1) (M - 1), u r := by
+  induction M with
+  | zero =>
+      simp
+  | succ M ih =>
+      rw [Finset.sum_range_succ]
+      rw [ih]
+      rw [Finset.sum_range_succ]
+      have hsucc_pred : M + 1 - 1 = M := by
+        omega
+      rw [hsucc_pred]
+      have hlast :
+          (∑ r ∈ Finset.Icc (M + 1) M, u r) = 0 := by
+        simp
+      rw [hlast, add_zero]
+      by_cases hMzero : M = 0
+      · subst M
+        simp
+      have hMpos : 0 < M := Nat.pos_of_ne_zero hMzero
+      have hsplit :
+          (∑ n ∈ Finset.range M,
+            ∑ r ∈ Finset.Icc (n + 1) M, u r) =
+            (∑ n ∈ Finset.range M,
+              ∑ r ∈ Finset.Icc (n + 1) (M - 1), u r) + (M : ℝ) * u M := by
+        calc
+          (∑ n ∈ Finset.range M, ∑ r ∈ Finset.Icc (n + 1) M, u r) =
+              ∑ n ∈ Finset.range M,
+                ((∑ r ∈ Finset.Icc (n + 1) (M - 1), u r) + u M) := by
+                refine Finset.sum_congr rfl ?_
+                intro n hn
+                have hM : (M - 1) + 1 = M := by
+                  omega
+                have hnlt : n < M := Finset.mem_range.mp hn
+                have hnM : n + 1 ≤ (M - 1) + 1 := by
+                  omega
+                simpa [hM] using
+                  (Finset.sum_Icc_succ_top hnM (fun r : ℕ => u r))
+          _ =
+              (∑ n ∈ Finset.range M,
+                ∑ r ∈ Finset.Icc (n + 1) (M - 1), u r) +
+                  ∑ _n ∈ Finset.range M, u M := by
+                rw [Finset.sum_add_distrib]
+          _ =
+              (∑ n ∈ Finset.range M,
+                ∑ r ∈ Finset.Icc (n + 1) (M - 1), u r) + (M : ℝ) * u M := by
+                simp [Finset.sum_const, nsmul_eq_mul]
+      exact hsplit.symm
+
+/--
+Durrett 2019, Theorem 2.5.13 identity(*) support: the half-open annuli
+`[a_{r-1}, a_r)` are pairwise disjoint when the cutoff sequence is monotone.
+-/
+theorem durrett2019_theorem_2_5_13_baseAbsAnnulus_pairwiseDisjoint
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ} (ha_mono : Monotone a) (s : Finset ℕ) :
+    Set.PairwiseDisjoint (↑s)
+      (fun r : ℕ => {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) := by
+  intro r _hr q _hq hrq
+  rcases lt_or_gt_of_ne hrq with hrq_lt | hqr_lt
+  · change Disjoint
+      {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}
+      {ω : Ω | a (q - 1) ≤ |X0 ω| ∧ |X0 ω| < a q}
+    refine Set.disjoint_left.mpr ?_
+    intro ω hωr hωq
+    have hr_le_qpred : r ≤ q - 1 := by omega
+    have hcut : a r ≤ a (q - 1) := ha_mono hr_le_qpred
+    exact not_lt_of_ge (hcut.trans hωq.1) hωr.2
+  · change Disjoint
+      {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}
+      {ω : Ω | a (q - 1) ≤ |X0 ω| ∧ |X0 ω| < a q}
+    refine Set.disjoint_left.mpr ?_
+    intro ω hωr hωq
+    have hq_le_rpred : q ≤ r - 1 := by omega
+    have hcut : a q ≤ a (r - 1) := ha_mono hq_le_rpred
+    exact not_lt_of_ge (hcut.trans hωr.1) hωq.2
+
+/--
+Durrett 2019, Theorem 2.5.13 identity(*) support: for a fixed lower cutoff
+`n`, the finite union of later half-open annuli is contained in the tail event
+`{a_n <= |X_0|}`.
+-/
+theorem durrett2019_theorem_2_5_13_baseAbsAnnulus_biUnion_subset_tail
+    {Ω : Type u} [MeasurableSpace Ω]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ} (ha_mono : Monotone a) {n M : ℕ} :
+    (⋃ r ∈ Finset.Icc (n + 1) (M - 1),
+      {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) ⊆
+      {ω : Ω | a n ≤ |X0 ω|} := by
+  intro ω hω
+  rcases Set.mem_iUnion.mp hω with ⟨r, hωr⟩
+  rcases Set.mem_iUnion.mp hωr with ⟨hr, hmem⟩
+  have hn_le_rpred : n ≤ r - 1 := by
+    exact Nat.le_pred_of_lt (Finset.mem_Icc.mp hr).1
+  exact (ha_mono hn_le_rpred).trans hmem.1
+
+/--
+Durrett 2019, Theorem 2.5.13 identity(*) support: the finite mass of all
+annuli above a fixed lower cutoff is bounded by that cutoff's tail
+probability.
+-/
+theorem durrett2019_theorem_2_5_13_annulus_mass_Icc_tail_le_tail
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_mono : Monotone a) (hX0_meas : Measurable X0) (n M : ℕ) :
+    (∑ r ∈ Finset.Icc (n + 1) (M - 1),
+      P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) ≤
+      P.real {ω : Ω | a n ≤ |X0 ω|} := by
+  let s : Finset ℕ := Finset.Icc (n + 1) (M - 1)
+  let A : ℕ -> Set Ω := fun r =>
+    {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}
+  have hdisj : Set.PairwiseDisjoint (↑s) A :=
+    durrett2019_theorem_2_5_13_baseAbsAnnulus_pairwiseDisjoint
+      (X0 := X0) (a := a) ha_mono s
+  have hmeas : ∀ r ∈ s, MeasurableSet (A r) := by
+    intro r _hr
+    exact
+      (measurableSet_le measurable_const hX0_meas.abs).inter
+        (measurableSet_lt hX0_meas.abs measurable_const)
+  have hsum_eq :
+      (∑ r ∈ s, P.real (A r)) =
+        P.real (⋃ r ∈ s, A r) := by
+    simpa [A] using
+      (measureReal_biUnion_finset (μ := P) (s := s) (f := A) hdisj hmeas).symm
+  calc
+    (∑ r ∈ Finset.Icc (n + 1) (M - 1),
+      P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) =
+        P.real (⋃ r ∈ s, A r) := by
+          simpa [s, A] using hsum_eq
+    _ ≤ P.real {ω : Ω | a n ≤ |X0 ω|} :=
+        measureReal_mono
+          (durrett2019_theorem_2_5_13_baseAbsAnnulus_biUnion_subset_tail
+            (X0 := X0) (a := a) ha_mono (n := n) (M := M))
+
+/--
+Durrett 2019, Theorem 2.5.13 identity(*) support: the finite-prefix form of
+identity (*) follows from monotonicity of the cutoff sequence and disjointness
+of the half-open annuli.
+-/
+theorem durrett2019_theorem_2_5_13_mass_weight_prefix_identity_bound_of_monotone
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_mono : Monotone a) (hX0_meas : Measurable X0) (M : ℕ) :
+    (∑ r ∈ Finset.range M,
+      (r : ℝ) *
+        P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) ≤
+      ∑ n ∈ Finset.range M,
+        P.real {ω : Ω | a n ≤ |X0 ω|} := by
+  rw [durrett2019_theorem_2_5_13_range_nat_mul_eq_triangular_Icc_sum
+    (u := fun r : ℕ =>
+      P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r}) M]
+  exact Finset.sum_le_sum fun n _hn =>
+    durrett2019_theorem_2_5_13_annulus_mass_Icc_tail_le_tail
+      (P := P) (X0 := X0) (a := a) ha_mono hX0_meas n M
+
+/--
+Durrett 2019, Theorem 2.5.13 identity(*) support: finite base tail series and
+monotone cutoffs imply summability of the annulus mass weights.
+-/
+theorem durrett2019_theorem_2_5_13_mass_weight_summable_of_tail_summable_and_monotone
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_mono : Monotone a) (hX0_meas : Measurable X0)
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    Summable fun r : ℕ =>
+      (r : ℝ) *
+        P.real {ω : Ω | a (r - 1) ≤ |X0 ω| ∧ |X0 ω| < a r} :=
+  durrett2019_theorem_2_5_13_mass_weight_summable_of_prefix_identity_bound
+    (P := P) (X0 := X0) (a := a) htail_summable
+    (durrett2019_theorem_2_5_13_mass_weight_prefix_identity_bound_of_monotone
+      (P := P) (X0 := X0) (a := a) ha_mono hX0_meas)
+
+/--
+Durrett 2019, Theorem 2.5.13 identity(*) support: finite base tail series and
+monotone cutoffs supply the shifted weighted annulus-integral tail bound
+needed by the mean bridge.
+-/
+theorem durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_tail_summable_and_monotone
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (hX0_meas : Measurable X0)
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        (∑ r ∈ Finset.Icc (N + 1) n,
+          ((r : ℝ) / a r) *
+            durrett2019_theorem_2_5_13_baseAbsAnnulusIntegral P X0 a r) ≤
+          ∑' j : ℕ,
+            ((j + N + 1 : ℕ) : ℝ) *
+              P.real {ω : Ω |
+                a (j + N + 1 - 1) ≤ |X0 ω| ∧ |X0 ω| < a (j + N + 1)} :=
+  durrett2019_theorem_2_5_13_weighted_baseAbsAnnulus_tail_bound_of_mass_weight_summable
+    (P := P) (X0 := X0) (a := a) ha_pos hX0_meas
+    (durrett2019_theorem_2_5_13_mass_weight_summable_of_tail_summable_and_monotone
+      (P := P) (X0 := X0) (a := a) ha_mono hX0_meas htail_summable)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
