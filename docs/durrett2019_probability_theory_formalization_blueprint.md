@@ -27,12 +27,12 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V484`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V485`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V484: stay on Durrett Theorem 2.4.9
+Current immediate target after V485: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -46,7 +46,8 @@ adds the law-side real nonnegative `ENNReal.ofReal` branch for finite/range/Ico
 products and iid powers; V483 adds finite-dimensional infinite-product
 restriction and finite-cylinder probability wrappers for Theorem 2.1.11; V484
 adds one-based finite-prefix cylinder probability wrappers from iid source
-hypotheses.  The
+hypotheses; V485 adds `Fin n` finite-prefix product-law `HasLaw` wrappers from
+iid source hypotheses and canonical infinite-product coordinates.  The
 next packet should close only a proved-missing
 2.4.9 display or add the next Chapter 2.1 product-law/product-expectation
 wrapper that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
@@ -60,8 +61,8 @@ product-expectation wrappers, or the law-side separated product-expectation
 wrappers, or the law-side finite-product expectation/power wrappers, including
 the law-side real `ENNReal.ofReal` branch, or the finite-dimensional
 infinite-product restriction/cylinder wrappers, or the one-based finite-prefix
-cylinder source wrappers, unless a focused source check exposes a missing
-handoff.
+cylinder source wrappers, or the `Fin n` finite-prefix product-law wrappers,
+unless a focused source check exposes a missing handoff.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.4.9
 Glivenko-Cantelli and Chapter 2.1 support in

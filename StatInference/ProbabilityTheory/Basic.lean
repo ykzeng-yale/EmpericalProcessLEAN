@@ -1112,6 +1112,146 @@ theorem durrett2019_theorem_2_1_11_iid_shift_hasLaw_infinitePi_of_identDistrib
     hindep
 
 /--
+Durrett 2019, Theorem 2.1.11, finite prefix product-law form.
+
+For a sequence of independent variables with common law `ν`, the vector of the
+first `n` zero-based coordinates, indexed by `Fin n`, has finite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_fin_prefix_hasLaw_pi_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : Fin n => X i ω)
+      (Measure.pi fun _ : Fin n => ν) μ := by
+  have hLawFin : ∀ i : Fin n,
+      _root_.ProbabilityTheory.HasLaw (fun ω => X i ω) ν μ := by
+    intro i
+    exact hLaw i
+  have hindepFin :
+      _root_.ProbabilityTheory.iIndepFun
+        (μ := μ) (fun i : Fin n => fun ω => X i ω) := by
+    simpa using
+      hindep.precomp (g := fun i : Fin n => (i : ℕ)) Fin.val_injective
+  exact durrett2019_theorem_2_1_11_iid_hasLaw_pi hindepFin hLawFin
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based finite prefix product-law form.
+
+This is the direct `Fin n` version of Durrett's finite vector
+`(X_1, ..., X_n)` when the ambient Lean sequence is zero-based.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_fin_prefix_hasLaw_pi_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : Fin n => X ((i : ℕ) + 1) ω)
+      (Measure.pi fun _ : Fin n => ν) μ := by
+  have hLawFin : ∀ i : Fin n,
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω => X ((i : ℕ) + 1) ω) ν μ := by
+    intro i
+    exact hLaw ((i : ℕ) + 1)
+  have hinj : Function.Injective (fun i : Fin n => (i : ℕ) + 1) := by
+    intro i j hij
+    apply Fin.ext
+    exact Nat.succ.inj (by simpa [Nat.succ_eq_add_one] using hij)
+  have hindepFin :
+      _root_.ProbabilityTheory.iIndepFun
+        (μ := μ) (fun i : Fin n => fun ω => X ((i : ℕ) + 1) ω) := by
+    simpa using
+      hindep.precomp (g := fun i : Fin n => (i : ℕ) + 1) hinj
+  exact durrett2019_theorem_2_1_11_iid_hasLaw_pi hindepFin hLawFin
+
+/--
+Durrett 2019, Theorem 2.1.11, finite prefix product law from the common
+identical-distribution source shape.
+-/
+theorem durrett2019_theorem_2_1_11_iid_fin_prefix_hasLaw_pi_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : Fin n => X i ω)
+      (Measure.pi fun _ : Fin n => ν) μ :=
+  durrett2019_theorem_2_1_11_iid_fin_prefix_hasLaw_pi_of_iIndepFun
+    (X := X)
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep n
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based finite prefix product law from the
+common identical-distribution source shape.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_fin_prefix_hasLaw_pi_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : Fin n => X ((i : ℕ) + 1) ω)
+      (Measure.pi fun _ : Fin n => ν) μ :=
+  durrett2019_theorem_2_1_11_iid_shift_fin_prefix_hasLaw_pi_of_iIndepFun
+    (X := X)
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep n
+
+/--
+Durrett 2019, Theorem 2.1.11, canonical finite-prefix coordinates on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_fin_prefix_hasLaw_pi
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S) (n : ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> S => fun i : Fin n => sample i)
+      (Measure.pi fun _ : Fin n => (ν : Measure S))
+      (Measure.infinitePi fun _ : ℕ => (ν : Measure S)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_11_iid_fin_prefix_hasLaw_pi_of_iIndepFun
+      (X := fun i : ℕ => fun sample : ℕ -> S => sample i)
+      hCoord.1 hCoord.2.1 n
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based canonical finite-prefix coordinates on
+`ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_shift_fin_prefix_hasLaw_pi
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S) (n : ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> S => fun i : Fin n => sample ((i : ℕ) + 1))
+      (Measure.pi fun _ : Fin n => (ν : Measure S))
+      (Measure.infinitePi fun _ : ℕ => (ν : Measure S)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_11_iid_shift_fin_prefix_hasLaw_pi_of_iIndepFun
+      (X := fun i : ℕ => fun sample : ℕ -> S => sample i)
+      hCoord.1 hCoord.2.1 n
+
+/--
 Durrett 2019, Theorem 2.1.11, iid finite prefix cylinder probabilities from
 source independence and marginal-law hypotheses.
 -/

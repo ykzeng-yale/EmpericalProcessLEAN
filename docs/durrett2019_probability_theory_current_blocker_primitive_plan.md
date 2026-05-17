@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V484
+## Live In-Thread Goal Prompt V485
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -22,7 +22,9 @@ Glivenko-Cantelli source-entry/canonical-iid wrappers through V390, the full
 expectation wrappers through V479, the 2.1.13 finite product expectation
 wrappers through V482, and V483's finite-dimensional infinite-product
 restriction/cylinder probability wrappers.  V484 adds one-based finite-prefix
-cylinder probability wrappers from iid source hypotheses.
+cylinder probability wrappers from iid source hypotheses.  V485 adds `Fin n`
+finite-prefix product-law `HasLaw` wrappers from iid source hypotheses and
+canonical infinite-product coordinates.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -31,7 +33,20 @@ the next Chapter 2.1 product-law/product-expectation wrapper that directly
 supports 2.4.9 or the adjacent Kolmogorov-maximal route.  Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
-cylinder source wrappers, or old app-level stale prompts.
+cylinder source wrappers, solved `Fin n` finite-prefix product-law wrappers,
+or old app-level stale prompts.
+
+Latest verified target V485 adds the finite-prefix product-law branch of
+Durrett Theorem 2.1.11:
+`durrett2019_theorem_2_1_11_iid_fin_prefix_hasLaw_pi_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_shift_fin_prefix_hasLaw_pi_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_fin_prefix_hasLaw_pi_of_identDistrib`,
+`durrett2019_theorem_2_1_11_iid_shift_fin_prefix_hasLaw_pi_of_identDistrib`,
+`durrett2019_theorem_2_1_11_canonical_iid_fin_prefix_hasLaw_pi`, and
+`durrett2019_theorem_2_1_11_canonical_iid_shift_fin_prefix_hasLaw_pi`.
+These wrappers package the actual finite vector `(X_1, ..., X_n)` as a
+`Fin n -> S` random variable with finite product law, complementing V484's
+event-level cylinder probability displays.
 
 Latest verified target V484 adds the one-based finite-prefix source branch of
 Durrett Theorem 2.1.11:
@@ -4396,6 +4411,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V484` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V485` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
