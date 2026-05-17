@@ -12011,6 +12011,172 @@ theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_b
     ha_nonzero ha_increment_nonneg ha_atTop hmean
 
 /--
+Durrett 2019, Theorem 2.5.13 scalar weighted moving-truncation square kernel.
+
+For a real input `x`, this is the `k`-th term
+`a_{k+1}^{-2} x^2 1_{|x| < a_{k+1}}` in the textbook variance estimate.
+-/
+noncomputable def durrett2019_theorem_2_5_13_truncatedSqKernel
+    (a : ℕ -> ℝ) (x : ℝ) (k : ℕ) : ℝ :=
+  (((a (k + 1)) ^ 2)⁻¹) *
+    (Set.indicator {y : ℝ | |y| < a (k + 1)} (fun y => y) x) ^ 2
+
+/--
+Durrett 2019, Theorem 2.5.13 tail-analysis support: a pointwise kernel
+majorization by an integrable nonnegative random variable gives the weighted
+base moving-truncation second-moment summability needed by V451.
+-/
+theorem durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_kernel_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {G : Ω -> ℝ}
+    (hX0_meas : Measurable X0)
+    (hG_int : Integrable G P)
+    (hG_nonneg : 0 ≤ᵐ[P] G)
+    (hkernel_bound : ∀ᵐ ω ∂P,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a (X0 ω) k)) ≤
+        ENNReal.ofReal (G ω)) :
+    Summable fun k : ℕ =>
+      (((a (k + 1)) ^ 2)⁻¹) *
+        ∫ ω,
+          (durrett2019_theorem_2_5_13_truncated (fun _ : ℕ => X0) a (k + 1) ω) ^ 2 ∂P := by
+  let F : ℕ -> Ω -> ℝ := fun k ω =>
+    (((a (k + 1)) ^ 2)⁻¹) *
+      (durrett2019_theorem_2_5_13_truncated (fun _ : ℕ => X0) a (k + 1) ω) ^ 2
+  have hF_int : ∀ k : ℕ, Integrable (F k) P := by
+    intro k
+    exact
+      ((durrett2019_theorem_2_5_13_truncated_memLp_two_of_measurable
+        (P := P) (X := fun _ : ℕ => X0) (a := a) (n := k + 1)
+        hX0_meas).integrable_sq).const_mul _
+  have hF_nonneg : ∀ k : ℕ, 0 ≤ᵐ[P] F k := by
+    intro k
+    exact ae_of_all P fun ω =>
+      mul_nonneg (inv_nonneg.2 (sq_nonneg _)) (sq_nonneg _)
+  have hsummable :
+      Summable fun k : ℕ => ∫ ω, F k ω ∂P :=
+    durrett2019_theorem_2_5_12_summable_integral_of_lintegral_tsum_bound
+      (P := P) (F := F) (G := G) hF_int hF_nonneg hG_int hG_nonneg
+      (by
+        filter_upwards [hkernel_bound] with ω hω
+        simpa [F, durrett2019_theorem_2_5_13_truncatedSqKernel,
+          durrett2019_theorem_2_5_13_truncated] using hω)
+  simpa [F, integral_const_mul] using hsummable
+
+/--
+Durrett 2019, Theorem 2.5.13 tail-analysis support: a scalar kernel
+majorization supplies the weighted base moving-truncation second-moment
+summability needed by the convergent-half variance handoff.
+-/
+theorem durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_scalar_kernel_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX0_meas : Measurable X0)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x)) :
+    Summable fun k : ℕ =>
+      (((a (k + 1)) ^ 2)⁻¹) *
+        ∫ ω,
+          (durrett2019_theorem_2_5_13_truncated (fun _ : ℕ => X0) a (k + 1) ω) ^ 2 ∂P :=
+  durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_kernel_bound
+    (P := P) (X0 := X0) (a := a) (G := fun ω : Ω => g (X0 ω))
+    hX0_meas hg_int hg_nonneg
+    (ae_of_all P fun ω => hkernel_bound (X0 ω))
+
+/--
+Durrett 2019, Theorem 2.5.13 moving-truncated endpoint with the scalar
+truncated-square kernel bound exposed instead of the weighted base
+second-moment summability assumption.
+-/
+theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_mean_tendsto
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x))
+    (ha_nonzero : ∀ k : ℕ, a (k + 1) ≠ 0)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hmean :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n)
+        atTop (𝓝 0)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto
+    (P := P) (X := X) (X0 := X0) (a := a)
+    hX_indep hX_meas hX_ident
+    (durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_scalar_kernel_bound
+      (P := P) (X0 := X0) (a := a) (g := g)
+      hX0_meas hg_int hg_nonneg hkernel_bound)
+    ha_nonzero ha_increment_nonneg ha_shift_atTop hmean
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent-half source wrapper: finite iid tail
+series plus the scalar truncated-square kernel bound and mean normalization
+give the original normalized-sum endpoint.
+-/
+theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_mean_tendsto_and_iid_tail_tsum_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x))
+    (ha_nonzero : ∀ k : ℕ, a (k + 1) ≠ 0)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto a atTop atTop)
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hmean :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n)
+        atTop (𝓝 0))
+    (htail :
+      (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) ≠ ∞) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, X (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_iid_tail_tsum_ne_top
+    (P := P) (X := X) (X0 := X0) (a := a) ha_atTop hX_ident
+    (durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_mean_tendsto
+      (P := P) (X := X) (X0 := X0) (a := a) (g := g)
+      hX_indep hX_meas hX0_meas hX_ident hg_int hg_nonneg hkernel_bound
+      ha_nonzero ha_increment_nonneg ha_shift_atTop hmean)
+    htail
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

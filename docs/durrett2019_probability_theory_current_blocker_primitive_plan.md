@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V451
+## Live In-Thread Goal Prompt V452
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -39,7 +39,11 @@ variances of the centered moving truncations and normalized convergence of the
 truncated means.  V451 discharges the scaled-variance assumption down to the
 textbook weighted base moving-truncation second-moment summability, using
 variance domination, iid transfer of the truncated square integral, and
-endpoint wrappers that feed the V450 Kronecker assembly.  Do
+endpoint wrappers that feed the V450 Kronecker assembly.  V452 packages the
+arbitrary-normalizer truncated-square scalar kernel, proves that pointwise
+ENNReal kernel majorization by an integrable nonnegative majorant gives the
+weighted base second-moment summability, and adds moving/original normalized
+sum endpoint wrappers that consume that scalar kernel bound.  Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -49,14 +53,26 @@ wrapper, or the solved extended-real limsup display, or the solved iid
 divergent-half scaled-tail plumbing, or the solved convergent-half
 Borel-Cantelli moving-truncation handoff, or the solved eventual-equality
 normalized-sum transfer, or the solved moving-truncation Kronecker assembly,
-or the solved scaled-variance-to-base-truncated-square handoff.
-Next aggressive target: prove the textbook tail-layer bound giving weighted
-base truncated-square summability from identity (*)/ratio monotonicity, prove
-truncated-mean normalization, then assemble the source-facing Feller dichotomy
-wrapper.
+the solved scaled-variance-to-base-truncated-square handoff, or the solved
+scalar-kernel-to-original-endpoint handoff.
+Next aggressive target: prove the textbook identity (*)/ratio-monotonicity
+scalar kernel majorization and its integrable majorant from finite
+large-jump tail series, prove truncated-mean normalization, then assemble the
+source-facing Feller dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V452 adds the scalar-kernel handoff for the convergent
+half of Durrett Theorem 2.5.13.  New compiled anchors include:
+`durrett2019_theorem_2_5_13_truncatedSqKernel`,
+`durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_kernel_bound`,
+`durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_scalar_kernel_bound`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_mean_tendsto`, and
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_mean_tendsto_and_iid_tail_tsum_ne_top`.
+The remaining blocker is now the textbook scalar/tail estimate proving the
+kernel majorization from identity (*) and ratio monotonicity, plus truncated
+mean normalization.
 
 Latest verified target V451 discharges the scaled-variance assumption in the
 convergent half of Durrett Theorem 2.5.13 down to weighted base
@@ -66,9 +82,9 @@ moving-truncation second-moment summability.  New compiled anchors include:
 `durrett2019_theorem_2_5_13_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_13_ae_centered_truncated_oneBased_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`, and
 `durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto`.
-The remaining blocker is now the textbook scalar/tail work proving weighted
-base truncated-square summability and truncated-mean normalization, then the
-source-facing Feller dichotomy wrapper.
+The scalar-kernel handoff from this assumption is discharged by V452; future
+cycles should not ask directly for weighted base truncated-square summability
+unless proving a lower-level lemma.
 
 Latest verified target V450 adds the moving-truncated Kronecker assembly for
 the convergent half of Durrett Theorem 2.5.13.  New compiled anchors include:
