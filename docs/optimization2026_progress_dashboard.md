@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V54` near the top of
+  `Live Goal Prompt V55` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -109,7 +109,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   form.  Search-first reuse found the exact mathlib rectangular API
   `Matrix.charpoly_mul_comm'` plus `Matrix.charpoly_mul_comm_of_le`; do not
   redo this with determinant blocks or sorted eigenvalue lists unless a later
-  theorem requires root-level membership.  Next high-impact step is to consume
+  theorem requires root-level membership.  The V55 layer adds
+  `chewiA5_mul_self_transpose_posSemidef`,
+  `chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_mul_self_transpose`, and
+  `chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_mul_self_transpose`,
+  closing the source sentence that `||A||_op` is also the square root of the
+  largest absolute eigenvalue of `A A^T`.  Search-first reuse came from V53
+  applied to `Aᵀ` and mathlib `Matrix.l2_opNorm_conjTranspose`.  Next
+  high-impact step is to consume
   these Appendix A facts in a main-text theorem/report gate, or add a thin
   root/eigenvalue corollary only if needed downstream.
 - Latest Chapter 13 frontier: the concrete standard main-stage

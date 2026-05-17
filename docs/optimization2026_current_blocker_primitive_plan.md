@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V54`, this file's top
+   the full book is complete, route from `Live Goal Prompt V55`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V54
+## Live Goal Prompt V55
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -716,7 +716,7 @@ not apply directly to real matrices because it requires a `CStarAlgebra`
 instance; the verified finite-max proof instead reuses the V52 arbitrary-`C`
 operator-norm/eigenvalue iff plus `Finset.sup'_le`/`Finset.le_sup'`.
 
-Current V53/V54 packets close Chewi Definition A.5's rectangular source
+Current V53-V55 packets close Chewi Definition A.5's rectangular source
 display.  V53 adds
 `chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_transpose_mul_self` and
 `chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_transpose_mul_self`,
@@ -727,16 +727,23 @@ V54 adds
 `chewiA5_charpoly_mul_self_transpose_eq_X_pow_transpose_mul_self_of_card_le`,
 and `chewiA5_charpoly_transpose_mul_self_eq_mul_self_transpose_of_card_eq`,
 formalizing that `A^T A` and `A A^T` have the same eigenvalues except for
-zero-multiplicity padding via characteristic polynomials.
+zero-multiplicity padding via characteristic polynomials.  V55 adds
+`chewiA5_mul_self_transpose_posSemidef`,
+`chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_mul_self_transpose`, and
+`chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_mul_self_transpose`,
+closing the source sentence that `||A||_op` is also the square root of the
+largest absolute eigenvalue of `A A^T`.
 
-Search-first reuse for V53/V54: source Definition A.5; mathlib singular values
+Search-first reuse for V53-V55: source Definition A.5; mathlib singular values
 via `T†T`; `spectrum.nonzero_mul_comm` for same-algebra square products;
 local V50 `A^T A <= C^2 I <-> ||A||_op <= C`; V52 scalar eigenvalue bounds
-and PSD eigenvalue nonnegativity; and, crucially for V54,
+and PSD eigenvalue nonnegativity; V54
 `Matrix.charpoly_mul_comm'`/`Matrix.charpoly_mul_comm_of_le`, which are the
-right rectangular matrix product APIs.  Do not rebuild the rectangular
-zero-padding theorem from determinant blocks or sorted eigenvalue lists unless
-the next source theorem truly needs a root-level statement.
+right rectangular matrix product APIs; and V55 `Matrix.l2_opNorm_conjTranspose`
+applied to `Aᵀ`, which avoids reproving the `A A^T` display.  Do not rebuild
+the rectangular zero-padding theorem from determinant blocks or sorted
+eigenvalue lists unless the next source theorem truly needs a root-level
+statement.
 
 Next theorem-sized target: return to the highest-impact main-text theorem or
 report gate that consumes the now-compiled Appendix A matrix facts.  If staying
@@ -758,9 +765,9 @@ consumers.  The old §13.16 search surface near `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers is only relevant if a later run
-returns to the report/tooling gate; the active V54 Lean proof target is
+returns to the report/tooling gate; the active V55 Lean proof target is
 Appendix A matrix infrastructure.
-Older paragraphs below are cached route history and must not override this V54
+Older paragraphs below are cached route history and must not override this V55
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

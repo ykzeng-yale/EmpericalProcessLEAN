@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V54` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V55` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,7 +30,7 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V54 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V55 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved to Appendix A matrix infrastructure.  The new module
 `StatInference/Optimization/AppendixA.lean` compiles and is root-imported,
@@ -88,10 +88,16 @@ V54 layer adds
 and `chewiA5_charpoly_transpose_mul_self_eq_mul_self_transpose_of_card_eq`,
 using mathlib's exact rectangular APIs `Matrix.charpoly_mul_comm'` and
 `Matrix.charpoly_mul_comm_of_le` to formalize the source claim that `A^T A`
-and `A A^T` have the same eigenvalues except zero multiplicity.  Next
-source-shaped work should consume the Appendix A matrix facts in a main-text
-theorem/report gate, or add a root/eigenvalue membership corollary only if a
-downstream theorem needs more than the characteristic-polynomial padding form.
+and `A A^T` have the same eigenvalues except zero multiplicity.  The V55 layer
+adds `chewiA5_mul_self_transpose_posSemidef`,
+`chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_mul_self_transpose`, and
+`chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_mul_self_transpose`,
+using V53 on `Aᵀ` plus mathlib `Matrix.l2_opNorm_conjTranspose` to close the
+source sentence that the same operator norm is also the square root of the
+largest absolute eigenvalue of `A A^T`.  Next source-shaped work should consume
+the Appendix A matrix facts in a main-text theorem/report gate, or add a
+root/eigenvalue membership corollary only if a downstream theorem needs more
+than the characteristic-polynomial padding form.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source

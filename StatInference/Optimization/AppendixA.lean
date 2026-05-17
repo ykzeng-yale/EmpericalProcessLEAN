@@ -482,6 +482,55 @@ theorem chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_transpose_mul_self
   exact chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_transpose_mul_self A
 
 /--
+Chewi Definition A.5 setup for the alternate Gram matrix: `A Aᵀ` is
+positive semidefinite.
+-/
+theorem chewiA5_mul_self_transpose_posSemidef
+    (A : Matrix m n ℝ) :
+    (A * Aᵀ).PosSemidef := by
+  simpa using (chewiA5_transpose_mul_self_posSemidef Aᵀ)
+
+/--
+Chewi Definition A.5, alternate rectangular eigenvalue display without the
+redundant absolute value.  On a nonempty finite codomain, the Euclidean
+operator norm is the square root of the largest eigenvalue of `A Aᵀ`.
+-/
+theorem chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_mul_self_transpose
+    [DecidableEq m] [DecidableEq n] [Nonempty m] (A : Matrix m n ℝ) :
+    ‖A‖ =
+      Real.sqrt
+        (Finset.univ.sup' Finset.univ_nonempty
+          (fun i =>
+            (chewiA5_mul_self_transpose_posSemidef A).isHermitian.eigenvalues i)) := by
+  have h :=
+    chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_transpose_mul_self
+      (A := Aᵀ)
+  have hnorm : ‖Aᵀ‖ = ‖A‖ := by
+    simpa using Matrix.l2_opNorm_conjTranspose A
+  rw [hnorm] at h
+  simpa [chewiA5_mul_self_transpose_posSemidef] using h
+
+/--
+Chewi Definition A.5, alternate rectangular absolute-eigenvalue display.  This
+matches the source sentence that `||A||_op` is also the square root of the
+largest absolute eigenvalue of `A Aᵀ`.
+-/
+theorem chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_mul_self_transpose
+    [DecidableEq m] [DecidableEq n] [Nonempty m] (A : Matrix m n ℝ) :
+    ‖A‖ =
+      Real.sqrt
+        (Finset.univ.sup' Finset.univ_nonempty
+          (fun i =>
+            |(chewiA5_mul_self_transpose_posSemidef A).isHermitian.eigenvalues i|)) := by
+  have h :=
+    chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_transpose_mul_self
+      (A := Aᵀ)
+  have hnorm : ‖Aᵀ‖ = ‖A‖ := by
+    simpa using Matrix.l2_opNorm_conjTranspose A
+  rw [hnorm] at h
+  simpa [chewiA5_mul_self_transpose_posSemidef] using h
+
+/--
 Chewi Definition A.5, rectangular product spectrum padding.  This is the
 source-facing characteristic-polynomial form of the statement that `A^T A`
 and `A A^T` have the same nonzero eigenvalues, with only zero multiplicities
