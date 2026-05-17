@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V39` near the top of
+  `Live Goal Prompt V40` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -238,12 +238,27 @@ This dashboard tracks the Chewi optimization formalization lane for
   `*_exists_center_mainStageIndex_objective_gap_le_eps_of_isCompact_feasibleRange`
   endpoints.  These wrappers discharge nonemptiness from a strict feasible
   source point and no longer expose a raw central-path selector premise.
+  The V40 packet adds
+  `Chewi1316RangeCentralPathValueCompactSublevelEnvelopeSelector`,
+  `chewi1316_rangeCentralPathValueFeasibleMinimizerSelector_of_compactSublevelEnvelopeSelector`,
+  `chewi1316_rangeCentralPathSelector_of_compactSublevelEnvelopeSelector`,
+  `chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_compactSublevelEnvelopeSelector`,
+  and the bounded feasible-range, bounded source-polytope, bounded
+  closed-polytope, and compact closed-polytope
+  `*_exists_center_mainStageIndex_objective_gap_le_eps_of_compactSublevelEnvelopeSelector`
+  endpoints.  Search-first reuse for V40: mathlib
+  `IsCompact.exists_isMinOn` and `isMinOn_iff`, plus local
+  `chewi1316RangeCentralPathValue_continuousOn` and the V39 endpoint family.
+  The selector minimizes on a compact feasible envelope and promotes the result
+  to the whole open feasible slack range using the supplied sublevel-containment
+  branch.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: discharge the
-  remaining compactness source for the open positive slack range via the
-  compact sublevel/envelope barrier-blowup argument, rather than assuming the
-  raw open feasible range is compact.
+  `hxseq_mem` or per-step decrement premise.  Next proof target: prove the
+  actual compact sublevel-envelope selector from finite-row logarithmic-barrier
+  blow-up/coercivity, producing a positive slack floor on central-path
+  sublevels inside the bounded closed feasible polytope and then feeding that
+  selector into the V40 endpoints.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge

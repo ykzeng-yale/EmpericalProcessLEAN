@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V39`, this file's top
+   the full book is complete, route from `Live Goal Prompt V40`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V39
+## Live Goal Prompt V40
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -493,14 +493,36 @@ nonemptiness from a strict feasible source point, and mathlib
 old endpoint only needed boundedness.  Do not ask again for a raw
 central-path selector in these compact-feasible-range standard-path wrappers.
 
-Next theorem-sized target: discharge the remaining compactness hypothesis for
-the open feasible slack range in a mathematically source-faithful way.  The
-raw positive slack range is open, so avoid claiming it is compact unless a
-caller explicitly supplies a compact feasible range.  Prefer formalizing the
-standard compact sublevel/envelope route: write the informal proof in this
-file, prove the coercive/barrier-blowup lemma for
-`positiveOrthantNegLogBarrier`, package the compact sublevel minimizer
-selector, and then feed it into the V39 endpoint wrappers.
+Current V40 packet builds the standard compact sublevel-envelope selector
+surface and feeds it through the source-facing §13.16 endpoint family.  New
+compiled declarations:
+`Chewi1316RangeCentralPathValueCompactSublevelEnvelopeSelector`,
+`chewi1316_rangeCentralPathValueFeasibleMinimizerSelector_of_compactSublevelEnvelopeSelector`,
+`chewi1316_rangeCentralPathSelector_of_compactSublevelEnvelopeSelector`,
+`chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_compactSublevelEnvelopeSelector`,
+`chewi1316_standardSourceMainStage_boundedFeasibleRange_exists_center_mainStageIndex_objective_gap_le_eps_of_compactSublevelEnvelopeSelector`,
+`chewi1316_standardSourceMainStage_boundedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_compactSublevelEnvelopeSelector`,
+`chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_compactSublevelEnvelopeSelector`,
+and
+`chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_compactSublevelEnvelopeSelector`.
+Search-first result: reuse mathlib `IsCompact.exists_isMinOn` and
+`isMinOn_iff`, plus local `chewi1316RangeCentralPathValue_continuousOn` and
+the V39 endpoint wrappers.  The proof minimizes the concrete central-path
+value over a compact feasible envelope and then upgrades the minimum to the
+whole open positive slack range by the sublevel-containment branch.
+
+Next theorem-sized target: prove the actual compact sublevel-envelope selector
+from the finite-row logarithmic-barrier blow-up/coercivity argument, not more
+selector packaging.  The raw positive slack range is open, so avoid claiming it
+is compact unless a caller explicitly supplies compactness.  First prove a
+scalar/vector source lemma: bounded closed source polytope plus a central-path
+sublevel bound gives a positive slack floor because `-log` blows up at zero.
+Then package the compact envelope as an intersection of the bounded closed
+source/range feasible set with those slack-floor inequalities, and feed that
+selector into the V40 endpoints.  If a direct source-space proof balloons,
+split out the reusable range-space statement for
+`positiveOrthantNegLogBarrier` sublevels, then transport it through
+`barrierAffineRange`.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model

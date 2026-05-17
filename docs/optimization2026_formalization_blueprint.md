@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V39` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V40` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -190,6 +190,21 @@ generic preliminary-initializer compact-feasible-range endpoint, and four
 bounded/closed/compact standard-path compact-feasible-range endpoint wrappers.
 Search-first reuse for V39: local `rangeRestrict_mem_of_polytopeSlackSet` and
 mathlib `IsCompact.isBounded`.
+The V40 packet adds the compact sublevel-envelope selector interface
+`Chewi1316RangeCentralPathValueCompactSublevelEnvelopeSelector`, proves
+`chewi1316_rangeCentralPathValueFeasibleMinimizerSelector_of_compactSublevelEnvelopeSelector`
+by minimizing on a compact envelope and using sublevel containment, then feeds
+it through
+`chewi1316_rangeCentralPathSelector_of_compactSublevelEnvelopeSelector`,
+`chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_compactSublevelEnvelopeSelector`,
+and the bounded/closed/compact
+`*_exists_center_mainStageIndex_objective_gap_le_eps_of_compactSublevelEnvelopeSelector`
+endpoints.  Search-first reuse for V40: mathlib `IsCompact.exists_isMinOn` and
+`isMinOn_iff`, plus local `chewi1316RangeCentralPathValue_continuousOn` and
+the V39 endpoint family.  Next finite-row work should prove the actual compact
+sublevel-envelope selector from logarithmic-barrier blow-up at the boundary:
+derive a positive slack floor on bounded closed feasible sublevels, build the
+compact envelope, and plug that selector into the V40 endpoints.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the
