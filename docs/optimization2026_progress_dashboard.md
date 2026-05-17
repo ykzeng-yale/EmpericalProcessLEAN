@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V46` near the top of
+  `Live Goal Prompt V47` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -312,6 +312,14 @@ This dashboard tracks the Chewi optimization formalization lane for
   `_of_closedPolytopeCompact` / `_of_closedPolytopeBounded` names unless the
   proof specifically needs to expose that premise.  Do not re-open supplied
   minimizer, central-path selector, or slack-floor premises.
+  The V47 packet adds those source-numbered report-facing aliases:
+  `chewi1316_lemma_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps`
+  and
+  `chewi1316_lemma_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps`.
+  Source anchor search found Lemma 13.16 at markdown lines 4860-4888.  The
+  formal report is still gated on local source screenshot/report compilation
+  tooling: this environment has `tectonic` but not `pandoc`, `pdftoppm`, or
+  `pdfinfo`, so do not create a report folder until those gates can pass.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge

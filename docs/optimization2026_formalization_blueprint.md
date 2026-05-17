@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V46` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V47` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -268,6 +268,15 @@ and
 `chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps`.
 Use these V46 names as the preferred §13.16 report/source surface, adding only
 a thin source-numbered alias if the report crosswalk needs one.
+The V47 packet adds exactly that report-facing alias layer:
+`chewi1316_lemma_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps`
+and
+`chewi1316_lemma_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps`.
+The source-report path is now blocked only on report artifacts, not Lean proof
+debt: Lemma 13.16 is anchored at markdown lines 4860-4888, but the current
+local environment lacks `pandoc`, `pdftoppm`, and `pdfinfo`, so the screenshot
+and `scripts/compile_report_pdf.sh` gates must be satisfied before creating
+`Reports/Optimization_13_16_.../`.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

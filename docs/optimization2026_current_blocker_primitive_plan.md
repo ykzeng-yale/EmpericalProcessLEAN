@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V46`, this file's top
+   the full book is complete, route from `Live Goal Prompt V47`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V46
+## Live Goal Prompt V47
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -605,12 +605,25 @@ theorem already discharge all selector, minimizer, closed-feasible-range
 compactness, and slack-floor sublevel machinery, so the new source-facing
 surface is a verified wrapper layer rather than a new proof primitive.
 
-Next theorem-sized target: use the V46 no-suffix bounded/compact
-closed-polytope endpoints as the stable source theorem surface for Chewi Lemma
-13.16 report/source packaging, or, if the report policy still requires a
-closer literal source statement, add only a thin source-numbered alias that
-calls V46.  Search first for existing theorem-report folders, report template
-rules, source markdown/PDF anchors, and existing `chewi1316_` endpoint names.
+Current V47 packet adds the source-numbered report-facing aliases for the V46
+source surface.  New compiled declarations:
+`chewi1316_lemma_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps`
+and
+`chewi1316_lemma_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps`.
+Search-first reuse for V47: existing `chewi1316_` endpoint names, the V46
+no-suffix endpoint wrappers, the report template, and the markdown source
+anchor at `Textbooks/Optimization2026/Optimization_SinhoChewi_sp26.md` lines
+4860-4888.  The local report gate is not yet satisfied because this worktree
+environment has `tectonic` but not `pandoc`, `pdftoppm`, or `pdfinfo`, so no
+formal `Reports/Optimization_13_16_.../` folder should be created until the
+source screenshot and `scripts/compile_report_pdf.sh` gates can actually pass.
+
+Next theorem-sized target: either create the Chewi Lemma 13.16 report only
+after the PDF screenshot and report compilation tools are available, or move
+to the next Chapter 13 source theorem layer that can consume the V47 aliases
+without exposing internal selector/minimizer machinery.  Search first for
+existing Chapter 13 theorem surfaces, `Reports/Optimization_*` folders,
+source markdown/PDF anchors, and current `InteriorPoint.lean` endpoint names.
 Do not reintroduce supplied central-path selectors, supplied minimizers,
 supplied slack-floor/linear-bound selectors, or any closed-feasible-range
 compactness premise in the final source statement.
