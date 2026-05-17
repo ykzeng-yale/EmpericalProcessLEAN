@@ -1659,6 +1659,162 @@ theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_prod_eq_pow_lintegral
       (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf (Finset.Ico m n)
 
 /--
+Durrett 2019, Theorem 2.1.13, law-side real nonnegative finite-subfamily
+expectation factorization.
+
+This is the source-facing `ENNReal.ofReal` branch:
+`E[∏ i in s, f_i(X_i)] = ∏ i in s, ∫ f_i dμ_i` for real-valued
+nonnegative test functions, without ordinary integrability assumptions.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_ofReal_prod_eq_prod_lintegral_ofReal
+    {Ω : Type u} {ι : Type w}
+    [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ι -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {μ : ∀ i, Measure (S i)}
+    {f : ∀ i, S i -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (μ i) P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (hf_nonneg : ∀ i x, 0 ≤ f i x)
+    (s : Finset ι) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ s, f i (X i ω)) ∂P =
+      ∏ i ∈ s, ∫⁻ x, ENNReal.ofReal (f i x) ∂μ i := by
+  let F : ∀ i, S i -> ℝ≥0∞ := fun i x => ENNReal.ofReal (f i x)
+  have hF_meas : ∀ i, Measurable (F i) := fun i => (hf i).ennreal_ofReal
+  calc
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ s, f i (X i ω)) ∂P =
+        ∫⁻ ω, ∏ i ∈ s, F i (X i ω) ∂P := by
+      refine lintegral_congr_ae ?_
+      exact ae_of_all P fun ω =>
+        ENNReal.ofReal_prod_of_nonneg
+          (fun i _hi => hf_nonneg i (X i ω))
+    _ = ∏ i ∈ s, ∫⁻ x, F i x ∂μ i :=
+        durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_prod_eq_prod_lintegral
+          (P := P) (X := X) (μ := μ) (f := F) hX hLaw hX_meas hF_meas s
+
+/--
+Durrett 2019, Theorem 2.1.13, law-side real nonnegative range product
+expectation factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_ofReal_prod_eq_prod_lintegral_ofReal
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {μ : ∀ i, Measure (S i)}
+    {f : ∀ i, S i -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (μ i) P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (hf_nonneg : ∀ i x, 0 ≤ f i x)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.range n, f i (X i ω)) ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ x, ENNReal.ofReal (f i x) ∂μ i := by
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_ofReal_prod_eq_prod_lintegral_ofReal
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf hf_nonneg
+      (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13, law-side real nonnegative interval product
+expectation factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_ofReal_prod_eq_prod_lintegral_ofReal
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {μ : ∀ i, Measure (S i)}
+    {f : ∀ i, S i -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (μ i) P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (hf_nonneg : ∀ i x, 0 ≤ f i x)
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.Ico m n, f i (X i ω)) ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ x, ENNReal.ofReal (f i x) ∂μ i := by
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_ofReal_prod_eq_prod_lintegral_ofReal
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf hf_nonneg
+      (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side real nonnegative finite-subfamily
+power form.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_finset_law_ofReal_prod_eq_pow_lintegral_ofReal
+    {Ω : Type u} {ι : Type w} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    (hf_nonneg : ∀ x, 0 ≤ f x)
+    (s : Finset ι) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ s, f (X i ω)) ∂P =
+      (∫⁻ x, ENNReal.ofReal (f x) ∂μ) ^ s.card := by
+  calc
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ s, f (X i ω)) ∂P =
+        ∏ i ∈ s, ∫⁻ x, ENNReal.ofReal (f x) ∂μ := by
+      simpa using
+        durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_ofReal_prod_eq_prod_lintegral_ofReal
+          (P := P) (S := fun _ : ι => S) (X := X)
+          (μ := fun _ : ι => μ) (f := fun _ : ι => f)
+          hX hLaw hX_meas (fun _ => hf) (fun _ x => hf_nonneg x) s
+    _ = (∫⁻ x, ENNReal.ofReal (f x) ∂μ) ^ s.card := by
+      rw [Finset.prod_const]
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side real nonnegative range power form.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_law_ofReal_prod_eq_pow_lintegral_ofReal
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    (hf_nonneg : ∀ x, 0 ≤ f x)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.range n, f (X i ω)) ∂P =
+      (∫⁻ x, ENNReal.ofReal (f x) ∂μ) ^ n := by
+  simpa using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_law_ofReal_prod_eq_pow_lintegral_ofReal
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf hf_nonneg
+      (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side real nonnegative interval power
+form.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_ofReal_prod_eq_pow_lintegral_ofReal
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    (hf_nonneg : ∀ x, 0 ≤ f x)
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.Ico m n, f (X i ω)) ∂P =
+      (∫⁻ x, ENNReal.ofReal (f x) ∂μ) ^ (n - m) := by
+  simpa [Nat.card_Ico] using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_law_ofReal_prod_eq_pow_lintegral_ofReal
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf hf_nonneg
+      (Finset.Ico m n)
+
+/--
 Durrett 2019, Theorem 2.1.13, nonnegative finite-subfamily expectation
 factorization.
 

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V481
+## Live In-Thread Goal Prompt V482
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -30,6 +30,10 @@ wrappers from `iIndepFun`, individual `HasLaw` hypotheses, and law-side
 integrability, including iid power forms.
 V481 adds the measurable law-side nonnegative `ℝ≥0∞` branch of Durrett Theorem
 2.1.13, including finite/range/Ico product-expectation and iid power forms.
+V482 adds the law-side real nonnegative `ENNReal.ofReal` branch of Durrett
+Theorem 2.1.13, including finite/range/Ico product-expectation and iid power
+forms from `iIndepFun`, coordinate `HasLaw`, coordinate measurability, and
+measurable nonnegative real test functions.
 Do not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -65,7 +69,8 @@ integrability instantiation, the solved lintegral infinite-mean display, the
 solved unshifted-to-one-based divergent tail-series display, or the solved
 nonnegative finite-product, independent-pair separated product-expectation,
 law-side separated product-expectation, and law-side finite-product
-expectation/power wrappers, including the law-side nonnegative `ℝ≥0∞` branch.
+expectation/power wrappers, including the law-side nonnegative `ℝ≥0∞` and
+real `ENNReal.ofReal` branches.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -73,6 +78,20 @@ source-facing 2.4.9 display only if search proves it is absent; otherwise add
 the next Chapter 2.1 product-law/product-expectation wrapper that directly
 supports 2.4.9 or the adjacent Kolmogorov-maximal route.  Do not return to
 2.5.13 or old app-level stale prompts.
+
+Latest verified target V482 adds the law-side real nonnegative `ENNReal.ofReal`
+branch of Durrett Theorem 2.1.13:
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iid_lintegral_finset_law_ofReal_prod_eq_pow_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_law_ofReal_prod_eq_pow_lintegral_ofReal`,
+and
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_ofReal_prod_eq_pow_lintegral_ofReal`.
+These wrappers reuse V481's law-side `ℝ≥0∞` theorem plus
+`ENNReal.ofReal_prod_of_nonneg`, so real nonnegative product displays can be
+used directly from Durrett-style distribution hypotheses without ordinary
+integrability assumptions.
 
 Latest verified target V481 adds the measurable law-side nonnegative branch of
 Durrett Theorem 2.1.13:
@@ -4400,6 +4419,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V481` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V482` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
