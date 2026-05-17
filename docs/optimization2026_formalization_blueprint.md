@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V40` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V41` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -205,6 +205,16 @@ the V39 endpoint family.  Next finite-row work should prove the actual compact
 sublevel-envelope selector from logarithmic-barrier blow-up at the boundary:
 derive a positive slack floor on bounded closed feasible sublevels, build the
 compact envelope, and plug that selector into the V40 endpoints.
+The V41 packet adds `chewi1316RangeCentralPathClosedFeasibleRange`,
+`Chewi1316RangeCentralPathValueSublevelSlackFloorSelector`, and
+`chewi1316_rangeCentralPathValueCompactSublevelEnvelopeSelector_of_closedFeasibleRangeCompact_and_sublevelSlackFloorSelector`.
+It uses mathlib compact-intersection and closed finite-coordinate halfspace
+APIs to prove that a compact closed feasible range plus a verified sublevel
+slack-floor certificate already gives the V40 compact-envelope selector.  The
+remaining finite-row central-path existence work is now the analytic
+barrier-blowup proof of that slack-floor selector: lower-bound the linear
+objective on the compact closed feasible range and use `-log` blow-up at zero
+to force every sublevel coordinate to stay uniformly positive.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

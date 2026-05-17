@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V40`, this file's top
+   the full book is complete, route from `Live Goal Prompt V41`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V40
+## Live Goal Prompt V41
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -511,18 +511,33 @@ the V39 endpoint wrappers.  The proof minimizes the concrete central-path
 value over a compact feasible envelope and then upgrades the minimum to the
 whole open positive slack range by the sublevel-containment branch.
 
-Next theorem-sized target: prove the actual compact sublevel-envelope selector
-from the finite-row logarithmic-barrier blow-up/coercivity argument, not more
-selector packaging.  The raw positive slack range is open, so avoid claiming it
-is compact unless a caller explicitly supplies compactness.  First prove a
-scalar/vector source lemma: bounded closed source polytope plus a central-path
-sublevel bound gives a positive slack floor because `-log` blows up at zero.
-Then package the compact envelope as an intersection of the bounded closed
-source/range feasible set with those slack-floor inequalities, and feed that
-selector into the V40 endpoints.  If a direct source-space proof balloons,
-split out the reusable range-space statement for
-`positiveOrthantNegLogBarrier` sublevels, then transport it through
-`barrierAffineRange`.
+Current V41 packet isolates the remaining barrier-blowup inequality from the
+topology.  New compiled declarations:
+`chewi1316RangeCentralPathClosedFeasibleRange`,
+`Chewi1316RangeCentralPathValueSublevelSlackFloorSelector`, and
+`chewi1316_rangeCentralPathValueCompactSublevelEnvelopeSelector_of_closedFeasibleRangeCompact_and_sublevelSlackFloorSelector`.
+Search-first result: reuse mathlib `IsCompact.inter_right`,
+`isClosed_iInter`, `isClosed_Ici.preimage`, and
+`PiLp.continuous_apply`.  The proof intersects the compact closed feasible
+range with the finite slack-floor inequalities, proves that set is compact,
+strictly feasible, contains the reference feasible point, and contains every
+feasible point in the selected sublevel.
+
+Next theorem-sized target: prove the actual
+`Chewi1316RangeCentralPathValueSublevelSlackFloorSelector` from the finite-row
+logarithmic-barrier blow-up/coercivity argument.  The raw positive slack range
+is open, so do not claim it is compact.  The remaining analytic proof should
+derive a positive slack floor on central-path sublevels of
+`t * inner aObj y + ∑ i -log (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i)`.
+Use the compact closed feasible range or a bounded closed source polytope to
+bound the linear objective below, then use `-log u -> +∞` as `u -> 0+` to rule
+out any coordinate approaching zero on a sublevel.  Search first for mathlib
+`tendsto_log_nhdsGT_zero`, local finite-minimum/slack-floor lemmas such as
+`chewi1316_polytopeSlackNegLog_exists_pos_sourceSlackFloor`, and existing
+bounded/compact closed-polytope APIs.  If the direct finite-coordinate proof
+balloons, first prove a reusable scalar lemma converting
+`-Real.log u ≤ C` with `0 < u` into an explicit lower bound on `u`, then lift
+it coordinatewise through the finite sum.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model

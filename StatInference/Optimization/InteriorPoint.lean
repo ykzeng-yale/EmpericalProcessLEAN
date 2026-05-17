@@ -37019,6 +37019,105 @@ def Chewi1316RangeCentralPathValueCompactSublevelEnvelopeSelector
           chewi1316RangeCentralPathValue aRow bSlack t aObj y0 ->
         y ∈ K)
 
+/--
+Closed feasible translated slack range for the finite-row central path.  This
+is the closed-positive-orthant relaxation of
+`barrierAffineRangeSet ... positiveOrthant`.
+-/
+def chewi1316RangeCentralPathClosedFeasibleRange
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m)) :
+    Set (polytopeSlackCLM aRow).range :=
+  {y | ∀ i : Fin m,
+    0 ≤ (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i)}
+
+/--
+Sublevel slack-floor selector for the finite-row central-path value.  This is
+the exact quantitative barrier-blowup gate left after the compact-envelope
+topology has been isolated: every point no worse than the reference feasible
+point has all translated slacks uniformly bounded away from zero.
+-/
+def Chewi1316RangeCentralPathValueSublevelSlackFloorSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range) : Prop :=
+  ∀ {t : ℝ}, 0 < t ->
+    ∃ y0 : (polytopeSlackCLM aRow).range,
+      y0 ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) ∧
+      ∃ sFloor : ℝ, 0 < sFloor ∧
+        ∀ y : (polytopeSlackCLM aRow).range,
+          y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m)) ->
+          chewi1316RangeCentralPathValue aRow bSlack t aObj y ≤
+            chewi1316RangeCentralPathValue aRow bSlack t aObj y0 ->
+          ∀ i : Fin m,
+            sFloor ≤ (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i)
+
+theorem chewi1316_rangeCentralPathValueCompactSublevelEnvelopeSelector_of_closedFeasibleRangeCompact_and_sublevelSlackFloorSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range)
+    (hclosedCompact :
+      IsCompact (chewi1316RangeCentralPathClosedFeasibleRange aRow bSlack))
+    (hfloorSelector :
+      Chewi1316RangeCentralPathValueSublevelSlackFloorSelector
+        aRow bSlack aObj) :
+    Chewi1316RangeCentralPathValueCompactSublevelEnvelopeSelector
+      aRow bSlack aObj := by
+  intro t ht
+  rcases hfloorSelector ht with
+    ⟨y0, hy0_mem, sFloor, hsFloor_pos, hfloor⟩
+  let floorSet : Set (polytopeSlackCLM aRow).range :=
+    {y | ∀ i : Fin m,
+      sFloor ≤ (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i)}
+  let K : Set (polytopeSlackCLM aRow).range :=
+    chewi1316RangeCentralPathClosedFeasibleRange aRow bSlack ∩ floorSet
+  have hfloorClosed : IsClosed floorSet := by
+    rw [show floorSet =
+        ⋂ i : Fin m,
+          {y : (polytopeSlackCLM aRow).range |
+            sFloor ≤ (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i)} by
+      ext y
+      simp [floorSet]]
+    refine isClosed_iInter fun i => ?_
+    have hcoord_cont :
+        Continuous fun y : (polytopeSlackCLM aRow).range =>
+          (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) :=
+      (PiLp.continuous_apply (p := 2) (β := fun _ : Fin m => ℝ) i).comp
+        (continuous_subtype_val.add continuous_const)
+    exact isClosed_Ici.preimage hcoord_cont
+  have hKcompact : IsCompact K := by
+    simpa [K] using hclosedCompact.inter_right hfloorClosed
+  have hK_subset :
+      K ⊆ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) := by
+    intro y hy i
+    have hfloor_i :
+        sFloor ≤ (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) :=
+      hy.2 i
+    exact lt_of_lt_of_le hsFloor_pos hfloor_i
+  have hy0K : y0 ∈ K := by
+    refine ⟨?_, ?_⟩
+    · intro i
+      have hpos :
+          0 < (((y0 : EuclideanSpace ℝ (Fin m)) + bSlack) i) := by
+        simpa [barrierAffineRangeSet, positiveOrthant] using hy0_mem i
+      exact hpos.le
+    · exact hfloor y0 hy0_mem le_rfl
+  refine ⟨K, y0, hKcompact, hK_subset, hy0K, ?_⟩
+  intro y hy_mem hy_value
+  refine ⟨?_, ?_⟩
+  · intro i
+    have hpos :
+        0 < (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) := by
+      simpa [barrierAffineRangeSet, positiveOrthant] using hy_mem i
+    exact hpos.le
+  · exact hfloor y hy_mem hy_value
+
 theorem chewi1316_rangeCentralPathValueFeasibleMinimizerSelector_of_compactSublevelEnvelopeSelector
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
     {m : ℕ}

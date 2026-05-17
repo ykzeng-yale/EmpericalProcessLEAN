@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V40` near the top of
+  `Live Goal Prompt V41` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -252,13 +252,21 @@ This dashboard tracks the Chewi optimization formalization lane for
   The selector minimizes on a compact feasible envelope and promotes the result
   to the whole open feasible slack range using the supplied sublevel-containment
   branch.
+  The V41 packet adds
+  `chewi1316RangeCentralPathClosedFeasibleRange`,
+  `Chewi1316RangeCentralPathValueSublevelSlackFloorSelector`, and
+  `chewi1316_rangeCentralPathValueCompactSublevelEnvelopeSelector_of_closedFeasibleRangeCompact_and_sublevelSlackFloorSelector`.
+  It proves that a compact closed feasible range plus a verified central-path
+  sublevel slack-floor certificate gives the V40 compact sublevel-envelope
+  selector.  Search-first reuse for V41: mathlib `IsCompact.inter_right`,
+  `isClosed_iInter`, `isClosed_Ici.preimage`, and `PiLp.continuous_apply`.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: prove the
-  actual compact sublevel-envelope selector from finite-row logarithmic-barrier
-  blow-up/coercivity, producing a positive slack floor on central-path
-  sublevels inside the bounded closed feasible polytope and then feeding that
-  selector into the V40 endpoints.
+  `hxseq_mem` or per-step decrement premise.  Next proof target: prove
+  `Chewi1316RangeCentralPathValueSublevelSlackFloorSelector` from finite-row
+  logarithmic-barrier blow-up/coercivity, bounding the linear objective below
+  on the compact closed feasible range and ruling out coordinates approaching
+  zero on a central-path sublevel.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge
