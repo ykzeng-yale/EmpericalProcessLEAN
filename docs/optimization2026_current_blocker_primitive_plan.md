@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V38`, this file's top
+   the full book is complete, route from `Live Goal Prompt V39`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V38
+## Live Goal Prompt V39
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -477,15 +477,30 @@ central-path selector from compactness and nonemptiness of the feasible slack
 range; do not reintroduce a per-parameter supplied minimizer when a compact
 feasible range hypothesis is available.
 
-Next theorem-sized target: discharge the compactness/nonemptiness hypotheses
-needed by V38 in source-facing forms.  First prove nonemptiness from any
-standard preliminary feasible point or explicit strict-feasible witness.  Then
-either prove a compact feasible-range wrapper from an actual compact set
-already used in the bounded/closed-polytope endpoints, or formalize the
-standard compact sublevel/envelope argument for the open positive slack range:
-state the informal proof here, isolate the coercive/barrier-blowup lemma for
-`positiveOrthantNegLogBarrier`, and only then turn it into a feasible
-minimizer selector.
+Current V39 packet pushes the V38 compact feasible-range selector through the
+source-facing §13.16 endpoints.  New compiled declarations:
+`chewi1316_rangeCentralPathSelector_of_isCompact_feasibleRange_of_polytopeSlackSet_mem`,
+`Chewi1316StandardSourceMainStageExistsCenterObjectiveGapConclusion`,
+`chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_isCompact_feasibleRange`,
+`chewi1316_standardSourceMainStage_boundedFeasibleRange_exists_center_mainStageIndex_objective_gap_le_eps_of_isCompact_feasibleRange`,
+`chewi1316_standardSourceMainStage_boundedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_isCompact_feasibleRange`,
+`chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_isCompact_feasibleRange`,
+and
+`chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_isCompact_feasibleRange`.
+Search-first result: local `rangeRestrict_mem_of_polytopeSlackSet` discharges
+nonemptiness from a strict feasible source point, and mathlib
+`IsCompact.isBounded` discharges the bounded feasible-range premise where the
+old endpoint only needed boundedness.  Do not ask again for a raw
+central-path selector in these compact-feasible-range standard-path wrappers.
+
+Next theorem-sized target: discharge the remaining compactness hypothesis for
+the open feasible slack range in a mathematically source-faithful way.  The
+raw positive slack range is open, so avoid claiming it is compact unless a
+caller explicitly supplies a compact feasible range.  Prefer formalizing the
+standard compact sublevel/envelope route: write the informal proof in this
+file, prove the coercive/barrier-blowup lemma for
+`positiveOrthantNegLogBarrier`, package the compact sublevel minimizer
+selector, and then feed it into the V39 endpoint wrappers.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model

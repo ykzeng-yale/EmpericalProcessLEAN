@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V38` near the top of
+  `Live Goal Prompt V39` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -229,12 +229,21 @@ This dashboard tracks the Chewi optimization formalization lane for
   This proves the central-path selector from compactness and nonemptiness of
   the feasible slack range by reusing mathlib `HasGradientAt.continuousOn` and
   `IsCompact.exists_isMinOn`.
+  The V39 packet adds
+  `chewi1316_rangeCentralPathSelector_of_isCompact_feasibleRange_of_polytopeSlackSet_mem`,
+  `Chewi1316StandardSourceMainStageExistsCenterObjectiveGapConclusion`,
+  `chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_isCompact_feasibleRange`,
+  and the bounded feasible-range, bounded source-polytope, bounded
+  closed-polytope, and compact closed-polytope
+  `*_exists_center_mainStageIndex_objective_gap_le_eps_of_isCompact_feasibleRange`
+  endpoints.  These wrappers discharge nonemptiness from a strict feasible
+  source point and no longer expose a raw central-path selector premise.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
   `hxseq_mem` or per-step decrement premise.  Next proof target: discharge the
-  V38 compactness/nonemptiness hypotheses in source-facing forms, first from
-  strict-feasible witnesses and compact wrappers, then from the compact
-  sublevel/envelope barrier-blowup argument for the open positive range.
+  remaining compactness source for the open positive slack range via the
+  compact sublevel/envelope barrier-blowup argument, rather than assuming the
+  raw open feasible range is compact.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge

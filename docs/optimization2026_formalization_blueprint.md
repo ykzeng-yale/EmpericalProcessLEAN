@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V38` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V39` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -184,6 +184,12 @@ reuse for V38: mathlib `HasGradientAt.continuousOn` and
 `IsCompact.exists_isMinOn`.  Next finite-row work should discharge the compact
 and nonempty feasible-range hypotheses in source-facing forms, then formalize
 the compact sublevel/envelope barrier-blowup proof for the open positive range.
+The V39 packet adds the strict-feasible-source nonempty selector bridge,
+`Chewi1316StandardSourceMainStageExistsCenterObjectiveGapConclusion`, the
+generic preliminary-initializer compact-feasible-range endpoint, and four
+bounded/closed/compact standard-path compact-feasible-range endpoint wrappers.
+Search-first reuse for V39: local `rangeRestrict_mem_of_polytopeSlackSet` and
+mathlib `IsCompact.isBounded`.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the
