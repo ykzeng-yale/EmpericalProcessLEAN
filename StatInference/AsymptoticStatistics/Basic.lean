@@ -82,6 +82,33 @@ theorem vaart1998_tendstoInDistribution_constMeasure_succ
     (vaart1998_tendstoInDistribution_succ
       (Ω := fun _ : ℕ => Ω) (μ := fun _ : ℕ => P) hX)
 
+/--
+Convergence in measure is unchanged by inserting one finite prefix value.
+This is the probability-convergence analogue of the positive-sample-size
+`Nat.succ` distribution bridge above.
+-/
+theorem vaart1998_tendstoInMeasure_zero_prepend
+    {Ω E : Type*} [MeasurableSpace Ω] [EDist E]
+    {P : Measure Ω} {X : ℕ -> Ω -> E} {x0 Z : Ω -> E}
+    (hX : TendstoInMeasure P X atTop Z) :
+    TendstoInMeasure P
+      (fun n ω =>
+        match n with
+        | 0 => x0 ω
+        | Nat.succ k => X k ω)
+      atTop Z := by
+  intro ε hε
+  refine
+    (tendsto_add_atTop_iff_nat
+      (f := fun n : ℕ =>
+        P {ω | ε ≤ edist
+          ((fun n ω =>
+            match n with
+            | 0 => x0 ω
+            | Nat.succ k => X k ω) n ω)
+          (Z ω)}) 1).mp ?_
+  simpa using hX ε hε
+
 /-- van der Vaart Chapter 2 stochastic `o_P(1)`: convergence in probability
 to zero. -/
 abbrev StochasticLittleO

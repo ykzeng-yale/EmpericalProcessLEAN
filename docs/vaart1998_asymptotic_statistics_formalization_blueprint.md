@@ -19,33 +19,30 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    the next proof packet; the solved-progress ledgers are evidence, not
    instructions to replay.
 
-Current frontier: Theorem 5.41 now has a compiled common-observation-core
-affine source. It
-defines the score transform as
-`observationEstimatingMap observation theta0`, rebuilds vector theta0-section
-measurability, `L²`, and mean-zero from coordinatewise facts, derives direct
-covariance equality from shared centered-product tables, and rebuilds
-vector-valued estimator measurability from coordinatewise estimator
-measurability while deriving parameter-vector/product-sigma compatibility from
-Mathlib's finite product Borel machinery. It now states the theorem for a
-concrete `rootCandidate`, sums a common observation core into
-`(n : ℝ) • commonObservationCore theta`, constructs a concrete
-finite-sum-map left inverse from the summed offset and a scaled common-core
-left inverse, derives injectivity from that left inverse, derives uniqueness
-from that injectivity plus the candidate zero equation, proves that the
-canonical finite-sum selector equals that candidate, transfers coordinate
-measurability and norm consistency through that equality, and then transfers
-the limit theorem back to `rootCandidate`.
+Current frontier: Theorem 5.41 now has a compiled positive-sample root-set
+source. It states the limit theorem for a positive-sample estimator indexed as
+sample size `n + 1`, prepends `theta0` at sample size zero, uses the empty
+finite sum as an exact root, feeds the existing exact-root-set source endpoint,
+and shifts the distributional conclusion back along `Nat.succ`.  This keeps
+the live route focused on actual positive sample sizes instead of forcing
+sample-size-zero inverse or uniqueness hypotheses.
 
 Current endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductObservationSequence_commonObservationCoreScaledLeftInverseSource_estimatorCoordinateMeasurableSource_finiteParameterBorelSource_estimatorNormConsistencySource_absEnvelopeIntegrableSource_observationEstimatingMapTheta0CoordinateMomentSource_observationDerivativeAtTheta0OperatorMeanSource_observationDerivativeAtTheta0OperatorIntegrableSource_observationDerivativeTransformDefinitionSource_observationDerivativeAtDefinitionSource_observationSecondDerivativeDefinitionSource_observationEstimatingMapSource_zGaussianMeasurableModificationSource_zObservationEstimatingMapTheta0CenteredProductCovarianceSource_zMeanSource_unscaledScoreSource_fixedTheta0Source_observationEstimatingMapSmoothnessSource_observationEnvelopeMeanSource_observationTransformDisplaySource_observationRandomSequenceTransformMomentSource_observationSamplePathSource_observationEnvelopeAverageSource_observationScoreCovarianceSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelope`.
+`vaart1998_theorem_5_41_positiveSample_rootSetSource`.
 
 The newest wrapper adds
-`vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the current
-endpoint. It consumes a common observation core and a scaled common-core left
-inverse instead of an arbitrary observation-dependent core.
+`vaart1998_tendstoInMeasure_zero_prepend` and
+`vaart1998_theorem_5_41_positiveSample_rootSetSource`.  The next proof layer
+should construct the positive exact-root-set membership field from common-core
+affine algebra, the nonzero scaled-core inverse lemma, or a concrete model's
+finite-sample estimating equation.
 
-The newest positive-sample preparation adds
+The previous wrapper adds
+`vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core
+affine endpoint. It consumes a common observation core and a scaled
+common-core left inverse instead of an arbitrary observation-dependent core.
+
+The previous positive-sample preparation adds
 `vaart1998_tendstoInDistribution_succ`,
 `vaart1998_tendstoInDistribution_constMeasure_succ`,
 `vaart1998_scaledCommonObservationCore_leftInverse_of_nonzero`, and
@@ -55,18 +52,20 @@ inverse algebra needed for a non-vacuous common-core model endpoint.
 
 The previous wrapper adds
 `vaart1998_finiteSum_affineDisplay_of_observationAffineDisplay` and the
-current endpoint. It consumes a pointwise observation-level affine display and
-a summed-core left inverse instead of an aggregate finite-sample affine display.
+observation-affine endpoint. It consumes a pointwise observation-level affine
+display and a summed-core left inverse instead of an aggregate finite-sample
+affine display.
 
 The previous wrapper adds
 `vaart1998_finiteSumMap_leftInverse_of_affineDisplayLeftInverse` and the
-current endpoint. It consumes an affine display of the finite-sample estimating
-map and a core left inverse instead of a raw finite-sum-map left inverse.
+affine finite-sum endpoint. It consumes an affine display of the finite-sample
+estimating map and a core left inverse instead of a raw finite-sum-map left
+inverse.
 
 The previous wrapper adds
-`vaart1998_finiteSumMap_injective_of_leftInverse` and the current endpoint. It
-consumes a finite-sum-map left inverse instead of raw finite-sum-map
-injectivity.
+`vaart1998_finiteSumMap_injective_of_leftInverse` and the left-inverse
+endpoint. It consumes a finite-sum-map left inverse instead of raw
+finite-sum-map injectivity.
 
 The previous wrapper adds
 `vaart1998_finiteSumRoot_unique_of_injectiveFiniteSumMap` and its

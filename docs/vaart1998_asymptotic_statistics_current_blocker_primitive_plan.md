@@ -17,74 +17,50 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductObservationSequence_commonObservationCoreScaledLeftInverseSource_estimatorCoordinateMeasurableSource_finiteParameterBorelSource_estimatorNormConsistencySource_absEnvelopeIntegrableSource_observationEstimatingMapTheta0CoordinateMomentSource_observationDerivativeAtTheta0OperatorMeanSource_observationDerivativeAtTheta0OperatorIntegrableSource_observationDerivativeTransformDefinitionSource_observationDerivativeAtDefinitionSource_observationSecondDerivativeDefinitionSource_observationEstimatingMapSource_zGaussianMeasurableModificationSource_zObservationEstimatingMapTheta0CenteredProductCovarianceSource_zMeanSource_unscaledScoreSource_fixedTheta0Source_observationEstimatingMapSmoothnessSource_observationEnvelopeMeanSource_observationTransformDisplaySource_observationRandomSequenceTransformMomentSource_observationSamplePathSource_observationEnvelopeAverageSource_observationScoreCovarianceSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelope`.
+`vaart1998_theorem_5_41_positiveSample_rootSetSource`.
 
-Use this endpoint as the only live route. It already specializes the sample
-space to the canonical iid product `ℕ -> Observation`, uses the identity
-observation sequence, accepts textbook norm-residual estimator consistency
-`‖estimator n sample - theta0‖ -> 0` in probability,
-accepts `Integrable (fun x => |envelope x|)`, uses sample-free
-`observationDerivativeAt` and `observationSecondDerivative`, derives the
-displayed derivative-transform fields from the operator-valued
-`observationDerivativeAt · theta0` integrability and mean identity, and removes
-the separate sample-indexed derivative and second-derivative kernels. It now
-states the result directly for a concrete textbook estimator `rootCandidate`.
-The live source route proves that `rootCandidate` is a finite-sample zero and
-that each observation-level estimating map has a common-core affine display
-`commonObservationCore theta + observationOffset observation`; it sums the
-common core to `(n : ℝ) • commonObservationCore theta`, uses a left inverse for
-that scaled core, constructs the concrete finite-sum-map left inverse by
-subtracting the summed offset, derives finite-sum-map injectivity from that
-left inverse, derives uniqueness of the root, identifies the canonical
-`Classical.choose` root with `rootCandidate`, transfers coordinate
-measurability and norm consistency through that identity, and then transfers
-the asymptotic-normality conclusion back to `rootCandidate`. The route no
-longer carries named root-set nonemptiness, direct root-uniqueness, raw
-finite-sum-map injectivity, a raw finite-sum-map left inverse, an aggregate
-finite-sample affine display, an arbitrary observation-dependent core,
-arbitrary canonical-selector measurability or norm consistency, a separate
-external estimator parameter, or pointwise
-`estimator = Classical.choose ...` equality. It also packages
-finite-sum zero existence into
-`vaart1998ObservationEstimatingEquationRootSet`, derives selected-root
-membership by `Classical.choose_spec`, derives estimator exact-root-set
-membership, the unnormalized observation-level finite estimating-equation
-identity, and the predecessor's `empiricalAverageVector = 0` root. It also
-derives the finite-parameter Borel/product-sigma
-measurable-space comparison from Mathlib's product Borel machinery, so the
-live source route no longer asks for that compatibility as a separate
-hypothesis.
+Use this endpoint as the live route. It states Theorem 5.41 directly for a
+positive-sample estimator indexed as sample size `n + 1`, assumes exact
+membership in
+`vaart1998ObservationEstimatingEquationRootSet observationEstimatingMap (n + 1)
+sample`, prepends `theta0` at sample size zero, uses the empty-sum root at
+zero, applies the compiled exact-root-set Theorem 5.41 source endpoint, and
+then shifts the convergence-in-distribution conclusion back along `Nat.succ`.
+This removes the artificial `n = 0` left-inverse/root-uniqueness obstruction
+from the live proof route.
 
-The newest common-core packet adds
-`vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the current
-endpoint. It replaces the arbitrary observation-dependent affine core by a
-sample-independent common core and a left inverse for
-`(n : ℝ) • commonObservationCore theta`.
-
-The newest positive-sample preparation packet adds
+The newest positive-sample packet adds
 `vaart1998_tendstoInDistribution_succ`,
 `vaart1998_tendstoInDistribution_constMeasure_succ`,
+`vaart1998_tendstoInMeasure_zero_prepend`,
 `vaart1998_scaledCommonObservationCore_leftInverse_of_nonzero`, and
-`vaart1998_scaledCommonObservationCore_pointwise_leftInverse_of_nonzero`. It
-proves the Chapter 2 law-reindexing bridge and the nonzero-sample algebra for
-inverting `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
+`vaart1998_scaledCommonObservationCore_pointwise_leftInverse_of_nonzero`, plus
+the current positive-sample endpoint. It proves the Chapter 2 reindexing
+bridges and the nonzero-sample algebra for inverting
+`(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
+
+Next aggressive target: build the positive common-core/root-membership wrapper
+that turns a concrete positive-sample `rootCandidate`, its finite-sum zero
+equation or common-core affine display, and the nonzero scaled-core inverse
+lemma into the `hPositiveEstimator_mem_rootSet` field consumed by
+`vaart1998_theorem_5_41_positiveSample_rootSetSource`. Then instantiate that
+wrapper on an actual model's algebraic estimating equation. Do not route back
+to sample-size-zero inverses, arbitrary canonical-selector measurability,
+direct root uniqueness, raw finite-sum-map injectivity, a raw left inverse,
+aggregate finite-sample affine-display hypotheses, or arbitrary
+observation-dependent cores when the positive root-set route is available.
+
+The previous common-core packet adds
+`vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core
+affine endpoint. It replaces the arbitrary observation-dependent affine core
+by a sample-independent common core and a left inverse for
+`(n : ℝ) • commonObservationCore theta`.
 
 The previous observation-affine packet adds
 `vaart1998_finiteSum_affineDisplay_of_observationAffineDisplay` and the
-current endpoint. It replaces the aggregate finite-sample affine-display
-hypothesis by a pointwise observation-level affine display, then constructs
-the finite-sample core and offset by summing over `Fin n`.
-
-Next aggressive target: build the eventual/positive-index Theorem 5.41 wrapper
-using the new `Nat.succ` convergence-in-distribution bridge and the nonzero
-scaled-core inverse lemma. After that, prove the common-core affine display
-from an actual model's algebraic estimating equation or replace the common-core
-inverse field by a local/global inverse theorem using nonsingular derivative
-hypotheses. Do not route back to arbitrary canonical-selector measurability,
-direct root uniqueness, raw finite-sum-map injectivity, a raw left inverse,
-aggregate finite-sample affine-display hypotheses, or arbitrary
-observation-dependent cores when common-core display/nonzero-scaled-inverse
-hypotheses are available.
+observation-affine endpoint. It replaces the aggregate finite-sample
+affine-display hypothesis by a pointwise observation-level affine display,
+then constructs the finite-sample core and offset by summing over `Fin n`.
 
 The previous layer replaces the old coordinate score-transform moment interface
 by the vector source triple
