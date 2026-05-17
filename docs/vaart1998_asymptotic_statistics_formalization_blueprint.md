@@ -20,13 +20,14 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    instructions to replay.
 
 Current frontier: Theorem 5.41 now has a compiled positive-sample common-core
-continuous-linear-map injective equal-finrank affine mean-zero observation-law
+continuous-linear-map injective equal-cardinality affine mean-zero observation-law
 offset source. It states the limit theorem for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine display
 and a common core supplied as an injective continuous linear map between finite
-coordinate spaces of equal finrank, derives the trivial-kernel and full-range
-facts from mathlib's linear-map finite-dimensional API, builds the continuous
+coordinate spaces of equal cardinality, derives equality of the function-space
+finranks from `Module.finrank_fintype_fun_eq_card`, derives the
+trivial-kernel and full-range facts from mathlib's linear-map finite-dimensional API, builds the continuous
 linear equivalence used by the explicit inverse estimator, derives coordinate
 measurability and continuity of that inverse from mathlib's continuous linear
 map API, derives coordinate measurability of the explicit inverse estimator
@@ -47,24 +48,31 @@ stability, common-core target convergence, estimator consistency,
 estimator-coordinate measurability, direct root-set-membership, or external
 finite-sum-zero hypotheses, and it no longer asks for inverse coordinate
 measurability, raw common-core injectivity-as-left-inverse, raw ker/range
-nonsingularity facts, a raw population common-core equation, or a raw
-right-inverse value at the limiting target.
+nonsingularity facts, raw function-space finrank equality, a raw population
+common-core equation, or a raw right-inverse value at the limiting target.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveFinrankAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveCardAffineMeanZeroOffsetSource`.
 
 The newest wrapper adds
+`vaart1998_commonObservationCoreLinear_finrank_eq_of_card_eq`,
+`vaart1998_commonObservationCoreLinear_range_eq_top_of_injective_card_eq`,
+`vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_card_eq`,
+`vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_card_eq_apply`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveCardAffineMeanZeroOffsetSource`.
+The next proof layer should derive common-core injectivity from a concrete
+linear/common-core model, finite matrix nonsingularity source, determinant
+source, or textbook estimating equation, or discharge a live
+observation-offset field for that endpoint.
+
+The previous wrapper adds
 `vaart1998_commonObservationCoreLinear_ker_eq_bot_of_injective`,
 `vaart1998_commonObservationCoreLinear_range_eq_top_of_injective_finrank_eq`,
 `vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_finrank_eq`,
 `vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_finrank_eq_apply`,
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveFinrankAffineMeanZeroOffsetSource`.
-The next proof layer should derive common-core injectivity and the equal
-finite-dimensional rank condition from a concrete linear/common-core model,
-finite matrix nonsingularity source, determinant source, or textbook
-estimating equation, or discharge a live observation-offset field for that
-endpoint.
 
 The previous wrapper adds
 `vaart1998_commonObservationCoreContinuousLinearEquiv_of_ker_range`,

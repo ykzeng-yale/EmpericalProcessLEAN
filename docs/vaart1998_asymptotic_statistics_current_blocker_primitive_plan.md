@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveFinrankAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveCardAffineMeanZeroOffsetSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -29,8 +29,9 @@ commonObservationCoreLinear theta + observationOffset observation` and a
 common core supplied as a continuous linear map
 `commonObservationCoreLinear :
   (Param -> ℝ) →L[ℝ] (Coord -> ℝ)`, injectivity of this map, and equality of
-the finite coordinate dimensions
-`Module.finrank ℝ (Param -> ℝ) = Module.finrank ℝ (Coord -> ℝ)`. It derives
+the finite coordinate-cardinalities
+`Fintype.card Param = Fintype.card Coord`. It derives equality of the
+function-space finranks from `Module.finrank_fintype_fun_eq_card`, derives
 `commonObservationCoreLinear.ker = ⊥` from injectivity and
 `commonObservationCoreLinear.range = ⊤` from injectivity plus equal finrank,
 then builds the common-core continuous linear equivalence via
@@ -64,9 +65,20 @@ distribution, raw local inverse stability, common-core target convergence,
 estimator consistency, estimator coordinate measurability, root-set
 membership, finite-sum zero, inverse coordinate measurability, raw local
 inverse continuity, raw common-core injectivity, raw population common-core
-equation, or raw right-inverse value directly.
+equation, raw right-inverse value, or raw function-space finrank equality
+directly.
 
-The newest injective equal-finrank packet adds
+The newest injective equal-cardinality packet adds
+`vaart1998_commonObservationCoreLinear_finrank_eq_of_card_eq`,
+`vaart1998_commonObservationCoreLinear_range_eq_top_of_injective_card_eq`,
+`vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_card_eq`,
+`vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_card_eq_apply`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveCardAffineMeanZeroOffsetSource`.
+It removes the raw function-space finrank equality by deriving it from
+equality of the finite coordinate-cardinalities.
+
+The previous injective equal-finrank packet adds
 `vaart1998_commonObservationCoreLinear_ker_eq_bot_of_injective`,
 `vaart1998_commonObservationCoreLinear_range_eq_top_of_injective_finrank_eq`,
 `vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_finrank_eq`,
@@ -200,9 +212,11 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: derive common-core injectivity and the equal
-finite-dimensional rank condition from an explicit finite matrix inverse,
+Next aggressive target: derive common-core injectivity from an explicit
+finite matrix inverse,
 determinant/nonsingularity source, or textbook estimating-equation algebra;
+derive the equal finite coordinate-cardinality condition from the concrete
+indexing choice when needed;
 derive offset coordinate
 measurability/integrability from a more concrete model source when available;
 or instantiate the endpoint on a concrete estimating equation from the
@@ -219,7 +233,7 @@ identical-distribution, inverse coordinate-measurability,
 raw local inverse-stability, raw common-core injectivity, raw population
 common-core equation, raw right-inverse value assumptions, or already-bundled
 continuous-linear-equivalence assumptions when the common-core linear-map
-injective equal-finrank route is available.
+injective equal-cardinality route is available.
 
 The previous common-core packet adds
 `vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core
@@ -1707,7 +1721,7 @@ endpoint.
 Continuation recipe:
 
 1. Check `git status`, the Vaart diff, and the live hypotheses of the
-   positive-sample common-core continuous-linear-map injective equal-finrank
+   positive-sample common-core continuous-linear-map injective equal-cardinality
    endpoint.
 2. If an unfinished local Vaart Lean diff exists, either finish and verify it
    immediately, or remove it from the packet before editing route docs.
@@ -1716,16 +1730,15 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Derive common-core injectivity and the equal finite-dimensional rank
-   condition from a concrete common-core model, explicit finite matrix
-   inverse, nonsingularity certificate, determinant source, or textbook
-   estimating-equation algebra.
-2. If the injectivity/rank construction is not immediately available, derive a live
+1. Derive common-core injectivity from a concrete common-core model, explicit
+   finite matrix inverse, nonsingularity certificate, determinant source, or
+   textbook estimating-equation algebra.
+2. If the injectivity construction is not immediately available, derive a live
    observation-offset field for the same endpoint: coordinate measurability,
    coordinate integrability, or the coordinate mean-zero equation at `theta0`.
 3. Instantiate the compiled endpoint for the first concrete textbook
    Theorem 5.41 example that can provide the affine display, offset fields,
-   common-core injectivity, and the equal finite-dimensional rank condition.
+   common-core injectivity, and equal finite coordinate-cardinalities.
 
 Do not replay the vector score-representation or vector score common-law
 transfers, derivative-table common-law transfer, centered
@@ -3014,28 +3027,27 @@ compiling:
    feeds that display into the finite Taylor-zero action-bound endpoint.
 
 Latest verified Vaart frontier before the next packet:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveFinrankAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveCardAffineMeanZeroOffsetSource`.
 
-The latest theorem-sized packet removes the raw common-core ker/range
-nonsingularity assumptions by deriving them from injectivity of the common
-core and equality of the finite coordinate dimensions. The live route now
-assumes the pointwise affine estimating-equation display against that
-continuous linear map, common-core injectivity, the equal finite-dimensional
-rank condition, coordinate measurability and coordinate integrability of the
-observation offset, and the coordinate mean-zero equation at `theta0`.
+The latest theorem-sized packet removes the raw function-space finrank
+equality by deriving it from equality of the finite coordinate-cardinalities.
+The live route now assumes the pointwise affine estimating-equation display
+against that continuous linear map, common-core injectivity, equal finite
+coordinate-cardinalities, coordinate measurability and coordinate
+integrability of the observation offset, and the coordinate mean-zero equation
+at `theta0`.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint. Priority order:
 
-1. Derive common-core injectivity and the equal finite-dimensional rank
-   condition from a concrete linear/common-core model, matrix nonsingularity
-   source, determinant source, or textbook finite-dimensional estimating
-   equation.
+1. Derive common-core injectivity from a concrete linear/common-core model,
+   matrix nonsingularity source, determinant source, or textbook
+   finite-dimensional estimating equation.
 2. Derive observation-offset coordinate measurability and integrability from a
    concrete score/estimating-map model.
 3. Instantiate the endpoint for the first source-shaped textbook example of
    Theorem 5.41 that can reuse the compiled positive-sample injective
-   equal-finrank route.
+   equal-cardinality route.
 
 Do not route back to the earlier second-derivative-kernel endpoint,
 fixed-`theta0` derivative joint measurability, direct second-derivative joint

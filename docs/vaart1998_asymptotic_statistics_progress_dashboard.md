@@ -16,14 +16,15 @@ The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
 Latest verified packet: positive-sample common-core continuous-linear-map
-injective equal-finrank affine mean-zero observation-law offset source for
+injective equal-cardinality affine mean-zero observation-law offset source for
 Theorem 5.41.
 The live endpoint now states the asymptotic-normality handoff for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine
 display and a common core supplied as an injective continuous linear map
-between finite coordinate spaces of equal finrank, derives the ker/range
-nonsingularity facts from mathlib's linear-map finite-dimensional API, builds
+between finite coordinate spaces of equal cardinality, derives equality of the
+function-space finranks from `Module.finrank_fintype_fun_eq_card`, derives the
+ker/range nonsingularity facts from mathlib's linear-map finite-dimensional API, builds
 the continuous linear equivalence used by the explicit inverse estimator,
 derives coordinate measurability and continuity of that inverse from
 mathlib's continuous linear map API, derives coordinate measurability of the
@@ -47,22 +48,30 @@ estimator-coordinate-measurability, direct root-set-membership, and
 finite-sum-zero hypotheses, the inverse coordinate-measurability hypothesis,
 the raw common-core injectivity-as-left-inverse hypothesis, the raw population
 common-core equation, the raw right-inverse-value hypothesis, and the raw
-ker/range nonsingularity hypotheses from the current route.
+ker/range nonsingularity hypotheses and the raw function-space finrank
+equality from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveFinrankAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveCardAffineMeanZeroOffsetSource`.
 
-The newest injective equal-finrank packet adds
+The newest injective equal-cardinality packet adds
+`vaart1998_commonObservationCoreLinear_finrank_eq_of_card_eq`,
+`vaart1998_commonObservationCoreLinear_range_eq_top_of_injective_card_eq`,
+`vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_card_eq`,
+`vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_card_eq_apply`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveCardAffineMeanZeroOffsetSource`.
+The next blocker is to derive common-core injectivity from a concrete matrix,
+determinant, nonsingularity, or textbook estimating-equation source, or to
+discharge a live observation-offset field for that endpoint.
+
+The previous injective equal-finrank packet adds
 `vaart1998_commonObservationCoreLinear_ker_eq_bot_of_injective`,
 `vaart1998_commonObservationCoreLinear_range_eq_top_of_injective_finrank_eq`,
 `vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_finrank_eq`,
 `vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_finrank_eq_apply`,
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveFinrankAffineMeanZeroOffsetSource`.
-The next blocker is to derive injectivity and the equal finite-dimensional
-rank condition from a concrete matrix, determinant, nonsingularity, or
-textbook estimating-equation source, or to discharge a live
-observation-offset field for that endpoint.
 
 The previous continuous-linear-map ker/range packet adds
 `vaart1998_commonObservationCoreContinuousLinearEquiv_of_ker_range`,
@@ -1180,12 +1189,11 @@ from the pointwise-Taylor Theorem 5.41 action endpoint.
 
 Superseded blocker note: the derivative-transform measurability
 fixed-`theta0` route has been replaced by the positive-sample common-core
-continuous-linear-map injective equal-finrank affine mean-zero observation-law offset
+continuous-linear-map injective equal-cardinality affine mean-zero observation-law offset
 source. The current live blocker is recorded at the top of this dashboard and
-in the current blocker plan: derive common-core injectivity and the equal
-finite-dimensional rank condition from a concrete model, determinant,
-nonsingularity, or textbook estimating-equation source, or instantiate a
-concrete textbook estimating equation.
+in the current blocker plan: derive common-core injectivity from a concrete
+model, determinant, nonsingularity, or textbook estimating-equation source, or
+instantiate a concrete textbook estimating equation.
 Do not replay the centered derivative-coordinate residual algebra,
 smooth/raw/scaled Taylor transfer, score-at-theta0 vector scaling transfer,
 estimator-definition a.e. wrappers, raw-root a.e. wrappers, selected
