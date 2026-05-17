@@ -231,6 +231,31 @@ theorem vaart1998_tendstoInMeasure_norm_sub_const_zero_of_tendstoInMeasure_const
   simpa [sub_zero] using htail
 
 /--
+Convergence in probability of the norm residual to zero implies convergence
+in probability to the fixed value.
+
+Together with
+`vaart1998_tendstoInMeasure_norm_sub_const_zero_of_tendstoInMeasure_const`,
+this packages the standard Chapter 2 equivalence between vector consistency
+and the scalar norm-residual formulation used in later estimator theorems.
+-/
+theorem vaart1998_tendstoInMeasure_const_of_norm_sub_const_zero
+    {ι Ω E : Type*} [MeasurableSpace Ω] {P : Measure Ω}
+    [SeminormedAddCommGroup E]
+    {l : Filter ι} {X : ι -> Ω -> E} (c : E)
+    (hXnorm : TendstoInMeasure P (fun i ω => ‖X i ω - c‖) l 0) :
+    TendstoInMeasure P X l (fun _ : Ω => c) := by
+  rw [MeasureTheory.tendstoInMeasure_iff_norm]
+  intro ε hε
+  have htail :
+      Tendsto
+        (fun i : ι =>
+          P {ω : Ω | ε ≤ ‖‖X i ω - c‖ - (0 : ℝ)‖})
+        l (𝓝 0) :=
+    (MeasureTheory.tendstoInMeasure_iff_norm.mp hXnorm) ε hε
+  simpa [sub_zero, Real.norm_eq_abs] using htail
+
+/--
 VdV&W tightness of a sequence of laws gives the real-valued norm-tail bound
 used by van der Vaart's `O_P(1)` criterion.
 
