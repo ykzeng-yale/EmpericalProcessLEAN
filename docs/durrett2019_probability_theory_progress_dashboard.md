@@ -32,18 +32,20 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V439` in
+Route from `Live In-Thread Goal Prompt V440` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
-V439 starts Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy, after
-the completed Theorem 2.5.12 textbook display.  The new compiled support
-packages the first deterministic proof paragraph: monotone `a_n / n` gives
-`a_{kn} >= k a_n`, the corresponding tail-event probability comparison, and
-the finite antitone block-sum comparison for subsequence tails.  The next
-source work is the infinite tail-series transfer for the divergent half, then
-the Borel-Cantelli/limsup bridge.  Do not route back into solved Theorem
-2.5.12 plumbing.  New compiled anchors through V439:
+V440 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.  The
+V439 block comparison is now promoted to a contiguous finite tail-prefix
+identity and the exact textbook-oriented estimate
+`(1/k) * sum_{m=k}^{k(N+1)-1} u_m <= sum_{n=1}^N u_{kn}` for antitone tail
+sequences.  The next source work is the infinite tail-series
+transfer/contrapositive, then the Borel-Cantelli/limsup bridge.  Do not route
+back into solved Theorem 2.5.12 plumbing.  New compiled anchors through V440:
+`durrett2019_theorem_2_5_13_block_sums_eq_Ico_tail`,
+`durrett2019_theorem_2_5_13_antitone_Ico_tail_sum_le`,
+`durrett2019_theorem_2_5_13_inv_mul_Ico_tail_sum_le_subsequence_sum`,
 `durrett2019_theorem_2_5_13_scaled_le_of_ratio_mono`,
 `durrett2019_theorem_2_5_13_tail_event_subset_scaled_of_ratio_mono`,
 `durrett2019_theorem_2_5_13_tail_measure_le_scaled_tail_measure_of_ratio_mono`,

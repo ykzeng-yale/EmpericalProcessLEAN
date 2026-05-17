@@ -10529,6 +10529,62 @@ theorem durrett2019_theorem_2_5_13_antitone_block_sums_le
           simp [Finset.mul_sum]
 
 /--
+Durrett 2019, Theorem 2.5.13 deterministic support: the finite block
+decomposition used in the divergent half is exactly the contiguous interval
+`[k, k(N+1))`.
+-/
+theorem durrett2019_theorem_2_5_13_block_sums_eq_Ico_tail
+    {u : ℕ -> ℝ} (k N : ℕ) :
+    (∑ n ∈ Finset.Icc 1 N,
+      ∑ m ∈ Finset.Ico (k * n) (k * (n + 1)), u m) =
+      ∑ m ∈ Finset.Ico k (k * (N + 1)), u m := by
+  induction N with
+  | zero =>
+      simp
+  | succ N ih =>
+      rw [Finset.sum_Icc_succ_top (by omega : 1 ≤ N + 1)]
+      rw [ih]
+      rw [Finset.sum_Ico_consecutive
+        (f := fun m : ℕ => u m)
+        (m := k) (n := k * (N + 1)) (k := k * ((N + 1) + 1))]
+      · simpa [Nat.mul_one] using
+          Nat.mul_le_mul_left k (by omega : 1 ≤ N + 1)
+      · exact Nat.mul_le_mul_left k (by omega : N + 1 ≤ (N + 1) + 1)
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic support: a finite contiguous tail
+prefix is bounded by `k` times the selected `kn` subsequence prefix.
+-/
+theorem durrett2019_theorem_2_5_13_antitone_Ico_tail_sum_le
+    {u : ℕ -> ℝ} (hu : Antitone u) {k N : ℕ} :
+    (∑ m ∈ Finset.Ico k (k * (N + 1)), u m) ≤
+      (k : ℝ) * ∑ n ∈ Finset.Icc 1 N, u (k * n) := by
+  rw [← durrett2019_theorem_2_5_13_block_sums_eq_Ico_tail (u := u) k N]
+  exact durrett2019_theorem_2_5_13_antitone_block_sums_le (u := u) hu
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic support: the previous finite tail
+comparison in the textbook orientation,
+`(1/k) * sum_{m=k}^{k(N+1)-1} u_m <= sum_{n=1}^N u_{kn}`.
+-/
+theorem durrett2019_theorem_2_5_13_inv_mul_Ico_tail_sum_le_subsequence_sum
+    {u : ℕ -> ℝ} (hu : Antitone u) {k N : ℕ} (hk : 0 < k) :
+    ((k : ℝ)⁻¹) * (∑ m ∈ Finset.Ico k (k * (N + 1)), u m) ≤
+      ∑ n ∈ Finset.Icc 1 N, u (k * n) := by
+  have hk_real_pos : 0 < (k : ℝ) := Nat.cast_pos.mpr hk
+  have htail_le :
+      (∑ m ∈ Finset.Ico k (k * (N + 1)), u m) ≤
+        (k : ℝ) * ∑ n ∈ Finset.Icc 1 N, u (k * n) :=
+    durrett2019_theorem_2_5_13_antitone_Ico_tail_sum_le (u := u) hu
+  calc
+    ((k : ℝ)⁻¹) * (∑ m ∈ Finset.Ico k (k * (N + 1)), u m) ≤
+        ((k : ℝ)⁻¹) *
+          ((k : ℝ) * ∑ n ∈ Finset.Icc 1 N, u (k * n)) := by
+          exact mul_le_mul_of_nonneg_left htail_le (inv_nonneg.2 hk_real_pos.le)
+    _ = ∑ n ∈ Finset.Icc 1 N, u (k * n) := by
+          field_simp [ne_of_gt hk_real_pos]
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
