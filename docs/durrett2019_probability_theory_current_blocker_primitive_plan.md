@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V482
+## Live In-Thread Goal Prompt V483
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -15,69 +15,33 @@ synced `main`.  Immediate lane: Durrett Theorem 2.4.9 Glivenko-Cantelli plus
 Chapter 2.1 independence/product-law/product-expectation support in
 `StatInference/ProbabilityTheory/Basic.lean`, reusing
 `StatInference/EmpiricalProcess/RealHalfLineGC.lean`,
-`StatInference/ProbabilityMeasure/ProductMeasure.lean`, and mathlib
-independence/Tonelli APIs.  The earlier 2.4.9 source-entry plumbing through
-V390 and the 2.5.13 infinite-mean source display through V476 are compiled.
-V477 added the nonnegative finite-product branch of Durrett Theorem 2.1.13.
-V478 adds the nonnegative separated product-measure and independent-pair
-product-expectation branch of Durrett Theorem 2.1.12, including the real
-nonnegative `ENNReal.ofReal` display.
-V479 adds law-side Durrett Theorem 2.1.12 separated-product wrappers from
-`HasLaw X μ P` and `HasLaw Y ν P`, including both the nonnegative `lintegral`
-branch and the integrable Bochner-integral branch.
-V480 adds law-side Durrett Theorem 2.1.13 finite/range/Ico product-expectation
-wrappers from `iIndepFun`, individual `HasLaw` hypotheses, and law-side
-integrability, including iid power forms.
-V481 adds the measurable law-side nonnegative `ℝ≥0∞` branch of Durrett Theorem
-2.1.13, including finite/range/Ico product-expectation and iid power forms.
-V482 adds the law-side real nonnegative `ENNReal.ofReal` branch of Durrett
-Theorem 2.1.13, including finite/range/Ico product-expectation and iid power
-forms from `iIndepFun`, coordinate `HasLaw`, coordinate measurability, and
-measurable nonnegative real test functions.
-Do not reroute to solved
-Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
-integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
-the solved fixed-`k` Borel-Cantelli partial-sum bridge, or the solved
-integer-to-real threshold bridge, or the solved countable a.e. all-threshold
-wrapper, or the solved extended-real limsup display, or the solved iid
-divergent-half scaled-tail plumbing, or the solved convergent-half
-Borel-Cantelli moving-truncation handoff, or the solved eventual-equality
-normalized-sum transfer, or the solved moving-truncation Kronecker assembly,
-the solved scaled-variance-to-base-truncated-square handoff, or the solved
-scalar-kernel-to-original-endpoint handoff, the solved
-scaled-mean-summability-to-mean-normalization handoff, or the solved
-textbook-prefix-plus-tail mean squeeze, the solved finite-annulus ratio/tail
-bridge, the solved base-truncated-integral-to-mean bridge, or the solved base
-absolute finite-annulus partition/integral bridge, or the solved
-annulus-first-moment-to-identity-mass bridge, or the solved
-mass-weight-summable-to-shifted-tail-bound bridge, or the solved
-finite-prefix-identity(*) consumer, or the solved monotone-annulus
-finite-identity bridge, or the solved source mean/original endpoint bridge, or
-the solved ratio packaging from Durrett's `a_n / n` monotonicity, or the
-solved reciprocal-square p-series/tail estimate, or the solved annulus-wise
-scalar-kernel bound, or the solved low-prefix scalar-kernel bound, or the
-solved prefix-plus-annulus pointwise majorant and endpoint handoff, or the
-solved concrete annulus-series majorant pointwise/endpoint wrappers, or the
-solved concrete majorant integrability bridge from identity(*) mass weights,
-or the solved convergent-half extended-real display wrapper, or the solved
-two-branch Feller dichotomy assembly, or the solved easy growth cleanup from
-monotonicity and `n / a_n -> 0`, or the solved source-growth wrapper from
-`a_n / n -> infinity` to `n / a_n -> 0`, or the solved monotone-convergence
-contradiction shell, or the solved bounded-ratio linear-tail transfer, or the
-solved linear-grid layer-cake/counting bridge, the solved bounded-ratio
-integrability instantiation, the solved lintegral infinite-mean display, the
-solved unshifted-to-one-based divergent tail-series display, or the solved
-nonnegative finite-product, independent-pair separated product-expectation,
-law-side separated product-expectation, and law-side finite-product
-expectation/power wrappers, including the law-side nonnegative `ℝ≥0∞` and
-real `ENNReal.ofReal` branches.
+`StatInference/ProbabilityMeasure/ProductMeasure.lean`, and mathlib product
+measure/independence/Tonelli APIs.  Already compiled: the 2.4.9
+Glivenko-Cantelli source-entry/canonical-iid wrappers through V390, the full
+2.5.13 infinite-mean lane through V476, the 2.1.12 separated product
+expectation wrappers through V479, the 2.1.13 finite product expectation
+wrappers through V482, and V483's finite-dimensional infinite-product
+restriction/cylinder probability wrappers.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
 source-facing 2.4.9 display only if search proves it is absent; otherwise add
 the next Chapter 2.1 product-law/product-expectation wrapper that directly
 supports 2.4.9 or the adjacent Kolmogorov-maximal route.  Do not return to
-2.5.13 or old app-level stale prompts.
+2.5.13, solved product-expectation branches, solved finite-dimensional
+infinite-product restriction/cylinder wrappers, or old app-level stale prompts.
+
+Latest verified target V483 adds the finite-dimensional product-law/cylinder
+branch of Durrett Theorem 2.1.11:
+`durrett2019_theorem_2_1_11_infinitePi_finite_restrict_hasLaw`,
+`durrett2019_theorem_2_1_11_hasLaw_infinitePi_finite_restrict`,
+`durrett2019_theorem_2_1_11_hasLaw_infinitePi_finite_cylinder_prob`,
+`durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_finite_cylinder_prob`, and
+`durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_range_cylinder_prob`.
+These wrappers expose mathlib's `Measure.infinitePi_map_restrict` and
+`Measure.infinitePi_pi` in Durrett source shape, so finite-dimensional
+distribution and empirical-CDF arguments can consume joint infinite-product
+law assumptions without reopening cylinder-measurability plumbing.
 
 Latest verified target V482 adds the law-side real nonnegative `ENNReal.ofReal`
 branch of Durrett Theorem 2.1.13:
@@ -4419,6 +4383,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V482` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V483` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

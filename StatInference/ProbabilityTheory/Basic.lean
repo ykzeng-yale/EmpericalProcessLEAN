@@ -781,6 +781,119 @@ theorem durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi
     (S := fun _ : ℕ => S) (ν := fun _ : ℕ => ν) hLaw hindep
 
 /--
+Durrett 2019, Theorem 2.1.11, finite-dimensional product-law restriction.
+
+Under the canonical infinite product measure, restricting a sample path to a
+finite index set has the corresponding finite product law.
+-/
+theorem durrett2019_theorem_2_1_11_infinitePi_finite_restrict_hasLaw
+    {ι : Type v} {S : ι -> Type w} [∀ i, MeasurableSpace (S i)]
+    (ν : ∀ i, Measure (S i)) [∀ i, IsProbabilityMeasure (ν i)]
+    (s : Finset ι) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : (∀ i, S i) => s.restrict sample)
+      (Measure.pi fun i : s => ν i)
+      (Measure.infinitePi ν) where
+  aemeasurable := (Finset.measurable_restrict (X := S) s).aemeasurable
+  map_eq := Measure.infinitePi_map_restrict (μ := ν) (I := s)
+
+/--
+Durrett 2019, Theorem 2.1.11, source-side finite-dimensional product law.
+
+If a family has joint law `∏ᵢ ν_i`, then every finite subfamily has the
+corresponding finite product law.
+-/
+theorem durrett2019_theorem_2_1_11_hasLaw_infinitePi_finite_restrict
+    {Ω : Type u} [MeasurableSpace Ω]
+    {ι : Type v} {S : ι -> Type w} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {ν : ∀ i, Measure (S i)}
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {X : ∀ i, Ω -> S i}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ι => X i ω) (Measure.infinitePi ν) μ)
+    (s : Finset ι) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : s => X i ω)
+      (Measure.pi fun i : s => ν i) μ := by
+  have hRestrict :=
+    durrett2019_theorem_2_1_11_infinitePi_finite_restrict_hasLaw
+      (ν := ν) s
+  simpa [Function.comp_def, Finset.restrict] using hRestrict.comp hJoint
+
+/--
+Durrett 2019, Theorem 2.1.11, finite cylinder probabilities from a joint
+infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_hasLaw_infinitePi_finite_cylinder_prob
+    {Ω : Type u} [MeasurableSpace Ω]
+    {ι : Type v} {S : ι -> Type w} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {ν : ∀ i, Measure (S i)}
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {X : ∀ i, Ω -> S i} {A : ∀ i, Set (S i)}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ι => X i ω) (Measure.infinitePi ν) μ)
+    (s : Finset ι) (hA : ∀ i, i ∈ s -> MeasurableSet (A i)) :
+    μ {ω | ∀ i, i ∈ s -> X i ω ∈ A i} =
+      ∏ i ∈ s, ν i (A i) := by
+  have hmeas : MeasurableSet (Set.pi (s : Set ι) A) :=
+    MeasurableSet.pi s.countable_toSet
+      (fun i hi => hA i (by simpa using hi))
+  have hpreimage :
+      {ω | ∀ i, i ∈ s -> X i ω ∈ A i} =
+        (fun ω => fun i : ι => X i ω) ⁻¹' Set.pi (s : Set ι) A := by
+    ext ω
+    simp [Set.pi]
+  calc
+    μ {ω | ∀ i, i ∈ s -> X i ω ∈ A i}
+        = μ ((fun ω => fun i : ι => X i ω) ⁻¹' Set.pi (s : Set ι) A) := by
+          rw [hpreimage]
+    _ = (μ.map (fun ω => fun i : ι => X i ω)) (Set.pi (s : Set ι) A) := by
+          rw [Measure.map_apply_of_aemeasurable hJoint.aemeasurable hmeas]
+    _ = (Measure.infinitePi ν) (Set.pi (s : Set ι) A) := by
+          rw [hJoint.map_eq]
+    _ = ∏ i ∈ s, ν i (A i) := by
+          simpa using Measure.infinitePi_pi (μ := ν) (s := s) (t := A) hA
+
+/--
+Durrett 2019, Theorem 2.1.11, iid finite cylinder probabilities from a joint
+infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_finite_cylinder_prob
+    {Ω : Type u} [MeasurableSpace Ω]
+    {ι : Type v} {S : Type w} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    [IsProbabilityMeasure ν]
+    {X : ι -> Ω -> S} {A : ι -> Set S}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ι => X i ω)
+      (Measure.infinitePi fun _ : ι => ν) μ)
+    (s : Finset ι) (hA : ∀ i, i ∈ s -> MeasurableSet (A i)) :
+    μ {ω | ∀ i, i ∈ s -> X i ω ∈ A i} =
+      ∏ i ∈ s, ν (A i) := by
+  simpa using
+    durrett2019_theorem_2_1_11_hasLaw_infinitePi_finite_cylinder_prob
+      (ν := fun _ : ι => ν) (X := X) (A := A) hJoint s hA
+
+/--
+Durrett 2019, Theorem 2.1.11, iid finite prefix cylinder probabilities from a
+joint infinite product law over `ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_range_cylinder_prob
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S} {A : ℕ -> Set S}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) μ)
+    (n : ℕ) (hA : ∀ i, i ∈ Finset.range n -> MeasurableSet (A i)) :
+    μ {ω | ∀ i, i ∈ Finset.range n -> X i ω ∈ A i} =
+      ∏ i ∈ Finset.range n, ν (A i) :=
+  durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_finite_cylinder_prob
+    (hJoint := hJoint) (s := Finset.range n) hA
+
+/--
 Durrett 2019, Theorem 2.1.11, one-based iid source extraction.
 
 If a zero-based Lean sequence is iid, then the shifted sequence
