@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V453
+## Live In-Thread Goal Prompt V454
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -47,7 +47,11 @@ sum endpoint wrappers that consume that scalar kernel bound.  V453 removes the
 remaining opaque truncated-mean `Tendsto` assumption by proving the
 Kronecker-style mean-normalization bridge from scaled truncated-mean
 summability, plus absolute-scaled summability and scalar-kernel endpoint
-wrappers.  Do
+wrappers.  V454 adds the deterministic textbook prefix-plus-tail mean squeeze:
+if the moving truncated means satisfy Durrett's fixed-`N` prefix bound plus a
+summable annulus tail, then the normalized mean contribution tends to zero;
+it also adds scalar-kernel endpoint wrappers consuming this textbook mean
+bound.  Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -58,16 +62,27 @@ divergent-half scaled-tail plumbing, or the solved convergent-half
 Borel-Cantelli moving-truncation handoff, or the solved eventual-equality
 normalized-sum transfer, or the solved moving-truncation Kronecker assembly,
 the solved scaled-variance-to-base-truncated-square handoff, or the solved
-scalar-kernel-to-original-endpoint handoff, or the solved
-scaled-mean-summability-to-mean-normalization handoff.
-Next aggressive target: prove the textbook identity (*)/ratio-monotonicity
-annulus/tail estimates that supply both scalar truncated-square kernel
-majorization and absolute scaled truncated-mean summability from finite
-large-jump tail series, then assemble the source-facing Feller dichotomy
-wrapper.
+scalar-kernel-to-original-endpoint handoff, the solved
+scaled-mean-summability-to-mean-normalization handoff, or the solved
+textbook-prefix-plus-tail mean squeeze.
+Next aggressive target: instantiate the V454 textbook mean bound from
+annulus first-moment estimates and prove the identity (*)/ratio-monotonicity
+annulus estimate supplying scalar truncated-square kernel majorization from
+finite large-jump tail series, then assemble the source-facing Feller
+dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V454 adds the textbook mean-squeeze layer for the
+convergent half of Durrett Theorem 2.5.13.  New compiled anchors include:
+`durrett2019_theorem_2_5_13_mean_normalized_sum_tendsto_zero_of_textbook_tail_bound`,
+`durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_textbook_tail_bound`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_textbook_mean_bound`, and
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_textbook_mean_bound_and_iid_tail_tsum_ne_top`.
+The remaining blocker is now to prove the actual annulus/tail inequalities:
+the V454 mean bound from first-moment annuli and the V452 scalar kernel
+majorization from identity (*) and ratio monotonicity.
 
 Latest verified target V453 adds the truncated-mean normalization handoff for
 the convergent half of Durrett Theorem 2.5.13.  New compiled anchors include:
@@ -78,9 +93,9 @@ the convergent half of Durrett Theorem 2.5.13.  New compiled anchors include:
 `durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_abs_scaled_summable`,
 `durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_mean_scaled_summable`, and
 `durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_mean_abs_scaled_summable_and_iid_tail_tsum_ne_top`.
-The remaining blocker is now the textbook annulus/tail estimate proving scalar
-kernel majorization and absolute scaled truncated-mean summability from the
-finite large-jump tail series.
+The textbook prefix-plus-tail mean squeeze is discharged by V454; future
+cycles should target the annulus inequalities instantiating that bound, not a
+generic mean `Tendsto`.
 
 Latest verified target V452 adds the scalar-kernel handoff for the convergent
 half of Durrett Theorem 2.5.13.  New compiled anchors include:

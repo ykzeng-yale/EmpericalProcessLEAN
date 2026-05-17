@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V453` in
+Route from `Live In-Thread Goal Prompt V454` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -65,12 +65,13 @@ weighted base second-moment summability, with moving/original endpoint
 wrappers consuming that scalar bound.  V453 removes the remaining opaque
 truncated-mean `Tendsto` assumption by proving the Kronecker-style
 mean-normalization bridge from scaled truncated-mean summability, plus
-absolute-scaled summability and scalar-kernel endpoint wrappers.  The next
-source work is to prove the textbook identity (*)/ratio-monotonicity
-annulus/tail estimates that supply scalar truncated-square kernel
-majorization and absolute scaled truncated-mean summability from finite
-large-jump tail series, and then assemble the source-facing Feller dichotomy
-wrapper.  Do not route back into
+absolute-scaled summability and scalar-kernel endpoint wrappers.  V454 adds
+the deterministic textbook prefix-plus-tail mean squeeze and endpoint wrappers
+that consume it.  The next source work is to instantiate the V454 mean bound
+from annulus first-moment estimates, prove the identity
+(*)/ratio-monotonicity annulus estimate supplying scalar truncated-square
+kernel majorization from finite large-jump tail series, and then assemble the
+source-facing Feller dichotomy wrapper.  Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
 integer-to-real threshold bridge, the solved countable a.e. all-threshold
@@ -80,8 +81,12 @@ moving-truncation handoff, or the solved eventual-equality normalized-sum
 transfer, the solved moving-truncation Kronecker assembly, or the solved
 scaled-variance-to-base-truncated-square handoff, or the solved
 scalar-kernel-to-original-endpoint handoff, or the solved
-scaled-mean-summability-to-mean-normalization handoff.  New compiled anchors
-through V453:
+scaled-mean-summability-to-mean-normalization handoff, or the solved
+textbook-prefix-plus-tail mean squeeze.  New compiled anchors through V454:
+`durrett2019_theorem_2_5_13_mean_normalized_sum_tendsto_zero_of_textbook_tail_bound`,
+`durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_textbook_tail_bound`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_textbook_mean_bound`,
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_textbook_mean_bound_and_iid_tail_tsum_ne_top`,
 `durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_scaled_summable`,
 `durrett2019_theorem_2_5_13_truncatedMean_scaled_summable_of_abs_scaled_summable`,
 `durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_abs_scaled_summable`,

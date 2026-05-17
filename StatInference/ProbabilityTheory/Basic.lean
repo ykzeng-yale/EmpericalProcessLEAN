@@ -12428,6 +12428,178 @@ theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_sc
     htail
 
 /--
+Durrett 2019, Theorem 2.5.13 deterministic mean layer: the textbook
+prefix-plus-tail estimate implies the normalized mean contribution tends to
+zero.
+
+The bound is the abstract form of the display after choosing a fixed `N` in
+Durrett's proof: a prefix term controlled by `n / a_n`, plus a summable
+annulus tail that can be made uniformly small by taking `N` large.
+-/
+theorem durrett2019_theorem_2_5_13_mean_normalized_sum_tendsto_zero_of_textbook_tail_bound
+    {m a B c : ℕ -> ℝ}
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hc_summable : Summable c)
+    (hbound : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        |(∑ k ∈ Finset.range n, m (k + 1)) / a n| ≤
+          |B N| * ((n : ℝ) / a n) + ∑' j : ℕ, c (j + N + 1)) :
+    Tendsto
+      (fun n : ℕ => (∑ k ∈ Finset.range n, m (k + 1)) / a n)
+      atTop (𝓝 0) := by
+  have htail_tendsto :
+      Tendsto (fun N : ℕ => ∑' j : ℕ, c (j + N + 1)) atTop (𝓝 (0 : ℝ)) := by
+    have htail0 :
+        Tendsto (fun M : ℕ => ∑' j : ℕ, c (M + j)) atTop (𝓝 (0 : ℝ)) :=
+      durrett2019_theorem_2_5_6_tsum_tail_tendsto_zero_of_summable
+        (q := c) hc_summable
+    have hcomp := htail0.comp (tendsto_add_atTop_nat 1)
+    simpa [Function.comp_def, Nat.add_assoc, Nat.add_comm, Nat.add_left_comm]
+      using hcomp
+  refine Metric.tendsto_nhds.2 ?_
+  intro ε hε
+  have hε2 : 0 < ε / 2 := half_pos hε
+  rcases (Metric.tendsto_nhds.1 htail_tendsto (ε / 2) hε2).exists with
+    ⟨N, hNtail⟩
+  have htail_lt : (∑' j : ℕ, c (j + N + 1)) < ε / 2 := by
+    have habs : |(∑' j : ℕ, c (j + N + 1))| < ε / 2 := by
+      simpa [Real.dist_eq] using hNtail
+    exact (le_abs_self _).trans_lt habs
+  have hprefix_tendsto :
+      Tendsto
+        (fun n : ℕ => |B N| * ((n : ℝ) / a n)) atTop (𝓝 0) := by
+    simpa using (tendsto_const_nhds.mul hn_over_a_tendsto_zero)
+  have hprefix_event :
+      ∀ᶠ n : ℕ in atTop, |B N| * ((n : ℝ) / a n) < ε / 2 := by
+    exact (tendsto_order.1 hprefix_tendsto).2 (ε / 2) hε2
+  filter_upwards [hbound N, hprefix_event] with n hn hprefix
+  calc
+    dist ((∑ k ∈ Finset.range n, m (k + 1)) / a n) 0 =
+        |(∑ k ∈ Finset.range n, m (k + 1)) / a n| := by
+          rw [Real.dist_eq, sub_zero]
+    _ ≤ |B N| * ((n : ℝ) / a n) + ∑' j : ℕ, c (j + N + 1) := hn
+    _ < ε := by linarith
+
+/--
+Durrett 2019, Theorem 2.5.13 truncated-mean layer: the textbook
+prefix-plus-tail estimate for the moving truncated means implies their
+normalized contribution tends to zero.
+-/
+theorem durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_textbook_tail_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {a B c : ℕ -> ℝ}
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hc_summable : Summable c)
+    (hbound : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        |(∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n| ≤
+          |B N| * ((n : ℝ) / a n) + ∑' j : ℕ, c (j + N + 1)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n)
+      atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_mean_normalized_sum_tendsto_zero_of_textbook_tail_bound
+    (m := fun n : ℕ => durrett2019_theorem_2_5_13_truncatedMean P X a n)
+    (a := a) (B := B) (c := c)
+    hn_over_a_tendsto_zero hc_summable hbound
+
+/--
+Durrett 2019, Theorem 2.5.13 moving-truncated endpoint with the two analytic
+estimates stated as scalar-kernel majorization and the textbook
+prefix-plus-tail truncated-mean bound.
+-/
+theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_textbook_mean_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a B c : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x))
+    (ha_nonzero : ∀ k : ℕ, a (k + 1) ≠ 0)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hc_summable : Summable c)
+    (hmean_bound : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        |(∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n| ≤
+          |B N| * ((n : ℝ) / a n) + ∑' j : ℕ, c (j + N + 1)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_mean_tendsto
+    (P := P) (X := X) (X0 := X0) (a := a) (g := g)
+    hX_indep hX_meas hX0_meas hX_ident hg_int hg_nonneg hkernel_bound
+    ha_nonzero ha_increment_nonneg ha_shift_atTop
+    (durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_textbook_tail_bound
+      (P := P) (X := X) (a := a) (B := B) (c := c)
+      hn_over_a_tendsto_zero hc_summable hmean_bound)
+
+/--
+Durrett 2019, Theorem 2.5.13 original endpoint with the convergent half's
+analytic assumptions stated as scalar-kernel majorization and the textbook
+prefix-plus-tail truncated-mean bound.
+-/
+theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_textbook_mean_bound_and_iid_tail_tsum_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a B c : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x))
+    (ha_nonzero : ∀ k : ℕ, a (k + 1) ≠ 0)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto a atTop atTop)
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hc_summable : Summable c)
+    (hmean_bound : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        |(∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n| ≤
+          |B N| * ((n : ℝ) / a n) + ∑' j : ℕ, c (j + N + 1))
+    (htail :
+      (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) ≠ ∞) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, X (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_iid_tail_tsum_ne_top
+    (P := P) (X := X) (X0 := X0) (a := a) ha_atTop hX_ident
+    (durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_textbook_mean_bound
+      (P := P) (X := X) (X0 := X0) (a := a) (B := B) (c := c) (g := g)
+      hX_indep hX_meas hX0_meas hX_ident hg_int hg_nonneg hkernel_bound
+      ha_nonzero ha_increment_nonneg ha_shift_atTop hn_over_a_tendsto_zero
+      hc_summable hmean_bound)
+    htail
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
