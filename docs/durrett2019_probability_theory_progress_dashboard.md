@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V455` in
+Route from `Live In-Thread Goal Prompt V456` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -70,12 +70,15 @@ the deterministic textbook prefix-plus-tail mean squeeze and endpoint wrappers
 that consume it.  V455 adds the deterministic finite-annulus bridge: ratio
 monotonicity moves `(n/a_n)` inside finite annulus sums as `(m/a_m)`, and a
 prefix-plus-finite-annulus mean estimate plus weighted tail bound feeds the
-V454 mean squeeze and scalar-kernel endpoint wrappers.  The next source work
-is to prove the measure/integral annulus decomposition that supplies the V455
-finite-annulus assumptions, prove the identity (*)/ratio-monotonicity annulus
-estimate supplying scalar truncated-square kernel majorization from finite
-large-jump tail series, and then assemble the source-facing Feller dichotomy
-wrapper.  Do not route back into
+V454 mean squeeze and scalar-kernel endpoint wrappers.  V456 reduces this mean
+estimate to the base absolute truncated integral: identical distribution now
+proves `|E Y_k|` is bounded by the base absolute truncated integral, and that
+integral bound feeds the scalar-kernel moving-truncated endpoint wrapper.  The
+next source work is to prove the actual annulus partition bound for that base
+absolute truncated integral, prove the weighted annulus tail summability from
+identity (*) and finite large-jump tail series, prove the same annulus
+calculus supplies scalar truncated-square kernel majorization, and then
+assemble the source-facing Feller dichotomy wrapper.  Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
 integer-to-real threshold bridge, the solved countable a.e. all-threshold
@@ -86,8 +89,13 @@ transfer, the solved moving-truncation Kronecker assembly, or the solved
 scaled-variance-to-base-truncated-square handoff, or the solved
 scalar-kernel-to-original-endpoint handoff, or the solved
 scaled-mean-summability-to-mean-normalization handoff, or the solved
-textbook-prefix-plus-tail mean squeeze, or the solved finite-annulus
-ratio/tail bridge.  New compiled anchors through V455:
+textbook-prefix-plus-tail mean squeeze, the solved finite-annulus ratio/tail
+bridge, or the solved base-truncated-integral-to-mean bridge.  New compiled
+anchors through V456:
+`durrett2019_theorem_2_5_13_baseAbsTruncIntegral`,
+`durrett2019_theorem_2_5_13_abs_truncatedMean_le_baseAbsTruncIntegral_of_identDistrib`,
+`durrett2019_theorem_2_5_13_prefix_annulus_mean_bound_of_baseAbsTruncIntegral_bound`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_baseAbsTruncIntegral_bound`,
 `durrett2019_theorem_2_5_13_ratio_mul_annulus_sum_le_weighted_annulus_sum`,
 `durrett2019_theorem_2_5_13_textbook_mean_bound_of_prefix_annulus_bound`,
 `durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_prefix_annulus_bound`,

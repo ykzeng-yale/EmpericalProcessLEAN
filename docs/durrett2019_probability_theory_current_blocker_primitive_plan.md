@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V455
+## Live In-Thread Goal Prompt V456
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -54,7 +54,11 @@ it also adds scalar-kernel endpoint wrappers consuming this textbook mean
 bound.  V455 adds the deterministic finite-annulus bridge: ratio monotonicity
 moves `(n/a_n)` inside finite annulus sums as `(m/a_m)`, and a
 prefix-plus-finite-annulus mean estimate plus weighted tail bound feeds the
-V454 textbook mean squeeze and scalar-kernel endpoint wrappers.  Do
+V454 textbook mean squeeze and scalar-kernel endpoint wrappers.  V456 reduces
+that finite-annulus mean estimate to a source-shaped integral obligation:
+`|E Y_k|` is bounded by the base absolute truncated integral at the same
+cutoff via `IdentDistrib`, and base absolute truncated integral bounds now
+feed the scalar-kernel moving-truncated endpoint wrapper directly.  Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -67,17 +71,29 @@ normalized-sum transfer, or the solved moving-truncation Kronecker assembly,
 the solved scaled-variance-to-base-truncated-square handoff, or the solved
 scalar-kernel-to-original-endpoint handoff, the solved
 scaled-mean-summability-to-mean-normalization handoff, or the solved
-textbook-prefix-plus-tail mean squeeze, or the solved finite-annulus
-ratio/tail bridge.
-Next aggressive target: prove the actual measure/integral annulus
-decomposition that supplies the V455 prefix-plus-finite-annulus mean estimate
-and weighted tail bound, and prove the identity (*)/ratio-monotonicity
-annulus estimate supplying scalar truncated-square kernel majorization from
-finite large-jump tail series, then assemble the source-facing Feller
+textbook-prefix-plus-tail mean squeeze, the solved finite-annulus ratio/tail
+bridge, or the solved base-truncated-integral-to-mean bridge.
+Next aggressive target: prove the actual annulus partition bound for the base
+absolute truncated integral, prove the weighted annulus tail summability from
+identity (*) and finite large-jump tail series, prove the same
+identity(*)/ratio-monotonicity annulus estimate supplying scalar
+truncated-square kernel majorization, then assemble the source-facing Feller
 dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V456 adds the base absolute truncated integral bridge
+for the convergent half of Durrett Theorem 2.5.13.  New compiled anchors
+include:
+`durrett2019_theorem_2_5_13_baseAbsTruncIntegral`,
+`durrett2019_theorem_2_5_13_abs_truncatedMean_le_baseAbsTruncIntegral_of_identDistrib`,
+`durrett2019_theorem_2_5_13_prefix_annulus_mean_bound_of_baseAbsTruncIntegral_bound`, and
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_baseAbsTruncIntegral_bound`.
+The remaining blocker is now below this bridge: instantiate the base absolute
+truncated integral bound by the actual annulus partition, derive the weighted
+annulus tail bound from identity (*) and finite tail series, and prove the
+scalar truncated-square kernel majorization from the same annulus calculus.
 
 Latest verified target V455 adds the deterministic finite-annulus bridge for
 the convergent half of Durrett Theorem 2.5.13.  New compiled anchors include:
@@ -85,9 +101,9 @@ the convergent half of Durrett Theorem 2.5.13.  New compiled anchors include:
 `durrett2019_theorem_2_5_13_textbook_mean_bound_of_prefix_annulus_bound`,
 `durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_prefix_annulus_bound`, and
 `durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_prefix_annulus_mean_bound`.
-The remaining blocker is now the measure/integral annulus decomposition that
-instantiates the V455 finite-annulus assumptions, plus the scalar
-truncated-square kernel majorization from identity (*) and ratio monotonicity.
+The source mean bridge above is discharged by V456; future cycles should
+target the base annulus partition and weighted tail estimates, not the
+`IdentDistrib` truncated-mean reduction.
 
 Latest verified target V454 adds the textbook mean-squeeze layer for the
 convergent half of Durrett Theorem 2.5.13.  New compiled anchors include:

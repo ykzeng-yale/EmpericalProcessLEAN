@@ -12751,6 +12751,188 @@ theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_s
       hratio hweighted_tail)
 
 /--
+Durrett 2019, Theorem 2.5.13 notation: the base absolute truncated first
+moment at cutoff `a_n`.
+-/
+noncomputable def durrett2019_theorem_2_5_13_baseAbsTruncIntegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    (P : Measure Ω) (X0 : Ω -> ℝ) (a : ℕ -> ℝ) (n : ℕ) : ℝ :=
+  ∫ ω, Set.indicator {ω : Ω | |X0 ω| < a n} (fun ω => |X0 ω|) ω ∂P
+
+/--
+Durrett 2019, Theorem 2.5.13 mean-annulus support: identical distribution
+reduces the absolute moving truncated mean to the base absolute truncated
+first moment at the same cutoff.
+-/
+theorem durrett2019_theorem_2_5_13_abs_truncatedMean_le_baseAbsTruncIntegral_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (k : ℕ) :
+    |durrett2019_theorem_2_5_13_truncatedMean P X a k| ≤
+      durrett2019_theorem_2_5_13_baseAbsTruncIntegral P X0 a k := by
+  let absTruncMap : ℝ -> ℝ :=
+    fun x => Set.indicator {y : ℝ | |y| < a k} (fun y => |y|) x
+  have htrunc_int :
+      Integrable (durrett2019_theorem_2_5_13_truncated X a k) P :=
+    (durrett2019_theorem_2_5_13_truncated_memLp_two_of_measurable
+      (P := P) (X := X) (a := a) (n := k) (hX_meas k)).integrable one_le_two
+  have hmap_meas : Measurable absTruncMap :=
+    measurable_abs.indicator (measurableSet_lt measurable_abs measurable_const)
+  have hident_abs :
+      _root_.ProbabilityTheory.IdentDistrib
+        (absTruncMap ∘ X k) (absTruncMap ∘ X0) P P :=
+    (hX_ident k).comp hmap_meas
+  have htrunc_abs_eq :
+      (fun ω : Ω => |durrett2019_theorem_2_5_13_truncated X a k ω|) =ᵐ[P]
+        fun ω : Ω => absTruncMap (X k ω) := by
+    exact Eventually.of_forall fun ω => by
+      by_cases hsmall : |X k ω| < a k
+      · simp [absTruncMap, durrett2019_theorem_2_5_13_truncated, hsmall]
+      · simp [absTruncMap, durrett2019_theorem_2_5_13_truncated, hsmall]
+  have hbase_eq :
+      (∫ ω, absTruncMap (X k ω) ∂P) =
+        ∫ ω, absTruncMap (X0 ω) ∂P := by
+    simpa [Function.comp_def] using hident_abs.integral_eq
+  calc
+    |durrett2019_theorem_2_5_13_truncatedMean P X a k| =
+        |∫ ω, durrett2019_theorem_2_5_13_truncated X a k ω ∂P| := by
+          simp [durrett2019_theorem_2_5_13_truncatedMean]
+    _ ≤ ∫ ω, |durrett2019_theorem_2_5_13_truncated X a k ω| ∂P :=
+          abs_integral_le_integral_abs
+    _ = ∫ ω, absTruncMap (X k ω) ∂P :=
+          integral_congr_ae htrunc_abs_eq
+    _ = ∫ ω, absTruncMap (X0 ω) ∂P := hbase_eq
+    _ = durrett2019_theorem_2_5_13_baseAbsTruncIntegral P X0 a k := by
+          rfl
+
+/--
+Durrett 2019, Theorem 2.5.13 mean-annulus support: a base absolute truncated
+integral decomposition supplies the finite-annulus prefix estimate consumed by
+the V455 deterministic mean bridge.
+-/
+theorem durrett2019_theorem_2_5_13_prefix_annulus_mean_bound_of_baseAbsTruncIntegral_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a B u : ℕ -> ℝ}
+    (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hbase_bound : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        ∀ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_baseAbsTruncIntegral P X0 a (k + 1) ≤
+            |B N| + ∑ r ∈ Finset.Icc (N + 1) n, u r) :
+    ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        |(∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n| ≤
+          |B N| * ((n : ℝ) / a n) +
+            ((n : ℝ) / a n) * ∑ r ∈ Finset.Icc (N + 1) n, u r := by
+  intro N
+  filter_upwards [hbase_bound N] with n hbound_n
+  let R : ℝ := |B N| + ∑ r ∈ Finset.Icc (N + 1) n, u r
+  have hterm :
+      ∀ k ∈ Finset.range n,
+        |durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)| ≤ R := by
+    intro k hk
+    exact
+      (durrett2019_theorem_2_5_13_abs_truncatedMean_le_baseAbsTruncIntegral_of_identDistrib
+        (P := P) (X := X) (X0 := X0) (a := a) hX_meas hX_ident (k + 1)).trans
+        (by simpa [R] using hbound_n k hk)
+  have hsum_abs :
+      |∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)| ≤
+        ∑ k ∈ Finset.range n,
+          |durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)| :=
+    Finset.abs_sum_le_sum_abs _ _
+  have hsum_le :
+      ∑ k ∈ Finset.range n,
+          |durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)| ≤
+        (n : ℝ) * R := by
+    calc
+      ∑ k ∈ Finset.range n,
+          |durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)| ≤
+          ∑ _k ∈ Finset.range n, R := by
+            exact Finset.sum_le_sum fun k hk => hterm k hk
+      _ = (n : ℝ) * R := by
+            simp [Finset.sum_const, nsmul_eq_mul]
+  have hmain :
+      |∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)| / a n ≤
+        ((n : ℝ) * R) / a n := by
+    exact div_le_div_of_nonneg_right (hsum_abs.trans hsum_le) (ha_pos n).le
+  calc
+    |(∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n| =
+        |∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)| / a n := by
+          rw [abs_div, abs_of_pos (ha_pos n)]
+    _ ≤ ((n : ℝ) * R) / a n := hmain
+    _ = |B N| * ((n : ℝ) / a n) +
+        ((n : ℝ) / a n) * ∑ r ∈ Finset.Icc (N + 1) n, u r := by
+          simp [R]
+          ring
+
+/--
+Durrett 2019, Theorem 2.5.13 moving-truncated endpoint with the mean estimate
+reduced to the base absolute truncated integral decomposition that comes from
+Durrett's annulus split.
+-/
+theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_baseAbsTruncIntegral_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a B u c : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x))
+    (ha_pos : ∀ n : ℕ, 0 < a n)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hc_summable : Summable c)
+    (hbase_bound : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        ∀ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_baseAbsTruncIntegral P X0 a (k + 1) ≤
+            |B N| + ∑ r ∈ Finset.Icc (N + 1) n, u r)
+    (hu_nonneg : ∀ N n r : ℕ, r ∈ Finset.Icc (N + 1) n -> 0 ≤ u r)
+    (hratio : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        ∀ r ∈ Finset.Icc (N + 1) n,
+          (n : ℝ) / a n ≤ (r : ℝ) / a r)
+    (hweighted_tail : ∀ N : ℕ,
+      ∀ᶠ n in atTop,
+        (∑ r ∈ Finset.Icc (N + 1) n, ((r : ℝ) / a r) * u r) ≤
+          ∑' j : ℕ, c (j + N + 1)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_prefix_annulus_mean_bound
+    (P := P) (X := X) (X0 := X0) (a := a) (B := B) (u := u) (c := c)
+    (g := g) hX_indep hX_meas hX0_meas hX_ident hg_int hg_nonneg
+    hkernel_bound (fun k => ne_of_gt (ha_pos (k + 1)))
+    ha_increment_nonneg ha_shift_atTop hn_over_a_tendsto_zero hc_summable
+    (durrett2019_theorem_2_5_13_prefix_annulus_mean_bound_of_baseAbsTruncIntegral_bound
+      (P := P) (X := X) (X0 := X0) (a := a) (B := B) (u := u)
+      ha_pos hX_meas hX_ident hbase_bound)
+    hu_nonneg hratio hweighted_tail
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
