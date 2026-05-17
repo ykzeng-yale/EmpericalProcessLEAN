@@ -45892,6 +45892,55 @@ theorem vaart1998_finiteSum_commonObservationCore_eq_nat_smul
   simp
 
 /--
+A left inverse for the common observation core gives a left inverse for every
+nonzero finite-sample scaling of that core.  This is the algebraic piece needed
+by positive-sample Z-estimator routes: for `n ≠ 0`, invert
+`(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
+-/
+theorem vaart1998_scaledCommonObservationCore_leftInverse_of_nonzero
+    {Coord Param : Type*}
+    (commonObservationCore : (Param -> ℝ) -> Coord -> ℝ)
+    (commonObservationCoreLeftInverse : (Coord -> ℝ) -> Param -> ℝ)
+    (hCommonObservationCore_leftInverse : ∀ theta : Param -> ℝ,
+      commonObservationCoreLeftInverse (commonObservationCore theta) = theta)
+    (n : ℕ) (hn : n ≠ 0) :
+    Function.LeftInverse
+      (fun y : Coord -> ℝ =>
+        commonObservationCoreLeftInverse ((n : ℝ)⁻¹ • y))
+      (fun theta : Param -> ℝ =>
+        (n : ℝ) • commonObservationCore theta) := by
+  intro theta
+  change
+    commonObservationCoreLeftInverse
+        ((n : ℝ)⁻¹ • ((n : ℝ) • commonObservationCore theta)) =
+      theta
+  have hn_real : (n : ℝ) ≠ 0 := by
+    exact_mod_cast hn
+  rw [smul_smul, inv_mul_cancel₀ hn_real, one_smul]
+  exact hCommonObservationCore_leftInverse theta
+
+/--
+Pointwise form of
+`vaart1998_scaledCommonObservationCore_leftInverse_of_nonzero`, matching the
+source field used by finite-sample core-inverse certificates.
+-/
+theorem vaart1998_scaledCommonObservationCore_pointwise_leftInverse_of_nonzero
+    {Observation Coord Param : Type*}
+    (commonObservationCore : (Param -> ℝ) -> Coord -> ℝ)
+    (commonObservationCoreLeftInverse : (Coord -> ℝ) -> Param -> ℝ)
+    (hCommonObservationCore_leftInverse : ∀ theta : Param -> ℝ,
+      commonObservationCoreLeftInverse (commonObservationCore theta) = theta)
+    (n : ℕ) (_sample : ℕ -> Observation) (hn : n ≠ 0)
+    (theta : Param -> ℝ) :
+    commonObservationCoreLeftInverse
+        ((n : ℝ)⁻¹ • ((n : ℝ) • commonObservationCore theta)) =
+      theta := by
+  exact
+    vaart1998_scaledCommonObservationCore_leftInverse_of_nonzero
+      commonObservationCore commonObservationCoreLeftInverse
+      hCommonObservationCore_leftInverse n hn theta
+
+/--
 van der Vaart 1998, Theorem 5.41, observation-level exact-root-set source
 endpoint.
 

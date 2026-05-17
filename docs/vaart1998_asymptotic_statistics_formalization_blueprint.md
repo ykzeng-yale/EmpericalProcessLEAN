@@ -45,6 +45,14 @@ The newest wrapper adds
 endpoint. It consumes a common observation core and a scaled common-core left
 inverse instead of an arbitrary observation-dependent core.
 
+The newest positive-sample preparation adds
+`vaart1998_tendstoInDistribution_succ`,
+`vaart1998_tendstoInDistribution_constMeasure_succ`,
+`vaart1998_scaledCommonObservationCore_leftInverse_of_nonzero`, and
+`vaart1998_scaledCommonObservationCore_pointwise_leftInverse_of_nonzero`.
+These lemmas isolate the positive-sample reindexing and nonzero scaled-core
+inverse algebra needed for a non-vacuous common-core model endpoint.
+
 The previous wrapper adds
 `vaart1998_finiteSum_affineDisplay_of_observationAffineDisplay` and the
 current endpoint. It consumes a pointwise observation-level affine display and

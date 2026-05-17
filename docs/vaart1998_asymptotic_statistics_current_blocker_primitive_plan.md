@@ -61,21 +61,30 @@ endpoint. It replaces the arbitrary observation-dependent affine core by a
 sample-independent common core and a left inverse for
 `(n : ℝ) • commonObservationCore theta`.
 
+The newest positive-sample preparation packet adds
+`vaart1998_tendstoInDistribution_succ`,
+`vaart1998_tendstoInDistribution_constMeasure_succ`,
+`vaart1998_scaledCommonObservationCore_leftInverse_of_nonzero`, and
+`vaart1998_scaledCommonObservationCore_pointwise_leftInverse_of_nonzero`. It
+proves the Chapter 2 law-reindexing bridge and the nonzero-sample algebra for
+inverting `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
+
 The previous observation-affine packet adds
 `vaart1998_finiteSum_affineDisplay_of_observationAffineDisplay` and the
 current endpoint. It replaces the aggregate finite-sample affine-display
 hypothesis by a pointwise observation-level affine display, then constructs
 the finite-sample core and offset by summing over `Fin n`.
 
-Next aggressive target: prove the common-core affine display and the scaled
-common-core left inverse from an actual model's algebraic estimating equation,
-or replace that scaled-core field by a local/global inverse theorem using
-nonsingular derivative hypotheses, ideally with an eventual positive-sample
-or shifted-index wrapper that avoids the degenerate `n = 0` algebra. Do not
-route back to arbitrary canonical-selector measurability, direct root
-uniqueness, raw finite-sum-map injectivity, a raw left inverse, aggregate
-finite-sample affine-display hypotheses, or arbitrary observation-dependent
-cores when common-core display/scaled-inverse hypotheses are available.
+Next aggressive target: build the eventual/positive-index Theorem 5.41 wrapper
+using the new `Nat.succ` convergence-in-distribution bridge and the nonzero
+scaled-core inverse lemma. After that, prove the common-core affine display
+from an actual model's algebraic estimating equation or replace the common-core
+inverse field by a local/global inverse theorem using nonsingular derivative
+hypotheses. Do not route back to arbitrary canonical-selector measurability,
+direct root uniqueness, raw finite-sum-map injectivity, a raw left inverse,
+aggregate finite-sample affine-display hypotheses, or arbitrary
+observation-dependent cores when common-core display/nonzero-scaled-inverse
+hypotheses are available.
 
 The previous layer replaces the old coordinate score-transform moment interface
 by the vector source triple

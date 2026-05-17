@@ -42,6 +42,14 @@ The new common-core packet adds
 endpoint. It replaces an arbitrary observation-dependent core by a common core
 whose finite-sample sum is `(n : ℝ) • commonObservationCore theta`.
 
+The positive-sample preparation packet adds
+`vaart1998_tendstoInDistribution_succ`,
+`vaart1998_tendstoInDistribution_constMeasure_succ`,
+`vaart1998_scaledCommonObservationCore_leftInverse_of_nonzero`, and
+`vaart1998_scaledCommonObservationCore_pointwise_leftInverse_of_nonzero`. It
+removes the remaining scalar algebra obstacle for positive sample sizes; the
+remaining work is an eventual/positive-index Theorem 5.41 wrapper.
+
 The previous observation-affine packet adds
 `vaart1998_finiteSum_affineDisplay_of_observationAffineDisplay` and the
 current endpoint. It replaces the aggregate finite-sample affine display by a

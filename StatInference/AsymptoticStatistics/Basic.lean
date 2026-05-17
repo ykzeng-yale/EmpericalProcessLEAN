@@ -42,6 +42,46 @@ abbrev ConvergesInDistribution
     [IsProbabilityMeasure Q] (X : ℕ -> Ω -> E) (Z : Ω' -> E) : Prop :=
   TendstoInDistribution X atTop Z (fun _ => P) Q
 
+/--
+Convergence in distribution is unchanged by dropping a finite prefix of a
+sequence.  This `Nat.succ` form is the reindexing bridge used when a textbook
+statement is naturally written for positive sample sizes.
+-/
+theorem vaart1998_tendstoInDistribution_succ
+    {Ω : ℕ -> Type*} {Ω' E : Type*}
+    [∀ n : ℕ, MeasurableSpace (Ω n)]
+    [MeasurableSpace Ω']
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    {μ : (n : ℕ) -> Measure (Ω n)} [∀ n : ℕ, IsProbabilityMeasure (μ n)]
+    {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    {X : (n : ℕ) -> Ω n -> E} {Z : Ω' -> E}
+    (hX : TendstoInDistribution X atTop Z μ Q) :
+    TendstoInDistribution
+      (fun n : ℕ => X (n + 1)) atTop Z
+      (fun n : ℕ => μ (n + 1)) Q where
+  forall_aemeasurable n := hX.forall_aemeasurable (n + 1)
+  aemeasurable_limit := hX.aemeasurable_limit
+  tendsto := by
+    simpa [Function.comp_def] using
+      hX.tendsto.comp (tendsto_add_atTop_nat 1)
+
+/--
+Constant-measure specialization of
+`vaart1998_tendstoInDistribution_succ`.
+-/
+theorem vaart1998_tendstoInDistribution_constMeasure_succ
+    {Ω Ω' E : Type*} [MeasurableSpace Ω] [MeasurableSpace Ω']
+    [TopologicalSpace E] [MeasurableSpace E] [OpensMeasurableSpace E]
+    {P : Measure Ω} {Q : Measure Ω'} [IsProbabilityMeasure P]
+    [IsProbabilityMeasure Q]
+    {X : ℕ -> Ω -> E} {Z : Ω' -> E}
+    (hX : TendstoInDistribution X atTop Z (fun _ : ℕ => P) Q) :
+    TendstoInDistribution
+      (fun n : ℕ => X (n + 1)) atTop Z (fun _ : ℕ => P) Q := by
+  simpa using
+    (vaart1998_tendstoInDistribution_succ
+      (Ω := fun _ : ℕ => Ω) (μ := fun _ : ℕ => P) hX)
+
 /-- van der Vaart Chapter 2 stochastic `o_P(1)`: convergence in probability
 to zero. -/
 abbrev StochasticLittleO
