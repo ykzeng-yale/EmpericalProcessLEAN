@@ -16,8 +16,8 @@ The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
 Latest verified packet: positive-sample common-core continuous-linear
-right-inverse observation-law offset source for Theorem 5.41. The live endpoint
-now states the asymptotic-normality handoff for the explicit estimator
+right-inverse affine mean-zero observation-law offset source for Theorem 5.41.
+The live endpoint now states the asymptotic-normality handoff for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine
 display and a continuous linear right inverse for the common core, derives
@@ -30,8 +30,9 @@ positive-sample offset-average convergence from observation-law coordinate
 integrability, derives target convergence and consistency from that average
 convergence plus local inverse stability derived from ordinary continuity at
 the limiting target, derives the limiting inverse value from common-core
-injectivity and the population common-core equation, turns the finite equation
-into exact root-set membership,
+injectivity, and derives the population common-core equation from the affine
+display plus the coordinate mean-zero estimating equation, turns the finite
+equation into exact root-set membership,
 prepends `theta0` at sample size zero, reuses the existing exact-root-set
 Theorem 5.41 source endpoint, and shifts the distributional conclusion back by
 `Nat.succ`.  This removes the artificial sample-size-zero inverse/uniqueness
@@ -39,19 +40,25 @@ obstruction plus the offset-average, product-space offset-iid, raw local
 inverse-stability, common-core-target, estimator-consistency,
 estimator-coordinate-measurability, direct root-set-membership, and
 finite-sum-zero hypotheses, the inverse coordinate-measurability hypothesis,
-and the raw right-inverse-value hypothesis from the current route.
+the raw population common-core equation, and the raw right-inverse-value
+hypothesis from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseAffineMeanZeroOffsetSource`.
 
-The new continuous-linear-inverse packet adds
+The new affine mean-zero packet adds
+`vaart1998_commonObservationCore_theta0_eq_negative_offsetMean_of_commonAffine_meanZero`
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseAffineMeanZeroOffsetSource`.
+The next blocker is to derive common-core injectivity and the continuous linear
+right inverse from a concrete linear/common-core model or a textbook estimating
+equation.
+
+The previous continuous-linear-inverse packet adds
 `vaart1998_commonObservationCoreRightInverse_coordinate_measurable_of_continuousLinear`,
 `vaart1998_commonObservationCoreRightInverse_continuousAt_of_continuousLinear`,
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseOffsetSource`.
-The next blocker is to derive common-core injectivity, the population
-common-core equation, and the continuous linear right inverse from a concrete
-linear/common-core model or a textbook estimating equation.
 
 The previous injective-core packet adds
 `vaart1998_commonObservationCoreRightInverse_value_of_injective`

@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseAffineMeanZeroOffsetSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -43,10 +43,9 @@ It derives the local `edist` inverse-stability field from ordinary
 continuity of the continuous linear inverse at the negative observation-law
 offset mean. The right-inverse value at that point is derived from
 `Function.Injective commonObservationCore`, the right-inverse law, and the
-population common-core equation
-`commonObservationCore theta0 =
--(fun coordinate => ∫ observation,
-  observationOffset observation coordinate ∂observationLaw)`.
+population common-core equation. That population equation is itself derived
+from the affine display and the coordinate mean-zero estimating equation at
+`theta0`.
 It proves the textbook finite estimating-equation identity internally,
 packages it as exact root-set membership, prepends `theta0` at sample size
 zero, applies the compiled exact-root-set Theorem 5.41 source endpoint, and
@@ -57,9 +56,17 @@ product-space offset integrability, offset independence, offset identical
 distribution, raw local inverse stability, common-core target convergence,
 estimator consistency, estimator coordinate measurability, root-set
 membership, finite-sum zero, inverse coordinate measurability, raw local
-inverse continuity, or raw right-inverse value directly.
+inverse continuity, raw population common-core equation, or raw right-inverse
+value directly.
 
-The newest continuous-linear-inverse packet adds
+The newest affine mean-zero packet adds
+`vaart1998_commonObservationCore_theta0_eq_negative_offsetMean_of_commonAffine_meanZero`
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseAffineMeanZeroOffsetSource`.
+It removes the raw population common-core equation by deriving it from the
+pointwise affine display and the coordinate mean-zero estimating equation.
+
+The previous continuous-linear-inverse packet adds
 `vaart1998_commonObservationCoreRightInverse_coordinate_measurable_of_continuousLinear`,
 `vaart1998_commonObservationCoreRightInverse_continuousAt_of_continuousLinear`,
 and
@@ -151,9 +158,9 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: derive common-core injectivity and the population
-common-core equation from a concrete continuous-linear common-core model,
-derive the continuous linear right inverse from an explicit linear inverse or
+Next aggressive target: derive common-core injectivity from a concrete
+continuous-linear common-core model or from a left-inverse field, derive the
+continuous linear right inverse from an explicit linear inverse or
 matrix/nonsingularity source, derive offset coordinate integrability from a
 more concrete model source when available, or instantiate the endpoint on a
 concrete estimating equation from the textbook.
@@ -166,9 +173,9 @@ root-set membership, external finite-sum-zero assumptions, or estimator
 consistency/coordinate-measurability/common-core-target/offset-average,
 product-space offset-integrability, offset-independence, or offset
 identical-distribution, inverse coordinate-measurability,
-raw local inverse-stability, or raw right-inverse value assumptions when the
-common-core continuous-linear right-inverse observation-law offset route is
-available.
+raw local inverse-stability, raw population common-core equation, or raw
+right-inverse value assumptions when the common-core continuous-linear
+affine mean-zero observation-law offset route is available.
 
 The previous common-core packet adds
 `vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core
