@@ -27,17 +27,17 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V469`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V470`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V469: assemble the convergent-half source
-wrapper using the concrete-majorant endpoint, then combine it with the already
-compiled divergent-half limsup endpoint into the Feller dichotomy statement.
-Do not return to scalar-kernel estimates, annulus mass summability, or
-concrete majorant integrability unless exact final packaging exposes a missing
-side condition.
+Current immediate target after V470: assemble the final Durrett 2.5.13 Feller
+dichotomy statement from the convergent-half display endpoint and the already
+compiled divergent-half limsup endpoint.  Do not return to scalar-kernel
+estimates, annulus mass summability, concrete majorant integrability, or
+display-wrapper plumbing unless exact final packaging exposes a missing
+source-side handoff.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
 consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V443 advances
@@ -147,6 +147,10 @@ integral norms, and a `lintegral_tsum`/`lintegral_ofReal_ne_top_iff_integrable`
 argument makes both the annulus series and full concrete majorant integrable.
 The concrete-majorant moving/original endpoints now consume finite tail
 summability directly, with no external majorant-integrability assumption.
+V470 packages the convergent half in the textbook extended-real display:
+real convergence of `S_n / a_n` now implies `limsup_n |S_n| / a_n = 0`, and
+the V469 concrete-majorant endpoint now feeds the iid one-based partial-sum
+source wrapper directly.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -170,8 +174,12 @@ solved reciprocal-square p-series/tail estimate, or the solved annulus-wise
 scalar-kernel bound, or the solved low-prefix scalar-kernel bound, or the
 solved prefix-plus-annulus pointwise majorant and endpoint handoff, or the
 solved concrete annulus-series majorant pointwise/endpoint wrappers, or the
-solved concrete majorant integrability bridge.
-New compiled anchors through V469:
+solved concrete majorant integrability bridge, or the solved convergent-half
+extended-real display wrapper.
+New compiled anchors through V470:
+`durrett2019_theorem_2_5_13_ereal_limsup_abs_eq_zero_of_tendsto_zero`,
+`durrett2019_theorem_2_5_13_ereal_limsup_abs_div_eq_zero_of_tendsto_div_zero`,
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono`,
 `durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_measurable_comp`,
 `durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integrable_comp`,
 `durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integral_comp_eq`,

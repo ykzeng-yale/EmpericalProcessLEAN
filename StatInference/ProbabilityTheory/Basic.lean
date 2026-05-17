@@ -11218,6 +11218,37 @@ theorem durrett2019_theorem_2_5_13_ereal_limsup_eq_top_of_frequently_above_real
     exact lt_of_lt_of_le hlt hle
 
 /--
+Durrett 2019, Theorem 2.5.13 convergent-half display support: real convergence
+to zero implies the extended-real `limsup |u_n| = 0` display.
+-/
+theorem durrett2019_theorem_2_5_13_ereal_limsup_abs_eq_zero_of_tendsto_zero
+    {u : ℕ -> ℝ}
+    (hu : Tendsto u atTop (𝓝 0)) :
+    limsup (fun n : ℕ => ((|u n| : ℝ) : EReal)) atTop = 0 := by
+  have habs : Tendsto (fun n : ℕ => |u n|) atTop (𝓝 0) := by
+    simpa [Real.norm_eq_abs] using hu.norm
+  have hE :
+      Tendsto (fun n : ℕ => ((|u n| : ℝ) : EReal)) atTop (𝓝 (0 : EReal)) := by
+    exact EReal.tendsto_coe.mpr habs
+  simpa using hE.limsup_eq
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent-half display support: convergence of
+`u_n / a_n` to zero, with positive normalization, implies the textbook
+extended-real display `limsup |u_n| / a_n = 0`.
+-/
+theorem durrett2019_theorem_2_5_13_ereal_limsup_abs_div_eq_zero_of_tendsto_div_zero
+    {u a : ℕ -> ℝ}
+    (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hu : Tendsto (fun n : ℕ => u n / a n) atTop (𝓝 0)) :
+    limsup (fun n : ℕ => ((|u n| / a n : ℝ) : EReal)) atTop = 0 := by
+  have hdisplay (n : ℕ) : |u n| / a n = |u n / a n| := by
+    rw [abs_div, abs_of_pos (ha_pos n)]
+  simpa [hdisplay] using
+    (durrett2019_theorem_2_5_13_ereal_limsup_abs_eq_zero_of_tendsto_zero
+      (u := fun n : ℕ => u n / a n) hu)
+
+/--
 Durrett 2019, Theorem 2.5.13 divergent-half support: the uniform-in-`k`
 tail-series hypotheses imply the source-facing extended-real
 `limsup |S_n| / a_n = +∞` display for one-based partial sums.
@@ -15385,6 +15416,45 @@ theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_an
         (P := P) (X0 := X0) (a := a) ha_mono hX0_meas htail_summable))
     ha_pos ha_mono ha_increment_nonneg ha_atTop ha_shift_atTop
     hn_over_a_tendsto_zero hratio_mono htail_summable
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent half in iid source form.  The
+concrete annulus-series majorant endpoint now yields the textbook
+extended-real display `limsup |S_n| / a_n = 0` for one-based partial sums.
+-/
+theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto a atTop atTop)
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    ∀ᵐ ω ∂P,
+      limsup
+        (fun n : ℕ => ((|∑ k ∈ Finset.range n, X (k + 1) ω| / a n : ℝ) : EReal))
+        atTop = 0 := by
+  have hconv :=
+    durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono
+      (P := P) (X := X) (X0 := X0) (a := a)
+      hX_indep hX_meas hX0_meas hX_ident ha_pos ha_mono
+      ha_increment_nonneg ha_atTop ha_shift_atTop hn_over_a_tendsto_zero
+      hratio_mono htail_summable
+  filter_upwards [hconv] with ω hω
+  exact
+    durrett2019_theorem_2_5_13_ereal_limsup_abs_div_eq_zero_of_tendsto_div_zero
+      (u := fun n : ℕ => ∑ k ∈ Finset.range n, X (k + 1) ω)
+      (a := a) ha_pos hω
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the

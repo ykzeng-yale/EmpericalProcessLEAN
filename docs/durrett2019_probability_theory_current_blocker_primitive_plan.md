@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V469
+## Live In-Thread Goal Prompt V470
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -132,8 +132,11 @@ annulus series, and the full concrete majorant is now integrable from finite
 tail summability through the existing monotone annulus mass bridge.  The
 moving-truncated and original endpoints now have wrappers with no external
 majorant-integrability hypothesis.
-Do
-not reroute to solved
+V470 packages the convergent half in the same extended-real display used by
+the divergent half: real convergence of `S_n / a_n` now gives
+`limsup_n |S_n| / a_n = 0`, and the V469 concrete-majorant endpoint feeds the
+iid one-based partial-sum source wrapper directly.
+Do not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
 the solved fixed-`k` Borel-Cantelli partial-sum bridge, or the solved
@@ -157,16 +160,27 @@ solved reciprocal-square p-series/tail estimate, or the solved annulus-wise
 scalar-kernel bound, or the solved low-prefix scalar-kernel bound, or the
 solved prefix-plus-annulus pointwise majorant and endpoint handoff, or the
 solved concrete annulus-series majorant pointwise/endpoint wrappers, or the
-solved concrete majorant integrability bridge from identity(*) mass weights.
-Next aggressive target: assemble the convergent-half theorem source wrapper
-for Durrett 2.5.13 using the V469 concrete-majorant endpoint, then combine it
-with the already compiled divergent-half limsup endpoint into the Feller
-dichotomy statement.  If exact statement packaging exposes a missing side
-condition, prove only that side condition; do not return to scalar kernel,
-annulus mass, or majorant-integrability plumbing.
+solved concrete majorant integrability bridge from identity(*) mass weights,
+or the solved convergent-half extended-real display wrapper.
+Next aggressive target: assemble the final Feller dichotomy statement for
+Durrett 2.5.13 by combining the V470 convergent-half display endpoint with
+the already compiled divergent-half limsup endpoint.  If exact statement
+packaging exposes a missing source side condition, prove only that side
+condition; do not return to scalar kernel, annulus mass, majorant
+integrability, or display-wrapper plumbing.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V470 adds the deterministic and source-facing
+convergent-half extended-real display layer.  New compiled anchors include:
+`durrett2019_theorem_2_5_13_ereal_limsup_abs_eq_zero_of_tendsto_zero`,
+`durrett2019_theorem_2_5_13_ereal_limsup_abs_div_eq_zero_of_tendsto_div_zero`,
+and
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono`.
+The remaining blocker is final source-level Feller dichotomy assembly and any
+small source-side growth/monotonicity handoff that exact packaging still
+requires.
 
 Latest verified target V469 discharges the concrete annulus-series majorant
 integrability blocker and removes the external `hg_int` hypothesis from the
@@ -181,9 +195,8 @@ convergent-half concrete-majorant endpoints.  New compiled anchors include:
 `durrett2019_theorem_2_5_13_annulusKernelMajorant_integrable_comp_of_mass_weight_summable`,
 `durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono`, and
 `durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono`.
-The remaining blocker is no longer majorant integrability; it is exact
-source-level packaging of the convergent-half endpoint and final Feller
-dichotomy assembly.
+This blocker is closed; do not reopen majorant integrability unless a later
+theorem needs a strictly sharper statement.
 
 Latest verified target V468 defines and packages the concrete annulus-series
 majorant.  New compiled anchors include:
@@ -4376,6 +4389,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V400` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V470` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
