@@ -9851,6 +9851,28 @@ theorem durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_explicit_rpow_bound
         (p := p) (x := x) hp_pos hp_lt_two hx_ne_zero)
 
 /--
+Durrett 2019, Theorem 2.5.12 truncated-square scalar estimate on the full
+real domain.  The zero input is harmless because the scalar truncated value is
+identically zero.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_explicit_rpow_bound_all
+    {p x : ℝ} (hp_pos : 0 < p) (hp_lt_two : p < 2) :
+    (∑' k : ℕ, durrett2019_theorem_2_5_12_truncatedSqKernel p x k) ≤
+      (1 + (2 / p - 1)⁻¹) * |x| ^ p := by
+  by_cases hx_zero : x = 0
+  · subst x
+    have hkernel_zero :
+        ∀ k : ℕ, durrett2019_theorem_2_5_12_truncatedSqKernel p 0 k = 0 := by
+      intro k
+      simp [durrett2019_theorem_2_5_12_truncatedSqKernel,
+        durrett2019_theorem_2_5_12_scalarTruncated]
+    rw [tsum_congr hkernel_zero, tsum_zero]
+    simp [Real.zero_rpow hp_pos.ne']
+  · exact
+      durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_explicit_rpow_bound
+        (p := p) (x := x) hp_pos hp_lt_two hx_zero
+
+/--
 Durrett 2019, Theorem 2.5.12 scalar tail-first-moment kernel is eventually
 zero, since the normalizer diverges.
 -/
@@ -10122,6 +10144,39 @@ theorem durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_tailFirstKernel_
     hkernel_bound
 
 /--
+Durrett 2019, Theorem 2.5.12 tail-analysis support: the explicit scalar
+tail-first p-series estimate supplies the base large-tail first-moment
+summability hypothesis for `p > 1`.
+-/
+theorem durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_explicit_rpow_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_gt_one : 1 < p)
+    (hX_meas0 : Measurable (X 0))
+    (hX_int0 : Integrable (X 0) P)
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P) :
+    Summable fun k : ℕ =>
+      (∫ ω,
+        Set.indicator
+          {ω : Ω |
+            durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < |X 0 ω|}
+          (fun ω => |X 0 ω|) ω ∂P) /
+        durrett2019_theorem_2_5_12_normalizer p (k + 1) := by
+  have hp_pos : 0 < p := lt_trans zero_lt_one hp_gt_one
+  have hpinv_lt_one : 1 / p < 1 := (div_lt_one hp_pos).2 hp_gt_one
+  have hq_pos : 0 < 1 - 1 / p := sub_pos.2 hpinv_lt_one
+  let C : ℝ := (1 + (1 - 1 / p)⁻¹) * 2 ^ (1 - 1 / p)
+  have hC_nonneg : 0 ≤ C := by
+    exact mul_nonneg (by positivity) (Real.rpow_nonneg (by positivity) _)
+  exact
+    durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_tailFirstKernel_tsum_bound
+      (P := P) (X := X) (p := p) (C := C)
+      hp_pos hC_nonneg hX_meas0 hX_int0 hX_pow_int0
+      (fun x hx_nonneg =>
+        durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_explicit_rpow_bound_nonneg
+          (p := p) (x := x) hp_gt_one hx_nonneg)
+
+/--
 Durrett 2019, Theorem 2.5.12 tail-analysis support: a scalar kernel bound for
 all real inputs supplies the weighted base truncated second-moment summability
 hypothesis.
@@ -10212,6 +10267,141 @@ theorem durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_trunca
       durrett2019_theorem_2_5_12_truncatedSqKernel_summable
         (p := p) (x := x) hp_pos hp_lt_two)
     hkernel_bound
+
+/--
+Durrett 2019, Theorem 2.5.12 tail-analysis support: the explicit scalar
+truncated-square p-series estimate supplies the weighted base truncated
+second-moment summability hypothesis for `p < 2`.
+-/
+theorem durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_explicit_rpow_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_pos : 0 < p) (hp_lt_two : p < 2)
+    (hX_meas0 : Measurable (X 0))
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P) :
+    Summable fun k : ℕ =>
+      (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+        ∫ ω,
+          (durrett2019_theorem_2_5_8_truncated
+            (fun _ : ℕ => X 0)
+            (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P := by
+  have hq : 1 < 2 / p := by
+    rw [one_lt_div hp_pos]
+    linarith
+  have hq_nonneg : 0 ≤ 2 / p - 1 := sub_nonneg.2 hq.le
+  let C : ℝ := 1 + (2 / p - 1)⁻¹
+  have hC_nonneg : 0 ≤ C := by
+    exact add_nonneg zero_le_one (inv_nonneg.2 hq_nonneg)
+  exact
+    durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_truncatedSqKernel_tsum_bound
+      (P := P) (X := X) (p := p) (C := C)
+      hp_pos hp_lt_two hC_nonneg hX_meas0 hX_pow_int0
+      (fun x =>
+        durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_explicit_rpow_bound_all
+          (p := p) (x := x) hp_pos hp_lt_two)
+
+/--
+Durrett 2019, Theorem 2.5.12 source constructor: for `1 < p < 2`, the two
+explicit scalar kernel estimates discharge the analytic summability
+hypotheses, leaving only the standard iid, finite `p`-moment, integrability,
+and mean-zero source assumptions.
+-/
+theorem durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_explicit_kernel_bounds
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_gt_one : 1 < p) (hp_lt_two : p < 2)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hX_int0 : Integrable (X 0) P)
+    (hX_mean_zero0 : ∫ ω, X 0 ω ∂P = 0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0) := by
+  have hp_pos : 0 < p := lt_trans zero_lt_one hp_gt_one
+  have hbase_tail_scaled_summable :
+      Summable fun k : ℕ =>
+        (∫ ω,
+          Set.indicator
+            {ω : Ω |
+              durrett2019_theorem_2_5_12_truncationLevel p (k + 1) < |X 0 ω|}
+            (fun ω => |X 0 ω|) ω ∂P) /
+          durrett2019_theorem_2_5_12_normalizer p (k + 1) :=
+    durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_explicit_rpow_bound
+      (P := P) (X := X) (p := p) hp_gt_one (hX_meas 0) hX_int0
+      hX_pow_int0
+  have hbase_weighted_summable :
+      Summable fun k : ℕ =>
+        (((durrett2019_theorem_2_5_12_normalizer p (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_8_truncated
+              (fun _ : ℕ => X 0)
+              (durrett2019_theorem_2_5_12_truncationLevel p (k + 1)) 0 ω) ^ 2 ∂P :=
+    durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_explicit_rpow_bound
+      (P := P) (X := X) (p := p) hp_pos hp_lt_two (hX_meas 0)
+      hX_pow_int0
+  exact
+    durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_base_tail_scaled_summable
+      (P := P) (X := X) (p := p) hp_pos hX_indep hX_meas hX_pow_int0
+      hX_int0 hX_mean_zero0 hX_ident hbase_weighted_summable
+      hbase_tail_scaled_summable
+
+/--
+Durrett 2019, Theorem 2.5.12 source integrability support: on a finite
+measure space, a finite `p`-moment with `1 < p` implies ordinary integrability.
+-/
+theorem durrett2019_theorem_2_5_12_integrable_of_integrable_abs_rpow
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {Y : Ω -> ℝ} {p : ℝ}
+    (hp_gt_one : 1 < p)
+    (hY_meas : Measurable Y)
+    (hY_pow_int : Integrable (fun ω : Ω => |Y ω| ^ p) P) :
+    Integrable Y P := by
+  have hp_pos : 0 < p := lt_trans zero_lt_one hp_gt_one
+  have hY_aes : AEStronglyMeasurable Y P := hY_meas.aestronglyMeasurable
+  have hnorm_p : Integrable (fun ω : Ω => ‖Y ω‖ ^ p) P := by
+    simpa using hY_pow_int
+  have hnorm_one_rpow : Integrable (fun ω : Ω => ‖Y ω‖ ^ (1 : ℝ)) P :=
+    integrable_norm_rpow_of_le
+      (μ := P) (f := Y) hY_aes
+      (by norm_num : 0 ≤ (1 : ℝ)) hp_pos.le hp_gt_one.le hnorm_p
+  have hnorm_one : Integrable (fun ω : Ω => ‖Y ω‖) P := by
+    simpa [Real.rpow_one] using hnorm_one_rpow
+  exact (integrable_norm_iff hY_aes).1 hnorm_one
+
+/--
+Durrett 2019, Theorem 2.5.12 source endpoint for `1 < p < 2`: iid
+mean-zero variables with finite base `p`-moment satisfy the
+Marcinkiewicz-Zygmund normalized strong law.
+-/
+theorem durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_finite_p_moment
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {p : ℝ}
+    (hp_gt_one : 1 < p) (hp_lt_two : p < 2)
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_pow_int0 : Integrable (fun ω : Ω => |X 0 ω| ^ p) P)
+    (hX_mean_zero0 : ∫ ω, X 0 ω ∂P = 0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) (X 0) P P) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1), X (k + 1) ω) /
+            durrett2019_theorem_2_5_12_normalizer p (n + 1))
+        atTop (𝓝 0) := by
+  have hX_int0 : Integrable (X 0) P :=
+    durrett2019_theorem_2_5_12_integrable_of_integrable_abs_rpow
+      (P := P) (Y := X 0) (p := p) hp_gt_one (hX_meas 0) hX_pow_int0
+  exact
+    durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_explicit_kernel_bounds
+      (P := P) (X := X) (p := p) hp_gt_one hp_lt_two hX_indep hX_meas
+      hX_pow_int0 hX_int0 hX_mean_zero0 hX_ident
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the

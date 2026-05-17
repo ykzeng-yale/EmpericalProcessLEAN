@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V436
+## Live In-Thread Goal Prompt V437
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,18 +12,17 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V436 advances Durrett
-Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: both scalar
-kernel estimates are now explicit.  The tail-first branch has the corrected
-small-`x` split plus integral-comparison prefix bound, and the truncated-square
-branch has the finite shifted tail, `ceil(|x|^p)` indicator reindex, unscaled
-indicator `tsum` estimate, and explicit truncated-square kernel bound.  Do not
-reroute to the solved scalar p-series, threshold, or reindex estimates.
-Next aggressive target: compose the two explicit scalar kernel bounds through
-the existing ENNReal/lintegral/base summability wrappers to discharge the
-finite-`p` analytic hypotheses for the `1 < p < 2` source endpoint.  If it is
-immediate, add the harmless `x = 0`/nonnegative-domain wrapper for the
-truncated-square scalar bound before the composition.
+in `StatInference/ProbabilityTheory/Basic.lean`.  V437 advances Durrett
+Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: both explicit
+scalar kernel estimates now compose through the existing
+ENNReal/lintegral/base summability wrappers, and the original normalized-sum
+endpoint is packaged under iid, finite base `p`-moment, and mean-zero source
+assumptions; `Integrable (X 0)` is now derived automatically from the finite
+`p`-moment when `1 < p`.  Do not reroute to the solved scalar p-series,
+threshold, reindex, source-composition, or integrability-removal estimates.
+Next aggressive target: continue full Theorem 2.5.12 coverage beyond the
+compiled `1 < p < 2` branch, most likely the boundary/low-`p` variants or
+exact textbook display wrappers around the new finite-`p` endpoint.
 The source real goals remain
 `sum_k x 1_{(k+1)^(1/p) < x} / (k+1)^(1/p) <= C x^p` for `x >= 0`, `1 < p`,
 and `sum_k x^2 1_{x <= (k+1)^(1/p)} / (k+1)^(2/p) <= C x^p` for `x >= 0`,
@@ -31,6 +30,19 @@ and `sum_k x^2 1_{x <= (k+1)^(1/p)} / (k+1)^(2/p) <= C x^p` for `x >= 0`,
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V437 adds the Theorem 2.5.12 source-composition layer.
+New compiled anchors:
+`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_explicit_rpow_bound_all`,
+`durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_explicit_rpow_bound`,
+`durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_explicit_rpow_bound`,
+`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_explicit_kernel_bounds`,
+`durrett2019_theorem_2_5_12_integrable_of_integrable_abs_rpow`, and
+`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_finite_p_moment`.
+The remaining 2.5.12 blocker is no longer the `1 < p < 2` source endpoint;
+that branch now compiles from finite base `p`-moment.  Continue with exact
+textbook display wrappers and the remaining boundary/low-`p` parts of the
+Marcinkiewicz-Zygmund theorem.
 
 Latest verified target V436 adds the Theorem 2.5.12 truncated-square explicit
 p-series tail layer.  New compiled anchors:
@@ -41,9 +53,6 @@ p-series tail layer.  New compiled anchors:
 `durrett2019_theorem_2_5_12_truncatedSq_unscaled_rpow_indicator_tsum_le_explicit`,
 and
 `durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_explicit_rpow_bound`.
-The remaining 2.5.12 blocker is now source composition: route these scalar
-kernel bounds through the existing ENNReal/lintegral/base summability
-wrappers and finish the finite-`p` endpoint packaging.
 
 Latest verified target V435 adds the Theorem 2.5.12 tail-first explicit
 p-series integral-comparison layer.  New compiled anchors:

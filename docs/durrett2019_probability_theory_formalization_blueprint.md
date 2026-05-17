@@ -27,20 +27,22 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V436`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V437`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V436 advances
+consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V437 advances
 Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the endpoint
-reducers through V435 are compiled, both scalar kernel estimates are now
-explicit, and the truncated-square branch is no longer blocked on the unscaled
-indicator tail estimate.  The next source work is to compose the explicit
-tail-first and truncated-square scalar bounds through the existing
-ENNReal/lintegral/base summability wrappers and then package the finite-`p`
-endpoint.  New compiled anchors through V436:
+reducers through V436 are compiled, both scalar kernel estimates now compose
+through the existing ENNReal/lintegral/base summability wrappers, and the
+original normalized-sum endpoint is available under iid, finite base
+`p`-moment, and mean-zero source assumptions.  The ordinary integrability of
+`X 0` is derived from the finite `p`-moment for `1 < p`.  The next source work
+is remaining full Theorem 2.5.12 coverage beyond this compiled branch:
+boundary/low-`p` variants or exact textbook display wrappers.  New compiled
+anchors through V437:
 `durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
@@ -73,6 +75,14 @@ and
 `durrett2019_theorem_2_5_12_truncatedSq_unscaled_rpow_indicator_tsum_le_explicit`,
 and
 `durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_explicit_rpow_bound`,
+`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_explicit_rpow_bound_all`,
+`durrett2019_theorem_2_5_12_base_tail_scaled_summable_of_explicit_rpow_bound`,
+`durrett2019_theorem_2_5_12_base_truncated_sq_weighted_summable_of_explicit_rpow_bound`,
+and
+`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_explicit_kernel_bounds`,
+`durrett2019_theorem_2_5_12_integrable_of_integrable_abs_rpow`,
+and
+`durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_finite_p_moment`,
 `durrett2019_theorem_2_5_12_truncatedMean_abs_scaled_summable_of_base_tail_scaled_summable`,
 and
 `durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_base_tail_scaled_summable`,
@@ -127,7 +137,8 @@ and
 `durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_unscaled_rpow_indicator`,
 `durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_zero_of_rpow_le_one`, and
 `durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscaled_bound_ge_one`.
-The next source work is source composition, not another p-series estimate.
+The next source work is the remaining full-theorem coverage, not another
+p-series, source-composition, or integrability-removal estimate.
 
 Verified route history below is provenance, not live prompt text.  V425 added
 the truncated-mean Kronecker layer reducing normalized mean convergence to
