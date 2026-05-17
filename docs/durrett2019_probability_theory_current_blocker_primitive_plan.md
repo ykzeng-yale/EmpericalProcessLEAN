@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V448
+## Live In-Thread Goal Prompt V449
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -30,7 +30,10 @@ measurability, and the scaled-tail event independence from `iIndepFun`.  V448
 starts the convergent half by defining the moving truncation
 `Y_n = X_n 1_{|X_n| < a_n}` and proving that finite one-based tail series give
 a.e. eventual equality between `X_{n+1}` and its moving truncation, including
-the iid `IdentDistrib` source wrapper.  Do
+the iid `IdentDistrib` source wrapper.  V449 adds the deterministic and a.e.
+transfer layer showing that this eventual equality transfers a zero
+normalized-sum endpoint from the moving truncations back to the original
+one-based partial sums whenever `a_n -> ∞`.  Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -38,12 +41,25 @@ the solved fixed-`k` Borel-Cantelli partial-sum bridge, or the solved
 integer-to-real threshold bridge, or the solved countable a.e. all-threshold
 wrapper, or the solved extended-real limsup display, or the solved iid
 divergent-half scaled-tail plumbing, or the solved convergent-half
-Borel-Cantelli moving-truncation handoff.  Next aggressive target: prove the
-convergent-half variance/mean/Kronecker assembly for the moving truncations,
-then assemble the source-facing Feller dichotomy wrapper.
+Borel-Cantelli moving-truncation handoff, or the solved eventual-equality
+normalized-sum transfer.  Next aggressive target: prove the convergent-half
+variance/mean/Kronecker endpoint for the moving truncations themselves, then
+assemble the source-facing Feller dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V449 adds the convergent-half eventual-equality
+transfer layer for Durrett Theorem 2.5.13.  New compiled anchors:
+`durrett2019_theorem_2_5_13_normalized_sum_tendsto_zero_of_eventuallyEq`,
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_eventuallyEq`,
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_tail_tsum_ne_top`, and
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_iid_tail_tsum_ne_top`.
+They say that once the moving truncated partial sums satisfy
+`T_n / a_n -> 0`, the original one-based partial sums inherit the same
+endpoint under finite tail-series assumptions.  The remaining blocker is now
+to prove the moving truncated endpoint itself from the textbook variance
+summability and truncated-mean estimates.
 
 Latest verified target V448 adds the first convergent-half handoff for Durrett
 Theorem 2.5.13.  New compiled anchors:

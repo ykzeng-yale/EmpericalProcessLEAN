@@ -11291,6 +11291,152 @@ theorem durrett2019_theorem_2_5_13_oneBased_ae_eventuallyEq_truncated_of_iid_tai
       (P := P) (X := X) (a := a) htail_actual
 
 /--
+Durrett 2019, Theorem 2.5.13 convergent-half deterministic transfer:
+eventual equality of one-based summands transfers a zero normalized-sum limit
+across an arbitrary normalizer tending to infinity.
+-/
+theorem durrett2019_theorem_2_5_13_normalized_sum_tendsto_zero_of_eventuallyEq
+    {Ω : Type u} {X Y : ℕ -> Ω -> ℝ} {ω : Ω} {a : ℕ -> ℝ}
+    (ha_atTop : Tendsto a atTop atTop)
+    (hXY : ∀ᶠ k in atTop, X (k + 1) ω = Y (k + 1) ω)
+    (hY :
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, Y (k + 1) ω) / a n)
+        atTop (𝓝 0)) :
+    Tendsto
+      (fun n : ℕ => (∑ k ∈ Finset.range n, X (k + 1) ω) / a n)
+      atTop (𝓝 0) := by
+  let Z : ℕ -> ℝ := fun k => X (k + 1) ω - Y (k + 1) ω
+  have hZ_zero : ∀ᶠ k in atTop, Z k = 0 := by
+    exact hXY.mono fun k hk => by
+      simp [Z, hk]
+  rcases eventually_atTop.1 hZ_zero with ⟨M, hM⟩
+  let C : ℝ := ∑ k ∈ Finset.range M, Z k
+  have hdiff_sum_const :
+      ∀ᶠ n in atTop, (∑ k ∈ Finset.range n, Z k) = C := by
+    refine eventually_atTop.2 ⟨M, ?_⟩
+    intro n hn
+    have hsplit :
+        (∑ k ∈ Finset.range n, Z k) =
+          (∑ k ∈ Finset.range M, Z k) +
+            ∑ k ∈ Finset.range (n - M), Z (M + k) := by
+      have hsum :=
+        Finset.sum_range_add (fun k : ℕ => Z k) M (n - M)
+      have hMadd : M + (n - M) = n := Nat.add_sub_of_le hn
+      simpa [hMadd, Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using hsum
+    have htail :
+        (∑ k ∈ Finset.range (n - M), Z (M + k)) = 0 := by
+      refine Finset.sum_eq_zero fun k _hk => ?_
+      exact hM (M + k) (Nat.le_add_right M k)
+    simp [C, hsplit, htail]
+  have hdiff :
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, Z k) / a n)
+        atTop (𝓝 0) := by
+    have hconst :
+        Tendsto (fun n : ℕ => C / a n) atTop (𝓝 0) := by
+      exact tendsto_const_nhds.div_atTop ha_atTop
+    refine hconst.congr' ?_
+    exact hdiff_sum_const.mono fun n hn => by
+      simp [hn]
+  have hsum :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n, Y (k + 1) ω) / a n +
+            (∑ k ∈ Finset.range n, Z k) / a n)
+        atTop (𝓝 0) := by
+    simpa using hY.add hdiff
+  refine hsum.congr' ?_
+  exact Eventually.of_forall fun n => by
+    dsimp [Z]
+    rw [Finset.sum_sub_distrib]
+    ring_nf
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent-half transfer, almost-sure form:
+truncated normalized sums plus eventual equality give original normalized
+sums.
+-/
+theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_eventuallyEq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X Y : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_atTop : Tendsto a atTop atTop)
+    (hY :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun n : ℕ => (∑ k ∈ Finset.range n, Y (k + 1) ω) / a n)
+          atTop (𝓝 0))
+    (hXY : ∀ᵐ ω ∂P, ∀ᶠ k in atTop, X (k + 1) ω = Y (k + 1) ω) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, X (k + 1) ω) / a n)
+        atTop (𝓝 0) := by
+  filter_upwards [hY, hXY] with ω hYω hXYω
+  exact
+    durrett2019_theorem_2_5_13_normalized_sum_tendsto_zero_of_eventuallyEq
+      (X := X) (Y := Y) (ω := ω) (a := a) ha_atTop hXYω hYω
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent-half transfer: finite one-based
+large-jump tails supply the eventual equality needed to transfer the moving
+truncated endpoint to the original normalized sums.
+-/
+theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_tail_tsum_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_atTop : Tendsto a atTop atTop)
+    (htrunc :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun n : ℕ =>
+            (∑ k ∈ Finset.range n,
+              durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+          atTop (𝓝 0))
+    (htail :
+      (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X (n + 1) ω|}) ≠ ∞) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, X (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_eventuallyEq
+    (P := P) (X := X)
+    (Y := fun n : ℕ => durrett2019_theorem_2_5_13_truncated X a n)
+    (a := a) ha_atTop htrunc
+    (durrett2019_theorem_2_5_13_oneBased_ae_eventuallyEq_truncated_of_tsum_tail_ne_top
+      (P := P) (X := X) (a := a) htail)
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent-half source transfer: iid marginal
+tail summability supplies the eventual equality needed to transfer the moving
+truncated endpoint to the original normalized sums.
+-/
+theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_iid_tail_tsum_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_atTop : Tendsto a atTop atTop)
+    (hX_ident : ∀ n : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X n) X0 P P)
+    (htrunc :
+      ∀ᵐ ω ∂P,
+        Tendsto
+          (fun n : ℕ =>
+            (∑ k ∈ Finset.range n,
+              durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+          atTop (𝓝 0))
+    (htail :
+      (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) ≠ ∞) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, X (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_eventuallyEq
+    (P := P) (X := X)
+    (Y := fun n : ℕ => durrett2019_theorem_2_5_13_truncated X a n)
+    (a := a) ha_atTop htrunc
+    (durrett2019_theorem_2_5_13_oneBased_ae_eventuallyEq_truncated_of_iid_tail_tsum_ne_top
+      (P := P) (X := X) (X0 := X0) (a := a) hX_ident htail)
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

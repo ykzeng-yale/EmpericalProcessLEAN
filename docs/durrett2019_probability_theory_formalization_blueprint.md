@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V448`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V449`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -48,15 +48,22 @@ V447 derives the divergent branch's scaled-tail law, measurability, and event
 independence from iid source hypotheses.  V448 starts the convergent half by
 defining the moving truncation `Y_n = X_n 1_{|X_n| < a_n}` and proving the
 finite-tail Borel-Cantelli eventual-equality handoff, including the iid
-`IdentDistrib` source wrapper.  The next source work is the convergent-half
-variance/mean/Kronecker assembly and then the source-facing Feller dichotomy
-wrapper.  Do not route back into solved Theorem 2.5.12 plumbing, the solved
-Theorem 2.5.13 tail-series transfer, the solved fixed-`k` Borel-Cantelli
-partial-sum bridge, the solved integer-to-real threshold bridge, the solved
-countable a.e. all-threshold wrapper, the solved extended-real limsup display,
-the solved iid divergent-half scaled-tail plumbing, or the solved
-convergent-half Borel-Cantelli moving-truncation handoff.  New compiled anchors
-through V448:
+`IdentDistrib` source wrapper.  V449 transfers a zero normalized-sum endpoint
+from the moving truncations back to the original one-based partial sums using
+that eventual equality and `a_n -> ∞`.  The next source work is the
+convergent-half variance/mean/Kronecker endpoint for the moving truncations and
+then the source-facing Feller dichotomy wrapper.  Do not route back into
+solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
+transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
+integer-to-real threshold bridge, the solved countable a.e. all-threshold
+wrapper, the solved extended-real limsup display, the solved iid
+divergent-half scaled-tail plumbing, the solved convergent-half Borel-Cantelli
+moving-truncation handoff, or the solved eventual-equality normalized-sum
+transfer.  New compiled anchors through V449:
+`durrett2019_theorem_2_5_13_normalized_sum_tendsto_zero_of_eventuallyEq`,
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_eventuallyEq`,
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_tail_tsum_ne_top`,
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_iid_tail_tsum_ne_top`,
 `durrett2019_theorem_2_5_13_truncated`,
 `durrett2019_theorem_2_5_13_truncated_eq_self_of_abs_lt`,
 `durrett2019_theorem_2_5_13_truncation_mismatch_subset_tail`,
