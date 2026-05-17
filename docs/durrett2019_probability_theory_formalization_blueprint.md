@@ -27,21 +27,27 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V441`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V442`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V441 advances
-Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.  The V440 finite
-prefix comparison now yields the infinite transfer: for a nonnegative
-antitone tail sequence, summability of the positive `k`-th subsequence forces
-summability of the full sequence, and contrapositively a nonsummable full
-sequence gives a nonsummable positive `k`-th subsequence.  The next source
-work is probability-tail instantiation plus the Borel-Cantelli/limsup bridge.
-Do not route back into solved Theorem 2.5.12 plumbing.  New compiled anchors
-through V441:
+consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V442 advances
+Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.  The V441 infinite
+transfer is now instantiated for one-based tail probabilities, converted
+between ENNReal and real summability, and connected to the second
+Borel-Cantelli lemma for the independent scaled sample-tail limsup event.  The
+next source work is the divergent-half partial-sum bridge: consume the V442
+sample-tail limsup event and prove the source step from infinitely many
+`|X_n| >= k * a_n` events to unbounded `|S_n| / a_n`, then package the
+all-`k` limsup infinite endpoint.  Do not route back into solved Theorem
+2.5.12 plumbing or the now-solved Theorem 2.5.13 tail-series transfer.  New
+compiled anchors through V442:
+`durrett2019_theorem_2_5_13_not_summable_toReal_of_tsum_eq_top`,
+`durrett2019_theorem_2_5_13_tsum_eq_top_of_not_summable_toReal`,
+`durrett2019_theorem_2_5_13_scaled_tail_tsum_eq_top_of_oneBased_tail_tsum_eq_top`,
+`durrett2019_theorem_2_5_13_borelCantelli_scaled_tail_limsup_eq_one`,
 `durrett2019_theorem_2_5_13_subsequence_Icc_sum_eq_range`,
 `durrett2019_theorem_2_5_13_summable_of_antitone_subsequence_summable`,
 `durrett2019_theorem_2_5_13_not_summable_subsequence_of_not_summable`,

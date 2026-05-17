@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V441
+## Live In-Thread Goal Prompt V442
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,20 +12,32 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V441 advances Durrett
-Theorem 2.5.13 (Feller infinite-mean dichotomy): the V440 finite prefix
-comparison now yields the infinite transfer.  For a nonnegative antitone tail
-sequence, summability of the positive `k`-th subsequence forces summability of
-the full sequence, and contrapositively a nonsummable full sequence gives a
-nonsummable positive `k`-th subsequence.  Do not reroute to solved Theorem
+in `StatInference/ProbabilityTheory/Basic.lean`.  V442 advances Durrett
+Theorem 2.5.13 (Feller infinite-mean dichotomy): the V441 infinite transfer is
+now instantiated for one-based tail probabilities, converted between ENNReal
+and real summability, and connected to the second Borel-Cantelli lemma for the
+independent scaled sample-tail limsup event.  Do not reroute to solved Theorem
 2.5.12 scalar p-series, threshold, reindex, source-composition,
-integrability, or display-wrapper work.  Next aggressive target: instantiate
-the V441 transfer with Theorem 2.5.13 tail probabilities and connect the
-divergent half to Borel-Cantelli/limsup machinery already available in
-`ProbabilityMeasure.BorelCantelli` and local limsup wrappers.
+integrability, display-wrapper work, or the now-solved 2.5.13 tail-series
+transfer.  Next aggressive target: turn the V442 sample-tail limsup event into
+the partial-sum conclusion in the divergent half by proving the source bridge
+from `|X_n| >= k * a_n` infinitely often to unbounded
+`|S_n| / a_n`, using the textbook inequality
+`max |S_{n-1}| |S_n| >= |X_n| / 2` and then packaging the all-`k` limsup
+infinite endpoint.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V442 adds the probability-tail and Borel-Cantelli
+divergent-half bridge for Theorem 2.5.13.  New compiled anchors:
+`durrett2019_theorem_2_5_13_not_summable_toReal_of_tsum_eq_top`,
+`durrett2019_theorem_2_5_13_tsum_eq_top_of_not_summable_toReal`,
+`durrett2019_theorem_2_5_13_scaled_tail_tsum_eq_top_of_oneBased_tail_tsum_eq_top`,
+and
+`durrett2019_theorem_2_5_13_borelCantelli_scaled_tail_limsup_eq_one`.  The
+remaining blocker is now the sample-tail-limsup to partial-sum-limsup
+divergence bridge, plus the all-`k` infinite limsup packaging.
 
 Latest verified target V441 adds the infinite tail-series transfer layer for
 Theorem 2.5.13.  New compiled anchors:

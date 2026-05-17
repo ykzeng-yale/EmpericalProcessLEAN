@@ -10687,6 +10687,126 @@ theorem durrett2019_theorem_2_5_13_not_summable_subsequence_of_not_summable
       (u := u) hu_nonneg hu hk hsub)
 
 /--
+Durrett 2019, Theorem 2.5.13 support: if an ENNReal series is infinite, then
+the corresponding finite `toReal` series cannot be summable.
+-/
+theorem durrett2019_theorem_2_5_13_not_summable_toReal_of_tsum_eq_top
+    {f : ℕ -> ℝ≥0∞} (hf_ne_top : ∀ n : ℕ, f n ≠ ∞)
+    (hf_top : (∑' n : ℕ, f n) = ∞) :
+    ¬ Summable fun n : ℕ => (f n).toReal := by
+  intro hf_summable
+  have hfinite :
+      (∑' n : ℕ, ENNReal.ofReal ((f n).toReal)) ≠ ∞ :=
+    hf_summable.tsum_ofReal_ne_top
+  have heq : (fun n : ℕ => ENNReal.ofReal ((f n).toReal)) = f := by
+    funext n
+    exact ENNReal.ofReal_toReal (hf_ne_top n)
+  exact hfinite (by simpa [heq] using hf_top)
+
+/--
+Durrett 2019, Theorem 2.5.13 support: a nonsummable `toReal` series forces
+the original ENNReal series to be infinite.
+-/
+theorem durrett2019_theorem_2_5_13_tsum_eq_top_of_not_summable_toReal
+    {f : ℕ -> ℝ≥0∞}
+    (hf_not_summable : ¬ Summable fun n : ℕ => (f n).toReal) :
+    (∑' n : ℕ, f n) = ∞ := by
+  by_contra hf_ne_top
+  exact hf_not_summable (ENNReal.summable_toReal hf_ne_top)
+
+/--
+Durrett 2019, Theorem 2.5.13 divergent-half support: the deterministic
+series transfer now applies to tail probabilities.  If the one-based tail
+probability series for `a_n` is infinite, then for every positive integer `k`
+the series with thresholds `k * a_n` is infinite.
+-/
+theorem durrett2019_theorem_2_5_13_scaled_tail_tsum_eq_top_of_oneBased_tail_tsum_eq_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : Ω -> ℝ} {a : ℕ -> ℝ} {k : ℕ}
+    (hk : 0 < k)
+    (htail_mono : Antitone fun n : ℕ => (P {ω : Ω | a n ≤ |X ω|}).toReal)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_top : (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X ω|}) = ∞) :
+    (∑' n : ℕ, P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X ω|}) = ∞ := by
+  let u : ℕ -> ℝ := fun n : ℕ => (P {ω : Ω | a n ≤ |X ω|}).toReal
+  have hu_nonneg : ∀ n : ℕ, 0 ≤ u n := fun n => ENNReal.toReal_nonneg
+  have hshift_not_summable : ¬ Summable fun n : ℕ => u (n + 1) := by
+    have hnot :=
+      durrett2019_theorem_2_5_13_not_summable_toReal_of_tsum_eq_top
+        (f := fun n : ℕ => P {ω : Ω | a (n + 1) ≤ |X ω|})
+        (fun n => measure_ne_top P _) htail_top
+    simpa [u] using hnot
+  have hu_not_summable : ¬ Summable u := by
+    intro hu_summable
+    exact hshift_not_summable ((summable_nat_add_iff (f := u) 1).2 hu_summable)
+  have hsub_not_summable :
+      ¬ Summable fun n : ℕ => u (k * (n + 1)) :=
+    durrett2019_theorem_2_5_13_not_summable_subsequence_of_not_summable
+      (u := u) hu_nonneg (by simpa [u] using htail_mono) hk hu_not_summable
+  have hscaled_not_summable :
+      ¬ Summable fun n : ℕ =>
+        (P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X ω|}).toReal := by
+    intro hscaled_summable
+    exact hsub_not_summable
+      (hscaled_summable.of_nonneg_of_le
+        (fun n => hu_nonneg (k * (n + 1)))
+        (fun n => by
+          have hmeasure_le :
+              P {ω : Ω | a (k * (n + 1)) ≤ |X ω|} ≤
+                P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X ω|} :=
+            durrett2019_theorem_2_5_13_tail_measure_le_scaled_tail_measure_of_ratio_mono
+              (X := X) (a := a) (k := k) (n := n + 1)
+              (Nat.succ_le_of_lt hk) (Nat.succ_pos n) hratio_mono
+          exact ENNReal.toReal_mono (measure_ne_top P _) hmeasure_le))
+  exact
+    durrett2019_theorem_2_5_13_tsum_eq_top_of_not_summable_toReal
+      hscaled_not_summable
+
+/--
+Durrett 2019, Theorem 2.5.13 divergent-half support: after the scaled
+tail-probability series is known to diverge, the second Borel-Cantelli lemma
+gives the limsup event for the independent sample tail events.
+-/
+theorem durrett2019_theorem_2_5_13_borelCantelli_scaled_tail_limsup_eq_one
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {k : ℕ}
+    (hk : 0 < k)
+    (htail_mono : Antitone fun n : ℕ => (P {ω : Ω | a n ≤ |X0 ω|}).toReal)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_top : (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) = ∞)
+    (hscaled_tail_law : ∀ n : ℕ,
+      P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|} =
+        P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X0 ω|})
+    (hscaled_meas : ∀ n : ℕ,
+      MeasurableSet {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|})
+    (hscaled_indep : _root_.ProbabilityTheory.iIndepSet
+      (fun n : ℕ => {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|}) P) :
+    P (limsup
+      (fun n : ℕ => {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|})
+      atTop) = 1 := by
+  have hscaled_ref_top :
+      (∑' n : ℕ, P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X0 ω|}) = ∞ :=
+    durrett2019_theorem_2_5_13_scaled_tail_tsum_eq_top_of_oneBased_tail_tsum_eq_top
+      (P := P) (X := X0) (a := a) hk htail_mono hratio_mono htail_top
+  have hscaled_actual_eq_ref :
+      (fun n : ℕ => P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|}) =
+        fun n : ℕ => P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X0 ω|} := by
+    funext n
+    exact hscaled_tail_law n
+  have hscaled_actual_top :
+      (∑' n : ℕ, P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|}) = ∞ := by
+    rw [hscaled_actual_eq_ref]
+    exact hscaled_ref_top
+  exact
+    StatInference.ProbabilityMeasure.measure_limsup_eq_one
+      (μ := P)
+      (s := fun n : ℕ =>
+        {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|})
+      hscaled_meas hscaled_indep hscaled_actual_top
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
