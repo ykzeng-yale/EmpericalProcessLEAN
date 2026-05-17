@@ -27,26 +27,26 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V438`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V439`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
-consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V438 completes
-the exact textbook-display wrapper for Durrett Theorem 2.5.12
-Marcinkiewicz-Zygmund rate for `1 < p < 2`: under iid, finite base
-`p`-moment, and mean-zero source assumptions, the one-based partial sums
-`sum_{k < n} X (k + 1) / n^(1/p)` tend to zero almost surely.  This wrapper
-uses the V437 finite-`p` endpoint plus `tendsto_add_atTop_iff_nat`; it does not
-reopen scalar p-series, threshold, reindex, source-composition,
-integrability-removal, or explicit-kernel estimates.  The Durrett source
-statement for Theorem 2.5.12 is the `1 < p < 2` case, so boundary/low-`p`
-variants should not be treated as unresolved parts of this theorem unless a
-fresh source search identifies a different named statement.  Next source work:
-either add only a cheap `S_n` alias/display wrapper if useful, or move directly
-to the next Chapter 2.5 theorem after source/API search.  New compiled anchors
-through V438:
+consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V439 starts
+Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy, after the completed
+Theorem 2.5.12 textbook display.  The new compiled support packages the first
+deterministic proof paragraph: monotone `a_n / n` gives `a_{kn} >= k a_n`, the
+corresponding tail-event probability comparison, and the finite antitone
+block-sum comparison for subsequence tails.  The next source work is the
+infinite tail-series transfer for the divergent half, then the
+Borel-Cantelli/limsup bridge.  Do not route back into solved Theorem 2.5.12
+plumbing.  New compiled anchors through V439:
+`durrett2019_theorem_2_5_13_scaled_le_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_tail_event_subset_scaled_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_tail_measure_le_scaled_tail_measure_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_antitone_block_sum_le`,
+`durrett2019_theorem_2_5_13_antitone_block_sums_le`,
 `durrett2019_theorem_2_5_12_textbook_ae_normalized_sum_tendsto_zero_of_finite_p_moment`,
 `durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,

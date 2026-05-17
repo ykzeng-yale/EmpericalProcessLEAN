@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V438
+## Live In-Thread Goal Prompt V439
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,24 +12,30 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V438 completes the
-textbook-display wrapper for Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund
-rate: under iid, finite base `p`-moment, mean-zero source assumptions, and
-`1 < p < 2`, the one-based partial sums
-`sum_{k < n} X (k + 1) / n^(1/p)` tend to zero almost surely.  This uses the
-compiled V437 finite-`p` endpoint plus `tendsto_add_atTop_iff_nat`; it does not
-reopen the scalar p-series, threshold, reindex, source-composition,
-integrability-removal, or explicit-kernel estimates.  The Durrett source
-statement for Theorem 2.5.12 is exactly the `1 < p < 2` case, so do not route
-to boundary/low-`p` variants as if they were still part of this theorem unless
-a fresh source search identifies a different named statement.  Next aggressive
-target: either add only a cheap `S_n` alias/display wrapper if it materially
-improves source matching, or move directly to the next Chapter 2.5 theorem
-after checking the local Durrett Markdown/PDF and existing Mathlib/local
-probability APIs.
+in `StatInference/ProbabilityTheory/Basic.lean`.  V439 starts Durrett Theorem
+2.5.13 (Feller infinite-mean dichotomy) after the completed Theorem 2.5.12
+textbook display.  New compiled support packages the first deterministic
+proof paragraph: monotone `a_n / n` gives `a_{kn} >= k a_n`, the corresponding
+tail-event probability comparison, and the finite antitone block-sum
+comparison for subsequence tails.  Do not reroute to solved Theorem 2.5.12
+scalar p-series, threshold, reindex, source-composition, integrability, or
+display-wrapper work.  Next aggressive target: turn the V439 finite block
+comparison into the infinite tail-series transfer used in the divergent half
+of Theorem 2.5.13, then connect it to Borel-Cantelli/limsup machinery already
+available in `ProbabilityMeasure.BorelCantelli` and local limsup wrappers.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V439 adds the first Theorem 2.5.13 deterministic
+Feller-support layer.  New compiled anchors:
+`durrett2019_theorem_2_5_13_scaled_le_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_tail_event_subset_scaled_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_tail_measure_le_scaled_tail_measure_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_antitone_block_sum_le`, and
+`durrett2019_theorem_2_5_13_antitone_block_sums_le`.  The remaining blocker is
+the infinite-series/limsup packaging for Theorem 2.5.13, not any 2.5.12
+cleanup.
 
 Latest verified target V438 adds the Theorem 2.5.12 exact textbook-display
 wrapper from the V437 finite-`p` endpoint.  New compiled anchor:

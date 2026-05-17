@@ -10436,6 +10436,99 @@ theorem durrett2019_theorem_2_5_12_textbook_ae_normalized_sum_tendsto_zero_of_fi
           durrett2019_theorem_2_5_12_normalizer p n) 1).mp hω
 
 /--
+Durrett 2019, Theorem 2.5.13 deterministic support: if `a_n / n` is
+increasing on positive indices, then `a_{kn} >= k a_n` for positive `n` and
+integer `k >= 1`.
+-/
+theorem durrett2019_theorem_2_5_13_scaled_le_of_ratio_mono
+    {a : ℕ -> ℝ} {k n : ℕ}
+    (hk : 1 ≤ k) (hn : 0 < n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ)) :
+    (k : ℝ) * a n ≤ a (k * n) := by
+  have hk_pos : 0 < k := lt_of_lt_of_le zero_lt_one hk
+  have hkn_pos_nat : 0 < k * n := Nat.mul_pos hk_pos hn
+  have hn_real_pos : 0 < (n : ℝ) := Nat.cast_pos.mpr hn
+  have hkn_real_pos : 0 < ((k * n : ℕ) : ℝ) := Nat.cast_pos.mpr hkn_pos_nat
+  have hn_le_kn : n ≤ k * n := by
+    simpa [Nat.mul_comm] using Nat.mul_le_mul_right n hk
+  have hratio := hratio_mono hn hn_le_kn
+  rw [div_le_div_iff₀ hn_real_pos hkn_real_pos] at hratio
+  rw [Nat.cast_mul] at hratio
+  nlinarith
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic support: the previous scaling
+inequality gives the event inclusion
+`{|X| >= a_{kn}} subset {|X| >= k a_n}` used in the divergent half.
+-/
+theorem durrett2019_theorem_2_5_13_tail_event_subset_scaled_of_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {X : Ω -> ℝ} {a : ℕ -> ℝ} {k n : ℕ}
+    (hk : 1 ≤ k) (hn : 0 < n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ)) :
+    {ω : Ω | a (k * n) ≤ |X ω|} ⊆
+      {ω : Ω | (k : ℝ) * a n ≤ |X ω|} := by
+  intro ω hω
+  exact
+    (durrett2019_theorem_2_5_13_scaled_le_of_ratio_mono
+      (a := a) hk hn hratio_mono).trans hω
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic support: the event inclusion can be
+read as the first probability comparison in the textbook proof.
+-/
+theorem durrett2019_theorem_2_5_13_tail_measure_le_scaled_tail_measure_of_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} {X : Ω -> ℝ}
+    {a : ℕ -> ℝ} {k n : ℕ}
+    (hk : 1 ≤ k) (hn : 0 < n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ)) :
+    P {ω : Ω | a (k * n) ≤ |X ω|} ≤
+      P {ω : Ω | (k : ℝ) * a n ≤ |X ω|} := by
+  exact measure_mono
+    (durrett2019_theorem_2_5_13_tail_event_subset_scaled_of_ratio_mono
+      (X := X) (a := a) hk hn hratio_mono)
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic support: an antitone nonnegative
+tail sequence has each block `[kn, k(n+1))` bounded by `k` times its first
+selected subsequence value.
+-/
+theorem durrett2019_theorem_2_5_13_antitone_block_sum_le
+    {u : ℕ -> ℝ} (hu : Antitone u) {k n : ℕ} :
+    (∑ m ∈ Finset.Ico (k * n) (k * (n + 1)), u m) ≤
+      (k : ℝ) * u (k * n) := by
+  calc
+    (∑ m ∈ Finset.Ico (k * n) (k * (n + 1)), u m) ≤
+        ∑ _m ∈ Finset.Ico (k * n) (k * (n + 1)), u (k * n) := by
+          exact Finset.sum_le_sum fun m hm => hu (Finset.mem_Ico.mp hm).1
+    _ = (k : ℝ) * u (k * n) := by
+          have hcard :
+              (Finset.Ico (k * n) (k * (n + 1))).card = k := by
+            simp [Nat.mul_succ]
+          simp [Finset.sum_const, nsmul_eq_mul, hcard]
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic support: summing the antitone block
+estimate over finitely many selected blocks gives the finite form of the
+subsequence-tail comparison used before passing to infinite series.
+-/
+theorem durrett2019_theorem_2_5_13_antitone_block_sums_le
+    {u : ℕ -> ℝ} (hu : Antitone u) {k N : ℕ} :
+    (∑ n ∈ Finset.Icc 1 N,
+      ∑ m ∈ Finset.Ico (k * n) (k * (n + 1)), u m) ≤
+      (k : ℝ) * ∑ n ∈ Finset.Icc 1 N, u (k * n) := by
+  calc
+    (∑ n ∈ Finset.Icc 1 N,
+      ∑ m ∈ Finset.Ico (k * n) (k * (n + 1)), u m) ≤
+        ∑ n ∈ Finset.Icc 1 N, (k : ℝ) * u (k * n) := by
+          exact Finset.sum_le_sum fun n _hn =>
+            durrett2019_theorem_2_5_13_antitone_block_sum_le (u := u) hu
+    _ = (k : ℝ) * ∑ n ∈ Finset.Icc 1 N, u (k * n) := by
+          simp [Finset.mul_sum]
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
