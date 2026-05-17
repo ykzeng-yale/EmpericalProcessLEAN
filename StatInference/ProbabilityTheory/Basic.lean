@@ -1774,6 +1774,110 @@ theorem durrett2019_theorem_2_1_11_canonical_iid_shift_fin_prefix_hasLaw_pi
       hCoord.1 hCoord.2.1 n
 
 /--
+Durrett 2019, Theorem 2.1.11, canonical arbitrary finite-dimensional
+coordinates on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_finite_restrict_hasLaw_pi
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S) (s : Finset ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> S => fun i : s => sample i)
+      (Measure.pi fun _ : s => (ν : Measure S))
+      (Measure.infinitePi fun _ : ℕ => (ν : Measure S)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_11_iid_finite_restrict_hasLaw_pi_of_iIndepFun
+      (X := fun i : ℕ => fun sample : ℕ -> S => sample i)
+      hCoord.1 hCoord.2.1 s
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based canonical arbitrary
+finite-dimensional coordinates on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_shift_finite_restrict_hasLaw_pi
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S) (s : Finset ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> S => fun i : s => sample ((i : ℕ) + 1))
+      (Measure.pi fun _ : s => (ν : Measure S))
+      (Measure.infinitePi fun _ : ℕ => (ν : Measure S)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_11_iid_shift_finite_restrict_hasLaw_pi_of_iIndepFun
+      (X := fun i : ℕ => fun sample : ℕ -> S => sample i)
+      hCoord.1 hCoord.2.1 s
+
+/--
+Durrett 2019, Theorem 2.1.11, canonical arbitrary finite-dimensional cylinder
+probabilities on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_finite_cylinder_prob
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S)
+    {A : ℕ -> Set S} (s : Finset ℕ)
+    (hA : ∀ i, i ∈ s -> MeasurableSet (A i)) :
+    (Measure.infinitePi fun _ : ℕ => (ν : Measure S))
+        {sample | ∀ i, i ∈ s -> sample i ∈ A i} =
+      ∏ i ∈ s, (ν : Measure S) (A i) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_11_iid_finite_cylinder_prob_of_iIndepFun
+      (X := fun i : ℕ => fun sample : ℕ -> S => sample i)
+      (A := A) hCoord.1 hCoord.2.1 s hA
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based canonical arbitrary
+finite-dimensional cylinder probabilities on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_shift_finite_cylinder_prob
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S)
+    {A : ℕ -> Set S} (s : Finset ℕ)
+    (hA : ∀ i, i ∈ s -> MeasurableSet (A (i + 1))) :
+    (Measure.infinitePi fun _ : ℕ => (ν : Measure S))
+        {sample | ∀ i, i ∈ s -> sample (i + 1) ∈ A (i + 1)} =
+      ∏ i ∈ s, (ν : Measure S) (A (i + 1)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_11_iid_shift_finite_cylinder_prob_of_iIndepFun
+      (X := fun i : ℕ => fun sample : ℕ -> S => sample i)
+      (A := A) hCoord.1 hCoord.2.1 s hA
+
+/--
+Durrett 2019, Theorem 2.1.11, canonical finite-prefix cylinder probabilities
+on `ν^ℕ`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_range_cylinder_prob
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S)
+    {A : ℕ -> Set S} (n : ℕ)
+    (hA : ∀ i, i ∈ Finset.range n -> MeasurableSet (A i)) :
+    (Measure.infinitePi fun _ : ℕ => (ν : Measure S))
+        {sample | ∀ i, i ∈ Finset.range n -> sample i ∈ A i} =
+      ∏ i ∈ Finset.range n, (ν : Measure S) (A i) :=
+  durrett2019_theorem_2_1_11_canonical_iid_finite_cylinder_prob
+    (ν := ν) (s := Finset.range n) hA
+
+/--
+Durrett 2019, Theorem 2.1.11, canonical finite cylinder probabilities on the
+literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_11_canonical_iid_oneBased_Icc_cylinder_prob
+    {S : Type u} [MeasurableSpace S]
+    (ν : MeasureTheory.ProbabilityMeasure S)
+    {A : ℕ -> Set S} (n : ℕ)
+    (hA : ∀ i, i ∈ Finset.Icc 1 n -> MeasurableSet (A i)) :
+    (Measure.infinitePi fun _ : ℕ => (ν : Measure S))
+        {sample | ∀ i, i ∈ Finset.Icc 1 n -> sample i ∈ A i} =
+      ∏ i ∈ Finset.Icc 1 n, (ν : Measure S) (A i) :=
+  durrett2019_theorem_2_1_11_canonical_iid_finite_cylinder_prob
+    (ν := ν) (s := Finset.Icc 1 n) hA
+
+/--
 Durrett 2019, Theorem 2.1.11, iid finite prefix cylinder probabilities from
 source independence and marginal-law hypotheses.
 -/

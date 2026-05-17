@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V489
+## Live In-Thread Goal Prompt V490
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -31,7 +31,9 @@ probability wrappers from source independence/marginal laws.  V488 adds the
 shifted one-based arbitrary finite-index-set product-law and cylinder
 probability wrappers from source independence/marginal laws.  V489 adds the
 matching shifted one-based arbitrary finite-index-set product-law and cylinder
-probability wrappers from joint infinite-product law hypotheses.
+probability wrappers from joint infinite-product law hypotheses.  V490 adds
+canonical iid arbitrary finite-index-set product-law and cylinder probability
+wrappers for the infinite product coordinate process.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -46,7 +48,20 @@ solved arbitrary finite-index-set product-law/cylinder wrappers,
 solved shifted arbitrary finite-index-set product-law/cylinder wrappers,
 solved joint-law shifted arbitrary finite-index-set product-law/cylinder
 wrappers,
+solved canonical iid arbitrary finite-index-set product-law/cylinder wrappers,
 or old app-level stale prompts.
+
+Latest verified target V490 adds canonical iid finite-dimensional distribution
+support for Durrett Theorem 2.1.11:
+`durrett2019_theorem_2_1_11_canonical_iid_finite_restrict_hasLaw_pi`,
+`durrett2019_theorem_2_1_11_canonical_iid_shift_finite_restrict_hasLaw_pi`,
+`durrett2019_theorem_2_1_11_canonical_iid_finite_cylinder_prob`,
+`durrett2019_theorem_2_1_11_canonical_iid_shift_finite_cylinder_prob`,
+`durrett2019_theorem_2_1_11_canonical_iid_range_cylinder_prob`, and
+`durrett2019_theorem_2_1_11_canonical_iid_oneBased_Icc_cylinder_prob`.
+These wrappers package the actual coordinate projections on `ν^ℕ` over
+arbitrary finite sets and literal one-based prefixes, complementing V489's
+abstract joint-law shifted finite-set statements.
 
 Latest verified target V489 adds joint-law shifted arbitrary finite-dimensional
 distribution support for Durrett Theorem 2.1.11:
@@ -4469,6 +4484,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V489` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V490` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
