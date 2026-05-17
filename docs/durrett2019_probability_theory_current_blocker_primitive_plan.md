@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V449
+## Live In-Thread Goal Prompt V450
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -33,7 +33,10 @@ a.e. eventual equality between `X_{n+1}` and its moving truncation, including
 the iid `IdentDistrib` source wrapper.  V449 adds the deterministic and a.e.
 transfer layer showing that this eventual equality transfers a zero
 normalized-sum endpoint from the moving truncations back to the original
-one-based partial sums whenever `a_n -> ∞`.  Do
+one-based partial sums whenever `a_n -> ∞`.  V450 proves the moving-truncated
+endpoint from the two remaining analytic assumptions: summable scaled
+variances of the centered moving truncations and normalized convergence of the
+truncated means.  Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -42,12 +45,28 @@ integer-to-real threshold bridge, or the solved countable a.e. all-threshold
 wrapper, or the solved extended-real limsup display, or the solved iid
 divergent-half scaled-tail plumbing, or the solved convergent-half
 Borel-Cantelli moving-truncation handoff, or the solved eventual-equality
-normalized-sum transfer.  Next aggressive target: prove the convergent-half
-variance/mean/Kronecker endpoint for the moving truncations themselves, then
-assemble the source-facing Feller dichotomy wrapper.
+normalized-sum transfer, or the solved moving-truncation Kronecker assembly.
+Next aggressive target: discharge the scaled-variance summability and
+truncated-mean normalization assumptions from the textbook tail-layer
+estimates, then assemble the source-facing Feller dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V450 adds the moving-truncated Kronecker assembly for
+the convergent half of Durrett Theorem 2.5.13.  New compiled anchors include:
+`durrett2019_theorem_2_5_13_truncatedMean`,
+`durrett2019_theorem_2_5_13_centeredTruncated`,
+`durrett2019_theorem_2_5_13_scaledCenteredTruncated`,
+`durrett2019_theorem_2_5_13_iIndepFun_centeredTruncated_of_iIndepFun`,
+`durrett2019_theorem_2_5_13_integral_centeredTruncated_eq_zero`,
+`durrett2019_theorem_2_5_13_ae_centered_truncated_oneBased_normalized_sum_tendsto_zero_of_scaled_variance_summable`,
+`durrett2019_theorem_2_5_13_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`, and
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scaled_variance_summable_and_mean_tendsto`.
+They reuse the existing Theorem 2.5.11 Kronecker endpoint instead of rebuilding
+random-series convergence.  The remaining blocker is the textbook scalar/tail
+work proving the scaled-variance summability and truncated-mean normalization
+assumptions for this wrapper.
 
 Latest verified target V449 adds the convergent-half eventual-equality
 transfer layer for Durrett Theorem 2.5.13.  New compiled anchors:

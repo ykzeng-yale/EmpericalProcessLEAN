@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V449`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V450`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -50,16 +50,28 @@ defining the moving truncation `Y_n = X_n 1_{|X_n| < a_n}` and proving the
 finite-tail Borel-Cantelli eventual-equality handoff, including the iid
 `IdentDistrib` source wrapper.  V449 transfers a zero normalized-sum endpoint
 from the moving truncations back to the original one-based partial sums using
-that eventual equality and `a_n -> ∞`.  The next source work is the
-convergent-half variance/mean/Kronecker endpoint for the moving truncations and
-then the source-facing Feller dichotomy wrapper.  Do not route back into
+that eventual equality and `a_n -> ∞`.  V450 proves the moving-truncated
+endpoint from summable scaled variances of centered moving truncations plus
+normalized convergence of the truncated means, reusing the existing Theorem
+2.5.11 Kronecker layer.  The next source work is to discharge those two
+analytic assumptions from the textbook scalar/tail estimates and then assemble
+the source-facing Feller dichotomy wrapper.  Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
 integer-to-real threshold bridge, the solved countable a.e. all-threshold
 wrapper, the solved extended-real limsup display, the solved iid
 divergent-half scaled-tail plumbing, the solved convergent-half Borel-Cantelli
 moving-truncation handoff, or the solved eventual-equality normalized-sum
-transfer.  New compiled anchors through V449:
+transfer, or the solved moving-truncation Kronecker assembly.  New compiled
+anchors through V450:
+`durrett2019_theorem_2_5_13_truncatedMean`,
+`durrett2019_theorem_2_5_13_centeredTruncated`,
+`durrett2019_theorem_2_5_13_scaledCenteredTruncated`,
+`durrett2019_theorem_2_5_13_iIndepFun_centeredTruncated_of_iIndepFun`,
+`durrett2019_theorem_2_5_13_integral_centeredTruncated_eq_zero`,
+`durrett2019_theorem_2_5_13_ae_centered_truncated_oneBased_normalized_sum_tendsto_zero_of_scaled_variance_summable`,
+`durrett2019_theorem_2_5_13_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scaled_variance_summable_and_mean_tendsto`,
 `durrett2019_theorem_2_5_13_normalized_sum_tendsto_zero_of_eventuallyEq`,
 `durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_eventuallyEq`,
 `durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_tail_tsum_ne_top`,
