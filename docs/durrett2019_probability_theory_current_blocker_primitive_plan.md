@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V473
+## Live In-Thread Goal Prompt V474
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -149,6 +149,13 @@ V473 packages Durrett's textbook growth display itself into the compiled
 route: `a_n / n -> infinity` implies `n / a_n -> 0`, and the convergent half
 plus final Feller dichotomy now have source wrappers consuming
 `Tendsto (fun n => a n / n) atTop atTop` directly.
+V474 separates the true infinite-mean growth handoff from its remaining
+analytic core: monotone convergence now proves that the bounded-ratio case
+would force integrability once bounded ratios plus finite Durrett tail
+summability imply integrability of `|X_0|`; the Feller source dichotomy now
+derives `a_n / n -> infinity` inside the finite-tail branch only.  V474 also
+proves that a bounded ratio transfers finite Durrett tail summability to
+finite positive linear-grid tail summability.
 Do not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -177,16 +184,28 @@ solved concrete majorant integrability bridge from identity(*) mass weights,
 or the solved convergent-half extended-real display wrapper, or the solved
 two-branch Feller dichotomy assembly, or the solved easy growth cleanup from
 monotonicity and `n / a_n -> 0`, or the solved source-growth wrapper from
-`a_n / n -> infinity` to `n / a_n -> 0`.
-Next aggressive target: prove the textbook infinite-mean growth handoff that
-finite tail summability plus monotone `a_n / n` and `E|X_1| = infinity`
-force `a_n / n -> infinity`, then feed the V473 source-growth wrappers.  Do
+`a_n / n -> infinity` to `n / a_n -> 0`, or the solved monotone-convergence
+contradiction shell, or the solved bounded-ratio linear-tail transfer.
+Next aggressive target: finish the remaining analytic core of the
+infinite-mean growth handoff by proving that finite positive linear-grid tail
+summability forces integrability of `|X_0|` through the local layer-cake
+lemmas, then instantiate the V474 bounded-ratio integrability handoff.  Do
 not return to scalar kernel, annulus mass, majorant integrability,
-display-wrapper, branch-combination, reciprocal-growth conversion, or easy
-growth plumbing.
+display-wrapper, branch-combination, reciprocal-growth conversion, monotone
+convergence shell, or linear-tail transfer.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V474 adds the infinite-mean growth contradiction shell
+and the first linear-tail transfer layer:
+`durrett2019_theorem_2_5_13_ratio_tendsto_atTop_of_not_integrable_abs_of_bounded_ratio_tail_integrable`,
+`durrett2019_theorem_2_5_13_linear_tail_measureReal_le_of_ratio_bound`,
+`durrett2019_theorem_2_5_13_linear_tail_summable_of_ratio_bound`,
+`durrett2019_theorem_2_5_13_linear_tail_tsum_ne_top_of_ratio_bound`, and
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_bounded_ratio_tail_integrable`.
+The remaining blocker is now narrow: prove the layer-cake/integer-grid lemma
+that finite positive linear-grid tails imply `Integrable (fun ω => |X_0 ω|)`.
 
 Latest verified target V473 adds textbook source-growth wrappers:
 `durrett2019_theorem_2_5_13_n_over_a_tendsto_zero_of_ratio_tendsto_atTop`,
@@ -4429,6 +4448,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V473` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V474` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V473` in
+Route from `Live In-Thread Goal Prompt V474` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -159,6 +159,12 @@ V473 packages Durrett's textbook source-growth display into the compiled
 route: `a_n / n -> infinity` now directly feeds the reciprocal condition
 `n / a_n -> 0`, and both the convergent-half display and final Feller
 dichotomy have wrappers consuming the textbook growth limit.
+V474 separates the infinite-mean growth handoff from its remaining analytic
+core: monotone convergence plus non-integrability now force
+`a_n / n -> infinity` once the bounded-ratio finite-tail case is shown
+integrable, the Feller dichotomy derives that growth only in the finite-tail
+branch, and bounded ratios now transfer finite Durrett tail summability to
+finite positive linear-grid tail summability.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -186,8 +192,14 @@ solved concrete majorant integrability bridge, or the solved convergent-half
 extended-real display wrapper, or the solved two-branch Feller dichotomy
 assembly, or the solved easy growth cleanup from monotonicity and
 `n / a_n -> 0`, or the solved source-growth wrapper from `a_n / n -> infinity`
-to `n / a_n -> 0`.
-New compiled anchors through V473:
+to `n / a_n -> 0`, or the solved monotone-convergence contradiction shell, or
+the solved bounded-ratio linear-tail transfer.
+New compiled anchors through V474:
+`durrett2019_theorem_2_5_13_ratio_tendsto_atTop_of_not_integrable_abs_of_bounded_ratio_tail_integrable`,
+`durrett2019_theorem_2_5_13_linear_tail_measureReal_le_of_ratio_bound`,
+`durrett2019_theorem_2_5_13_linear_tail_summable_of_ratio_bound`,
+`durrett2019_theorem_2_5_13_linear_tail_tsum_ne_top_of_ratio_bound`,
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_bounded_ratio_tail_integrable`,
 `durrett2019_theorem_2_5_13_n_over_a_tendsto_zero_of_ratio_tendsto_atTop`,
 `durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono_of_ratio_tendsto_atTop`,
 `durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_annulusKernelMajorant_tail_summable_or_tail_tsum_top_and_ratio_mono_of_ratio_tendsto_atTop`,
@@ -3105,13 +3117,13 @@ whenever the app-level wording lags.  Active frontier: Durrett Chapter 2.5,
 Theorem 2.5.13 Feller infinite-mean dichotomy support in
 `StatInference/ProbabilityTheory/Basic.lean`.
 
-Next proof packet: prove the textbook infinite-mean growth handoff that finite
-tail summability plus monotone `a_n / n` and `E|X_1| = infinity` force
-`a_n / n -> infinity`, then feed the V473 source-growth wrappers.  Do not
-route back to
+Next proof packet: prove that finite positive linear-grid tail summability
+forces integrability of `|X_0|` via the local layer-cake lemmas, then
+instantiate the V474 bounded-ratio integrability handoff.  Do not route back to
 scalar-kernel estimates, annulus mass summability, concrete majorant
 integrability, display-wrapper plumbing, branch-combination plumbing,
-reciprocal-growth conversion, or easy growth cleanup.
+reciprocal-growth conversion, monotone-convergence shell, linear-tail transfer,
+or easy growth cleanup.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement
 one compiled Lean packet, verify focused Lean plus targeted build/scans and root

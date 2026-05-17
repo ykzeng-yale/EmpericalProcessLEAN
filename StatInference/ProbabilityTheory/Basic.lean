@@ -15491,6 +15491,122 @@ theorem durrett2019_theorem_2_5_13_n_over_a_tendsto_zero_of_ratio_tendsto_atTop
   field_simp [hn_ne, ha_ne]
 
 /--
+Durrett 2019, Theorem 2.5.13 source-growth support: once bounded textbook
+ratios plus finite tail summability are known to imply integrability of
+`|X_0|`, non-integrability forces `a_n / n -> ∞`.
+
+This isolates the remaining analytic handoff from the monotone-convergence
+contradiction argument.
+-/
+theorem durrett2019_theorem_2_5_13_ratio_tendsto_atTop_of_not_integrable_abs_of_bounded_ratio_tail_integrable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX0_not_integrable_abs : ¬ Integrable (fun ω : Ω => |X0 ω|) P)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (hbounded_ratio_tail_integrable :
+      ∀ C : ℝ,
+        (∀ n : ℕ, 1 ≤ n -> a n / (n : ℝ) ≤ C) ->
+        Summable (fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) ->
+        Integrable (fun ω : Ω => |X0 ω|) P)
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    Tendsto (fun n : ℕ => a n / (n : ℝ)) atTop atTop := by
+  let r : ℕ -> ℝ := fun n : ℕ => a (n + 1) / ((n + 1 : ℕ) : ℝ)
+  have hr_mono : Monotone r := by
+    intro m n hmn
+    exact hratio_mono (Nat.succ_pos m) (Nat.succ_le_succ hmn)
+  rcases tendsto_atTop_of_monotone hr_mono with hr_atTop | ⟨l, hl⟩
+  · exact
+      (tendsto_add_atTop_iff_nat
+        (f := fun n : ℕ => a n / (n : ℝ)) 1).mp hr_atTop
+  · have hbound : ∀ n : ℕ, 1 ≤ n -> a n / (n : ℝ) ≤ l := by
+      intro n hn
+      cases n with
+      | zero =>
+          omega
+      | succ k =>
+          simpa [r] using hr_mono.ge_of_tendsto hl k
+    exact (hX0_not_integrable_abs
+      (hbounded_ratio_tail_integrable l hbound htail_summable)).elim
+
+/--
+Durrett 2019, Theorem 2.5.13 source-growth support: a bounded textbook ratio
+`a_n / n <= C` makes the linear-grid tail event smaller than the Durrett tail
+event at the same index.
+-/
+theorem durrett2019_theorem_2_5_13_linear_tail_measureReal_le_of_ratio_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ}
+    {a : ℕ -> ℝ} {C : ℝ}
+    (hbound : ∀ n : ℕ, 1 ≤ n -> a n / (n : ℝ) ≤ C) :
+    ∀ n : ℕ, 1 ≤ n ->
+      P.real {ω : Ω | C * (n : ℝ) ≤ |X0 ω|} ≤
+        P.real {ω : Ω | a n ≤ |X0 ω|} := by
+  intro n hn
+  have hn_pos : 0 < (n : ℝ) := by exact_mod_cast hn
+  have hn_ne : (n : ℝ) ≠ 0 := hn_pos.ne'
+  have ha_le : a n ≤ C * (n : ℝ) := by
+    calc
+      a n = (a n / (n : ℝ)) * (n : ℝ) := by field_simp [hn_ne]
+      _ ≤ C * (n : ℝ) :=
+        mul_le_mul_of_nonneg_right (hbound n hn) hn_pos.le
+  exact measureReal_mono fun ω hω => ha_le.trans hω
+
+/--
+Durrett 2019, Theorem 2.5.13 source-growth support: finite Durrett tail
+summability transfers to the positive linear grid under a bounded ratio.
+-/
+theorem durrett2019_theorem_2_5_13_linear_tail_summable_of_ratio_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ}
+    {a : ℕ -> ℝ} {C : ℝ}
+    (hbound : ∀ n : ℕ, 1 ≤ n -> a n / (n : ℝ) ≤ C)
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    Summable fun n : ℕ =>
+      P.real {ω : Ω | C * ((n + 1 : ℕ) : ℝ) ≤ |X0 ω|} := by
+  have hshift :
+      Summable fun n : ℕ =>
+        P.real {ω : Ω | a (n + 1) ≤ |X0 ω|} := by
+    simpa [Nat.add_comm, Nat.add_left_comm, Nat.add_assoc] using
+      ((summable_nat_add_iff
+        (f := fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) 1).2 htail_summable)
+  refine Summable.of_nonneg_of_le (f := fun n : ℕ =>
+      P.real {ω : Ω | a (n + 1) ≤ |X0 ω|})
+    (g := fun n : ℕ =>
+      P.real {ω : Ω | C * ((n + 1 : ℕ) : ℝ) ≤ |X0 ω|})
+    (fun n => measureReal_nonneg) ?_ hshift
+  intro n
+  exact
+    durrett2019_theorem_2_5_13_linear_tail_measureReal_le_of_ratio_bound
+      (P := P) (X0 := X0) (a := a) (C := C) hbound
+      (n + 1) (Nat.succ_pos n)
+
+/--
+Durrett 2019, Theorem 2.5.13 source-growth support: the previous real
+summability transfer also gives a finite ENNReal linear-grid tail series.
+-/
+theorem durrett2019_theorem_2_5_13_linear_tail_tsum_ne_top_of_ratio_bound
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {C : ℝ}
+    (hbound : ∀ n : ℕ, 1 ≤ n -> a n / (n : ℝ) ≤ C)
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    (∑' n : ℕ, P {ω : Ω | C * ((n + 1 : ℕ) : ℝ) ≤ |X0 ω|}) ≠ ∞ := by
+  have hlin :
+      Summable fun n : ℕ =>
+        P.real {ω : Ω | C * ((n + 1 : ℕ) : ℝ) ≤ |X0 ω|} :=
+    durrett2019_theorem_2_5_13_linear_tail_summable_of_ratio_bound
+      (P := P) (X0 := X0) (a := a) (C := C) hbound htail_summable
+  have hne :
+      (∑' n : ℕ,
+        ENNReal.ofReal
+          (P.real {ω : Ω | C * ((n + 1 : ℕ) : ℝ) ≤ |X0 ω|})) ≠ ∞ :=
+    hlin.tsum_ofReal_ne_top
+  simpa [measureReal_def] using hne
+
+/--
 Durrett 2019, Theorem 2.5.13 source-growth support: divergence of `a_n`
 implies divergence of the shifted normalizer `a_{n+1}`.
 -/
@@ -15741,6 +15857,64 @@ theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_d
       (P := P) (X := X) (X0 := X0) (a := a)
       hX_indep hX_meas hX0_meas hX_ident ha_pos ha_mono
       hn_over_a_tendsto_zero htail_mono hratio_mono
+
+/--
+Durrett 2019, Theorem 2.5.13 Feller dichotomy assembly with the textbook
+infinite-mean growth contradiction separated as a bounded-ratio integrability
+handoff.
+
+In the finite-tail branch, non-integrability of `|X_0|` forces
+`a_n / n -> ∞`; the divergent branch is the already-compiled large-jump
+Borel-Cantelli route and does not need that growth conclusion.
+-/
+theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_bounded_ratio_tail_integrable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (hX0_not_integrable_abs : ¬ Integrable (fun ω : Ω => |X0 ω|) P)
+    (hbounded_ratio_tail_integrable :
+      ∀ C : ℝ,
+        (∀ n : ℕ, 1 ≤ n -> a n / (n : ℝ) ≤ C) ->
+        Summable (fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) ->
+        Integrable (fun ω : Ω => |X0 ω|) P)
+    (htail_mono : Antitone fun n : ℕ => (P {ω : Ω | a n ≤ |X0 ω|}).toReal)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ)) :
+    (Summable (fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) ->
+      ∀ᵐ ω ∂P,
+        limsup
+          (fun n : ℕ =>
+            ((|∑ k ∈ Finset.range n, X (k + 1) ω| / a n : ℝ) : EReal))
+          atTop = 0) ∧
+    ((∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) = ∞ ->
+      ∀ᵐ ω ∂P,
+        limsup
+          (fun n : ℕ =>
+            ((|∑ k ∈ Finset.range n, X (k + 1) ω| / a n : ℝ) : EReal))
+          atTop = ⊤) := by
+  constructor
+  · intro htail_summable
+    have hratio_atTop :
+        Tendsto (fun n : ℕ => a n / (n : ℝ)) atTop atTop :=
+      durrett2019_theorem_2_5_13_ratio_tendsto_atTop_of_not_integrable_abs_of_bounded_ratio_tail_integrable
+        (P := P) (X0 := X0) (a := a)
+        hX0_not_integrable_abs hratio_mono hbounded_ratio_tail_integrable
+        htail_summable
+    exact
+      durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono_of_ratio_tendsto_atTop
+        (P := P) (X := X) (X0 := X0) (a := a)
+        hX_indep hX_meas hX0_meas hX_ident ha_pos ha_mono
+        hratio_atTop hratio_mono htail_summable
+  · intro htail_top
+    exact
+      durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_top_of_iid_tail_tsum_eq_top
+        (P := P) (X := X) (X0 := X0) (a := a)
+        hX_indep hX_meas hX_ident ha_pos ha_mono htail_mono hratio_mono htail_top
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
