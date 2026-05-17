@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V452` in
+Route from `Live In-Thread Goal Prompt V453` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -62,11 +62,15 @@ and endpoint wrappers feeding the V450 Kronecker assembly.  V452 packages the
 arbitrary-normalizer scalar truncated-square kernel and proves that pointwise
 ENNReal kernel majorization by an integrable nonnegative majorant gives the
 weighted base second-moment summability, with moving/original endpoint
-wrappers consuming that scalar bound.  The next source work is to prove the
-textbook identity (*)/ratio-monotonicity scalar kernel majorization and its
-integrable majorant from finite large-jump tail series, prove truncated-mean
-normalization, and then assemble the source-facing Feller dichotomy wrapper.
-Do not route back into
+wrappers consuming that scalar bound.  V453 removes the remaining opaque
+truncated-mean `Tendsto` assumption by proving the Kronecker-style
+mean-normalization bridge from scaled truncated-mean summability, plus
+absolute-scaled summability and scalar-kernel endpoint wrappers.  The next
+source work is to prove the textbook identity (*)/ratio-monotonicity
+annulus/tail estimates that supply scalar truncated-square kernel
+majorization and absolute scaled truncated-mean summability from finite
+large-jump tail series, and then assemble the source-facing Feller dichotomy
+wrapper.  Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
 integer-to-real threshold bridge, the solved countable a.e. all-threshold
@@ -75,8 +79,16 @@ divergent-half scaled-tail plumbing, the solved convergent-half Borel-Cantelli
 moving-truncation handoff, or the solved eventual-equality normalized-sum
 transfer, the solved moving-truncation Kronecker assembly, or the solved
 scaled-variance-to-base-truncated-square handoff, or the solved
-scalar-kernel-to-original-endpoint handoff.  New compiled anchors through
-V452:
+scalar-kernel-to-original-endpoint handoff, or the solved
+scaled-mean-summability-to-mean-normalization handoff.  New compiled anchors
+through V453:
+`durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_scaled_summable`,
+`durrett2019_theorem_2_5_13_truncatedMean_scaled_summable_of_abs_scaled_summable`,
+`durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_abs_scaled_summable`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_scaled_summable`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_abs_scaled_summable`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_mean_scaled_summable`,
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_mean_abs_scaled_summable_and_iid_tail_tsum_ne_top`,
 `durrett2019_theorem_2_5_13_truncatedSqKernel`,
 `durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_kernel_bound`,
 `durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_scalar_kernel_bound`,

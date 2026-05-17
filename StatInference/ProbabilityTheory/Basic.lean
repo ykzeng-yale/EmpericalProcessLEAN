@@ -12177,6 +12177,257 @@ theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_sc
     htail
 
 /--
+Durrett 2019, Theorem 2.5.13 deterministic mean layer: summability of the
+moving truncated means after division by `a_n` implies the normalized
+truncated-mean contribution tends to zero.
+-/
+theorem durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_nonzero : ∀ k : ℕ, a (k + 1) ≠ 0)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hmean_scaled_summable :
+      Summable fun k : ℕ =>
+        durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1) / a (k + 1)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n)
+      atTop (𝓝 0) := by
+  let q : ℕ -> ℝ := fun k =>
+    durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1) / a (k + 1)
+  have hscaled_tendsto :
+      Tendsto
+        (fun n : ℕ => ∑ k ∈ Finset.range (n + 1), q k)
+        atTop (𝓝 (∑' k : ℕ, q k)) := by
+    have hq : Summable q := by
+      simpa [q] using hmean_scaled_summable
+    simpa using hq.tendsto_sum_tsum_nat.comp (tendsto_add_atTop_nat 1)
+  have hshift :
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range (n + 1),
+            durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) /
+            a (n + 1))
+        atTop (𝓝 0) := by
+    exact
+      durrett2019_theorem_2_5_9_normalized_sum_tendsto_zero
+        (x := fun k : ℕ => durrett2019_theorem_2_5_13_truncatedMean P X a k)
+        (a := a)
+        ha_nonzero
+        (by simpa [q] using hscaled_tendsto)
+        ha_increment_nonneg
+        ha_shift_atTop
+  exact
+    (tendsto_add_atTop_iff_nat
+      (f := fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n) 1).mp
+      hshift
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic mean layer: absolute summability of
+the scaled moving truncated means implies ordinary summability of the scaled
+moving truncated means.
+-/
+theorem durrett2019_theorem_2_5_13_truncatedMean_scaled_summable_of_abs_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_pos : ∀ k : ℕ, 0 < a (k + 1))
+    (hmean_abs_scaled_summable :
+      Summable fun k : ℕ =>
+        |durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)| / a (k + 1)) :
+    Summable fun k : ℕ =>
+      durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1) / a (k + 1) := by
+  refine hmean_abs_scaled_summable.of_norm_bounded_eventually_nat ?_
+  exact Eventually.of_forall fun k => by
+    have hpos : 0 < a (k + 1) := ha_pos k
+    rw [norm_div]
+    change
+      |durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)| /
+          |a (k + 1)| ≤
+        |durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)| / a (k + 1)
+    rw [abs_of_pos hpos]
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic mean layer: absolute scaled
+summability is enough to remove the moving truncated-mean contribution.
+-/
+theorem durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_abs_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_pos : ∀ k : ℕ, 0 < a (k + 1))
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hmean_abs_scaled_summable :
+      Summable fun k : ℕ =>
+        |durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)| / a (k + 1)) :
+    Tendsto
+      (fun n : ℕ =>
+        (∑ k ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)) / a n)
+      atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_scaled_summable
+    (P := P) (X := X) (a := a)
+    (fun k => ne_of_gt (ha_pos k))
+    ha_increment_nonneg ha_shift_atTop
+    (durrett2019_theorem_2_5_13_truncatedMean_scaled_summable_of_abs_scaled_summable
+      (P := P) (X := X) (a := a) ha_pos hmean_abs_scaled_summable)
+
+/--
+Durrett 2019, Theorem 2.5.13 moving-truncated endpoint with the mean estimate
+stated as scaled summability.
+-/
+theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hbase_weighted_summable :
+      Summable fun k : ℕ =>
+        (((a (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_13_truncated (fun _ : ℕ => X0) a (k + 1) ω) ^ 2 ∂P)
+    (ha_nonzero : ∀ k : ℕ, a (k + 1) ≠ 0)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hmean_scaled_summable :
+      Summable fun k : ℕ =>
+        durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1) / a (k + 1)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_tendsto
+    (P := P) (X := X) (X0 := X0) (a := a)
+    hX_indep hX_meas hX_ident hbase_weighted_summable
+    ha_nonzero ha_increment_nonneg ha_shift_atTop
+    (durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_scaled_summable
+      (P := P) (X := X) (a := a)
+      ha_nonzero ha_increment_nonneg ha_shift_atTop hmean_scaled_summable)
+
+/--
+Durrett 2019, Theorem 2.5.13 moving-truncated endpoint with the mean estimate
+stated as absolute scaled summability.
+-/
+theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_abs_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hbase_weighted_summable :
+      Summable fun k : ℕ =>
+        (((a (k + 1)) ^ 2)⁻¹) *
+          ∫ ω,
+            (durrett2019_theorem_2_5_13_truncated (fun _ : ℕ => X0) a (k + 1) ω) ^ 2 ∂P)
+    (ha_pos : ∀ k : ℕ, 0 < a (k + 1))
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hmean_abs_scaled_summable :
+      Summable fun k : ℕ =>
+        |durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)| / a (k + 1)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_scaled_summable
+    (P := P) (X := X) (X0 := X0) (a := a)
+    hX_indep hX_meas hX_ident hbase_weighted_summable
+    (fun k => ne_of_gt (ha_pos k)) ha_increment_nonneg ha_shift_atTop
+    (durrett2019_theorem_2_5_13_truncatedMean_scaled_summable_of_abs_scaled_summable
+      (P := P) (X := X) (a := a) ha_pos hmean_abs_scaled_summable)
+
+/--
+Durrett 2019, Theorem 2.5.13 moving-truncated endpoint with both analytic
+estimates stated as scalar-kernel majorization and scaled mean summability.
+-/
+theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_mean_scaled_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x))
+    (ha_nonzero : ∀ k : ℕ, a (k + 1) ≠ 0)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hmean_scaled_summable :
+      Summable fun k : ℕ =>
+        durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1) / a (k + 1)) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_scaled_summable
+    (P := P) (X := X) (X0 := X0) (a := a)
+    hX_indep hX_meas hX_ident
+    (durrett2019_theorem_2_5_13_base_truncated_sq_weighted_summable_of_scalar_kernel_bound
+      (P := P) (X0 := X0) (a := a) (g := g)
+      hX0_meas hg_int hg_nonneg hkernel_bound)
+    ha_nonzero ha_increment_nonneg ha_shift_atTop hmean_scaled_summable
+
+/--
+Durrett 2019, Theorem 2.5.13 original endpoint with both analytic estimates
+stated as scalar-kernel majorization and absolute scaled mean summability.
+-/
+theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_mean_abs_scaled_summable_and_iid_tail_tsum_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ} {g : ℝ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (hg_int : Integrable (fun ω : Ω => g (X0 ω)) P)
+    (hg_nonneg : 0 ≤ᵐ[P] fun ω : Ω => g (X0 ω))
+    (hkernel_bound : ∀ x : ℝ,
+      (∑' k : ℕ,
+        ENNReal.ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal (g x))
+    (ha_pos : ∀ k : ℕ, 0 < a (k + 1))
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto a atTop atTop)
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hmean_abs_scaled_summable :
+      Summable fun k : ℕ =>
+        |durrett2019_theorem_2_5_13_truncatedMean P X a (k + 1)| / a (k + 1))
+    (htail :
+      (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) ≠ ∞) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, X (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_truncated_and_iid_tail_tsum_ne_top
+    (P := P) (X := X) (X0 := X0) (a := a) ha_atTop hX_ident
+    (durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_and_mean_scaled_summable
+      (P := P) (X := X) (X0 := X0) (a := a) (g := g)
+      hX_indep hX_meas hX0_meas hX_ident hg_int hg_nonneg hkernel_bound
+      (fun k => ne_of_gt (ha_pos k)) ha_increment_nonneg ha_shift_atTop
+      (durrett2019_theorem_2_5_13_truncatedMean_scaled_summable_of_abs_scaled_summable
+        (P := P) (X := X) (a := a) ha_pos hmean_abs_scaled_summable))
+    htail
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
