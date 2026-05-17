@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V465`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V466`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -116,6 +116,10 @@ V465 turns that tail estimate into the annulus-wise scalar-kernel bound:
 if `x` lies in `[a_{m-1}, a_m)`, then finite partial sums, the real `tsum`,
 and the ENNReal `tsum` of Durrett's arbitrary-normalizer truncated-square
 kernel are all bounded by `2*m`.
+V466 closes the low-prefix gap needed for global majorant packaging: if
+`|x| < a_1`, then finite partial sums, the real `tsum`, and the ENNReal
+`tsum` of the same scalar kernel are all bounded by `2`, without any annulus
+lower-bound hypothesis.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -136,8 +140,12 @@ finite-prefix-identity(*) consumer, or the solved monotone-annulus
 finite-identity bridge, or the solved source mean/original endpoint bridge, or
 the solved ratio packaging from Durrett's `a_n / n` monotonicity, or the
 solved reciprocal-square p-series/tail estimate, or the solved annulus-wise
-scalar-kernel bound.
-New compiled anchors through V465:
+scalar-kernel bound, or the solved low-prefix scalar-kernel bound.
+New compiled anchors through V466:
+`durrett2019_theorem_2_5_13_truncatedSqKernel_range_sum_le_prefix_one_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_truncatedSqKernel_summable_of_prefix_one_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_truncatedSqKernel_tsum_le_prefix_one_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_prefix_one_of_ratio_mono`,
 `durrett2019_theorem_2_5_13_truncatedSqKernel_nonneg`,
 `durrett2019_theorem_2_5_13_truncatedSqKernel_range_sum_le_annulus_index_of_ratio_mono`,
 `durrett2019_theorem_2_5_13_truncatedSqKernel_summable_of_annulus_of_ratio_mono`,

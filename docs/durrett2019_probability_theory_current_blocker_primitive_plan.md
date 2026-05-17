@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V465
+## Live In-Thread Goal Prompt V466
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -106,6 +106,10 @@ V465 turns that tail estimate into the annulus-wise scalar-kernel bound:
 if `x` lies in `[a_{m-1}, a_m)`, then finite partial sums, the real `tsum`,
 and the ENNReal `tsum` of Durrett's arbitrary-normalizer truncated-square
 kernel are all bounded by `2*m`.
+V466 closes the low-prefix gap needed for global majorant packaging: if
+`|x| < a_1`, then finite partial sums, the real `tsum`, and the ENNReal
+`tsum` of the same scalar kernel are all bounded by `2`, without any annulus
+lower-bound hypothesis.
 Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
@@ -128,14 +132,25 @@ finite-prefix-identity(*) consumer, or the solved monotone-annulus
 finite-identity bridge, or the solved source mean/original endpoint bridge, or
 the solved ratio packaging from Durrett's `a_n / n` monotonicity, or the
 solved reciprocal-square p-series/tail estimate, or the solved annulus-wise
-scalar-kernel bound.
-Next aggressive target: package the annulus-index scalar majorant as an
-integrable nonnegative majorant from identity(*) and finite base tail
+scalar-kernel bound, or the solved low-prefix scalar-kernel bound.
+Next aggressive target: package the low-prefix plus annulus-index scalar
+majorant as an integrable nonnegative majorant from identity(*) and finite base tail
 summability, then feed the existing scalar-kernel endpoint wrappers and
 assemble the Feller dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V466 proves the low-prefix scalar truncated-square
+kernel majorization needed before the variance route can build a global
+measurable majorant.  New compiled anchors include:
+`durrett2019_theorem_2_5_13_truncatedSqKernel_range_sum_le_prefix_one_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_truncatedSqKernel_summable_of_prefix_one_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_truncatedSqKernel_tsum_le_prefix_one_of_ratio_mono`, and
+`durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_prefix_one_of_ratio_mono`.
+The remaining blocker is now the measurable/integrable majorant packaging that
+combines this low-prefix estimate with the V465 annulus-index estimate and
+sums the resulting `2*m` annulus weights using identity(*).
 
 Latest verified target V465 proves the annulus-wise scalar truncated-square
 kernel majorization consumed by the variance route.  New compiled anchors
@@ -145,9 +160,8 @@ include:
 `durrett2019_theorem_2_5_13_truncatedSqKernel_summable_of_annulus_of_ratio_mono`,
 `durrett2019_theorem_2_5_13_truncatedSqKernel_tsum_le_annulus_index_of_ratio_mono`, and
 `durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_annulus_index_of_ratio_mono`.
-The remaining blocker is no longer the pointwise annulus kernel estimate; it
-is the measurable/integrable majorant packaging that sums `2*m` over the
-annulus partition using identity(*).
+The pointwise annulus kernel estimate remains solved; future cycles should use
+it together with the V466 low-prefix bound, not reprove scalar partial sums.
 
 Latest verified target V464 proves the deterministic reciprocal-square
 p-series/tail estimate used in the convergent-half variance route.  New

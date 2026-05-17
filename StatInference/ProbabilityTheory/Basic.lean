@@ -12421,6 +12421,158 @@ theorem durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_annulus_ind
             (a := a) ha_pos ha_mono hratio_mono hm hx_lower hx_upper)
 
 /--
+Durrett 2019, Theorem 2.5.13 scalar-kernel support: on the initial prefix
+`|x| < a_1`, the same reciprocal-square tail estimate bounds every finite
+partial sum of the truncated-square scalar kernel by `2`.
+-/
+theorem durrett2019_theorem_2_5_13_truncatedSqKernel_range_sum_le_prefix_one_of_ratio_mono
+    {a : ℕ -> ℝ} (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    {N : ℕ} {x : ℝ} (hx_upper : |x| < a 1) :
+    (∑ k ∈ Finset.range N,
+      durrett2019_theorem_2_5_13_truncatedSqKernel a x k) ≤ 2 := by
+  classical
+  let b : ℕ -> ℝ := fun n => ((a n) ^ 2)⁻¹
+  have ha1_pos : 0 < a 1 := ha_pos 1
+  have hx_sq_le : x ^ 2 ≤ (a 1) ^ 2 := by
+    rw [← sq_abs x]
+    exact (sq_le_sq₀ (abs_nonneg x) ha1_pos.le).2 hx_upper.le
+  have hterm : ∀ k ∈ Finset.range N,
+      durrett2019_theorem_2_5_13_truncatedSqKernel a x k ≤
+        (a 1) ^ 2 * b (k + 1) := by
+    intro k _hk
+    by_cases hx_cut : x ∈ {y : ℝ | |y| < a (k + 1)}
+    · have hkernel_eq :
+          durrett2019_theorem_2_5_13_truncatedSqKernel a x k =
+            b (k + 1) * x ^ 2 := by
+        simp [b, durrett2019_theorem_2_5_13_truncatedSqKernel, hx_cut]
+      rw [hkernel_eq]
+      calc
+        b (k + 1) * x ^ 2 ≤ b (k + 1) * (a 1) ^ 2 := by
+          exact mul_le_mul_of_nonneg_left hx_sq_le
+            (inv_nonneg.2 (sq_nonneg _))
+        _ = (a 1) ^ 2 * b (k + 1) := by ring
+    · have hkernel_eq :
+          durrett2019_theorem_2_5_13_truncatedSqKernel a x k = 0 := by
+        simp [durrett2019_theorem_2_5_13_truncatedSqKernel, hx_cut]
+      rw [hkernel_eq]
+      exact mul_nonneg (sq_nonneg _) (inv_nonneg.2 (sq_nonneg _))
+  have hsum_major :
+      (∑ k ∈ Finset.range N,
+        durrett2019_theorem_2_5_13_truncatedSqKernel a x k) ≤
+        ∑ k ∈ Finset.range N, (a 1) ^ 2 * b (k + 1) :=
+    Finset.sum_le_sum hterm
+  have hreindex :
+      (∑ k ∈ Finset.range N, (a 1) ^ 2 * b (k + 1)) =
+        ∑ n ∈ Finset.Ico 1 (N + 1), (a 1) ^ 2 * b n := by
+    refine Finset.sum_bij (fun k _hk => k + 1) ?_ ?_ ?_ ?_
+    · intro k hk
+      rw [Finset.mem_Ico]
+      exact ⟨Nat.succ_pos k, Nat.succ_lt_succ (Finset.mem_range.mp hk)⟩
+    · intro k₁ _hk₁ k₂ _hk₂ h
+      exact Nat.succ.inj h
+    · intro n hn
+      rw [Finset.mem_Ico] at hn
+      have hn_pos : 0 < n := lt_of_lt_of_le zero_lt_one hn.1
+      have hpred_succ : n - 1 + 1 = n := Nat.succ_pred_eq_of_pos hn_pos
+      refine ⟨n - 1, ?_, ?_⟩
+      · exact Finset.mem_range.mpr (by omega)
+      · exact hpred_succ
+    · intro k _hk
+      rfl
+  have hmajor_reindex :
+      (∑ k ∈ Finset.range N, (a 1) ^ 2 * b (k + 1)) =
+        (a 1) ^ 2 * ∑ n ∈ Finset.Ico 1 (N + 1), b n := by
+    calc
+      (∑ k ∈ Finset.range N, (a 1) ^ 2 * b (k + 1)) =
+          ∑ n ∈ Finset.Ico 1 (N + 1), (a 1) ^ 2 * b n := hreindex
+      _ = (a 1) ^ 2 * ∑ n ∈ Finset.Ico 1 (N + 1), b n := by
+            rw [Finset.mul_sum]
+  have htail :
+      (∑ n ∈ Finset.Ico 1 (N + 1), b n) ≤
+        2 * (1 : ℝ) / ((a 1) ^ 2) := by
+    simpa [b] using
+      durrett2019_theorem_2_5_13_inv_sq_Ico_sum_le_ratio_tail_of_ratio_mono
+        (a := a) ha_pos hratio_mono (m := 1) (by norm_num)
+  calc
+    (∑ k ∈ Finset.range N,
+      durrett2019_theorem_2_5_13_truncatedSqKernel a x k) ≤
+        ∑ k ∈ Finset.range N, (a 1) ^ 2 * b (k + 1) := hsum_major
+    _ = (a 1) ^ 2 * ∑ n ∈ Finset.Ico 1 (N + 1), b n := hmajor_reindex
+    _ ≤ (a 1) ^ 2 * (2 * (1 : ℝ) / ((a 1) ^ 2)) := by
+          exact mul_le_mul_of_nonneg_left htail (sq_nonneg _)
+    _ = 2 := by
+          field_simp [ne_of_gt ha1_pos]
+
+/--
+Durrett 2019, Theorem 2.5.13 scalar-kernel support: the initial prefix
+`|x| < a_1` gives summability of the scalar truncated-square kernel.
+-/
+theorem durrett2019_theorem_2_5_13_truncatedSqKernel_summable_of_prefix_one_of_ratio_mono
+    {a : ℕ -> ℝ} (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    {x : ℝ} (hx_upper : |x| < a 1) :
+    Summable fun k : ℕ =>
+      durrett2019_theorem_2_5_13_truncatedSqKernel a x k := by
+  refine summable_of_sum_range_le
+    (c := 2)
+    (fun k => durrett2019_theorem_2_5_13_truncatedSqKernel_nonneg
+      (a := a) x k) ?_
+  intro N
+  exact
+    durrett2019_theorem_2_5_13_truncatedSqKernel_range_sum_le_prefix_one_of_ratio_mono
+      (a := a) ha_pos hratio_mono hx_upper
+
+/--
+Durrett 2019, Theorem 2.5.13 scalar-kernel support: the initial prefix
+`|x| < a_1` gives the real scalar truncated-square kernel bound.
+-/
+theorem durrett2019_theorem_2_5_13_truncatedSqKernel_tsum_le_prefix_one_of_ratio_mono
+    {a : ℕ -> ℝ} (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    {x : ℝ} (hx_upper : |x| < a 1) :
+    (∑' k : ℕ, durrett2019_theorem_2_5_13_truncatedSqKernel a x k) ≤
+      2 := by
+  refine Real.tsum_le_of_sum_range_le
+    (fun k => durrett2019_theorem_2_5_13_truncatedSqKernel_nonneg
+      (a := a) x k) ?_
+  intro N
+  exact
+    durrett2019_theorem_2_5_13_truncatedSqKernel_range_sum_le_prefix_one_of_ratio_mono
+      (a := a) ha_pos hratio_mono hx_upper
+
+/--
+Durrett 2019, Theorem 2.5.13 scalar-kernel support: the initial prefix
+`|x| < a_1` gives the ENNReal scalar truncated-square kernel bound.
+-/
+theorem durrett2019_theorem_2_5_13_truncatedSqKernel_ennreal_tsum_le_prefix_one_of_ratio_mono
+    {a : ℕ -> ℝ} (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    {x : ℝ} (hx_upper : |x| < a 1) :
+    (∑' k : ℕ,
+      ENNReal.ofReal (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) ≤
+        ENNReal.ofReal 2 := by
+  calc
+    (∑' k : ℕ,
+      ENNReal.ofReal (durrett2019_theorem_2_5_13_truncatedSqKernel a x k)) =
+        ENNReal.ofReal
+          (∑' k : ℕ, durrett2019_theorem_2_5_13_truncatedSqKernel a x k) := by
+          exact
+            (ENNReal.ofReal_tsum_of_nonneg
+              (fun k => durrett2019_theorem_2_5_13_truncatedSqKernel_nonneg
+                (a := a) x k)
+              (durrett2019_theorem_2_5_13_truncatedSqKernel_summable_of_prefix_one_of_ratio_mono
+                (a := a) ha_pos hratio_mono hx_upper)).symm
+    _ ≤ ENNReal.ofReal 2 :=
+        ENNReal.ofReal_le_ofReal
+          (durrett2019_theorem_2_5_13_truncatedSqKernel_tsum_le_prefix_one_of_ratio_mono
+            (a := a) ha_pos hratio_mono hx_upper)
+
+/--
 Durrett 2019, Theorem 2.5.13 tail-analysis support: a pointwise kernel
 majorization by an integrable nonnegative random variable gives the weighted
 base moving-truncation second-moment summability needed by V451.
