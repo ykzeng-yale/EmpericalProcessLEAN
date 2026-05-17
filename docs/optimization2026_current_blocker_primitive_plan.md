@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V42`, this file's top
+   the full book is complete, route from `Live Goal Prompt V43`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V42
+## Live Goal Prompt V43
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -544,20 +544,37 @@ compactness: if the linear term is bounded below on the relevant sublevel and
 all slacks are bounded above by `U >= 1`, then each coordinate `-log` term is
 bounded above, hence every slack coordinate is at least `exp (-C)`.
 
-Next theorem-sized target: discharge
-`Chewi1316RangeCentralPathValueSublevelLinearLowerSlackUpperSelector` from a
-compact closed feasible range and a strict feasible point.  Search first for
-the already compiled local boundedness APIs near
-`chewi1316_polytopeSlackNegLog_bddAbove_feasibleSlackCoordinateImage_of_subset_isCompact`,
-`chewi1316_polytopeSlackNegLog_slackCoordinate_le_center_add_radius_of_mem_closedBall`,
-`PiLp.norm_apply_le`, `IsCompact.exists_bound_of_continuousOn`, and
-`IsCompact.exists_isMinOn`.  The intended proof is: choose the reference
-strict feasible `y0`; minimize the continuous linear term `t * inner aObj y`
-on the compact closed feasible range for `L`; use compactness/boundedness of
-the same range to get a uniform slack upper bound `U >= 1`; then feed these
-constants into the V42 selector bridge.  This should finally compose with V41
-and V40 to give the compact closed feasible-range central-path selector
-without a supplied minimizer or supplied slack-floor premise.
+Current V43 packet discharges the V42 compact-bounds target and composes it
+through the central-path endpoint surface.  New compiled declarations:
+`chewi1316_rangeCentralPathValueSublevelLinearLowerSlackUpperSelector_of_closedFeasibleRangeCompact`,
+`chewi1316_rangeCentralPathValueSublevelSlackFloorSelector_of_closedFeasibleRangeCompact`,
+`chewi1316_rangeCentralPathValueCompactSublevelEnvelopeSelector_of_closedFeasibleRangeCompact`,
+`chewi1316_rangeCentralPathSelector_of_closedFeasibleRangeCompact`,
+`chewi1316_rangeCentralPathSelector_of_closedFeasibleRangeCompact_of_polytopeSlackSet_mem`,
+and
+`chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_closedFeasibleRangeCompact`.
+Search-first reuse for V43: mathlib `IsCompact.exists_bound_of_continuousOn`,
+`continuous_const.inner continuous_id`, `continuous_subtype_val.add
+continuous_const`, `PiLp.norm_apply_le`, `Real.norm_eq_abs`, and `neg_abs_le`,
+plus local `rangeRestrict_mem_of_polytopeSlackSet` and the V40/V41/V42 selector
+bridges.  The proof chooses a strict feasible reference point, bounds the
+continuous linear scalar on the compact closed feasible range, bounds the
+translated slack vector on the same compact range, converts vector norm bounds
+to coordinate upper bounds, and feeds those constants into the log-blowup
+selector chain.
+
+Next theorem-sized target: turn the V43 generic closed-feasible-range compact
+endpoint into the most source-facing §13.16 wrappers, then discharge
+`IsCompact (chewi1316RangeCentralPathClosedFeasibleRange aRow bSlack)` from the
+existing source-polytope compact/closed hypotheses when available.  Search
+first near existing bounded/closed/compact `*_standardPath` wrappers,
+`chewi1316RangeCentralPathClosedFeasibleRange`,
+`barrierAffineRangeSet`, `rangeRestrict_mem_of_polytopeSlackSet`,
+`IsCompact.image`, `IsClosed.preimage`, `isClosed_iInter`, finite-dimensional
+closed-and-bounded compactness APIs, and local polytope compactness lemmas.
+Do not reintroduce supplied central-path selectors, supplied minimizers, or
+supplied slack-floor/linear-bound selectors: V43 already eliminates those under
+compact closed feasible range plus strict feasibility.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
@@ -567,8 +584,8 @@ consumers.  Search first near existing `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers; then
-formalize only the genuinely missing terminal analytic certificate.
-Older paragraphs below are cached route history and must not override this V29
+formalize only the genuinely missing compactness/source-facing certificate.
+Older paragraphs below are cached route history and must not override this V43
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

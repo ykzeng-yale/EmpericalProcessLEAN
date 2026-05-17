@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V42` near the top of
+  `Live Goal Prompt V43` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -271,13 +271,25 @@ This dashboard tracks the Chewi optimization formalization lane for
   slack-floor selector.  Search-first reuse for V42: mathlib
   `Real.exp_le_exp`, `Real.exp_log`, `Real.log_le_log`, `Real.log_nonneg`,
   `Finset.single_le_sum`, and finite-sum algebra.
+  The V43 packet completes that compact-bounds discharge:
+  `chewi1316_rangeCentralPathValueSublevelLinearLowerSlackUpperSelector_of_closedFeasibleRangeCompact`,
+  `chewi1316_rangeCentralPathValueSublevelSlackFloorSelector_of_closedFeasibleRangeCompact`,
+  `chewi1316_rangeCentralPathValueCompactSublevelEnvelopeSelector_of_closedFeasibleRangeCompact`,
+  `chewi1316_rangeCentralPathSelector_of_closedFeasibleRangeCompact`,
+  `chewi1316_rangeCentralPathSelector_of_closedFeasibleRangeCompact_of_polytopeSlackSet_mem`,
+  and
+  `chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_closedFeasibleRangeCompact`
+  compile.  Search-first reuse for V43: mathlib
+  `IsCompact.exists_bound_of_continuousOn`, continuity of linear scalars and
+  translated slack vectors, `PiLp.norm_apply_le`, `Real.norm_eq_abs`,
+  `neg_abs_le`, and local V40/V41/V42 selector bridges.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: prove
-  `Chewi1316RangeCentralPathValueSublevelLinearLowerSlackUpperSelector` from a
-  compact closed feasible range and a strict feasible point, using compact
-  minimization for the linear lower bound and local/mathlib boundedness APIs
-  for the uniform slack upper bound.
+  `hxseq_mem` or per-step decrement premise.  Next proof target: source-facing
+  wrapper cleanup plus compactness discharge for
+  `chewi1316RangeCentralPathClosedFeasibleRange` from the existing source
+  compact/closed polytope hypotheses; do not re-open supplied minimizer,
+  central-path selector, or slack-floor premises.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge

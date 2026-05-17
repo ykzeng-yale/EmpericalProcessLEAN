@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V42` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V43` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -226,6 +226,23 @@ compact-bounds discharge of
 `Chewi1316RangeCentralPathValueSublevelLinearLowerSlackUpperSelector`, reusing
 compact minimization for the linear term and the existing finite-coordinate
 boundedness APIs for translated slacks.
+The V43 packet completes that compact-bounds route and composes it through the
+§13.16 endpoint:
+`chewi1316_rangeCentralPathValueSublevelLinearLowerSlackUpperSelector_of_closedFeasibleRangeCompact`,
+`chewi1316_rangeCentralPathValueSublevelSlackFloorSelector_of_closedFeasibleRangeCompact`,
+`chewi1316_rangeCentralPathValueCompactSublevelEnvelopeSelector_of_closedFeasibleRangeCompact`,
+`chewi1316_rangeCentralPathSelector_of_closedFeasibleRangeCompact`,
+`chewi1316_rangeCentralPathSelector_of_closedFeasibleRangeCompact_of_polytopeSlackSet_mem`,
+and
+`chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_closedFeasibleRangeCompact`.
+Search-first reuse: mathlib `IsCompact.exists_bound_of_continuousOn`, standard
+continuity combinators for linear scalars and translated slack vectors,
+`PiLp.norm_apply_le`, `Real.norm_eq_abs`, `neg_abs_le`, local
+`rangeRestrict_mem_of_polytopeSlackSet`, and the V40/V41/V42 selector bridges.
+The next source-facing route is to push this through the named standard-path
+wrappers and prove closed-feasible-range compactness from the existing
+closed/compact source hypotheses, rather than reintroducing supplied minimizer
+or slack-floor assumptions.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the
