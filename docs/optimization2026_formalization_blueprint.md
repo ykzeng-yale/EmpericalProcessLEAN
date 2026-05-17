@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V52` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V53` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,7 +30,7 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V52 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V53 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved to Appendix A matrix infrastructure.  The new module
 `StatInference/Optimization/AppendixA.lean` compiles and is root-imported,
@@ -71,10 +71,18 @@ Lemma A.3 quadratic-form interval statement, and symmetric Definition A.5
 Hermitian spectral theorem/eigenvalue APIs, CFC spectral order scalar-bound
 lemmas, `Matrix.IsHermitian.spectrum_real_eq_range_eigenvalues`, and
 `Finset.sup'`; the CStar norm/spectrum shortcut was not directly available
-for real matrices, so the finite-max proof reuses the arbitrary-`C` iff.
-Next source-shaped work, if staying in Appendix A, should search
-`Mathlib.Analysis.InnerProductSpace.SingularValues`, matrix spectrum
-`nonzero_mul_comm`, and local matrix bridges for the rectangular singular-value
+for real matrices, so the finite-max proof reuses the arbitrary-`C` iff.  The
+V53 layer adds
+`chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_transpose_mul_self` and
+`chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_transpose_mul_self`,
+closing the rectangular Definition A.5 display
+`||A||_op = sqrt(max_i |lambda_i(A^T A)|)` on nonempty finite domains.
+Search-first reuse found mathlib singular values via `T†T`, but no direct
+rectangular matrix theorem for `A^T A` versus `A A^T`; the proof uses the V50
+arbitrary-constant op-norm bridge, V52 scalar eigenvalue bounds, PSD eigenvalue
+nonnegativity, `Real.sq_sqrt`, `Real.sqrt_le_sqrt`, and `Finset.sup'`.
+Next source-shaped work, if staying in Appendix A, should continue searching
+linear-map/block-matrix APIs for the remaining rectangular singular-value
 relationship between `A^T A` and `A A^T`; otherwise return to the
 highest-impact main-text theorem/report gate that consumes these matrix facts.
 

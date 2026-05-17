@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V52` near the top of
+  `Live Goal Prompt V53` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -91,10 +91,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   lemmas, `Matrix.IsHermitian.spectrum_real_eq_range_eigenvalues`, and
   `Finset.sup'`; the CStar norm/spectrum shortcut was not directly available
   for real matrices, so the finite-max proof reuses the arbitrary-`C` iff.
-  Next Appendix A step, if staying in Appendix A, is the rectangular singular
-  value/eigenvalue relationship between `A^T A` and `A A^T`; otherwise return
-  to the highest-impact main-text theorem/report gate that consumes these
-  matrix facts.
+  The V53 layer adds
+  `chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_transpose_mul_self` and
+  `chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_transpose_mul_self`,
+  closing the rectangular Definition A.5 display
+  `||A||_op = sqrt(max_i |lambda_i(A^T A)|)` on nonempty finite domains.
+  Search-first reuse found mathlib singular values via `T†T`, but no direct
+  rectangular matrix theorem for `A^T A` versus `A A^T`; the proof uses the
+  V50 arbitrary-constant op-norm bridge, V52 scalar eigenvalue bounds, PSD
+  eigenvalue nonnegativity, and `Finset.sup'`.
+  Next Appendix A step, if staying in Appendix A, is the remaining rectangular
+  singular-value/eigenvalue relationship between `A^T A` and `A A^T`;
+  otherwise return to the highest-impact main-text theorem/report gate that
+  consumes these matrix facts.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

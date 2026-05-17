@@ -399,6 +399,87 @@ theorem chewiA5_transpose_mul_self_le_scalar_one_iff_l2_opNorm_le
           ring
 
 /--
+Chewi Definition A.5, rectangular eigenvalue display without the redundant
+absolute value.  On a nonempty finite domain, the Euclidean operator norm of a
+real rectangular matrix is the square root of the largest eigenvalue of
+`Aᵀ A`.
+-/
+theorem chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_transpose_mul_self
+    [DecidableEq n] [Nonempty n] (A : Matrix m n ℝ) :
+    ‖A‖ =
+      Real.sqrt
+        (Finset.univ.sup' Finset.univ_nonempty
+          (fun i =>
+            (chewiA5_transpose_mul_self_posSemidef A).isHermitian.eigenvalues i)) := by
+  let hGram : (Aᵀ * A).IsHermitian :=
+    (chewiA5_transpose_mul_self_posSemidef A).isHermitian
+  let M : ℝ :=
+    Finset.univ.sup' Finset.univ_nonempty (fun i => hGram.eigenvalues i)
+  have hM_nonneg : 0 ≤ M := by
+    let i0 : n := Classical.choice ‹Nonempty n›
+    have hi0_nonneg :
+        0 ≤ hGram.eigenvalues i0 :=
+      (chewiA5_transpose_mul_self_posSemidef A).eigenvalues_nonneg i0
+    exact hi0_nonneg.trans
+      (Finset.le_sup' (s := Finset.univ)
+        (f := fun i => hGram.eigenvalues i)
+        (by simp : i0 ∈ Finset.univ))
+  have hnorm_le : ‖A‖ ≤ Real.sqrt M := by
+    have hM_sq : (Real.sqrt M) ^ (2 : ℕ) = M := Real.sq_sqrt hM_nonneg
+    refine (chewiA5_transpose_mul_self_le_scalar_one_iff_l2_opNorm_le
+      (A := A) (C := Real.sqrt M) (Real.sqrt_nonneg M)).mp ?_
+    have hleM : Aᵀ * A ≤ M • (1 : Matrix n n ℝ) := by
+      rw [chewiA3_le_scalar_one_iff_eigenvalues_le hGram]
+      intro i
+      exact Finset.le_sup' (s := Finset.univ)
+        (f := fun i => hGram.eigenvalues i)
+        (by simp : i ∈ Finset.univ)
+    simpa [hM_sq] using hleM
+  have hsqrt_le : Real.sqrt M ≤ ‖A‖ := by
+    have hle_normsq : M ≤ ‖A‖ ^ (2 : ℕ) := by
+      have hbound :
+          Aᵀ * A ≤ (‖A‖ ^ (2 : ℕ)) • (1 : Matrix n n ℝ) :=
+        (chewiA5_transpose_mul_self_le_scalar_one_iff_l2_opNorm_le
+          (A := A) (C := ‖A‖) (norm_nonneg A)).mpr le_rfl
+      have heig_bound :
+          ∀ i, hGram.eigenvalues i ≤ ‖A‖ ^ (2 : ℕ) :=
+        (chewiA3_le_scalar_one_iff_eigenvalues_le hGram).mp hbound
+      exact Finset.sup'_le Finset.univ_nonempty
+        (fun i => hGram.eigenvalues i)
+        (by intro i _hi; exact heig_bound i)
+    calc
+      Real.sqrt M ≤ Real.sqrt (‖A‖ ^ (2 : ℕ)) :=
+        Real.sqrt_le_sqrt hle_normsq
+      _ = ‖A‖ := by
+        rw [Real.sqrt_sq_eq_abs, abs_of_nonneg (norm_nonneg A)]
+  exact le_antisymm hnorm_le hsqrt_le
+
+/--
+Chewi Definition A.5, rectangular absolute-eigenvalue display.  Since `Aᵀ A`
+is PSD, the absolute value is redundant, but this theorem matches the source
+formula: `||A||_op` is the square root of the largest absolute eigenvalue of
+`Aᵀ A`.
+-/
+theorem chewiA5_l2_opNorm_eq_sqrt_finset_sup_abs_eigenvalues_transpose_mul_self
+    [DecidableEq n] [Nonempty n] (A : Matrix m n ℝ) :
+    ‖A‖ =
+      Real.sqrt
+        (Finset.univ.sup' Finset.univ_nonempty
+          (fun i =>
+            |(chewiA5_transpose_mul_self_posSemidef A).isHermitian.eigenvalues i|)) := by
+  let hGram : (Aᵀ * A).IsHermitian :=
+    (chewiA5_transpose_mul_self_posSemidef A).isHermitian
+  have hsup_abs :
+      Finset.univ.sup' Finset.univ_nonempty
+          (fun i => |hGram.eigenvalues i|) =
+        Finset.univ.sup' Finset.univ_nonempty
+          (fun i => hGram.eigenvalues i) := by
+    simp [abs_of_nonneg,
+      (chewiA5_transpose_mul_self_posSemidef A).eigenvalues_nonneg]
+  rw [hsup_abs]
+  exact chewiA5_l2_opNorm_eq_sqrt_finset_sup_eigenvalues_transpose_mul_self A
+
+/--
 For symmetric real matrices, an absolute quadratic-form bound controls the
 Euclidean operator norm.  This is the Rayleigh-quotient bridge used in the
 symmetric specialization of Chewi Definition A.5.
