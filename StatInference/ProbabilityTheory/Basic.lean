@@ -9527,6 +9527,248 @@ theorem durrett2019_theorem_2_5_12_truncatedSq_unscaled_rpow_indicator_summable
       exact Real.rpow_nonneg (by positivity : 0 ≤ (((k + 1 : ℕ) : ℝ))) (-(2 / p))
 
 /--
+Durrett 2019, Theorem 2.5.12 real-analysis support: finite shifted
+tail estimate for a summable p-series exponent `q > 1`.
+-/
+theorem durrett2019_theorem_2_5_12_rpow_shifted_tail_sum_le_explicit
+    {q : ℝ} (hq : 1 < q) {n N : ℕ} (hn : 1 ≤ n) :
+    (∑ r ∈ Finset.range N, (((n + r : ℕ) : ℝ) ^ (-q))) ≤
+      (1 + (q - 1)⁻¹) * (n : ℝ) ^ (1 - q) := by
+  have hn_pos_real : 0 < (n : ℝ) := by exact_mod_cast hn
+  have hqpos : 0 < q - 1 := sub_pos.2 hq
+  have hqneg : -q < -1 := by linarith
+  have hconst_nonneg : 0 ≤ (1 + (q - 1)⁻¹) := by positivity
+  have hn_pow_nonneg : 0 ≤ (n : ℝ) ^ (1 - q) :=
+    Real.rpow_nonneg (le_of_lt hn_pos_real) _
+  have hfinite_integral_bound (M : ℕ) :
+      ∫ t in (n : ℝ)..((n + M : ℕ) : ℝ), t ^ (-q) ≤
+        (q - 1)⁻¹ * (n : ℝ) ^ (1 - q) := by
+    have htop : (n : ℝ) ≤ ((n + M : ℕ) : ℝ) := by
+      exact_mod_cast Nat.le_add_right n M
+    have hpow_le : 0 ≤ ((n + M : ℕ) : ℝ) ^ (1 - q) := by
+      exact Real.rpow_nonneg (by positivity) _
+    have hintegral :
+        (∫ t in (n : ℝ)..((n + M : ℕ) : ℝ), t ^ (-q)) =
+          (((n + M : ℕ) : ℝ) ^ (1 - q) - (n : ℝ) ^ (1 - q)) / (1 - q) := by
+      rw [integral_rpow (Or.inr ⟨by linarith, ?_⟩)]
+      ring_nf
+      intro hzero
+      rw [Set.uIcc_of_le htop] at hzero
+      have hzero_ge : (n : ℝ) ≤ 0 := hzero.1
+      linarith
+    rw [hintegral]
+    calc
+      (((n + M : ℕ) : ℝ) ^ (1 - q) - (n : ℝ) ^ (1 - q)) / (1 - q) =
+          ((n : ℝ) ^ (1 - q) - ((n + M : ℕ) : ℝ) ^ (1 - q)) / (q - 1) := by
+            have hden : 1 - q = -(q - 1) := by ring
+            rw [hden, div_neg]
+            ring
+      _ ≤ ((n : ℝ) ^ (1 - q)) / (q - 1) := by
+            have hnum :
+                (n : ℝ) ^ (1 - q) - ((n + M : ℕ) : ℝ) ^ (1 - q) ≤
+                  (n : ℝ) ^ (1 - q) := by linarith
+            exact div_le_div_of_nonneg_right hnum hqpos.le
+      _ = (q - 1)⁻¹ * (n : ℝ) ^ (1 - q) := by ring
+  rcases N with _ | M
+  · simp [mul_nonneg hconst_nonneg hn_pow_nonneg]
+  · rw [Finset.sum_range_succ']
+    have htail :
+        (∑ r ∈ Finset.range M, (((n + r.succ : ℕ) : ℝ) ^ (-q))) ≤
+          ∫ t in (n : ℝ)..((n + M : ℕ) : ℝ), t ^ (-q) := by
+      have hanti :
+          AntitoneOn (fun t : ℝ => t ^ (-q))
+            (Set.Icc (n : ℝ) ((n : ℝ) + M)) := by
+        exact (Real.antitoneOn_rpow_Ioi_of_exponent_nonpos (by linarith : -q ≤ 0)).mono
+          (by
+            intro y hy
+            exact lt_of_lt_of_le hn_pos_real hy.1)
+      convert
+        (AntitoneOn.sum_le_integral (x₀ := (n : ℝ)) (a := M) hanti) using 1
+      · refine Finset.sum_congr rfl fun r _ => ?_
+        congr 1
+        norm_num [Nat.cast_add, Nat.cast_one, add_comm, add_left_comm, add_assoc]
+      · congr 1
+        norm_num [Nat.cast_add, add_comm, add_left_comm, add_assoc]
+    calc
+      (∑ r ∈ Finset.range M, (((n + r.succ : ℕ) : ℝ) ^ (-q))) +
+          (((n + 0 : ℕ) : ℝ) ^ (-q)) ≤
+        (n : ℝ) ^ (-q) +
+          ∫ t in (n : ℝ)..((n + M : ℕ) : ℝ), t ^ (-q) := by
+          have hfirst_eq : (((n + 0 : ℕ) : ℝ) ^ (-q)) = (n : ℝ) ^ (-q) := by
+            simp
+          simpa [hfirst_eq, add_comm, add_left_comm, add_assoc] using
+            add_le_add (le_of_eq hfirst_eq) htail
+      _ ≤ (n : ℝ) ^ (1 - q) + (q - 1)⁻¹ * (n : ℝ) ^ (1 - q) := by
+          have hfirst : (n : ℝ) ^ (-q) ≤ (n : ℝ) ^ (1 - q) := by
+            have hbase : 1 ≤ (n : ℝ) := by exact_mod_cast hn
+            exact Real.rpow_le_rpow_of_exponent_le hbase (by linarith : -q ≤ 1 - q)
+          exact add_le_add hfirst (hfinite_integral_bound M)
+      _ = (1 + (q - 1)⁻¹) * (n : ℝ) ^ (1 - q) := by ring
+
+/--
+Durrett 2019, Theorem 2.5.12 real-analysis support: an `Ico` version of the
+shifted tail estimate.
+-/
+theorem durrett2019_theorem_2_5_12_rpow_tail_Ico_sum_le_explicit
+    {q : ℝ} (hq : 1 < q) {n M : ℕ} (hn : 1 ≤ n) :
+    (∑ m ∈ Finset.Ico n M, ((m : ℝ) ^ (-q))) ≤
+      (1 + (q - 1)⁻¹) * (n : ℝ) ^ (1 - q) := by
+  by_cases hM : n ≤ M
+  · rw [← Nat.sub_add_cancel hM]
+    simpa [zero_add, Nat.Ico_zero_eq_range] using
+      (show
+        (∑ m ∈ Finset.Ico (0 + n) ((M - n) + n), ((m : ℝ) ^ (-q))) ≤
+          (1 + (q - 1)⁻¹) * (n : ℝ) ^ (1 - q) by
+        rw [← Finset.sum_Ico_add (fun m : ℕ => ((m : ℝ) ^ (-q))) 0 (M - n) n]
+        simpa [Nat.Ico_zero_eq_range] using
+          durrett2019_theorem_2_5_12_rpow_shifted_tail_sum_le_explicit hq hn)
+  · have hle : M ≤ n := le_of_not_ge hM
+    rw [Finset.Ico_eq_empty_of_le hle]
+    have hqpos : 0 < q - 1 := sub_pos.2 hq
+    exact mul_nonneg
+      (add_nonneg zero_le_one (inv_nonneg.2 hqpos.le))
+      (Real.rpow_nonneg (by positivity) _)
+
+/--
+Durrett 2019, Theorem 2.5.12 real-analysis support: finite partial sums of
+the threshold indicator reindex exactly as an `Ico` tail beginning at
+`ceil a`.
+-/
+theorem durrett2019_theorem_2_5_12_rpow_indicator_range_sum_eq_tail_Ico
+    {a q : ℝ} (ha_pos : 0 < a) (N : ℕ) :
+    (∑ k ∈ Finset.range N,
+      Set.indicator
+        {j : ℕ | a ≤ (j : ℝ) + 1}
+        (fun j : ℕ => ((j : ℝ) + 1) ^ (-q)) k) =
+      ∑ m ∈ Finset.Ico (Nat.ceil a) (N + 1), ((m : ℝ) ^ (-q)) := by
+  classical
+  let n : ℕ := Nat.ceil a
+  have hn : 1 ≤ n := by
+    rw [Nat.one_le_ceil_iff]
+    exact ha_pos
+  have hfilter :
+      (∑ k ∈ Finset.range N,
+        Set.indicator
+          {j : ℕ | a ≤ (j : ℝ) + 1}
+          (fun j : ℕ => ((j : ℝ) + 1) ^ (-q)) k) =
+        ∑ k ∈ (Finset.range N).filter
+            (fun k : ℕ => a ≤ (k : ℝ) + 1),
+          ((k : ℝ) + 1) ^ (-q) := by
+    rw [Finset.sum_filter]
+    refine Finset.sum_congr rfl fun k _hk => ?_
+    by_cases hmem : k ∈ {j : ℕ | a ≤ (j : ℝ) + 1}
+    · rw [Set.indicator_of_mem hmem]
+      have hscalar : a ≤ (k : ℝ) + 1 := hmem
+      simp [hscalar]
+    · rw [Set.indicator_of_notMem hmem]
+      have hscalar : ¬ a ≤ (k : ℝ) + 1 := hmem
+      simp [hscalar]
+  rw [hfilter]
+  change
+    (∑ k ∈ (Finset.range N).filter
+        (fun k : ℕ => a ≤ (k : ℝ) + 1),
+      ((k : ℝ) + 1) ^ (-q)) =
+      ∑ m ∈ Finset.Ico n (N + 1), ((m : ℝ) ^ (-q))
+  refine Finset.sum_bij (fun k _ => k + 1) ?_ ?_ ?_ ?_
+  · intro k hk
+    rw [Finset.mem_Ico]
+    rw [Finset.mem_filter] at hk
+    constructor
+    · exact Nat.ceil_le.mpr (by simpa [Nat.cast_add, Nat.cast_one] using hk.2)
+    · exact Nat.succ_lt_succ (Finset.mem_range.mp hk.1)
+  · intro k₁ _hk₁ k₂ _hk₂ h
+    change k₁ + 1 = k₂ + 1 at h
+    omega
+  · intro m hm
+    rw [Finset.mem_Ico] at hm
+    have hm_pos : 1 ≤ m := hn.trans hm.1
+    refine ⟨m - 1, ?_, ?_⟩
+    · rw [Finset.mem_filter]
+      constructor
+      · exact Finset.mem_range.mpr (by omega)
+      · have ha_le_n : a ≤ (n : ℝ) := by exact Nat.le_ceil a
+        have hn_le_m : (n : ℝ) ≤ (m : ℝ) := by exact_mod_cast hm.1
+        have ha_le_m : a ≤ (m : ℝ) := ha_le_n.trans hn_le_m
+        have hsucc : m - 1 + 1 = m := by omega
+        have hcast : (m : ℝ) = ((m - 1 : ℕ) : ℝ) + 1 := by
+          rw [← hsucc]
+          norm_num [Nat.cast_add, Nat.cast_one]
+        simpa [hcast] using ha_le_m
+    · change m - 1 + 1 = m
+      omega
+  · intro k _hk
+    norm_num [Nat.cast_add, Nat.cast_one]
+
+/--
+Durrett 2019, Theorem 2.5.12 real-analysis support: infinite threshold-tail
+indicator bound for a summable p-series exponent `q > 1`.
+-/
+theorem durrett2019_theorem_2_5_12_rpow_indicator_tsum_le_explicit
+    {a q : ℝ} (ha_pos : 0 < a) (hq : 1 < q) :
+    (∑' k : ℕ,
+      Set.indicator
+        {j : ℕ | a ≤ (j : ℝ) + 1}
+        (fun j : ℕ => ((j : ℝ) + 1) ^ (-q)) k) ≤
+      (1 + (q - 1)⁻¹) * a ^ (1 - q) := by
+  have hn : 1 ≤ Nat.ceil a := by
+    rw [Nat.one_le_ceil_iff]
+    exact ha_pos
+  refine Real.tsum_le_of_sum_range_le ?nonneg ?hpartial
+  · intro k
+    by_cases hk : k ∈ {j : ℕ | a ≤ (j : ℝ) + 1}
+    · rw [Set.indicator_of_mem hk]
+      exact Real.rpow_nonneg (by positivity : 0 ≤ (k : ℝ) + 1) (-q)
+    · rw [Set.indicator_of_notMem hk]
+  · intro N
+    calc
+      (∑ k ∈ Finset.range N,
+        Set.indicator
+          {j : ℕ | a ≤ (j : ℝ) + 1}
+          (fun j : ℕ => ((j : ℝ) + 1) ^ (-q)) k) =
+          ∑ m ∈ Finset.Ico (Nat.ceil a) (N + 1), ((m : ℝ) ^ (-q)) :=
+            durrett2019_theorem_2_5_12_rpow_indicator_range_sum_eq_tail_Ico
+              (a := a) (q := q) ha_pos N
+      _ ≤ (1 + (q - 1)⁻¹) * ((Nat.ceil a : ℕ) : ℝ) ^ (1 - q) :=
+          durrett2019_theorem_2_5_12_rpow_tail_Ico_sum_le_explicit hq hn
+      _ ≤ (1 + (q - 1)⁻¹) * a ^ (1 - q) := by
+          have hqpos : 0 ≤ q - 1 := sub_nonneg.2 hq.le
+          have hconst_nonneg : 0 ≤ 1 + (q - 1)⁻¹ :=
+            add_nonneg zero_le_one (inv_nonneg.2 hqpos)
+          have hceil_ge : a ≤ ((Nat.ceil a : ℕ) : ℝ) := Nat.le_ceil a
+          have hexp_nonpos : 1 - q ≤ 0 := by linarith
+          have hpow_le :
+              ((Nat.ceil a : ℕ) : ℝ) ^ (1 - q) ≤ a ^ (1 - q) :=
+            Real.rpow_le_rpow_of_nonpos ha_pos hceil_ge hexp_nonpos
+          exact mul_le_mul_of_nonneg_left hpow_le hconst_nonneg
+
+/--
+Durrett 2019, Theorem 2.5.12 scalar truncated-square unscaled p-series
+indicator tail estimate.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedSq_unscaled_rpow_indicator_tsum_le_explicit
+    {p x : ℝ} (hp_pos : 0 < p) (hp_lt_two : p < 2) (hx_ne_zero : x ≠ 0) :
+    (∑' k : ℕ,
+      Set.indicator
+        {j : ℕ | |x| ^ p ≤ (((j + 1 : ℕ) : ℝ))}
+        (fun j : ℕ => (((j + 1 : ℕ) : ℝ) ^ (-(2 / p)))) k) ≤
+      (1 + (2 / p - 1)⁻¹) * |x| ^ (p - 2) := by
+  have hx_abs_pos : 0 < |x| := abs_pos.mpr hx_ne_zero
+  have ha_pos : 0 < |x| ^ p := Real.rpow_pos_of_pos hx_abs_pos p
+  have hq : 1 < 2 / p := by
+    rw [one_lt_div hp_pos]
+    linarith
+  have hpow_eq : (|x| ^ p) ^ (1 - 2 / p) = |x| ^ (p - 2) := by
+    calc
+      (|x| ^ p) ^ (1 - 2 / p) = |x| ^ (p * (1 - 2 / p)) := by
+        rw [Real.rpow_mul (le_of_lt hx_abs_pos)]
+      _ = |x| ^ (p - 2) := by
+        congr 1
+        field_simp [hp_pos.ne']
+  simpa [Nat.cast_add, Nat.cast_one, hpow_eq] using
+    durrett2019_theorem_2_5_12_rpow_indicator_tsum_le_explicit
+      (a := |x| ^ p) (q := 2 / p) ha_pos hq
+
+/--
 Durrett 2019, Theorem 2.5.12 scalar truncated-square bound consumer from an
 unscaled p-series tail estimate.
 -/
@@ -9593,6 +9835,20 @@ theorem durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_unscaled_rpow_in
   exact
     durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_rpow_indicator
       (p := p) (C := C) (x := x) hp_pos hscaled_bound
+
+/--
+Durrett 2019, Theorem 2.5.12 truncated-square scalar estimate with an
+explicit constant from the integral comparison tail.
+-/
+theorem durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_explicit_rpow_bound
+    {p x : ℝ} (hp_pos : 0 < p) (hp_lt_two : p < 2) (hx_ne_zero : x ≠ 0) :
+    (∑' k : ℕ, durrett2019_theorem_2_5_12_truncatedSqKernel p x k) ≤
+      (1 + (2 / p - 1)⁻¹) * |x| ^ p := by
+  exact
+    durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_unscaled_rpow_indicator
+      (p := p) (C := 1 + (2 / p - 1)⁻¹) (x := x) hp_pos hx_ne_zero
+      (durrett2019_theorem_2_5_12_truncatedSq_unscaled_rpow_indicator_tsum_le_explicit
+        (p := p) (x := x) hp_pos hp_lt_two hx_ne_zero)
 
 /--
 Durrett 2019, Theorem 2.5.12 scalar tail-first-moment kernel is eventually

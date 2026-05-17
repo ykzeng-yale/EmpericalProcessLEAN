@@ -32,19 +32,18 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V435` in
+Route from `Live In-Thread Goal Prompt V436` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
-V435 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
-`1 < p < 2`.  In addition to the V421-V434 endpoint, Tonelli/Fubini,
+V436 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
+`1 < p < 2`.  In addition to the V421-V435 endpoint, Tonelli/Fubini,
 scalar-kernel, scalar-summability, canonical threshold, standard rpow,
-finite-prefix, unscaled reducers, and corrected small-`x` split, the
-tail-first finite-prefix p-series estimate is now proved by Mathlib
-sum-integral comparison, evaluated, inserted at `ceil(x^p)`, and packaged as
-a nonnegative-domain scalar kernel bound.  The truncated-square branch
-remains the unscaled indicator tail estimate.  New compiled anchors through
-V435:
+finite-prefix, unscaled reducers, corrected small-`x` split, and explicit
+tail-first integral-comparison bound, the truncated-square branch now has the
+finite shifted tail estimate, `ceil(|x|^p)` indicator reindex, unscaled
+indicator `tsum` estimate, and explicit truncated-square kernel bound.  New
+compiled anchors through V436:
 `durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
@@ -70,6 +69,13 @@ and
 `durrett2019_theorem_2_5_12_rpow_range_unscaled_bound_ge_one`,
 `durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_explicit_rpow_bound`, and
 `durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_explicit_rpow_bound_nonneg`,
+`durrett2019_theorem_2_5_12_rpow_shifted_tail_sum_le_explicit`,
+`durrett2019_theorem_2_5_12_rpow_tail_Ico_sum_le_explicit`,
+`durrett2019_theorem_2_5_12_rpow_indicator_range_sum_eq_tail_Ico`,
+`durrett2019_theorem_2_5_12_rpow_indicator_tsum_le_explicit`,
+`durrett2019_theorem_2_5_12_truncatedSq_unscaled_rpow_indicator_tsum_le_explicit`,
+and
+`durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_explicit_rpow_bound`,
 `durrett2019_theorem_2_5_12_truncatedMean_abs_scaled_summable_of_base_tail_scaled_summable`,
 and
 `durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_base_tail_scaled_summable`,
@@ -124,9 +130,9 @@ and
 `durrett2019_theorem_2_5_12_truncatedSqKernel_tsum_le_of_unscaled_rpow_indicator`,
 `durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_zero_of_rpow_le_one`, and
 `durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscaled_bound_ge_one`.
-The current blocker is now only ordinary real p-series/integral comparison for
-the large-branch unscaled prefix estimate and the unscaled indicator tail
-estimate.
+The current blocker is now source composition: push these two explicit scalar
+kernel estimates through the existing ENNReal/lintegral/base summability
+wrappers, then package the finite-`p` `1 < p < 2` endpoint.
 
 Verified route history below is provenance, not live prompt text.  V425 added
 the truncated-mean Kronecker layer reducing normalized mean convergence to
