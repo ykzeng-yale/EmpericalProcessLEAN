@@ -203,12 +203,20 @@ This dashboard tracks the Chewi optimization formalization lane for
   concrete value-minimizer selector to the V34/V33 selector interfaces.  The
   finite-row central-path value now has the exact verified gradient
   `t • aObj + barrierAffineRangeGrad ... positiveOrthantNegLogGrad center`.
+  The V36 packet adds reusable local/interior Fermat bridges in
+  `Minimizer.lean`, plus
+  `Chewi1316RangeCentralPathValueLocalMinimizerSelector`,
+  `Chewi1316RangeCentralPathValueDomainMinimizerSelector`, and direct bridges
+  from local/domain minimizers of the concrete central-path value to the V33
+  central-path selector.  This removes the unrealistic need for a global
+  `Set.univ` minimizer when the barrier proof only supplies interior constrained
+  optimality.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: prove a
-  concrete value-minimizer selector from compact/closed minimizer existence and
-  interior barrier optimality, reusing mathlib `IsCompact.exists_isMinOn`/Fermat APIs
-  where applicable.
+  `hxseq_mem` or per-step decrement premise.  Next proof target: prove the
+  feasible positive slack range is a neighborhood of each feasible point, then
+  use that interior certificate with compact/closed minimizer existence to build
+  the domain-minimizer selector.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge

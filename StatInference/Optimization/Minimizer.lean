@@ -14,7 +14,8 @@ gradient-zero characterization.
 namespace StatInference
 namespace Optimization
 
-open Set
+open Set Filter
+open scoped Topology
 open scoped InnerProductSpace
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -221,6 +222,31 @@ theorem gradient_eq_zero_of_isMinOn_univ_hasGradientAt
   have hdual : (InnerProductSpace.toDual ℝ E) grad = 0 := by
     simpa using hlocal.hasFDerivAt_eq_zero hgrad.hasFDerivAt
   exact (InnerProductSpace.toDual ℝ E).injective (by simpa using hdual)
+
+/--
+Local first-order necessary condition: a local minimizer with a mathlib
+gradient has zero gradient.
+-/
+theorem gradient_eq_zero_of_isLocalMin_hasGradientAt
+    {f : E -> ℝ} {grad x : E}
+    (hmin : IsLocalMin f x)
+    (hgrad : HasGradientAt f grad x) :
+    grad = 0 := by
+  have hdual : (InnerProductSpace.toDual ℝ E) grad = 0 := by
+    simpa using hmin.hasFDerivAt_eq_zero hgrad.hasFDerivAt
+  exact (InnerProductSpace.toDual ℝ E).injective (by simpa using hdual)
+
+/--
+Interior constrained first-order necessary condition: a minimizer over a set
+whose set is a neighborhood of the point has zero mathlib gradient.
+-/
+theorem gradient_eq_zero_of_isMinOn_hasGradientAt_of_mem_nhds
+    {C : Set E} {f : E -> ℝ} {grad x : E}
+    (hmin : IsMinOn f C x)
+    (hC : C ∈ 𝓝 x)
+    (hgrad : HasGradientAt f grad x) :
+    grad = 0 :=
+  gradient_eq_zero_of_isLocalMin_hasGradientAt (hmin.isLocalMin hC) hgrad
 
 /--
 Corollary 1.11 characterization on the whole space, using the supplied

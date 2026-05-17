@@ -159,9 +159,15 @@ bridge reuses the local Fermat theorem
 central-selector bridges.  Search-first reuse for V35: mathlib linear-map
 derivatives, `HasFDerivAt.const_smul`/`add`/`comp`, `hasGradientAt_iff_hasFDerivAt`,
 and `ContinuousLinearMap.adjoint_inner_left`, plus the V34 positive-orthant
-barrier gradient.  Next finite-row work should obtain the value-minimizer
-selector from compact/closed minimizer existence and interior barrier
-optimality.
+barrier gradient.  The V36 packet adds the local Fermat bridge
+`gradient_eq_zero_of_isLocalMin_hasGradientAt`, the interior constrained bridge
+`gradient_eq_zero_of_isMinOn_hasGradientAt_of_mem_nhds`, local/domain
+central-path value minimizer selectors, and direct bridges from those selectors
+to `Chewi1316RangeCentralPathSelector`.  Search-first reuse for V36: mathlib
+`IsMinOn.isLocalMin`, `IsLocalMinOn.isLocalMin`, and
+`IsLocalMin.hasFDerivAt_eq_zero`.  Next finite-row work should prove the
+positive slack range is a neighborhood of each feasible point and then combine
+that interior certificate with compact/closed minimizer existence.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

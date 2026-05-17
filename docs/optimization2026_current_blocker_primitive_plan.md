@@ -431,13 +431,34 @@ Search-first result: the value-gradient proof reuses mathlib
 existence problem is now exactly a value-minimizer existence certificate for
 `chewi1316RangeCentralPathValue`.
 
-Next theorem-sized target: prove a concrete
-`Chewi1316RangeCentralPathValueMinimizerSelector` from compact/closed
-feasible-range minimizer existence and interior barrier optimality.  Search
-mathlib first for `IsCompact.exists_isMinOn`, `ContinuousOn.exists_isMinOn'`,
-open-domain/interior minimizer/Fermat helpers, lower semicontinuity and coercion
-lemmas for submodules; search local code for compact feasible-range wrappers,
-bounded/closed polytope endpoints, and barrierAffineRangeSet continuity lemmas.
+Current V36 packet weakens the central-path existence handoff to the
+source-realistic local/interior optimum surface.  New compiled declarations:
+`gradient_eq_zero_of_isLocalMin_hasGradientAt`,
+`gradient_eq_zero_of_isMinOn_hasGradientAt_of_mem_nhds`,
+`Chewi1316RangeCentralPathValueLocalMinimizerSelector`,
+`Chewi1316RangeCentralPathValueDomainMinimizerSelector`,
+`chewi1316_rangeCentralPathValueLocalMinimizerSelector_of_valueMinimizerSelector`,
+`chewi1316_rangeCentralPathValueLocalMinimizerSelector_of_domainMinimizerSelector`,
+`chewi1316_rangeCentralPathSelector_of_valueLocalMinimizerSelector`, and
+`chewi1316_rangeCentralPathSelector_of_valueDomainMinimizerSelector`.
+Search-first result: mathlib already has `IsMinOn.localize`,
+`IsLocalMinOn.isLocalMin`, `IsMinOn.isLocalMin`, and
+`IsLocalMin.hasFDerivAt_eq_zero`; V36 reuses those rather than inventing a new
+Fermat calculus proof.  The remaining selector existence problem is now exactly
+to produce a minimizer of `chewi1316RangeCentralPathValue` on the feasible
+positive slack range, together with the neighborhood/interior certificate
+`barrierAffineRangeSet ... ∈ 𝓝 center`.
+
+Next theorem-sized target: prove the feasible-domain neighborhood/interior
+certificate for points in `barrierAffineRangeSet (polytopeSlackCLM aRow)
+bSlack (positiveOrthant (d := m))`, then combine it with compact/closed
+minimizer existence to construct a
+`Chewi1316RangeCentralPathValueDomainMinimizerSelector`.  Search mathlib first
+for `IsOpen.mem_nhds`, `isOpen_pi_iff`, finite coordinate open-set lemmas,
+`ContinuousLinearMap.continuous`, preimage/add translation openness, and
+`IsCompact.exists_isMinOn`/`ContinuousOn.exists_isMinOn'`; search local code for
+positive-orthant openness, compact feasible-range wrappers, bounded/closed
+polytope endpoints, and barrierAffineRangeSet continuity lemmas.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
