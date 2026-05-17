@@ -20,21 +20,22 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    instructions to replay.
 
 Current frontier: Theorem 5.41 now has a compiled positive-sample common-core
-continuous-linear right-inverse affine mean-zero observation-law offset source. It states the limit theorem for the explicit estimator
+continuous-linear two-sided inverse affine mean-zero observation-law offset source. It states the limit theorem for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine display
-and a common-core continuous linear right inverse, derives coordinate
+and a common-core continuous linear two-sided inverse, derives coordinate
 measurability and continuity of that inverse from mathlib's continuous linear
 map API, derives coordinate measurability of the explicit inverse estimator
 from observation-offset measurability, derives product-space offset integrability, independence,
 identical distribution, and positive-sample offset-average convergence from
 observation-law coordinate integrability, derives target convergence and
 consistency from that average convergence and local inverse stability derived
-from ordinary continuity at the limiting target, derives the right-inverse
-value at the limiting target from common-core injectivity, derives the
-population common-core equation from the affine display and the coordinate
-mean-zero estimating equation, packages the finite equation as exact-root-set
-membership, prepends `theta0` at sample size zero, feeds the
+from ordinary continuity at the limiting target, derives common-core
+injectivity from the left-inverse law, derives the right-inverse value at the
+limiting target from the inverse laws, derives the population common-core
+equation from the affine display and the coordinate mean-zero estimating
+equation, packages the finite equation as exact-root-set membership, prepends
+`theta0` at sample size zero, feeds the
 existing exact-root-set source endpoint, and shifts the distributional
 conclusion back along `Nat.succ`. This keeps the live route focused on actual
 positive sample sizes instead of forcing sample-size-zero inverse, uniqueness,
@@ -42,19 +43,24 @@ offset-average convergence, product-space offset-iid fields, raw local inverse
 stability, common-core target convergence, estimator consistency,
 estimator-coordinate measurability, direct root-set-membership, or external
 finite-sum-zero hypotheses, and it no longer asks for inverse coordinate
-measurability, a raw population common-core equation, or a raw right-inverse
-value at the limiting target.
+measurability, raw common-core injectivity, a raw population common-core
+equation, or a raw right-inverse value at the limiting target.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearTwoSidedInverseAffineMeanZeroOffsetSource`.
 
 The newest wrapper adds
+`vaart1998_commonObservationCore_injective_of_leftInverse`
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearTwoSidedInverseAffineMeanZeroOffsetSource`.
+The next proof layer should derive the two inverse laws for the continuous
+linear inverse from a concrete linear/common-core model or textbook estimating
+equation.
+
+The previous wrapper adds
 `vaart1998_commonObservationCore_theta0_eq_negative_offsetMean_of_commonAffine_meanZero`
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseAffineMeanZeroOffsetSource`.
-The next proof layer should derive common-core injectivity and the continuous
-linear inverse from a concrete linear/common-core model or a textbook
-estimating equation.
 
 The previous wrapper adds
 `vaart1998_commonObservationCoreRightInverse_coordinate_measurable_of_continuousLinear`,
@@ -110,10 +116,10 @@ The previous wrapper adds
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseSource`.
 
 The previous wrapper adds
-`vaart1998_theorem_5_41_positiveSample_sumRootSource`.  The next proof layer
-should derive the positive finite-sum zero equation from a common-core affine
-display, the nonzero scaled-core inverse lemma when an inverse-defined
-estimator is used, or a concrete model's algebraic estimating equation.
+`vaart1998_theorem_5_41_positiveSample_sumRootSource`.  The finite-sum zero
+equation has since been discharged by the common-core affine route and should
+not be revisited unless a concrete model proof needs a small local algebra
+lemma from that layer.
 
 The previous wrapper adds
 `vaart1998_tendstoInMeasure_zero_prepend` and

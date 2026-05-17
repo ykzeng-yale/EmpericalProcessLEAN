@@ -48305,6 +48305,27 @@ theorem
   exact eq_neg_of_add_eq_zero_left hsum_zero
 
 /--
+A left inverse for the common observation core is a direct source of
+injectivity.  In the linear model route this left inverse is usually the same
+continuous linear inverse used to define the explicit estimator.
+-/
+theorem vaart1998_commonObservationCore_injective_of_leftInverse
+    {Coord Param : Type*}
+    (commonObservationCore : (Param -> ℝ) -> Coord -> ℝ)
+    (commonObservationCoreLeftInverse : (Coord -> ℝ) -> Param -> ℝ)
+    (hCommonObservationCore_leftInverse : ∀ theta : Param -> ℝ,
+      commonObservationCoreLeftInverse (commonObservationCore theta) =
+        theta) :
+    Function.Injective commonObservationCore := by
+  intro theta eta htheta_eta
+  calc
+    theta = commonObservationCoreLeftInverse (commonObservationCore theta) :=
+      (hCommonObservationCore_leftInverse theta).symm
+    _ = commonObservationCoreLeftInverse (commonObservationCore eta) := by
+      rw [htheta_eta]
+    _ = eta := hCommonObservationCore_leftInverse eta
+
+/--
 van der Vaart 1998, Theorem 5.41, positive-sample common-core inverse
 continuous offset source endpoint.
 
@@ -49043,6 +49064,177 @@ theorem
       hObservationOffset_coordinate_meas hObservationOffset_integrable
       hCommonObservationCore_injective hCommonObservationCore_theta0
       hEnvelope_meas hAbsEnvelope_integrable
+      hObservationSecondDerivative_measurable hObservationSecondDerivative_bound
+      hContDiffObservationEstimatingMap_univ
+      hObservationDerivativeAt_eq_fderiv_observationEstimatingMap
+      hContDiffObservationDerivativeAt_univ
+      hObservationSecondDerivative_eq_fderiv_observationDerivativeAt
+
+/--
+van der Vaart 1998, Theorem 5.41, positive-sample common-core continuous
+linear two-sided inverse affine mean-zero offset source endpoint.
+
+This wrapper derives common-core injectivity from the left-inverse law for the
+same continuous linear inverse that is used in the explicit estimator, then
+feeds the affine mean-zero endpoint.
+-/
+theorem
+    vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearTwoSidedInverseAffineMeanZeroOffsetSource
+    {Ω' Observation Coord Param : Type*} [Fintype Coord] [Fintype Param]
+    [DecidableEq Param]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace Observation]
+    [PseudoMetricSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)] [CompleteSpace (Coord -> ℝ)]
+    [MeasurableSpace (Param -> ℝ)] [SecondCountableTopology (Param -> ℝ)]
+    [BorelSpace (Param -> ℝ)] [OpensMeasurableSpace (Param -> ℝ)]
+    [CompleteSpace (Param -> ℝ)]
+    [MeasurableSub₂ (Param -> ℝ)] [MeasurableSMul₂ ℝ (Param -> ℝ)]
+    [PseudoMetricSpace (Coord × Param -> ℝ)]
+    [SecondCountableTopology (Coord × Param -> ℝ)]
+    [BorelSpace (Coord × Param -> ℝ)]
+    [OpensMeasurableSpace (Coord × Param -> ℝ)]
+    [CompleteSpace (Coord × Param -> ℝ)]
+    [SecondCountableTopology ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [OpensMeasurableSpace ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableAdd₂ ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableAdd₂ ((Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ
+      ((Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    (V : (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (Vinv : (Coord -> ℝ) →L[ℝ] (Param -> ℝ))
+    (observationEstimatingMap : Observation -> (Param -> ℝ) -> Coord -> ℝ)
+    (observationDerivativeAt :
+      Observation -> (Param -> ℝ) ->
+        (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (observationSecondDerivative :
+      Observation -> (Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (envelope : Observation -> ℝ)
+    {observationLaw : Measure Observation} [IsProbabilityMeasure observationLaw]
+    {theta0 : Param -> ℝ}
+    (commonObservationCore : (Param -> ℝ) -> Coord -> ℝ)
+    (commonObservationCoreRightInverseLinear :
+      (Coord -> ℝ) →L[ℝ] (Param -> ℝ))
+    (observationOffset : Observation -> Coord -> ℝ)
+    {Z : Ω' -> Coord -> ℝ}
+    (hLeftInverse : ∀ x : Param -> ℝ, Vinv (V x) = x)
+    (hObservationEstimatingMapTheta0_coordinate_meas : ∀ coordinate : Coord,
+      Measurable
+        (fun observation : Observation =>
+          observationEstimatingMap observation theta0 coordinate))
+    (hObservationEstimatingMapTheta0_coordinate_memLp : ∀ coordinate : Coord,
+      MemLp
+        (fun observation : Observation =>
+          observationEstimatingMap observation theta0 coordinate)
+        2 observationLaw)
+    (hObservationEstimatingMapTheta0_coordinate_mean_zero :
+      ∀ coordinate : Coord,
+        (∫ observation,
+          observationEstimatingMap observation theta0 coordinate
+            ∂observationLaw) = 0)
+    (hObservationDerivativeAt_joint_measurable_source :
+      Measurable
+        (fun p : Observation × (Param -> ℝ) =>
+          observationDerivativeAt p.1 p.2))
+    (hObservationDerivativeAtTheta0_operator_integrable :
+      Integrable
+        (fun observation : Observation =>
+          observationDerivativeAt observation theta0)
+        observationLaw)
+    (hV_observationDerivativeAtTheta0_operator_mean :
+      (∫ observation,
+        observationDerivativeAt observation theta0 ∂observationLaw) = V)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_mean_zero : (∫ ω, Z ω ∂Q) = 0)
+    (Gamma : Coord -> Coord -> ℝ)
+    (hZ_centered_product : ∀ i j : Coord,
+      (∫ ω, Z ω i * Z ω j ∂Q) = Gamma i j)
+    (hObservationEstimatingMapTheta0_centered_product : ∀ i j : Coord,
+      (∫ observation,
+        observationEstimatingMap observation theta0 i *
+          observationEstimatingMap observation theta0 j ∂observationLaw) =
+        Gamma i j)
+    (hObservationEstimatingMap_commonAffine : ∀ observation : Observation,
+      ∀ theta : Param -> ℝ,
+        observationEstimatingMap observation theta =
+          commonObservationCore theta + observationOffset observation)
+    (hCommonObservationCore_rightInverse : ∀ y : Coord -> ℝ,
+      commonObservationCore (commonObservationCoreRightInverseLinear y) = y)
+    (hCommonObservationCore_leftInverse : ∀ theta : Param -> ℝ,
+      commonObservationCoreRightInverseLinear
+          (commonObservationCore theta) =
+        theta)
+    (hObservationOffset_coordinate_meas :
+      ∀ coordinate : Coord,
+        Measurable
+          (fun observation : Observation =>
+            observationOffset observation coordinate))
+    (hObservationOffset_integrable :
+      ∀ coordinate : Coord,
+        Integrable
+          (fun observation : Observation =>
+            observationOffset observation coordinate)
+          observationLaw)
+    (hEnvelope_meas : Measurable envelope)
+    (hAbsEnvelope_integrable : Integrable (fun x => |envelope x|) observationLaw)
+    (hObservationSecondDerivative_measurable :
+      Measurable observationSecondDerivative)
+    (hObservationSecondDerivative_bound : ∀ x,
+      ‖observationSecondDerivative x‖ ≤ |envelope x|)
+    (hContDiffObservationEstimatingMap_univ : ∀ observation : Observation,
+      ContDiffOn ℝ 1 (observationEstimatingMap observation) Set.univ)
+    (hObservationDerivativeAt_eq_fderiv_observationEstimatingMap :
+      ∀ observation : Observation, ∀ theta : Param -> ℝ,
+        fderiv ℝ (observationEstimatingMap observation) theta =
+          observationDerivativeAt observation theta)
+    (hContDiffObservationDerivativeAt_univ : ∀ observation : Observation,
+      ContDiffOn ℝ 1 (observationDerivativeAt observation) Set.univ)
+    (hObservationSecondDerivative_eq_fderiv_observationDerivativeAt :
+      ∀ observation : Observation, ∀ theta : Param -> ℝ,
+        fderiv ℝ (observationDerivativeAt observation) theta =
+          observationSecondDerivative observation) :
+    TendstoInDistribution
+      (fun (n : ℕ) sample =>
+        √((n + 1 : ℕ) : ℝ) •
+          (vaart1998PositiveCommonObservationCoreInverseEstimator
+              (fun y : Coord -> ℝ =>
+                commonObservationCoreRightInverseLinear y)
+              observationOffset n sample -
+            theta0))
+      atTop
+      (fun ω => (-Vinv : (Coord -> ℝ) →L[ℝ] (Param -> ℝ)) (Z ω))
+      (fun _ => Measure.infinitePi (fun _ : ℕ => observationLaw)) Q := by
+  have hCommonObservationCore_injective :
+      Function.Injective commonObservationCore :=
+    vaart1998_commonObservationCore_injective_of_leftInverse
+      commonObservationCore
+      (fun y : Coord -> ℝ => commonObservationCoreRightInverseLinear y)
+      hCommonObservationCore_leftInverse
+  exact
+    vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseAffineMeanZeroOffsetSource
+      (Q := Q) (V := V) (Vinv := Vinv)
+      (observationEstimatingMap := observationEstimatingMap)
+      (observationDerivativeAt := observationDerivativeAt)
+      (observationSecondDerivative := observationSecondDerivative)
+      (envelope := envelope) (observationLaw := observationLaw)
+      (theta0 := theta0)
+      (commonObservationCore := commonObservationCore)
+      (commonObservationCoreRightInverseLinear :=
+        commonObservationCoreRightInverseLinear)
+      (observationOffset := observationOffset) (Z := Z)
+      hLeftInverse hObservationEstimatingMapTheta0_coordinate_meas
+      hObservationEstimatingMapTheta0_coordinate_memLp
+      hObservationEstimatingMapTheta0_coordinate_mean_zero
+      hObservationDerivativeAt_joint_measurable_source
+      hObservationDerivativeAtTheta0_operator_integrable
+      hV_observationDerivativeAtTheta0_operator_mean hZ_gaussian
+      hZ_mean_zero Gamma hZ_centered_product
+      hObservationEstimatingMapTheta0_centered_product
+      hObservationEstimatingMap_commonAffine hCommonObservationCore_rightInverse
+      hObservationOffset_coordinate_meas hObservationOffset_integrable
+      hCommonObservationCore_injective hEnvelope_meas hAbsEnvelope_integrable
       hObservationSecondDerivative_measurable hObservationSecondDerivative_bound
       hContDiffObservationEstimatingMap_univ
       hObservationDerivativeAt_eq_fderiv_observationEstimatingMap

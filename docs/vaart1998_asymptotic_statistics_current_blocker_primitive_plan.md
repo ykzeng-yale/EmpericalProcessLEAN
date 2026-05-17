@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearTwoSidedInverseAffineMeanZeroOffsetSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -30,10 +30,12 @@ linear right inverse
 `commonObservationCoreRightInverseLinear :
   (Coord -> ℝ) →L[ℝ] (Param -> ℝ)`
 with
-`commonObservationCore (commonObservationCoreRightInverseLinear y) = y`, plus
-coordinate measurability of the observation offset. It derives the coordinate
-measurability and `ContinuousAt` fields for the inverse from the continuous
-linear map API. It assumes only observation-law integrability of each offset
+`commonObservationCore (commonObservationCoreRightInverseLinear y) = y` and
+`commonObservationCoreRightInverseLinear (commonObservationCore theta) =
+theta`, plus coordinate measurability of the observation offset. It derives
+the coordinate measurability and `ContinuousAt` fields for the inverse from
+the continuous linear map API, and derives common-core injectivity from the
+left-inverse law. It assumes only observation-law integrability of each offset
 coordinate, derives the product-space zero-coordinate integrability,
 pairwise independence, identical distribution, and positive-sample
 offset-average convergence from the canonical `Measure.infinitePi`
@@ -42,10 +44,9 @@ consistency, and coordinate measurability of the explicit inverse estimator.
 It derives the local `edist` inverse-stability field from ordinary
 continuity of the continuous linear inverse at the negative observation-law
 offset mean. The right-inverse value at that point is derived from
-`Function.Injective commonObservationCore`, the right-inverse law, and the
-population common-core equation. That population equation is itself derived
-from the affine display and the coordinate mean-zero estimating equation at
-`theta0`.
+the two inverse laws and the population common-core equation. That population
+equation is itself derived from the affine display and the coordinate
+mean-zero estimating equation at `theta0`.
 It proves the textbook finite estimating-equation identity internally,
 packages it as exact root-set membership, prepends `theta0` at sample size
 zero, applies the compiled exact-root-set Theorem 5.41 source endpoint, and
@@ -56,10 +57,18 @@ product-space offset integrability, offset independence, offset identical
 distribution, raw local inverse stability, common-core target convergence,
 estimator consistency, estimator coordinate measurability, root-set
 membership, finite-sum zero, inverse coordinate measurability, raw local
-inverse continuity, raw population common-core equation, or raw right-inverse
-value directly.
+inverse continuity, raw common-core injectivity, raw population common-core
+equation, or raw right-inverse value directly.
 
-The newest affine mean-zero packet adds
+The newest two-sided inverse packet adds
+`vaart1998_commonObservationCore_injective_of_leftInverse`
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearTwoSidedInverseAffineMeanZeroOffsetSource`.
+It removes the raw common-core injectivity assumption by deriving it from the
+left-inverse law for the same continuous linear inverse used in the explicit
+estimator.
+
+The previous affine mean-zero packet adds
 `vaart1998_commonObservationCore_theta0_eq_negative_offsetMean_of_commonAffine_meanZero`
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseAffineMeanZeroOffsetSource`.
@@ -158,9 +167,8 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: derive common-core injectivity from a concrete
-continuous-linear common-core model or from a left-inverse field, derive the
-continuous linear right inverse from an explicit linear inverse or
+Next aggressive target: derive the two inverse laws for the continuous linear
+inverse from an explicit linear inverse or
 matrix/nonsingularity source, derive offset coordinate integrability from a
 more concrete model source when available, or instantiate the endpoint on a
 concrete estimating equation from the textbook.
@@ -173,9 +181,10 @@ root-set membership, external finite-sum-zero assumptions, or estimator
 consistency/coordinate-measurability/common-core-target/offset-average,
 product-space offset-integrability, offset-independence, or offset
 identical-distribution, inverse coordinate-measurability,
-raw local inverse-stability, raw population common-core equation, or raw
-right-inverse value assumptions when the common-core continuous-linear
-affine mean-zero observation-law offset route is available.
+raw local inverse-stability, raw common-core injectivity, raw population
+common-core equation, or raw right-inverse value assumptions when the
+common-core continuous-linear two-sided inverse affine mean-zero
+observation-law offset route is available.
 
 The previous common-core packet adds
 `vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core
@@ -1662,8 +1671,8 @@ endpoint.
 
 Continuation recipe:
 
-1. Check `git status`, the Vaart diff, and the live hypotheses of the endpoint
-   and finite root-Taylor bridge above.
+1. Check `git status`, the Vaart diff, and the live hypotheses of the
+   positive-sample common-core continuous-linear two-sided inverse endpoint.
 2. If an unfinished local Vaart Lean diff exists, either finish and verify it
    immediately, or remove it from the packet before editing route docs.
 3. Choose exactly one source hypothesis feeding the endpoint and discharge it
@@ -1671,48 +1680,46 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Move one layer closer to a model-facing finite-dimensional statement:
-   continue from the derivative-transform measurability fixed-`theta0`
-   endpoint toward a concrete
-   model-specialized Theorem 5.41 instantiation, or package only a still-live
-   source field that the current endpoint explicitly exposes.
-2. Derivative or score source: only add a model-specific coordinate/matrix or
-   score representation if it removes a live hypothesis of the current
-   residual-source endpoint; do not rebuild completed score CLT, display weak
-   convergence, display tightness, residual convergence, or action-bound wrapper
-   stacks.  Do not replay the vector score-representation or vector score
-   common-law transfers, the derivative-table common-law transfer, or the
-   centered derivative-coordinate residual algebra, smooth/raw/scaled pointwise
-   Taylor transfer, the score-at-theta0 vector scaling transfer, or the
-   estimator-definition, raw-root, selected measurability, sampled derivative
-   matrix-action, sampled derivative basis-action, coordinate limit-mean
-   source, score-vector coordinate mean source, population `V` basis-action,
-   pointwise smoothness/source-set,
-   score-vector display, direct vector/table, coordinate-projection,
-   score-vector measurability, score-law vector moment, or derivative-law
-   vector integrability, limit-law mean, or limit-law covariance source
-   wrappers, Gaussian limit moment wrappers, score-law mean source wrappers,
-   score-vector sequence-law source wrappers, derivative-table sequence-law
-   source wrappers, score-law `L²` source wrappers, score-vector mean source
-   wrappers, limit-variable sample mean source wrappers, or finite-coordinate
-   limit covariance source wrappers, sampled derivative basis-action wrappers,
-   coordinate limit-mean wrappers, score-vector coordinate mean wrappers, or
-   law-side score second-moment wrappers, or law-side score coordinate-mean
-   wrappers, or law-side limit coordinate-mean wrappers, or law-side scalar
-   coordinate-covariance wrappers, derivative-law coordinate-integrability
-   wrappers, iid infinite-product sequence-law wrappers, or
-   observation-transform measurability/law/independence wrappers, or
-   observation-sequence-law marginal/independence wrappers, or random
-   observation-sequence measurability/law wrappers, or pushforward
-   transform-law wrappers, or observation-level transform moment/integrability
-   wrappers, observation derivative basis-action wrappers, or observation
-   score covariance wrappers, or pushed-forward Gaussian limit-law coordinate
-   mean wrappers, observation envelope-average wrappers, or observation
-   sample-path wrappers, observation transform-display wrappers, or observation
-   envelope-mean wrappers, sqrt-scale wrappers, scaled-estimator display
-   wrappers, full-domain smoothness/source-set wrappers, finite-sum root
-   wrappers, coordinate score moment wrappers, or derivative-transform vector
-   integrability wrappers.
+1. Derive the two inverse laws for the continuous linear inverse from a
+   concrete common-core model, explicit finite matrix inverse, nonsingularity
+   certificate, or textbook estimating-equation algebra.
+2. If the inverse laws are not immediately available, derive a live
+   observation-offset field for the same endpoint: coordinate measurability,
+   coordinate integrability, or the coordinate mean-zero equation at `theta0`.
+3. Instantiate the compiled endpoint for the first concrete textbook
+   Theorem 5.41 example that can provide the affine display, offset fields,
+   and two inverse laws.
+
+Do not replay the vector score-representation or vector score common-law
+transfers, derivative-table common-law transfer, centered
+derivative-coordinate residual algebra, smooth/raw/scaled pointwise Taylor
+transfer, score-at-theta0 vector scaling transfer, estimator-definition,
+raw-root, selected measurability, sampled derivative matrix-action, sampled
+derivative basis-action, coordinate limit-mean source, score-vector coordinate
+mean source, population `V` basis-action, pointwise smoothness/source-set,
+score-vector display, direct vector/table, coordinate-projection,
+score-vector measurability, score-law vector moment, derivative-law vector
+integrability, limit-law mean, limit-law covariance source, Gaussian limit
+moment wrappers, score-law mean source wrappers, score-vector sequence-law
+source wrappers, derivative-table sequence-law source wrappers, score-law
+`L²` source wrappers, score-vector mean source wrappers, limit-variable sample
+mean source wrappers, finite-coordinate limit covariance source wrappers,
+law-side score second-moment wrappers, law-side score coordinate-mean wrappers,
+law-side limit coordinate-mean wrappers, law-side scalar coordinate-covariance
+wrappers, derivative-law coordinate-integrability wrappers, iid
+infinite-product sequence-law wrappers, observation-transform
+measurability/law/independence wrappers, observation-sequence-law
+marginal/independence wrappers, random observation-sequence measurability/law
+wrappers, pushforward transform-law wrappers, observation-level transform
+moment/integrability wrappers, observation derivative basis-action wrappers,
+observation score covariance wrappers, pushed-forward Gaussian limit-law
+coordinate mean wrappers, observation envelope-average wrappers, observation
+sample-path wrappers, observation transform-display wrappers, observation
+envelope-mean wrappers, sqrt-scale wrappers, scaled-estimator display
+wrappers, full-domain smoothness/source-set wrappers, finite-sum root
+wrappers, coordinate score moment wrappers, or derivative-transform vector
+integrability wrappers unless a current proof directly uses one small local
+lemma from those layers.
 
 Operating rules:
 
@@ -2969,45 +2976,51 @@ compiling:
    `vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_empiricalAverage_finiteDerivativeActionBound_finiteCoordinateRootTaylor_scoreSummandRepresentation_commonVectorLawScoreCLT_estimatorSubMeas_rawRoot_envelopeTendsto_summandMeasurable_envelope`
    feeds that display into the finite Taylor-zero action-bound endpoint.
 
-Latest verified Vaart frontier before the next packet: the
-observation-level second-derivative definition source endpoint for Vaart
-Theorem 5.41.
+Latest verified Vaart frontier before the next packet:
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearTwoSidedInverseAffineMeanZeroOffsetSource`.
 
-The latest theorem-sized packet removes the separate `secondDerivative` kernel
-from the endpoint surface by instantiating it definitionally as
-`fun _ _ x => observationSecondDerivative x`. The live second-derivative
-Taylor identity is now stated directly against the observation-level map.
+The latest theorem-sized packet removes the raw common-core injectivity
+hypothesis by deriving injectivity from the left-inverse law for the same
+continuous linear inverse used to define the positive-sample explicit
+estimator. The live route now assumes the pointwise affine estimating-equation
+display, the two inverse laws for the continuous linear common-core inverse,
+coordinate measurability and coordinate integrability of the observation
+offset, and the coordinate mean-zero equation at `theta0`.
 
 The next aggressive packet should prove exactly one live source field for the
-current endpoint, following the priority order in the live `/goal` prompt.
-Move next only on a genuinely live source hypothesis: connect the
-derivative smoothness/Taylor, root, or observation-level second-derivative
-measurability/bound fields to a concrete model-specialized Theorem 5.41
-instantiation. Do not route back to fixed-`theta0` derivative joint
-measurability, direct second-derivative joint measurability, or abstract
-eventual envelope-domination fields, or to a separate `secondDerivative`
-kernel with pointwise-identification hypotheses.
-Do not repeat solved Chapter
-2-4 infrastructure, canonical, projected, common-vector, score-representation,
-derivative-bound, finite-derivative strong-law, action-bound, law-tail,
-display-congruence, display-convergence, display-weak-convergence,
-score-equation `O_P(1)`, Taylor-zero `O_P(1)`, absorbing-tightness,
-derivative absorbing-tightness, absorbing-source-endpoint, or
-absorbing-empirical-endpoint, absorbing-raw-Taylor-endpoint, or
-absorbing-coordinate-raw-endpoint, absorbing-coordinate-path-endpoint, or
-absorbing-estimating-map-path-endpoint, or absorbing-Frechet-path-endpoint
-or absorbing-Frechet-vector-Taylor-endpoint, or
-absorbing-vector-continuity-Taylor-endpoint, or absorbing-theta0-Frechet
-or absorbing-second-derivative-path, absorbing-regularity, or
+current endpoint. Priority order:
+
+1. Derive the two inverse laws for the continuous linear inverse from a
+   concrete linear/common-core model, matrix nonsingularity source, or
+   textbook finite-dimensional estimating equation.
+2. Derive observation-offset coordinate measurability and integrability from a
+   concrete score/estimating-map model.
+3. Instantiate the endpoint for the first source-shaped textbook example of
+   Theorem 5.41 that can reuse the compiled positive-sample route.
+
+Do not route back to the earlier second-derivative-kernel endpoint,
+fixed-`theta0` derivative joint measurability, direct second-derivative joint
+measurability, abstract eventual envelope-domination fields, or any solved
+Chapter 2-4 infrastructure unless the current proof directly depends on a
+small local API there. Do not repeat solved canonical, projected,
+common-vector, score-representation, derivative-bound, finite-derivative
+strong-law, action-bound, law-tail, display-congruence, display-convergence,
+display-weak-convergence, score-equation `O_P(1)`, Taylor-zero `O_P(1)`,
+absorbing-tightness, derivative absorbing-tightness,
+absorbing-source-endpoint, absorbing-empirical-endpoint,
+absorbing-raw-Taylor-endpoint, absorbing-coordinate-raw-endpoint,
+absorbing-coordinate-path-endpoint, absorbing-estimating-map-path-endpoint,
+absorbing-Frechet-path-endpoint, absorbing-Frechet-vector-Taylor-endpoint,
+absorbing-vector-continuity-Taylor-endpoint, absorbing-theta0-Frechet,
+absorbing-second-derivative-path, absorbing-regularity,
 absorbing-ContDiff-source, absorbing-summand-measurable,
 absorbing-envelope-tendsto, absorbing-derivative-tendsto,
-absorbing-derivative-a.e., absorbing-raw-score-CLT, or absorbing-raw-root
-or absorbing-estimator-substitution, absorbing-estimator-measurability, or
-absorbing-law-tail-compatibility, or absorbing-derivative-norm-law-tail
-or absorbing-canonical-score-law-tail, projected-to-action law-tail routing,
-or display-tightness action-bound endpoint, display weak-tightness action-bound
-endpoint, or displayed weak-convergence source helper
-wrappers unless a current proof directly depends on a small local API there.
+absorbing-derivative-a.e., absorbing-raw-score-CLT, absorbing-raw-root,
+absorbing-estimator-substitution, absorbing-estimator-measurability,
+absorbing-law-tail-compatibility, absorbing-derivative-norm-law-tail,
+absorbing-canonical-score-law-tail, projected-to-action law-tail routing,
+display-tightness action-bound endpoint, display weak-tightness action-bound
+endpoint, or displayed weak-convergence source helper wrappers.
 
 ## Execution Notes
 
@@ -3102,10 +3115,10 @@ Search result for Vaart Example 2.18: the source multivariate CLT statement is
 in `VanDerVaart_Asymptotic_Statistics_1-115.md` around lines 780-792.  The text
 uses the Cramér-Wold device to reduce convergence of finite vectors to
 convergence of all real linear projections, then applies the univariate CLT to
-`t^T Y_i - t^T μ`.  The current Lean packet records the vector CLT as
-`Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate`; the next proof layer
-should either discharge this certificate from scalar projected CLTs or record
-the exact missing Cramér-Wold/weak-convergence API.
+`t^T Y_i - t^T μ`.  The Lean lane records the vector CLT as
+`Vaart1998FiniteCoordinateEmpiricalMomentCLTCertificate`.  This is a reuse
+anchor for later concrete examples, not the current blocker while the live
+route is focused on the positive-sample common-core inverse endpoint.
 
 Search result for the finite-coordinate LLN layer: local
 `ProbabilityMeasure.StrongLaw` and `ProbabilityTheory.Basic` expose real-valued

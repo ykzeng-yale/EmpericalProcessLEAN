@@ -16,11 +16,11 @@ The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
 Latest verified packet: positive-sample common-core continuous-linear
-right-inverse affine mean-zero observation-law offset source for Theorem 5.41.
+two-sided inverse affine mean-zero observation-law offset source for Theorem 5.41.
 The live endpoint now states the asymptotic-normality handoff for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine
-display and a continuous linear right inverse for the common core, derives
+display and a continuous linear two-sided inverse for the common core, derives
 coordinate measurability and continuity of that inverse from mathlib's
 continuous linear map API, derives coordinate measurability of the explicit
 inverse estimator from primitive measurability of the observation offset,
@@ -29,10 +29,11 @@ product-space offset integrability, independence, identical distribution, and
 positive-sample offset-average convergence from observation-law coordinate
 integrability, derives target convergence and consistency from that average
 convergence plus local inverse stability derived from ordinary continuity at
-the limiting target, derives the limiting inverse value from common-core
-injectivity, and derives the population common-core equation from the affine
-display plus the coordinate mean-zero estimating equation, turns the finite
-equation into exact root-set membership,
+the limiting target, derives common-core injectivity from the left-inverse
+law, derives the limiting inverse value from the inverse laws, and derives the
+population common-core equation from the affine display plus the coordinate
+mean-zero estimating equation, turns the finite equation into exact root-set
+membership,
 prepends `theta0` at sample size zero, reuses the existing exact-root-set
 Theorem 5.41 source endpoint, and shifts the distributional conclusion back by
 `Nat.succ`.  This removes the artificial sample-size-zero inverse/uniqueness
@@ -40,19 +41,24 @@ obstruction plus the offset-average, product-space offset-iid, raw local
 inverse-stability, common-core-target, estimator-consistency,
 estimator-coordinate-measurability, direct root-set-membership, and
 finite-sum-zero hypotheses, the inverse coordinate-measurability hypothesis,
-the raw population common-core equation, and the raw right-inverse-value
-hypothesis from the current route.
+the raw common-core injectivity hypothesis, the raw population common-core
+equation, and the raw right-inverse-value hypothesis from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearTwoSidedInverseAffineMeanZeroOffsetSource`.
 
-The new affine mean-zero packet adds
+The new two-sided inverse packet adds
+`vaart1998_commonObservationCore_injective_of_leftInverse`
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearTwoSidedInverseAffineMeanZeroOffsetSource`.
+The next blocker is to derive the two inverse laws for the continuous linear
+inverse from a concrete linear/common-core model or a textbook estimating
+equation.
+
+The previous affine mean-zero packet adds
 `vaart1998_commonObservationCore_theta0_eq_negative_offsetMean_of_commonAffine_meanZero`
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseAffineMeanZeroOffsetSource`.
-The next blocker is to derive common-core injectivity and the continuous linear
-right inverse from a concrete linear/common-core model or a textbook estimating
-equation.
 
 The previous continuous-linear-inverse packet adds
 `vaart1998_commonObservationCoreRightInverse_coordinate_measurable_of_continuousLinear`,
@@ -1146,10 +1152,13 @@ uses
 to remove the explicit residual convergence and residual measurability fields
 from the pointwise-Taylor Theorem 5.41 action endpoint.
 
-Current next blocker: continue from the derivative-transform measurability
-fixed-`theta0` Theorem 5.41 endpoint toward a concrete model-specialized
-instantiation, or package only a still-live source field that the current
-endpoint explicitly exposes.
+Superseded blocker note: the derivative-transform measurability
+fixed-`theta0` route has been replaced by the positive-sample common-core
+continuous-linear two-sided inverse affine mean-zero observation-law offset
+source. The current live blocker is recorded at the top of this dashboard and
+in the current blocker plan: derive the two inverse laws for the continuous
+linear inverse from a concrete common-core model or instantiate a concrete
+textbook estimating equation.
 Do not replay the centered derivative-coordinate residual algebra,
 smooth/raw/scaled Taylor transfer, score-at-theta0 vector scaling transfer,
 estimator-definition a.e. wrappers, raw-root a.e. wrappers, selected
