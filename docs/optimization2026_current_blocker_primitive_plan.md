@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V41`, this file's top
+   the full book is complete, route from `Live Goal Prompt V42`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V41
+## Live Goal Prompt V42
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -523,21 +523,41 @@ range with the finite slack-floor inequalities, proves that set is compact,
 strictly feasible, contains the reference feasible point, and contains every
 feasible point in the selected sublevel.
 
-Next theorem-sized target: prove the actual
-`Chewi1316RangeCentralPathValueSublevelSlackFloorSelector` from the finite-row
-logarithmic-barrier blow-up/coercivity argument.  The raw positive slack range
-is open, so do not claim it is compact.  The remaining analytic proof should
-derive a positive slack floor on central-path sublevels of
-`t * inner aObj y + ∑ i -log (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i)`.
-Use the compact closed feasible range or a bounded closed source polytope to
-bound the linear objective below, then use `-log u -> +∞` as `u -> 0+` to rule
-out any coordinate approaching zero on a sublevel.  Search first for mathlib
-`tendsto_log_nhdsGT_zero`, local finite-minimum/slack-floor lemmas such as
-`chewi1316_polytopeSlackNegLog_exists_pos_sourceSlackFloor`, and existing
-bounded/compact closed-polytope APIs.  If the direct finite-coordinate proof
-balloons, first prove a reusable scalar lemma converting
-`-Real.log u ≤ C` with `0 < u` into an explicit lower bound on `u`, then lift
-it coordinatewise through the finite sum.
+Current V42 packet proves the explicit finite-product log-blowup algebra that
+turns bounded central-path sublevel data into the V41 slack-floor selector.
+New compiled declarations:
+`negLogBarrier_exp_neg_le_of_le`,
+`negLogBarrier_add_log_nonneg_of_le`,
+`positiveOrthantNegLogBarrier_coordinate_le_barrier_add_card_log_of_coord_le`,
+`Chewi1316RangeCentralPathValueSublevelNegLogUpperSelector`,
+`Chewi1316RangeCentralPathValueSublevelLinearLowerSlackUpperSelector`,
+`chewi1316_rangeCentralPathValue_negLogBarrier_coord_le_of_value_le_of_linear_lower_and_slack_upper`,
+`chewi1316_rangeCentralPathValueSublevelNegLogUpperSelector_of_linearLowerSlackUpperSelector`,
+`chewi1316_rangeCentralPathValueSublevelSlackFloorSelector_of_negLogUpperSelector`,
+and
+`chewi1316_rangeCentralPathValueSublevelSlackFloorSelector_of_linearLowerSlackUpperSelector`.
+Search-first result: use mathlib `Real.exp_le_exp`, `Real.exp_log`,
+`Real.log_le_log`, `Real.log_nonneg`, `Finset.single_le_sum`,
+`Finset.sum_add_distrib`, and local `positiveOrthantNegLogBarrier` /
+`chewi1316RangeCentralPathValue` definitions.  The proof avoids sequence
+compactness: if the linear term is bounded below on the relevant sublevel and
+all slacks are bounded above by `U >= 1`, then each coordinate `-log` term is
+bounded above, hence every slack coordinate is at least `exp (-C)`.
+
+Next theorem-sized target: discharge
+`Chewi1316RangeCentralPathValueSublevelLinearLowerSlackUpperSelector` from a
+compact closed feasible range and a strict feasible point.  Search first for
+the already compiled local boundedness APIs near
+`chewi1316_polytopeSlackNegLog_bddAbove_feasibleSlackCoordinateImage_of_subset_isCompact`,
+`chewi1316_polytopeSlackNegLog_slackCoordinate_le_center_add_radius_of_mem_closedBall`,
+`PiLp.norm_apply_le`, `IsCompact.exists_bound_of_continuousOn`, and
+`IsCompact.exists_isMinOn`.  The intended proof is: choose the reference
+strict feasible `y0`; minimize the continuous linear term `t * inner aObj y`
+on the compact closed feasible range for `L`; use compactness/boundedness of
+the same range to get a uniform slack upper bound `U >= 1`; then feed these
+constants into the V42 selector bridge.  This should finally compose with V41
+and V40 to give the compact closed feasible-range central-path selector
+without a supplied minimizer or supplied slack-floor premise.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model

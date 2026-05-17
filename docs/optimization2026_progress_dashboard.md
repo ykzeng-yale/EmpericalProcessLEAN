@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V41` near the top of
+  `Live Goal Prompt V42` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -260,13 +260,24 @@ This dashboard tracks the Chewi optimization formalization lane for
   sublevel slack-floor certificate gives the V40 compact sublevel-envelope
   selector.  Search-first reuse for V41: mathlib `IsCompact.inter_right`,
   `isClosed_iInter`, `isClosed_Ici.preimage`, and `PiLp.continuous_apply`.
+  The V42 packet adds the explicit finite-product log-blowup algebra:
+  `negLogBarrier_exp_neg_le_of_le`,
+  `negLogBarrier_add_log_nonneg_of_le`,
+  `positiveOrthantNegLogBarrier_coordinate_le_barrier_add_card_log_of_coord_le`,
+  `Chewi1316RangeCentralPathValueSublevelNegLogUpperSelector`,
+  `Chewi1316RangeCentralPathValueSublevelLinearLowerSlackUpperSelector`,
+  `chewi1316_rangeCentralPathValue_negLogBarrier_coord_le_of_value_le_of_linear_lower_and_slack_upper`,
+  and the selector bridges from linear-lower/slack-upper data to the V41
+  slack-floor selector.  Search-first reuse for V42: mathlib
+  `Real.exp_le_exp`, `Real.exp_log`, `Real.log_le_log`, `Real.log_nonneg`,
+  `Finset.single_le_sum`, and finite-sum algebra.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
   `hxseq_mem` or per-step decrement premise.  Next proof target: prove
-  `Chewi1316RangeCentralPathValueSublevelSlackFloorSelector` from finite-row
-  logarithmic-barrier blow-up/coercivity, bounding the linear objective below
-  on the compact closed feasible range and ruling out coordinates approaching
-  zero on a central-path sublevel.
+  `Chewi1316RangeCentralPathValueSublevelLinearLowerSlackUpperSelector` from a
+  compact closed feasible range and a strict feasible point, using compact
+  minimization for the linear lower bound and local/mathlib boundedness APIs
+  for the uniform slack upper bound.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge

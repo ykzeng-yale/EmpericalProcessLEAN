@@ -25468,6 +25468,27 @@ theorem realScaleCLM_comp (a b : ℝ) :
 noncomputable def negLogBarrier (x : ℝ) : ℝ :=
   - Real.log x
 
+/--
+Scalar logarithmic-barrier blow-up in explicit sublevel form: an upper bound
+on `-log u` gives a positive lower bound on `u`.
+-/
+theorem negLogBarrier_exp_neg_le_of_le {u C : ℝ}
+    (hu : 0 < u) (hupper : negLogBarrier u ≤ C) :
+    Real.exp (-C) ≤ u := by
+  have hlog_lower : -C ≤ Real.log u := by
+    dsimp [negLogBarrier] at hupper
+    linarith
+  have hexp := Real.exp_le_exp.mpr hlog_lower
+  simpa [Real.exp_log hu] using hexp
+
+theorem negLogBarrier_add_log_nonneg_of_le {u U : ℝ}
+    (hu : 0 < u) (hU : u ≤ U) :
+    0 ≤ negLogBarrier u + Real.log U := by
+  have hlog_le : Real.log u ≤ Real.log U :=
+    Real.log_le_log hu hU
+  dsimp [negLogBarrier]
+  linarith
+
 /-- The displayed second derivative of `negLogBarrier`: `x^{-2}`. -/
 noncomputable def negLogBarrierSecond (x : ℝ) : ℝ :=
   x ^ (-2 : ℤ)
@@ -25623,6 +25644,33 @@ theorem isOpen_positiveOrthant {d : ℕ} :
 noncomputable def positiveOrthantNegLogBarrier {d : ℕ}
     (x : EuclideanSpace ℝ (Fin d)) : ℝ :=
   ∑ i : Fin d, negLogBarrier (x i)
+
+theorem positiveOrthantNegLogBarrier_coordinate_le_barrier_add_card_log_of_coord_le
+    {d : ℕ} {x : EuclideanSpace ℝ (Fin d)} {U : ℝ}
+    (hx : x ∈ positiveOrthant (d := d))
+    (hU_ge_one : 1 ≤ U)
+    (hcoord_le : ∀ i : Fin d, x i ≤ U) :
+    ∀ j : Fin d,
+      negLogBarrier (x j) ≤
+        positiveOrthantNegLogBarrier x + (d : ℝ) * Real.log U := by
+  classical
+  have hlogU_nonneg : 0 ≤ Real.log U := Real.log_nonneg hU_ge_one
+  intro j
+  let g : Fin d -> ℝ := fun i => negLogBarrier (x i) + Real.log U
+  have hg_nonneg : ∀ i ∈ (Finset.univ : Finset (Fin d)), 0 ≤ g i := by
+    intro i _hi
+    exact negLogBarrier_add_log_nonneg_of_le (hx i) (hcoord_le i)
+  have hsingle : g j ≤ ∑ i : Fin d, g i :=
+    Finset.single_le_sum hg_nonneg (Finset.mem_univ j)
+  have hterm_le_g : negLogBarrier (x j) ≤ g j := by
+    dsimp [g]
+    linarith
+  have hsum :
+      (∑ i : Fin d, g i) =
+        positiveOrthantNegLogBarrier x + (d : ℝ) * Real.log U := by
+    simp [g, positiveOrthantNegLogBarrier, Finset.sum_add_distrib,
+      Finset.sum_const, nsmul_eq_mul]
+  exact hterm_le_g.trans (hsingle.trans_eq hsum)
 
 /--
 The coordinatewise gradient model for the finite product logarithmic barrier
@@ -37055,6 +37103,161 @@ def Chewi1316RangeCentralPathValueSublevelSlackFloorSelector
             chewi1316RangeCentralPathValue aRow bSlack t aObj y0 ->
           ∀ i : Fin m,
             sFloor ≤ (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i)
+
+/--
+Sublevel coordinate-`-log` upper-bound selector.  This is the finite-sum
+analytic estimate immediately before the slack-floor selector.
+-/
+def Chewi1316RangeCentralPathValueSublevelNegLogUpperSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range) : Prop :=
+  ∀ {t : ℝ}, 0 < t ->
+    ∃ y0 : (polytopeSlackCLM aRow).range,
+      y0 ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) ∧
+      ∃ C : ℝ,
+        ∀ y : (polytopeSlackCLM aRow).range,
+          y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m)) ->
+          chewi1316RangeCentralPathValue aRow bSlack t aObj y ≤
+            chewi1316RangeCentralPathValue aRow bSlack t aObj y0 ->
+          ∀ i : Fin m,
+            negLogBarrier (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) ≤ C
+
+/--
+Sublevel linear-lower/slack-upper selector.  Compact closed feasible ranges are
+expected to discharge this selector by minimizing the linear objective and
+maximizing the finite slack coordinates.
+-/
+def Chewi1316RangeCentralPathValueSublevelLinearLowerSlackUpperSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range) : Prop :=
+  ∀ {t : ℝ}, 0 < t ->
+    ∃ y0 : (polytopeSlackCLM aRow).range,
+      y0 ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) ∧
+      ∃ L U : ℝ,
+        1 ≤ U ∧
+        (∀ y : (polytopeSlackCLM aRow).range,
+          y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m)) ->
+          chewi1316RangeCentralPathValue aRow bSlack t aObj y ≤
+            chewi1316RangeCentralPathValue aRow bSlack t aObj y0 ->
+          L ≤ t * inner ℝ aObj y) ∧
+        (∀ y : (polytopeSlackCLM aRow).range,
+          y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            (positiveOrthant (d := m)) ->
+          chewi1316RangeCentralPathValue aRow bSlack t aObj y ≤
+            chewi1316RangeCentralPathValue aRow bSlack t aObj y0 ->
+          ∀ i : Fin m,
+            (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) ≤ U)
+
+theorem chewi1316_rangeCentralPathValue_negLogBarrier_coord_le_of_value_le_of_linear_lower_and_slack_upper
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (t L U V : ℝ) (aObj : (polytopeSlackCLM aRow).range)
+    {y : (polytopeSlackCLM aRow).range}
+    (hy_mem :
+      y ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hvalue : chewi1316RangeCentralPathValue aRow bSlack t aObj y ≤ V)
+    (hlinear_lower : L ≤ t * inner ℝ aObj y)
+    (hU_ge_one : 1 ≤ U)
+    (hslack_upper : ∀ i : Fin m,
+      (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) ≤ U) :
+    ∀ j : Fin m,
+      negLogBarrier (((y : EuclideanSpace ℝ (Fin m)) + bSlack) j) ≤
+        V - L + (m : ℝ) * Real.log U := by
+  let slack : EuclideanSpace ℝ (Fin m) :=
+    (y : EuclideanSpace ℝ (Fin m)) + bSlack
+  have hslack_mem : slack ∈ positiveOrthant (d := m) := by
+    simpa [slack, barrierAffineRangeSet] using hy_mem
+  have hbarrier_coord :
+      ∀ j : Fin m,
+        negLogBarrier (slack j) ≤
+          positiveOrthantNegLogBarrier slack + (m : ℝ) * Real.log U :=
+    positiveOrthantNegLogBarrier_coordinate_le_barrier_add_card_log_of_coord_le
+      hslack_mem hU_ge_one (by
+        intro i
+        simpa [slack] using hslack_upper i)
+  have hvalue_unfold :
+      t * inner ℝ aObj y + positiveOrthantNegLogBarrier slack ≤ V := by
+    simpa [chewi1316RangeCentralPathValue, barrierAffineRangeValue, slack]
+      using hvalue
+  have hbarrier_upper : positiveOrthantNegLogBarrier slack ≤ V - L := by
+    linarith
+  intro j
+  have hcoord := hbarrier_coord j
+  have hcoord' :
+      negLogBarrier (slack j) ≤ V - L + (m : ℝ) * Real.log U := by
+    linarith
+  simpa [slack] using hcoord'
+
+theorem chewi1316_rangeCentralPathValueSublevelNegLogUpperSelector_of_linearLowerSlackUpperSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range)
+    (hselector :
+      Chewi1316RangeCentralPathValueSublevelLinearLowerSlackUpperSelector
+        aRow bSlack aObj) :
+    Chewi1316RangeCentralPathValueSublevelNegLogUpperSelector
+      aRow bSlack aObj := by
+  intro t ht
+  rcases hselector ht with
+    ⟨y0, hy0_mem, L, U, hU_ge_one, hlinear_lower, hslack_upper⟩
+  refine
+    ⟨y0, hy0_mem,
+      chewi1316RangeCentralPathValue aRow bSlack t aObj y0 -
+        L + (m : ℝ) * Real.log U, ?_⟩
+  intro y hy_mem hy_value i
+  exact
+    chewi1316_rangeCentralPathValue_negLogBarrier_coord_le_of_value_le_of_linear_lower_and_slack_upper
+      aRow bSlack t L U
+      (chewi1316RangeCentralPathValue aRow bSlack t aObj y0) aObj
+      hy_mem hy_value (hlinear_lower y hy_mem hy_value) hU_ge_one
+      (hslack_upper y hy_mem hy_value) i
+
+theorem chewi1316_rangeCentralPathValueSublevelSlackFloorSelector_of_negLogUpperSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range)
+    (hselector :
+      Chewi1316RangeCentralPathValueSublevelNegLogUpperSelector
+        aRow bSlack aObj) :
+    Chewi1316RangeCentralPathValueSublevelSlackFloorSelector
+      aRow bSlack aObj := by
+  intro t ht
+  rcases hselector ht with ⟨y0, hy0_mem, C, hcoord_upper⟩
+  refine ⟨y0, hy0_mem, Real.exp (-C), Real.exp_pos (-C), ?_⟩
+  intro y hy_mem hy_value i
+  have hslack_pos :
+      0 < (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i) := by
+    simpa [barrierAffineRangeSet, positiveOrthant] using hy_mem i
+  exact
+    negLogBarrier_exp_neg_le_of_le hslack_pos
+      (hcoord_upper y hy_mem hy_value i)
+
+theorem chewi1316_rangeCentralPathValueSublevelSlackFloorSelector_of_linearLowerSlackUpperSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range)
+    (hselector :
+      Chewi1316RangeCentralPathValueSublevelLinearLowerSlackUpperSelector
+        aRow bSlack aObj) :
+    Chewi1316RangeCentralPathValueSublevelSlackFloorSelector
+      aRow bSlack aObj :=
+  chewi1316_rangeCentralPathValueSublevelSlackFloorSelector_of_negLogUpperSelector
+    aRow bSlack aObj
+    (chewi1316_rangeCentralPathValueSublevelNegLogUpperSelector_of_linearLowerSlackUpperSelector
+      aRow bSlack aObj hselector)
 
 theorem chewi1316_rangeCentralPathValueCompactSublevelEnvelopeSelector_of_closedFeasibleRangeCompact_and_sublevelSlackFloorSelector
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]

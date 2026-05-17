@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V41` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V42` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -215,6 +215,17 @@ remaining finite-row central-path existence work is now the analytic
 barrier-blowup proof of that slack-floor selector: lower-bound the linear
 objective on the compact closed feasible range and use `-log` blow-up at zero
 to force every sublevel coordinate to stay uniformly positive.
+The V42 packet proves the finite-product algebra for that blow-up step:
+`negLogBarrier_exp_neg_le_of_le`,
+`positiveOrthantNegLogBarrier_coordinate_le_barrier_add_card_log_of_coord_le`,
+`Chewi1316RangeCentralPathValueSublevelNegLogUpperSelector`,
+`Chewi1316RangeCentralPathValueSublevelLinearLowerSlackUpperSelector`, and the
+bridges from a linear lower bound plus a uniform slack upper bound to the V41
+slack-floor selector.  The next route is no longer raw log blow-up; it is the
+compact-bounds discharge of
+`Chewi1316RangeCentralPathValueSublevelLinearLowerSlackUpperSelector`, reusing
+compact minimization for the linear term and the existing finite-coordinate
+boundedness APIs for translated slacks.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the
