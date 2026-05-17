@@ -1,5 +1,6 @@
 import Mathlib.Analysis.Matrix.Order
 import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 import StatInference.Optimization.Basic
 
 /-!
@@ -17,6 +18,104 @@ namespace StatInference
 namespace Optimization
 
 variable {n : Type*} [Fintype n]
+
+/--
+Chewi Theorem A.1, source-facing spectral theorem wrapper.  A Hermitian real
+matrix is unitarily diagonalized by its mathlib eigenvector unitary, with
+diagonal entries the real eigenvalues.
+-/
+theorem chewiA1_spectral_theorem
+    [DecidableEq n] {A : Matrix n n ℝ} (hA : A.IsHermitian) :
+    A =
+      Unitary.conjStarAlgAut ℝ _ hA.eigenvectorUnitary
+        (diagonal (RCLike.ofReal ∘ hA.eigenvalues)) := by
+  exact hA.spectral_theorem
+
+/--
+Chewi Theorem A.1, eigenvector display.  The source eigenvector basis satisfies
+`A u_i = lambda_i u_i`.
+-/
+theorem chewiA1_mulVec_eigenvectorBasis
+    [DecidableEq n] {A : Matrix n n ℝ} (hA : A.IsHermitian) (i : n) :
+    A *ᵥ ⇑(hA.eigenvectorBasis i) =
+      (hA.eigenvalues i) • ⇑(hA.eigenvectorBasis i) := by
+  exact hA.mulVec_eigenvectorBasis i
+
+/--
+Chewi Definition A.2, PSD eigenvalue characterization.
+-/
+theorem chewiA2_posSemidef_iff_eigenvalues_nonneg
+    [DecidableEq n] {A : Matrix n n ℝ} (hA : A.IsHermitian) :
+    A.PosSemidef ↔ ∀ i, 0 ≤ hA.eigenvalues i := by
+  simpa [Pi.le_def] using hA.posSemidef_iff_eigenvalues_nonneg
+
+/--
+Chewi Definition A.2, PD eigenvalue characterization.
+-/
+theorem chewiA2_posDef_iff_eigenvalues_pos
+    [DecidableEq n] {A : Matrix n n ℝ} (hA : A.IsHermitian) :
+    A.PosDef ↔ ∀ i, 0 < hA.eigenvalues i := by
+  exact hA.posDef_iff_eigenvalues_pos
+
+/--
+Chewi Lemma A.3, upper eigenvalue bound in Loewner-order form.  For a
+Hermitian real matrix, `A <= beta I` is equivalent to every eigenvalue of `A`
+being at most `beta`.
+-/
+theorem chewiA3_le_scalar_one_iff_eigenvalues_le
+    [DecidableEq n] {A : Matrix n n ℝ} (hA : A.IsHermitian) {beta : ℝ} :
+    A ≤ beta • (1 : Matrix n n ℝ) ↔ ∀ i, hA.eigenvalues i ≤ beta := by
+  have hsa : IsSelfAdjoint A := hA.isSelfAdjoint
+  rw [show beta • (1 : Matrix n n ℝ) =
+      algebraMap ℝ (Matrix n n ℝ) beta by
+    simp [Algebra.algebraMap_eq_smul_one]]
+  rw [le_algebraMap_iff_spectrum_le (a := A) (r := beta) (ha := hsa)]
+  constructor
+  · intro h i
+    exact h (hA.eigenvalues i)
+      (by simp [hA.spectrum_real_eq_range_eigenvalues])
+  · intro h x hx
+    rw [hA.spectrum_real_eq_range_eigenvalues] at hx
+    rcases hx with ⟨i, rfl⟩
+    exact h i
+
+/--
+Chewi Lemma A.3, lower eigenvalue bound in Loewner-order form.  For a
+Hermitian real matrix, `alpha I <= A` is equivalent to every eigenvalue of `A`
+being at least `alpha`.
+-/
+theorem chewiA3_scalar_one_le_iff_le_eigenvalues
+    [DecidableEq n] {A : Matrix n n ℝ} (hA : A.IsHermitian) {alpha : ℝ} :
+    alpha • (1 : Matrix n n ℝ) ≤ A ↔ ∀ i, alpha ≤ hA.eigenvalues i := by
+  have hsa : IsSelfAdjoint A := hA.isSelfAdjoint
+  rw [show alpha • (1 : Matrix n n ℝ) =
+      algebraMap ℝ (Matrix n n ℝ) alpha by
+    simp [Algebra.algebraMap_eq_smul_one]]
+  rw [algebraMap_le_iff_le_spectrum (a := A) (r := alpha) (ha := hsa)]
+  constructor
+  · intro h i
+    exact h (hA.eigenvalues i)
+      (by simp [hA.spectrum_real_eq_range_eigenvalues])
+  · intro h x hx
+    rw [hA.spectrum_real_eq_range_eigenvalues] at hx
+    rcases hx with ⟨i, rfl⟩
+    exact h i
+
+/--
+Chewi Lemma A.3, eigenvalue interval in scalar Loewner-order form.
+-/
+theorem chewiA3_scalar_bounds_iff_eigenvalues_mem_Icc
+    [DecidableEq n] {A : Matrix n n ℝ} (hA : A.IsHermitian) {alpha beta : ℝ} :
+    (alpha • (1 : Matrix n n ℝ) ≤ A ∧
+        A ≤ beta • (1 : Matrix n n ℝ)) ↔
+      ∀ i, alpha ≤ hA.eigenvalues i ∧ hA.eigenvalues i ≤ beta := by
+  rw [chewiA3_scalar_one_le_iff_le_eigenvalues hA,
+    chewiA3_le_scalar_one_iff_eigenvalues_le hA]
+  constructor
+  · intro h i
+    exact ⟨h.1 i, h.2 i⟩
+  · intro h
+    exact ⟨fun i => (h i).1, fun i => (h i).2⟩
 
 /--
 Chewi Definition A.4, Loewner order as a quadratic-form inequality.  Mathlib's
@@ -76,6 +175,66 @@ theorem chewiA4_quadraticForm_lt_of_posDef_sub
       0 < dotProduct v (A *ᵥ v) - dotProduct v (B *ᵥ v) := by
     rwa [hdiff] at hpos
   linarith
+
+/--
+Chewi Lemma A.3, source quadratic-form statement.  A Hermitian real matrix has
+all eigenvalues in `[alpha, beta]` iff every quadratic form lies between the
+corresponding scalar multiples of `||v||^2`.
+-/
+theorem chewiA3_eigenvalues_mem_Icc_iff_quadraticForm_between
+    [DecidableEq n] {A : Matrix n n ℝ} (hA : A.IsHermitian) {alpha beta : ℝ} :
+    (∀ i, alpha ≤ hA.eigenvalues i ∧ hA.eigenvalues i ≤ beta) ↔
+      ∀ v : n -> ℝ,
+        alpha * dotProduct v v ≤ dotProduct v (A *ᵥ v) ∧
+          dotProduct v (A *ᵥ v) ≤ beta * dotProduct v v := by
+  rw [← chewiA3_scalar_bounds_iff_eigenvalues_mem_Icc hA]
+  have halpha : (alpha • (1 : Matrix n n ℝ)).IsHermitian := by
+    exact Matrix.isHermitian_one.smul
+      (show IsSelfAdjoint (alpha : ℝ) by
+        simp [isSelfAdjoint_iff])
+  have hbeta : (beta • (1 : Matrix n n ℝ)).IsHermitian := by
+    exact Matrix.isHermitian_one.smul
+      (show IsSelfAdjoint (beta : ℝ) by
+        simp [isSelfAdjoint_iff])
+  constructor
+  · intro hsandwich v
+    have hlower_raw :=
+      (chewiA4_loewnerOrder_iff_quadraticForm_le hA halpha).mp
+        hsandwich.1 v
+    have hupper_raw :=
+      (chewiA4_loewnerOrder_iff_quadraticForm_le hbeta hA).mp
+        hsandwich.2 v
+    constructor
+    · have hscalar :
+          dotProduct v ((alpha • (1 : Matrix n n ℝ)) *ᵥ v) =
+            alpha * dotProduct v v := by
+        simp only [Matrix.smul_mulVec, Matrix.one_mulVec, dotProduct_smul,
+          smul_eq_mul]
+      simpa [hscalar] using hlower_raw
+    · have hscalar :
+          dotProduct v ((beta • (1 : Matrix n n ℝ)) *ᵥ v) =
+            beta * dotProduct v v := by
+        simp only [Matrix.smul_mulVec, Matrix.one_mulVec, dotProduct_smul,
+          smul_eq_mul]
+      simpa [hscalar] using hupper_raw
+  · intro hquad
+    constructor
+    · rw [chewiA4_loewnerOrder_iff_quadraticForm_le hA halpha]
+      intro v
+      have hscalar :
+          dotProduct v ((alpha • (1 : Matrix n n ℝ)) *ᵥ v) =
+            alpha * dotProduct v v := by
+        simp only [Matrix.smul_mulVec, Matrix.one_mulVec, dotProduct_smul,
+          smul_eq_mul]
+      simpa [hscalar] using (hquad v).1
+    · rw [chewiA4_loewnerOrder_iff_quadraticForm_le hbeta hA]
+      intro v
+      have hscalar :
+          dotProduct v ((beta • (1 : Matrix n n ℝ)) *ᵥ v) =
+            beta * dotProduct v v := by
+        simp only [Matrix.smul_mulVec, Matrix.one_mulVec, dotProduct_smul,
+          smul_eq_mul]
+      simpa [hscalar] using (hquad v).2
 
 variable {m : Type*} [Fintype m]
 
@@ -392,6 +551,55 @@ theorem chewiA5_symmetric_l2_opNorm_le_iff_neg_scalar_one_le_and_le_scalar_one
       rw [← hscalar]
       exact hlower'
     exact abs_le.mpr ⟨hlower, hupper⟩
+
+/--
+Chewi Definition A.5, symmetric eigenvalue form.  For a symmetric real matrix,
+`||A||_op <= C` is equivalent to the source statement that all eigenvalues of
+`A` have absolute value at most `C`.
+-/
+theorem chewiA5_symmetric_l2_opNorm_le_iff_abs_eigenvalues_le
+    [DecidableEq n] {A : Matrix n n ℝ} (hA : A.IsHermitian) {C : ℝ}
+    (hC : 0 ≤ C) :
+    ‖A‖ ≤ C ↔ ∀ i, |hA.eigenvalues i| ≤ C := by
+  rw [chewiA5_symmetric_l2_opNorm_le_iff_neg_scalar_one_le_and_le_scalar_one hA hC]
+  rw [chewiA3_scalar_bounds_iff_eigenvalues_mem_Icc hA]
+  constructor
+  · intro h i
+    exact abs_le.mpr ⟨(h i).1, (h i).2⟩
+  · intro h i
+    exact abs_le.mp (h i)
+
+/--
+Chewi Definition A.5, symmetric max-eigenvalue display.  On a nonempty finite
+index type, the Euclidean operator norm of a symmetric real matrix is the
+finite maximum of the absolute values of its eigenvalues.
+-/
+theorem chewiA5_symmetric_l2_opNorm_eq_finset_sup_abs_eigenvalues
+    [DecidableEq n] [Nonempty n] {A : Matrix n n ℝ} (hA : A.IsHermitian) :
+    ‖A‖ =
+      Finset.univ.sup' Finset.univ_nonempty (fun i => |hA.eigenvalues i|) := by
+  let M : ℝ :=
+    Finset.univ.sup' Finset.univ_nonempty (fun i => |hA.eigenvalues i|)
+  have hM_nonneg : 0 ≤ M := by
+    let i0 : n := Classical.choice ‹Nonempty n›
+    exact (abs_nonneg (hA.eigenvalues i0)).trans
+      (Finset.le_sup' (s := Finset.univ)
+        (f := fun i => |hA.eigenvalues i|)
+        (by simp : i0 ∈ Finset.univ))
+  have hnorm_le_M : ‖A‖ ≤ M := by
+    rw [chewiA5_symmetric_l2_opNorm_le_iff_abs_eigenvalues_le hA hM_nonneg]
+    intro i
+    exact Finset.le_sup' (s := Finset.univ)
+      (f := fun i => |hA.eigenvalues i|)
+      (by simp : i ∈ Finset.univ)
+  have hM_le_norm : M ≤ ‖A‖ := by
+    have hbounds :
+        ∀ i, |hA.eigenvalues i| ≤ ‖A‖ :=
+      (chewiA5_symmetric_l2_opNorm_le_iff_abs_eigenvalues_le
+        hA (norm_nonneg A)).mp le_rfl
+    exact Finset.sup'_le Finset.univ_nonempty
+      (fun i => |hA.eigenvalues i|) (by intro i _hi; exact hbounds i)
+  exact le_antisymm hnorm_le_M hM_le_norm
 
 end Optimization
 end StatInference

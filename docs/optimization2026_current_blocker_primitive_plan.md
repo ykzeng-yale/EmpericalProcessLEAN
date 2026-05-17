@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V51`, this file's top
+   the full book is complete, route from `Live Goal Prompt V52`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V51
+## Live Goal Prompt V52
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -689,13 +689,39 @@ operator-norm substrate.  This packet intentionally reuses the small Rayleigh
 argument pattern from local `InteriorPoint.lean` without importing that large
 module.
 
-Next theorem-sized target: continue Appendix A from Definition A.5 toward the
-eigenvalue/spectral display for symmetric matrices, e.g. a source-shaped
-operator-norm-equals-maximum-absolute-eigenvalue wrapper or the next exact
-Appendix A statement after A.5.  Search first through
-`Mathlib.Analysis.Matrix.Spectrum`, Hermitian/eigenvalue APIs,
-`LinearMap.IsSymmetric` spectral lemmas, `Matrix.toEuclideanLin`, and the V51
-Rayleigh/Loewner bridge before adding any local spectral primitive.  Create
+Current V52 packet closes the source-facing Appendix A spectral/eigenvalue
+display layer.  New compiled declarations:
+`chewiA1_spectral_theorem`, `chewiA1_mulVec_eigenvectorBasis`,
+`chewiA2_posSemidef_iff_eigenvalues_nonneg`,
+`chewiA2_posDef_iff_eigenvalues_pos`,
+`chewiA3_le_scalar_one_iff_eigenvalues_le`,
+`chewiA3_scalar_one_le_iff_le_eigenvalues`,
+`chewiA3_scalar_bounds_iff_eigenvalues_mem_Icc`,
+`chewiA3_eigenvalues_mem_Icc_iff_quadraticForm_between`,
+`chewiA5_symmetric_l2_opNorm_le_iff_abs_eigenvalues_le`, and
+`chewiA5_symmetric_l2_opNorm_eq_finset_sup_abs_eigenvalues`.  These wrap
+mathlib's Hermitian spectral theorem, PSD/PD eigenvalue criteria, CFC spectral
+order scalar bounds, the source Lemma A.3 quadratic-form interval statement,
+and the symmetric Definition A.5 display `||A||_op = max_i |lambda_i|` (as a
+finite `Finset.sup'` on nonempty finite index types).
+
+Search-first reuse for V52: mathlib `Matrix.IsHermitian.spectral_theorem`,
+`Matrix.IsHermitian.mulVec_eigenvectorBasis`,
+`Matrix.IsHermitian.posSemidef_iff_eigenvalues_nonneg`,
+`Matrix.IsHermitian.posDef_iff_eigenvalues_pos`,
+`le_algebraMap_iff_spectrum_le`, `algebraMap_le_iff_le_spectrum`,
+`Matrix.IsHermitian.spectrum_real_eq_range_eigenvalues`, and `Finset.sup'`.
+The attempted CStar shortcut `CStarAlgebra.norm_or_neg_norm_mem_spectrum` does
+not apply directly to real matrices because it requires a `CStarAlgebra`
+instance; the verified finite-max proof instead reuses the V52 arbitrary-`C`
+operator-norm/eigenvalue iff plus `Finset.sup'_le`/`Finset.le_sup'`.
+
+Next theorem-sized target: Appendix A source wrappers are now a useful
+dependency layer.  Continue by either (a) adding exact source-facing wrappers
+for any remaining Appendix A display around rectangular singular values
+(`A^T A` versus `A A^T`) after searching `Mathlib.Analysis.InnerProductSpace.SingularValues`
+and matrix spectrum `nonzero_mul_comm`, or (b) returning to the highest-impact
+main-text theorem/report gate that consumes Appendix A matrix facts.  Create
 the Chewi Lemma 13.16 report only after the PDF screenshot
 and report compilation tools are available.  Do not reopen the completed
 §13.16 proof surface unless a regression breaks it.
@@ -711,9 +737,9 @@ consumers.  The old §13.16 search surface near `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers is only relevant if a later run
-returns to the report/tooling gate; the active V51 Lean proof target is
+returns to the report/tooling gate; the active V52 Lean proof target is
 Appendix A matrix infrastructure.
-Older paragraphs below are cached route history and must not override this V51
+Older paragraphs below are cached route history and must not override this V52
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

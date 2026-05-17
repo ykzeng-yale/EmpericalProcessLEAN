@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V51` near the top of
+  `Live Goal Prompt V52` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -74,9 +74,27 @@ This dashboard tracks the Chewi optimization formalization lane for
   and `C >= 0`.  Search-first reuse came from mathlib Rayleigh quotient APIs,
   `Matrix.isSymmetric_toEuclideanLin_iff`, `abs_real_inner_le_norm`, Euclidean
   coordinate rewrites, and the existing V48-V50 Loewner/operator-norm bridge.
-  Next Appendix A step is the eigenvalue/spectral display for symmetric
-  matrices, after a bounded search of `Analysis/Matrix/Spectrum`, Hermitian
-  eigenvalue APIs, and `LinearMap.IsSymmetric` spectral lemmas.
+  The V52 layer adds `chewiA1_spectral_theorem`,
+  `chewiA1_mulVec_eigenvectorBasis`,
+  `chewiA2_posSemidef_iff_eigenvalues_nonneg`,
+  `chewiA2_posDef_iff_eigenvalues_pos`,
+  `chewiA3_le_scalar_one_iff_eigenvalues_le`,
+  `chewiA3_scalar_one_le_iff_le_eigenvalues`,
+  `chewiA3_scalar_bounds_iff_eigenvalues_mem_Icc`,
+  `chewiA3_eigenvalues_mem_Icc_iff_quadraticForm_between`,
+  `chewiA5_symmetric_l2_opNorm_le_iff_abs_eigenvalues_le`, and
+  `chewiA5_symmetric_l2_opNorm_eq_finset_sup_abs_eigenvalues`, closing the
+  Appendix A spectral theorem wrappers, PSD/PD eigenvalue criteria, Lemma A.3
+  quadratic-form interval statement, and symmetric Definition A.5
+  `||A||_op = max_i |lambda_i|` display.  Search-first reuse came from mathlib
+  Hermitian spectral theorem/eigenvalue APIs, CFC spectral order scalar-bound
+  lemmas, `Matrix.IsHermitian.spectrum_real_eq_range_eigenvalues`, and
+  `Finset.sup'`; the CStar norm/spectrum shortcut was not directly available
+  for real matrices, so the finite-max proof reuses the arbitrary-`C` iff.
+  Next Appendix A step, if staying in Appendix A, is the rectangular singular
+  value/eigenvalue relationship between `A^T A` and `A A^T`; otherwise return
+  to the highest-impact main-text theorem/report gate that consumes these
+  matrix facts.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

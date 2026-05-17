@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V51` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V52` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,7 +30,7 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V51 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V52 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved to Appendix A matrix infrastructure.  The new module
 `StatInference/Optimization/AppendixA.lean` compiles and is root-imported,
@@ -55,11 +55,28 @@ proving the symmetric-square corollary
 `C >= 0`.  Search-first reuse came from mathlib Rayleigh quotient APIs,
 `Matrix.isSymmetric_toEuclideanLin_iff`, `abs_real_inner_le_norm`, Euclidean
 coordinate rewrites, and the existing V48-V50 Loewner/operator-norm bridge.
-Next source-shaped work should continue with the eigenvalue/spectral display
-for symmetric matrices after a bounded search of
-`Mathlib.Analysis.Matrix.Spectrum`, Hermitian eigenvalue APIs,
-`LinearMap.IsSymmetric` spectral lemmas, and local `Ellipsoid.lean`/
-`InteriorPoint.lean` matrix bridges.
+The V52 layer adds `chewiA1_spectral_theorem`,
+`chewiA1_mulVec_eigenvectorBasis`,
+`chewiA2_posSemidef_iff_eigenvalues_nonneg`,
+`chewiA2_posDef_iff_eigenvalues_pos`,
+`chewiA3_le_scalar_one_iff_eigenvalues_le`,
+`chewiA3_scalar_one_le_iff_le_eigenvalues`,
+`chewiA3_scalar_bounds_iff_eigenvalues_mem_Icc`,
+`chewiA3_eigenvalues_mem_Icc_iff_quadraticForm_between`,
+`chewiA5_symmetric_l2_opNorm_le_iff_abs_eigenvalues_le`, and
+`chewiA5_symmetric_l2_opNorm_eq_finset_sup_abs_eigenvalues`, closing the
+Appendix A spectral theorem wrappers, PSD/PD eigenvalue criteria, source
+Lemma A.3 quadratic-form interval statement, and symmetric Definition A.5
+`||A||_op = max_i |lambda_i|` display.  Search-first reuse came from mathlib
+Hermitian spectral theorem/eigenvalue APIs, CFC spectral order scalar-bound
+lemmas, `Matrix.IsHermitian.spectrum_real_eq_range_eigenvalues`, and
+`Finset.sup'`; the CStar norm/spectrum shortcut was not directly available
+for real matrices, so the finite-max proof reuses the arbitrary-`C` iff.
+Next source-shaped work, if staying in Appendix A, should search
+`Mathlib.Analysis.InnerProductSpace.SingularValues`, matrix spectrum
+`nonzero_mul_comm`, and local matrix bridges for the rectangular singular-value
+relationship between `A^T A` and `A A^T`; otherwise return to the
+highest-impact main-text theorem/report gate that consumes these matrix facts.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source
