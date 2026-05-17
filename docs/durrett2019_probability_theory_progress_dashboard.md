@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V497` in
+Route from `Live In-Thread Goal Prompt V498` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -72,7 +72,9 @@ one-based `{1, ..., n}` half-line cylinder displays over `Finset.Icc 1 n`,
 including identical-distribution source wrappers; V496 promotes the closed
 and open half-line displays to real-valued CDF and CDF-left-limit finite
 products; V497 fills the joint-law, identical-distribution, and canonical
-range/shift-range CDF-display variants.  The
+range/shift-range CDF-display variants; V498 adds finite-cutpoint closed/left
+empirical-CDF burn-in wrappers for `iIndepFun`, identical-distribution source,
+and pairwise-identically-distributed source hypotheses.  The
 historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
 V443 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.

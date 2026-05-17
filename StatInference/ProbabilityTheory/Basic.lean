@@ -23734,6 +23734,28 @@ theorem durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors
       · exact hrestn c hcs
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step under `iIndepFun`: a finite set of
+cutpoints has one random burn-in after which both the closed and strict-left
+empirical-CDF errors are small.
+-/
+theorem durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (cutpoints : Finset ℝ)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c ∈ cutpoints,
+          |empiricalDistributionFunction (samplePath X ω n) c -
+              ProbabilityTheory.cdf P c| < epsilon ∧
+            |empiricalLeftDistributionFunction (samplePath X ω n) c -
+              Function.leftLim (ProbabilityTheory.cdf P) c| < epsilon :=
+  durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt
+    X cutpoints hepsilon hLaw (fun _ _ hij => hindep.indepFun hij)
+
+/--
 Durrett 2019, Theorem 2.4.9 proof step in exact one-based textbook notation
 under `iIndepFun`: a finite set of cutpoints has one random burn-in after
 which both `n^{-1} * sum 1{X_m <= c}` and `n^{-1} * sum 1{X_m < c}` are close
@@ -23766,6 +23788,60 @@ theorem durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_
   simpa [empiricalDistributionFunction_samplePath_eq_range_sum,
     empiricalLeftDistributionFunction_samplePath_eq_range_sum,
     div_eq_mul_inv, mul_comm] using hn c hc
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the standard iid source shape
+`X_i` identically distributed as `X_0` plus `iIndepFun`: a finite set of
+cutpoints has one random burn-in after which the closed and strict-left
+empirical-CDF errors are small.
+-/
+theorem durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (cutpoints : Finset ℝ)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c ∈ cutpoints,
+          |empiricalDistributionFunction (samplePath X ω n) c -
+              ProbabilityTheory.cdf P c| < epsilon ∧
+            |empiricalLeftDistributionFunction (samplePath X ω n) c -
+              Function.leftLim (ProbabilityTheory.cdf P) c| < epsilon :=
+  durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt_of_iIndepFun
+    X cutpoints hepsilon
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the standard iid source shape, in
+exact one-based textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (cutpoints : Finset ℝ)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c ∈ cutpoints,
+          |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+              ProbabilityTheory.cdf P c| < epsilon ∧
+            |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X (i + 1) ω) -
+              Function.leftLim (ProbabilityTheory.cdf P) c| < epsilon :=
+  durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_iIndepFun
+    X cutpoints hepsilon
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
 
 /--
 Durrett 2019, Theorem 2.4.9 proof step from a full infinite-product joint law:
@@ -23849,6 +23925,79 @@ theorem durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_
     [durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt
       (fun i => fun ω => X (i + 1) ω) cutpoints hepsilon hSource.1
       (fun _ _ hij => hSource.2.indepFun hij)] with ω hω
+  filter_upwards [hω] with n hn c hc
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum,
+    empiricalLeftDistributionFunction_samplePath_eq_range_sum,
+    div_eq_mul_inv, mul_comm] using hn c hc
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the pairwise-iid source shape:
+one base marginal law, identical distributions, and pairwise independent
+coordinates imply the finite-cutpoint closed and strict-left burn-in.
+-/
+theorem durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (cutpoints : Finset ℝ)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c ∈ cutpoints,
+          |empiricalDistributionFunction (samplePath X ω n) c -
+              ProbabilityTheory.cdf P c| < epsilon ∧
+            |empiricalLeftDistributionFunction (samplePath X ω n) c -
+              Function.leftLim (ProbabilityTheory.cdf P) c| < epsilon :=
+  durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt
+    X cutpoints hepsilon
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the pairwise-iid source shape, in
+exact one-based textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (cutpoints : Finset ℝ)
+    {epsilon : ℝ} (hepsilon : 0 < epsilon)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c ∈ cutpoints,
+          |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+              ProbabilityTheory.cdf P c| < epsilon ∧
+            |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X (i + 1) ω) -
+              Function.leftLim (ProbabilityTheory.cdf P) c| < epsilon := by
+  have hLawAll :
+      ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) P μ :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  have hLawShift :
+      ∀ i : ℕ,
+        _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) P μ := by
+    intro i
+    exact hLawAll (i + 1)
+  have hindepShift :
+      Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on
+        (fun i : ℕ => fun ω => X (i + 1) ω)) := by
+    intro i j hij
+    have hne : Nat.succ i ≠ Nat.succ j := by
+      intro h
+      exact hij (Nat.succ.inj h)
+    simpa [Function.onFun, Nat.succ_eq_add_one] using hindep hne
+  filter_upwards
+    [durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt
+      (fun i => fun ω => X (i + 1) ω) cutpoints hepsilon hLawShift hindepShift] with
+      ω hω
   filter_upwards [hω] with n hn c hc
   simpa [empiricalDistributionFunction_samplePath_eq_range_sum,
     empiricalLeftDistributionFunction_samplePath_eq_range_sum,

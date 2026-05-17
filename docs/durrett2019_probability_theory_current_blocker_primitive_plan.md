@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V497
+## Live In-Thread Goal Prompt V498
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -47,13 +47,18 @@ source, joint-law, identical-distribution, and canonical iid forms.  V496 adds
 real-valued CDF and CDF-left-limit finite-product displays over `Finset.range n`
 and literal one-based `Finset.Icc 1 n` source/canonical forms.  V497 adds the
 missing joint-law, identical-distribution, and canonical range/shift-range
-CDF and CDF-left-limit finite-product displays.
+CDF and CDF-left-limit finite-product displays.  V498 adds finite-cutpoint
+closed/left empirical-CDF burn-in wrappers for `iIndepFun`,
+identical-distribution source, and pairwise-identically-distributed source
+hypotheses.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
-source-facing 2.4.9 display only if search proves it is absent; otherwise add
-the next Chapter 2.1 product-law/product-expectation wrapper that directly
-supports 2.4.9 or the adjacent Kolmogorov-maximal route.  Do not return to
+source-facing 2.4.9 proof-step wrapper only if search proves it is absent,
+with priority on middle-partition-with-tails and outer-a.s. partition source
+forms; otherwise add the next Chapter 2.1 product-law/product-expectation
+wrapper that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
 cylinder source wrappers, solved `Fin n` finite-prefix product-law wrappers,
@@ -77,7 +82,25 @@ solved CDF and CDF-left-limit real-valued finite-product displays for
 closed/open empirical-CDF cylinder events,
 solved joint-law, identical-distribution, and canonical range/shift-range
 CDF and CDF-left-limit product display variants,
+solved finite-cutpoint closed/left empirical-CDF burn-in wrappers for
+`iIndepFun`, identical-distribution source, and pairwise-identically
+distributed source hypotheses,
 or old app-level stale prompts.
+
+Latest verified target V498 closes the first missing source-facing
+finite-cutpoint burn-in layer inside the Durrett Theorem 2.4.9 proof:
+`durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt_of_iIndepFun_identDistrib`,
+`durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_iIndepFun_identDistrib`,
+`durrett2019_theorem_2_4_9_finite_cutpoints_eventually_closed_left_errors_lt_of_pairwise_identDistrib`, and
+`durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_inv_mul_closed_left_errors_lt_of_pairwise_identDistrib`.
+These wrappers let the textbook proof phrase "choose one random burn-in for
+all finitely many cutpoints" consume common iid and pairwise-iid source
+hypotheses directly, without reopening marginal-law transport each time.
+Next target: search the already-compiled middle-partition-with-tails and
+outer-a.s. partition layers for the same source-shape gap, especially
+identical-distribution and pairwise-identically-distributed one-based forms,
+before adding any new product-display wrappers.
 
 Latest verified target V497 completes the remaining CDF-display source shapes
 for the V496 finite-product layer:
