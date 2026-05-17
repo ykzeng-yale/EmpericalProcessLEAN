@@ -1112,6 +1112,151 @@ theorem durrett2019_theorem_2_1_11_iid_shift_hasLaw_infinitePi_of_identDistrib
     hindep
 
 /--
+Durrett 2019, Theorem 2.1.11, general infinite product-law source extraction.
+
+If a sequence-valued random variable has joint law `∏ᵢ ν_i`, then its
+coordinates have laws `ν_i` and are independent.
+-/
+theorem durrett2019_theorem_2_1_11_sequence_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {ν : ∀ i, Measure (S i)}
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {X : ∀ i, Ω -> S i}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω) (Measure.infinitePi ν) μ) :
+    (∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) (ν i) μ) ∧
+      _root_.ProbabilityTheory.iIndepFun (μ := μ) X := by
+  haveI : IsProbabilityMeasure μ := hJoint.isProbabilityMeasure
+  have hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (X i) (ν i) μ := by
+    intro i
+    have hEval : _root_.ProbabilityTheory.HasLaw
+        (fun sample : (∀ i, S i) => sample i) (ν i)
+        (Measure.infinitePi ν) :=
+      (measurePreserving_eval_infinitePi (μ := ν) i).hasLaw
+    simpa [Function.comp_def] using hEval.comp hJoint
+  refine ⟨hLaw, ?_⟩
+  exact
+    (durrett2019_theorem_2_1_11_iIndepFun_iff_hasLaw_infinitePi
+      (μ := μ) (S := S) (ν := ν) (X := X) hLaw).2 hJoint
+
+/--
+Durrett 2019, Theorem 2.1.11, general finite prefix product-law form.
+
+For a sequence of independent variables with coordinate laws `ν_i`, the vector
+of the first `n` zero-based coordinates, indexed by `Fin n`, has finite product
+law.
+-/
+theorem durrett2019_theorem_2_1_11_iIndepFun_fin_prefix_hasLaw_pi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {ν : ∀ i, Measure (S i)}
+    {X : ∀ i, Ω -> S i}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (ν i) μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : Fin n => X (i : ℕ) ω)
+      (Measure.pi fun i : Fin n => ν (i : ℕ)) μ := by
+  have hLawFin : ∀ i : Fin n,
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω => X (i : ℕ) ω) (ν (i : ℕ)) μ := by
+    intro i
+    exact hLaw (i : ℕ)
+  have hindepFin :
+      _root_.ProbabilityTheory.iIndepFun
+        (μ := μ) (fun i : Fin n => fun ω => X (i : ℕ) ω) := by
+    simpa using
+      hindep.precomp (g := fun i : Fin n => (i : ℕ)) Fin.val_injective
+  exact
+    durrett2019_theorem_2_1_11_iIndepFun_hasLaw_pi
+      (P := μ) (S := fun i : Fin n => S (i : ℕ))
+      (X := fun i : Fin n => fun ω => X (i : ℕ) ω)
+      (ν := fun i : Fin n => ν (i : ℕ)) hindepFin hLawFin
+
+/--
+Durrett 2019, Theorem 2.1.11, general one-based finite prefix product-law form.
+
+This packages Durrett's vector `(X_1, ..., X_n)` with possibly different
+coordinate laws.
+-/
+theorem durrett2019_theorem_2_1_11_iIndepFun_shift_fin_prefix_hasLaw_pi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {ν : ∀ i, Measure (S i)}
+    {X : ∀ i, Ω -> S i}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (ν i) μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : Fin n => X ((i : ℕ) + 1) ω)
+      (Measure.pi fun i : Fin n => ν ((i : ℕ) + 1)) μ := by
+  have hLawFin : ∀ i : Fin n,
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω => X ((i : ℕ) + 1) ω) (ν ((i : ℕ) + 1)) μ := by
+    intro i
+    exact hLaw ((i : ℕ) + 1)
+  have hinj : Function.Injective (fun i : Fin n => (i : ℕ) + 1) := by
+    intro i j hij
+    apply Fin.ext
+    exact Nat.succ.inj (by simpa [Nat.succ_eq_add_one] using hij)
+  have hindepFin :
+      _root_.ProbabilityTheory.iIndepFun
+        (μ := μ) (fun i : Fin n => fun ω => X ((i : ℕ) + 1) ω) := by
+    simpa using
+      hindep.precomp (g := fun i : Fin n => (i : ℕ) + 1) hinj
+  exact
+    durrett2019_theorem_2_1_11_iIndepFun_hasLaw_pi
+      (P := μ) (S := fun i : Fin n => S ((i : ℕ) + 1))
+      (X := fun i : Fin n => fun ω => X ((i : ℕ) + 1) ω)
+      (ν := fun i : Fin n => ν ((i : ℕ) + 1)) hindepFin hLawFin
+
+/--
+Durrett 2019, Theorem 2.1.11, finite prefix product law from a joint infinite
+product law.
+-/
+theorem durrett2019_theorem_2_1_11_hasLaw_infinitePi_fin_prefix_hasLaw_pi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {ν : ∀ i, Measure (S i)}
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {X : ∀ i, Ω -> S i}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω) (Measure.infinitePi ν) μ)
+    (n : ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : Fin n => X (i : ℕ) ω)
+      (Measure.pi fun i : Fin n => ν (i : ℕ)) μ := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_11_iIndepFun_fin_prefix_hasLaw_pi
+      hSource.1 hSource.2 n
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based finite prefix product law from a joint
+infinite product law.
+-/
+theorem durrett2019_theorem_2_1_11_hasLaw_infinitePi_shift_fin_prefix_hasLaw_pi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : ℕ -> Type v} [∀ i, MeasurableSpace (S i)]
+    {μ : Measure Ω} {ν : ∀ i, Measure (S i)}
+    [∀ i, IsProbabilityMeasure (ν i)]
+    {X : ∀ i, Ω -> S i}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω) (Measure.infinitePi ν) μ)
+    (n : ℕ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : Fin n => X ((i : ℕ) + 1) ω)
+      (Measure.pi fun i : Fin n => ν ((i : ℕ) + 1)) μ := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_11_iIndepFun_shift_fin_prefix_hasLaw_pi
+      hSource.1 hSource.2 n
+
+/--
 Durrett 2019, Theorem 2.1.11, finite prefix product-law form.
 
 For a sequence of independent variables with common law `ν`, the vector of the
