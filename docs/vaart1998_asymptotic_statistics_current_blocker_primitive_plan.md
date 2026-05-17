@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveCardAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineMeanZeroOffsetSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -25,13 +25,14 @@ common-core inverse expression
 `vaart1998PositiveCommonObservationCoreInverseEstimator`. The route assumes a
 pointwise common-core affine display
 `observationEstimatingMap observation theta =
-commonObservationCoreLinear theta + observationOffset observation` and a
-common core supplied as a continuous linear map
-`commonObservationCoreLinear :
-  (Param -> ℝ) →L[ℝ] (Coord -> ℝ)`, injectivity of this map, and equality of
-the finite coordinate-cardinalities
-`Fintype.card Param = Fintype.card Coord`. It derives equality of the
-function-space finranks from `Module.finrank_fintype_fun_eq_card`, derives
+LinearMap.toContinuousLinearMap commonObservationCoreMatrix.mulVecLin theta +
+observationOffset observation` in the square finite-coordinate case
+`Coord = Param = Idx`. The common core is supplied by a square real matrix
+`commonObservationCoreMatrix : Matrix Idx Idx ℝ` and the determinant source
+`IsUnit commonObservationCoreMatrix.det`. It derives injectivity from
+`Matrix.mulVec_injective_iff_isUnit` and `Matrix.isUnit_iff_isUnit_det`,
+derives equality of the function-space finranks from
+`Module.finrank_fintype_fun_eq_card`, derives
 `commonObservationCoreLinear.ker = ⊥` from injectivity and
 `commonObservationCoreLinear.range = ⊤` from injectivity plus equal finrank,
 then builds the common-core continuous linear equivalence via
@@ -41,7 +42,8 @@ laws from
 `ContinuousLinearEquiv.apply_symm_apply` and
 `ContinuousLinearEquiv.symm_apply_apply`, derives the coordinate
 measurability and `ContinuousAt` fields for the inverse from the continuous
-linear map API, and derives common-core injectivity from the left-inverse law.
+linear map API, and feeds the determinant-derived injectivity into the
+compiled common-core route.
 It assumes only observation-law integrability of each offset coordinate,
 derives the product-space zero-coordinate integrability,
 pairwise independence, identical distribution, and positive-sample
@@ -66,9 +68,16 @@ estimator consistency, estimator coordinate measurability, root-set
 membership, finite-sum zero, inverse coordinate measurability, raw local
 inverse continuity, raw common-core injectivity, raw population common-core
 equation, raw right-inverse value, or raw function-space finrank equality
-directly.
+directly for this square-matrix route.
 
-The newest injective equal-cardinality packet adds
+The newest square-matrix determinant packet adds
+`vaart1998_squareMatrixCommonObservationCoreLinear_injective_of_isUnit_det`
+and
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineMeanZeroOffsetSource`.
+It removes the raw common-core injectivity assumption in the equal-coordinate
+case by deriving it from a nonsingular square matrix determinant source.
+
+The previous injective equal-cardinality packet adds
 `vaart1998_commonObservationCoreLinear_finrank_eq_of_card_eq`,
 `vaart1998_commonObservationCoreLinear_range_eq_top_of_injective_card_eq`,
 `vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_card_eq`,
@@ -212,15 +221,11 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: derive common-core injectivity from an explicit
-finite matrix inverse,
-determinant/nonsingularity source, or textbook estimating-equation algebra;
-derive the equal finite coordinate-cardinality condition from the concrete
-indexing choice when needed;
-derive offset coordinate
-measurability/integrability from a more concrete model source when available;
-or instantiate the endpoint on a concrete estimating equation from the
-textbook.
+Next aggressive target: derive offset coordinate measurability/integrability
+or the coordinate mean-zero equation from a more concrete score or
+estimating-map source when available; otherwise instantiate the square-matrix
+determinant endpoint on the first concrete textbook estimating equation whose
+affine display and determinant source are immediate.
 Do not route back to
 sample-size zero
 inverses, arbitrary canonical-selector measurability, direct root uniqueness,
@@ -233,7 +238,7 @@ identical-distribution, inverse coordinate-measurability,
 raw local inverse-stability, raw common-core injectivity, raw population
 common-core equation, raw right-inverse value assumptions, or already-bundled
 continuous-linear-equivalence assumptions when the common-core linear-map
-injective equal-cardinality route is available.
+square-matrix determinant route is available.
 
 The previous common-core packet adds
 `vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core
@@ -1721,7 +1726,7 @@ endpoint.
 Continuation recipe:
 
 1. Check `git status`, the Vaart diff, and the live hypotheses of the
-   positive-sample common-core continuous-linear-map injective equal-cardinality
+   positive-sample square-matrix common-core determinant
    endpoint.
 2. If an unfinished local Vaart Lean diff exists, either finish and verify it
    immediately, or remove it from the packet before editing route docs.
@@ -1730,15 +1735,14 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Derive common-core injectivity from a concrete common-core model, explicit
-   finite matrix inverse, nonsingularity certificate, determinant source, or
-   textbook estimating-equation algebra.
-2. If the injectivity construction is not immediately available, derive a live
-   observation-offset field for the same endpoint: coordinate measurability,
+1. Derive a live observation-offset field for the same endpoint: coordinate measurability,
    coordinate integrability, or the coordinate mean-zero equation at `theta0`.
-3. Instantiate the compiled endpoint for the first concrete textbook
+2. Instantiate the compiled endpoint for the first concrete textbook
    Theorem 5.41 example that can provide the affine display, offset fields,
-   common-core injectivity, and equal finite coordinate-cardinalities.
+   and square-matrix determinant source.
+3. Generalize beyond the square same-index determinant source only when a
+   concrete textbook example requires distinct but equal-cardinality
+   coordinate types.
 
 Do not replay the vector score-representation or vector score common-law
 transfers, derivative-table common-law transfer, centered
@@ -3027,27 +3031,28 @@ compiling:
    feeds that display into the finite Taylor-zero action-bound endpoint.
 
 Latest verified Vaart frontier before the next packet:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveCardAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineMeanZeroOffsetSource`.
 
-The latest theorem-sized packet removes the raw function-space finrank
-equality by deriving it from equality of the finite coordinate-cardinalities.
-The live route now assumes the pointwise affine estimating-equation display
-against that continuous linear map, common-core injectivity, equal finite
-coordinate-cardinalities, coordinate measurability and coordinate
+The latest theorem-sized packet removes the raw common-core injectivity field
+in the square equal-coordinate case by deriving it from
+`IsUnit commonObservationCoreMatrix.det` through mathlib's matrix nonsingular
+inverse API. The live route now assumes the pointwise affine
+estimating-equation display against `commonObservationCoreMatrix.mulVecLin`,
+the determinant nonsingularity source, coordinate measurability and coordinate
 integrability of the observation offset, and the coordinate mean-zero equation
 at `theta0`.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint. Priority order:
 
-1. Derive common-core injectivity from a concrete linear/common-core model,
-   matrix nonsingularity source, determinant source, or textbook
-   finite-dimensional estimating equation.
-2. Derive observation-offset coordinate measurability and integrability from a
+1. Derive observation-offset coordinate measurability and integrability from a
    concrete score/estimating-map model.
-3. Instantiate the endpoint for the first source-shaped textbook example of
+2. Instantiate the endpoint for the first source-shaped textbook example of
    Theorem 5.41 that can reuse the compiled positive-sample injective
-   equal-cardinality route.
+   square-matrix determinant route.
+3. Generalize the determinant source from the square same-index case to
+   reindexed equal-cardinality parameter and observation coordinate types
+   only if that directly supports a concrete textbook example.
 
 Do not route back to the earlier second-derivative-kernel endpoint,
 fixed-`theta0` derivative joint measurability, direct second-derivative joint

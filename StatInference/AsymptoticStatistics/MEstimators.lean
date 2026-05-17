@@ -49639,6 +49639,29 @@ theorem
     vaart1998_commonObservationCoreContinuousLinearEquiv_of_ker_range]
 
 /--
+A square matrix with unit determinant gives an injective continuous linear
+common-observation core through its `mulVec` linear map.
+-/
+theorem
+    vaart1998_squareMatrixCommonObservationCoreLinear_injective_of_isUnit_det
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    (commonObservationCoreMatrix : Matrix Idx Idx ℝ)
+    (hCommonObservationCore_det :
+      IsUnit commonObservationCoreMatrix.det) :
+    Function.Injective
+      (LinearMap.toContinuousLinearMap commonObservationCoreMatrix.mulVecLin) := by
+  have hMatrix_injective :
+      Function.Injective commonObservationCoreMatrix.mulVec :=
+    (Matrix.mulVec_injective_iff_isUnit
+        (A := commonObservationCoreMatrix)).2
+      ((Matrix.isUnit_iff_isUnit_det
+          (A := commonObservationCoreMatrix)).2
+        hCommonObservationCore_det)
+  intro x y hxy
+  exact hMatrix_injective (by
+    simpa [Matrix.coe_mulVecLin] using hxy)
+
+/--
 van der Vaart 1998, Theorem 5.41, positive-sample common-core continuous
 linear-map ker/range affine mean-zero offset source endpoint.
 
@@ -50140,6 +50163,171 @@ theorem
       hObservationEstimatingMap_commonAffine hCommonObservationCore_injective
       (vaart1998_commonObservationCoreLinear_finrank_eq_of_card_eq
         hCommonObservationCore_card)
+      hObservationOffset_coordinate_meas hObservationOffset_integrable
+      hEnvelope_meas hAbsEnvelope_integrable
+      hObservationSecondDerivative_measurable hObservationSecondDerivative_bound
+      hContDiffObservationEstimatingMap_univ
+      hObservationDerivativeAt_eq_fderiv_observationEstimatingMap
+      hContDiffObservationDerivativeAt_univ
+      hObservationSecondDerivative_eq_fderiv_observationDerivativeAt
+
+/--
+van der Vaart 1998, Theorem 5.41, positive-sample square-matrix common-core
+determinant source endpoint.
+
+This wrapper is the textbook nonsingular derivative-matrix source shape for
+the finite-dimensional equal-coordinate case: the common core is the
+continuous linear map induced by `commonObservationCoreMatrix.mulVecLin`, and
+its injectivity follows from `IsUnit commonObservationCoreMatrix.det`.
+-/
+theorem
+    vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineMeanZeroOffsetSource
+    {Ω' Observation Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace Observation]
+    [PseudoMetricSpace (Idx -> ℝ)]
+    [SecondCountableTopology (Idx -> ℝ)] [BorelSpace (Idx -> ℝ)]
+    [OpensMeasurableSpace (Idx -> ℝ)] [CompleteSpace (Idx -> ℝ)]
+    [MeasurableSub₂ (Idx -> ℝ)] [MeasurableSMul₂ ℝ (Idx -> ℝ)]
+    [PseudoMetricSpace (Idx × Idx -> ℝ)]
+    [SecondCountableTopology (Idx × Idx -> ℝ)]
+    [BorelSpace (Idx × Idx -> ℝ)]
+    [OpensMeasurableSpace (Idx × Idx -> ℝ)]
+    [CompleteSpace (Idx × Idx -> ℝ)]
+    [SecondCountableTopology ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [OpensMeasurableSpace ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [MeasurableAdd₂ ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [MeasurableConstSMul ℝ ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [MeasurableAdd₂ ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [MeasurableConstSMul ℝ
+      ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    (V : (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))
+    (Vinv : (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))
+    (observationEstimatingMap : Observation -> (Idx -> ℝ) -> Idx -> ℝ)
+    (observationDerivativeAt :
+      Observation -> (Idx -> ℝ) ->
+        (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))
+    (observationSecondDerivative :
+      Observation -> (Idx -> ℝ) →L[ℝ] (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))
+    (envelope : Observation -> ℝ)
+    {observationLaw : Measure Observation} [IsProbabilityMeasure observationLaw]
+    {theta0 : Idx -> ℝ}
+    (commonObservationCoreMatrix : Matrix Idx Idx ℝ)
+    (observationOffset : Observation -> Idx -> ℝ)
+    {Z : Ω' -> Idx -> ℝ}
+    (hLeftInverse : ∀ x : Idx -> ℝ, Vinv (V x) = x)
+    (hObservationEstimatingMapTheta0_coordinate_meas : ∀ coordinate : Idx,
+      Measurable
+        (fun observation : Observation =>
+          observationEstimatingMap observation theta0 coordinate))
+    (hObservationEstimatingMapTheta0_coordinate_memLp : ∀ coordinate : Idx,
+      MemLp
+        (fun observation : Observation =>
+          observationEstimatingMap observation theta0 coordinate)
+        2 observationLaw)
+    (hObservationEstimatingMapTheta0_coordinate_mean_zero :
+      ∀ coordinate : Idx,
+        (∫ observation,
+          observationEstimatingMap observation theta0 coordinate
+            ∂observationLaw) = 0)
+    (hObservationDerivativeAt_joint_measurable_source :
+      Measurable
+        (fun p : Observation × (Idx -> ℝ) =>
+          observationDerivativeAt p.1 p.2))
+    (hObservationDerivativeAtTheta0_operator_integrable :
+      Integrable
+        (fun observation : Observation =>
+          observationDerivativeAt observation theta0)
+        observationLaw)
+    (hV_observationDerivativeAtTheta0_operator_mean :
+      (∫ observation,
+        observationDerivativeAt observation theta0 ∂observationLaw) = V)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_mean_zero : (∫ ω, Z ω ∂Q) = 0)
+    (Gamma : Idx -> Idx -> ℝ)
+    (hZ_centered_product : ∀ i j : Idx,
+      (∫ ω, Z ω i * Z ω j ∂Q) = Gamma i j)
+    (hObservationEstimatingMapTheta0_centered_product : ∀ i j : Idx,
+      (∫ observation,
+        observationEstimatingMap observation theta0 i *
+          observationEstimatingMap observation theta0 j ∂observationLaw) =
+        Gamma i j)
+    (hObservationEstimatingMap_commonAffine : ∀ observation : Observation,
+      ∀ theta : Idx -> ℝ,
+        observationEstimatingMap observation theta =
+          LinearMap.toContinuousLinearMap
+            commonObservationCoreMatrix.mulVecLin theta +
+            observationOffset observation)
+    (hCommonObservationCore_det :
+      IsUnit commonObservationCoreMatrix.det)
+    (hObservationOffset_coordinate_meas :
+      ∀ coordinate : Idx,
+        Measurable
+          (fun observation : Observation =>
+            observationOffset observation coordinate))
+    (hObservationOffset_integrable :
+      ∀ coordinate : Idx,
+        Integrable
+          (fun observation : Observation =>
+            observationOffset observation coordinate)
+          observationLaw)
+    (hEnvelope_meas : Measurable envelope)
+    (hAbsEnvelope_integrable : Integrable (fun x => |envelope x|) observationLaw)
+    (hObservationSecondDerivative_measurable :
+      Measurable observationSecondDerivative)
+    (hObservationSecondDerivative_bound : ∀ x,
+      ‖observationSecondDerivative x‖ ≤ |envelope x|)
+    (hContDiffObservationEstimatingMap_univ : ∀ observation : Observation,
+      ContDiffOn ℝ 1 (observationEstimatingMap observation) Set.univ)
+    (hObservationDerivativeAt_eq_fderiv_observationEstimatingMap :
+      ∀ observation : Observation, ∀ theta : Idx -> ℝ,
+        fderiv ℝ (observationEstimatingMap observation) theta =
+          observationDerivativeAt observation theta)
+    (hContDiffObservationDerivativeAt_univ : ∀ observation : Observation,
+      ContDiffOn ℝ 1 (observationDerivativeAt observation) Set.univ)
+    (hObservationSecondDerivative_eq_fderiv_observationDerivativeAt :
+      ∀ observation : Observation, ∀ theta : Idx -> ℝ,
+        fderiv ℝ (observationDerivativeAt observation) theta =
+          observationSecondDerivative observation) :
+    TendstoInDistribution
+      (fun (n : ℕ) sample =>
+        √((n + 1 : ℕ) : ℝ) •
+          (vaart1998PositiveCommonObservationCoreInverseEstimator
+              (fun y : Idx -> ℝ =>
+                (vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_card_eq
+                    (LinearMap.toContinuousLinearMap
+                      commonObservationCoreMatrix.mulVecLin)
+                    (vaart1998_squareMatrixCommonObservationCoreLinear_injective_of_isUnit_det
+                      commonObservationCoreMatrix hCommonObservationCore_det)
+                    rfl).symm.toContinuousLinearMap y)
+              observationOffset n sample -
+            theta0))
+      atTop
+      (fun ω => (-Vinv : (Idx -> ℝ) →L[ℝ] (Idx -> ℝ)) (Z ω))
+      (fun _ => Measure.infinitePi (fun _ : ℕ => observationLaw)) Q := by
+  simpa using
+    vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapInjectiveCardAffineMeanZeroOffsetSource
+      (Q := Q) (V := V) (Vinv := Vinv)
+      (observationEstimatingMap := observationEstimatingMap)
+      (observationDerivativeAt := observationDerivativeAt)
+      (observationSecondDerivative := observationSecondDerivative)
+      (envelope := envelope) (observationLaw := observationLaw)
+      (theta0 := theta0)
+      (commonObservationCoreLinear :=
+        LinearMap.toContinuousLinearMap commonObservationCoreMatrix.mulVecLin)
+      (observationOffset := observationOffset) (Z := Z)
+      hLeftInverse hObservationEstimatingMapTheta0_coordinate_meas
+      hObservationEstimatingMapTheta0_coordinate_memLp
+      hObservationEstimatingMapTheta0_coordinate_mean_zero
+      hObservationDerivativeAt_joint_measurable_source
+      hObservationDerivativeAtTheta0_operator_integrable
+      hV_observationDerivativeAtTheta0_operator_mean hZ_gaussian
+      hZ_mean_zero Gamma hZ_centered_product
+      hObservationEstimatingMapTheta0_centered_product
+      hObservationEstimatingMap_commonAffine
+      (vaart1998_squareMatrixCommonObservationCoreLinear_injective_of_isUnit_det
+        commonObservationCoreMatrix hCommonObservationCore_det)
+      rfl
       hObservationOffset_coordinate_meas hObservationOffset_integrable
       hEnvelope_meas hAbsEnvelope_integrable
       hObservationSecondDerivative_measurable hObservationSecondDerivative_bound
