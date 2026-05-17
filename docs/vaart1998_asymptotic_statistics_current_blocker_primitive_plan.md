@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductObservationSequence_affineFiniteSumMapLeftInverseSource_estimatorCoordinateMeasurableSource_finiteParameterBorelSource_estimatorNormConsistencySource_absEnvelopeIntegrableSource_observationEstimatingMapTheta0CoordinateMomentSource_observationDerivativeAtTheta0OperatorMeanSource_observationDerivativeAtTheta0OperatorIntegrableSource_observationDerivativeTransformDefinitionSource_observationDerivativeAtDefinitionSource_observationSecondDerivativeDefinitionSource_observationEstimatingMapSource_zGaussianMeasurableModificationSource_zObservationEstimatingMapTheta0CenteredProductCovarianceSource_zMeanSource_unscaledScoreSource_fixedTheta0Source_observationEstimatingMapSmoothnessSource_observationEnvelopeMeanSource_observationTransformDisplaySource_observationRandomSequenceTransformMomentSource_observationSamplePathSource_observationEnvelopeAverageSource_observationScoreCovarianceSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelope`.
+`vaart1998_theorem_5_41_zEstimator_scaledEstimator_handoff_of_canonicalProductObservationSequence_observationAffineFiniteSumMapLeftInverseSource_estimatorCoordinateMeasurableSource_finiteParameterBorelSource_estimatorNormConsistencySource_absEnvelopeIntegrableSource_observationEstimatingMapTheta0CoordinateMomentSource_observationDerivativeAtTheta0OperatorMeanSource_observationDerivativeAtTheta0OperatorIntegrableSource_observationDerivativeTransformDefinitionSource_observationDerivativeAtDefinitionSource_observationSecondDerivativeDefinitionSource_observationEstimatingMapSource_zGaussianMeasurableModificationSource_zObservationEstimatingMapTheta0CenteredProductCovarianceSource_zMeanSource_unscaledScoreSource_fixedTheta0Source_observationEstimatingMapSmoothnessSource_observationEnvelopeMeanSource_observationTransformDisplaySource_observationRandomSequenceTransformMomentSource_observationSamplePathSource_observationEnvelopeAverageSource_observationScoreCovarianceSource_zSampleCoordinateMeanSource_derivativeBasisMatrixActionSource_zSampleMeanSource_scoreVectorMeanSource_scoreLawMeanSource_zGaussianMemLpSource_zLawCovarianceBilinSource_zLawMeanSource_derivativeLawVectorIntegrableSource_scoreLawVectorMomentSource_coordinateProjectionSource_derivativeTableVectorScoreDirectSource_scoreLawCovarianceMomentSource_scoreVectorDisplaySource_pointwiseSmoothnessSource_populationBasisMatrixActionSource_pointwiseDerivativeMatrixActionSource_measurableSource_rawRootSource_estimatorDefinitionSource_vectorScoreCommonLawScoreCLT_absorbingSource_envelope`.
 
 Use this endpoint as the only live route. It already specializes the sample
 space to the canonical iid product `ℕ -> Observation`, uses the identity
@@ -30,17 +30,19 @@ displayed derivative-transform fields from the operator-valued
 the separate sample-indexed derivative and second-derivative kernels. It now
 states the result directly for a concrete textbook estimator `rootCandidate`.
 The live source route proves that `rootCandidate` is a finite-sample zero and
-that the finite-sample estimating map has an affine display
-`finiteSumCore theta + finiteSumOffset` whose core has a left inverse. It
-constructs the concrete finite-sum-map left inverse by subtracting the offset,
-derives finite-sum-map injectivity from that left inverse, derives uniqueness
-of the root, identifies the canonical `Classical.choose` root with
-`rootCandidate`, transfers coordinate measurability and norm consistency
-through that identity, and then transfers the asymptotic-normality conclusion
-back to `rootCandidate`. The route no longer carries named root-set
-nonemptiness, direct root-uniqueness, raw finite-sum-map injectivity, a raw
-finite-sum-map left inverse, arbitrary canonical-selector measurability or norm
-consistency, a separate external estimator parameter, or pointwise
+that each observation-level estimating map has an affine display
+`observationCore observation theta + observationOffset observation`; it sums
+those pointwise displays into the finite-sample affine display, uses a left
+inverse for the summed core, constructs the concrete finite-sum-map left
+inverse by subtracting the summed offset, derives finite-sum-map injectivity
+from that left inverse, derives uniqueness of the root, identifies the
+canonical `Classical.choose` root with `rootCandidate`, transfers coordinate
+measurability and norm consistency through that identity, and then transfers
+the asymptotic-normality conclusion back to `rootCandidate`. The route no
+longer carries named root-set nonemptiness, direct root-uniqueness, raw
+finite-sum-map injectivity, a raw finite-sum-map left inverse, an aggregate
+finite-sample affine display, arbitrary canonical-selector measurability or
+norm consistency, a separate external estimator parameter, or pointwise
 `estimator = Classical.choose ...` equality. It also packages
 finite-sum zero existence into
 `vaart1998ObservationEstimatingEquationRootSet`, derives selected-root
@@ -52,17 +54,20 @@ measurable-space comparison from Mathlib's product Borel machinery, so the
 live source route no longer asks for that compatibility as a separate
 hypothesis.
 
-The newest affine finite-sum packet adds
-`vaart1998_finiteSumMap_leftInverse_of_affineDisplayLeftInverse` and the
-current endpoint. It replaces the raw finite-sum-map left-inverse source by a
-model-facing affine display plus a core left inverse.
+The newest observation-affine packet adds
+`vaart1998_finiteSum_affineDisplay_of_observationAffineDisplay` and the
+current endpoint. It replaces the aggregate finite-sample affine-display
+hypothesis by a pointwise observation-level affine display, then constructs
+the finite-sample core and offset by summing over `Fin n`.
 
-Next aggressive target: prove the affine display and the core left inverse
-from an actual model's algebraic estimating equation, or replace that field by
-a local/global inverse theorem using nonsingular derivative hypotheses. Do not
-route back to arbitrary canonical-selector measurability, direct root
-uniqueness, raw finite-sum-map injectivity, or a raw left inverse when affine
-display/core-inverse hypotheses are available.
+Next aggressive target: prove the pointwise observation-level affine display
+and the summed-core left inverse from an actual model's algebraic estimating
+equation, or replace that core-inverse field by a local/global inverse theorem
+using nonsingular derivative hypotheses. Do not route back to arbitrary
+canonical-selector measurability, direct root uniqueness, raw finite-sum-map
+injectivity, a raw left inverse, or aggregate finite-sample affine-display
+hypotheses when observation-level display/core-inverse hypotheses are
+available.
 
 The previous layer replaces the old coordinate score-transform moment interface
 by the vector source triple
