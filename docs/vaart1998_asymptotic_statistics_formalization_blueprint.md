@@ -20,12 +20,13 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    instructions to replay.
 
 Current frontier: Theorem 5.41 now has a compiled positive-sample common-core
-right-inverse injective-core observation-law offset source. It states the limit theorem for the explicit estimator
+continuous-linear right-inverse observation-law offset source. It states the limit theorem for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine display
-and a common-core right inverse, derives coordinate measurability of the
-explicit inverse estimator from primitive right-inverse and offset
-measurability, derives product-space offset integrability, independence,
+and a common-core continuous linear right inverse, derives coordinate
+measurability and continuity of that inverse from mathlib's continuous linear
+map API, derives coordinate measurability of the explicit inverse estimator
+from observation-offset measurability, derives product-space offset integrability, independence,
 identical distribution, and positive-sample offset-average convergence from
 observation-law coordinate integrability, derives target convergence and
 consistency from that average convergence and local inverse stability derived
@@ -39,20 +40,25 @@ positive sample sizes instead of forcing sample-size-zero inverse, uniqueness,
 offset-average convergence, product-space offset-iid fields, raw local inverse
 stability, common-core target convergence, estimator consistency,
 estimator-coordinate measurability, direct root-set-membership, or external
-finite-sum-zero hypotheses, and it no longer asks for a raw right-inverse
-value at the limiting target.
+finite-sum-zero hypotheses, and it no longer asks for inverse coordinate
+measurability or a raw right-inverse value at the limiting target.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetInjectiveCoreSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseOffsetSource`.
 
 The newest wrapper adds
+`vaart1998_commonObservationCoreRightInverse_coordinate_measurable_of_continuousLinear`,
+`vaart1998_commonObservationCoreRightInverse_continuousAt_of_continuousLinear`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseOffsetSource`.
+The next proof layer should derive common-core injectivity, the population
+common-core equation, and the continuous linear inverse from a concrete
+linear/common-core model or a textbook estimating equation.
+
+The previous wrapper adds
 `vaart1998_commonObservationCoreRightInverse_value_of_injective`
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetInjectiveCoreSource`.
-The next proof layer should derive the remaining right-inverse continuity field
-from a concrete inverse-function, continuous linear inverse, or model-specific
-estimating-equation source, then instantiate common-core injectivity and the
-population common-core equation in a concrete textbook model.
 
 The previous wrapper adds
 `vaart1998_edist_local_of_continuousAt`

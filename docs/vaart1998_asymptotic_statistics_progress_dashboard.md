@@ -15,14 +15,16 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: positive-sample common-core right-inverse injective-core
-observation-law offset source for Theorem 5.41. The live endpoint now states the
-asymptotic-normality handoff for the explicit estimator
+Latest verified packet: positive-sample common-core continuous-linear
+right-inverse observation-law offset source for Theorem 5.41. The live endpoint
+now states the asymptotic-normality handoff for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine
-display and a right inverse for the common core, derives coordinate
-measurability of the explicit inverse estimator from primitive measurability
-of the right inverse and observation offset, derives the canonical
+display and a continuous linear right inverse for the common core, derives
+coordinate measurability and continuity of that inverse from mathlib's
+continuous linear map API, derives coordinate measurability of the explicit
+inverse estimator from primitive measurability of the observation offset,
+derives the canonical
 product-space offset integrability, independence, identical distribution, and
 positive-sample offset-average convergence from observation-law coordinate
 integrability, derives target convergence and consistency from that average
@@ -36,21 +38,25 @@ Theorem 5.41 source endpoint, and shifts the distributional conclusion back by
 obstruction plus the offset-average, product-space offset-iid, raw local
 inverse-stability, common-core-target, estimator-consistency,
 estimator-coordinate-measurability, direct root-set-membership, and
-finite-sum-zero hypotheses and the raw right-inverse-value hypothesis from the
-current route.
+finite-sum-zero hypotheses, the inverse coordinate-measurability hypothesis,
+and the raw right-inverse-value hypothesis from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetInjectiveCoreSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseOffsetSource`.
 
-The new injective-core packet adds
+The new continuous-linear-inverse packet adds
+`vaart1998_commonObservationCoreRightInverse_coordinate_measurable_of_continuousLinear`,
+`vaart1998_commonObservationCoreRightInverse_continuousAt_of_continuousLinear`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearRightInverseOffsetSource`.
+The next blocker is to derive common-core injectivity, the population
+common-core equation, and the continuous linear right inverse from a concrete
+linear/common-core model or a textbook estimating equation.
+
+The previous injective-core packet adds
 `vaart1998_commonObservationCoreRightInverse_value_of_injective`
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetInjectiveCoreSource`.
-The next blocker is to derive the remaining right-inverse continuity field at
-the negative observation-law offset mean from a concrete inverse-function,
-continuous linear inverse, or model-specific estimating-equation source, and
-then instantiate common-core injectivity/equations in a concrete textbook
-estimating equation.
 
 The previous continuous inverse-stability packet adds
 `vaart1998_edist_local_of_continuousAt` and
