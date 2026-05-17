@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V447
+## Live In-Thread Goal Prompt V448
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -26,19 +26,38 @@ as the formal extended-real divergent-half display
 `limsup_n |S_n| / a_n = +∞`.  V447 removes the remaining manual scaled-tail
 plumbing for the divergent half by deriving the scaled-tail law from
 `IdentDistrib`, the scaled-tail event measurability from Borel threshold
-measurability, and the scaled-tail event independence from `iIndepFun`.  Do
+measurability, and the scaled-tail event independence from `iIndepFun`.  V448
+starts the convergent half by defining the moving truncation
+`Y_n = X_n 1_{|X_n| < a_n}` and proving that finite one-based tail series give
+a.e. eventual equality between `X_{n+1}` and its moving truncation, including
+the iid `IdentDistrib` source wrapper.  Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
 the solved fixed-`k` Borel-Cantelli partial-sum bridge, or the solved
 integer-to-real threshold bridge, or the solved countable a.e. all-threshold
 wrapper, or the solved extended-real limsup display, or the solved iid
-divergent-half scaled-tail plumbing.  Next aggressive target: prove the
-convergent-half source wrapper for Theorem 2.5.13 and then assemble the
-source-facing Feller dichotomy wrapper.
+divergent-half scaled-tail plumbing, or the solved convergent-half
+Borel-Cantelli moving-truncation handoff.  Next aggressive target: prove the
+convergent-half variance/mean/Kronecker assembly for the moving truncations,
+then assemble the source-facing Feller dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V448 adds the first convergent-half handoff for Durrett
+Theorem 2.5.13.  New compiled anchors:
+`durrett2019_theorem_2_5_13_truncated`,
+`durrett2019_theorem_2_5_13_truncated_eq_self_of_abs_lt`,
+`durrett2019_theorem_2_5_13_truncation_mismatch_subset_tail`,
+`durrett2019_theorem_2_5_13_measure_mismatch_le_tail`,
+`durrett2019_theorem_2_5_13_oneBased_tsum_mismatch_ne_top_of_tsum_tail_ne_top`,
+`durrett2019_theorem_2_5_13_oneBased_ae_eventuallyEq_truncated_of_tsum_tail_ne_top`, and
+`durrett2019_theorem_2_5_13_oneBased_ae_eventuallyEq_truncated_of_iid_tail_tsum_ne_top`.
+They reuse the existing Theorem 2.5.8 Borel-Cantelli eventual-equality
+scaffold and instantiate it for the moving `a_n` truncation.  The remaining
+blocker is the convergent branch's variance summability plus truncated-mean
+normalization route.
 
 Latest verified target V447 adds the iid source wrapper for the divergent half
 of Durrett Theorem 2.5.13.  New compiled anchors:

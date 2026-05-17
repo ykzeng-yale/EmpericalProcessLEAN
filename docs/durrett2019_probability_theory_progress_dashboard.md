@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V447` in
+Route from `Live In-Thread Goal Prompt V448` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -47,13 +47,25 @@ statements over the countable positive integer scales and packages the
 uniform-in-`k` Durrett source wrapper.  V446 packages the result as the formal
 extended-real `limsup_n |S_n| / a_n = +∞` endpoint for the divergent half.
 V447 derives the divergent branch's scaled-tail law, measurability, and event
-independence from iid source hypotheses.  The next source work is the
-convergent-half wrapper and then the source-facing Feller dichotomy wrapper.
-Do not route back into solved Theorem 2.5.12 plumbing, the solved Theorem
-2.5.13 tail-series transfer, the solved fixed-`k` Borel-Cantelli partial-sum
-bridge, the solved integer-to-real threshold bridge, the solved countable a.e.
-all-threshold wrapper, the solved extended-real limsup display, or the solved
-iid divergent-half scaled-tail plumbing.  New compiled anchors through V447:
+independence from iid source hypotheses.  V448 starts the convergent half by
+defining the moving truncation `Y_n = X_n 1_{|X_n| < a_n}` and proving the
+finite-tail Borel-Cantelli eventual-equality handoff, including the iid
+`IdentDistrib` source wrapper.  The next source work is the convergent-half
+variance/mean/Kronecker assembly and then the source-facing Feller dichotomy
+wrapper.  Do not route back into solved Theorem 2.5.12 plumbing, the solved
+Theorem 2.5.13 tail-series transfer, the solved fixed-`k` Borel-Cantelli
+partial-sum bridge, the solved integer-to-real threshold bridge, the solved
+countable a.e. all-threshold wrapper, the solved extended-real limsup display,
+the solved iid divergent-half scaled-tail plumbing, or the solved
+convergent-half Borel-Cantelli moving-truncation handoff.  New compiled anchors
+through V448:
+`durrett2019_theorem_2_5_13_truncated`,
+`durrett2019_theorem_2_5_13_truncated_eq_self_of_abs_lt`,
+`durrett2019_theorem_2_5_13_truncation_mismatch_subset_tail`,
+`durrett2019_theorem_2_5_13_measure_mismatch_le_tail`,
+`durrett2019_theorem_2_5_13_oneBased_tsum_mismatch_ne_top_of_tsum_tail_ne_top`,
+`durrett2019_theorem_2_5_13_oneBased_ae_eventuallyEq_truncated_of_tsum_tail_ne_top`,
+`durrett2019_theorem_2_5_13_oneBased_ae_eventuallyEq_truncated_of_iid_tail_tsum_ne_top`,
 `durrett2019_theorem_2_5_13_real_scaled_abs_threshold_measurable`,
 `durrett2019_theorem_2_5_13_scaled_tail_law_of_identDistrib`,
 `durrett2019_theorem_2_5_13_scaled_tail_iIndepSet_of_iIndepFun`,

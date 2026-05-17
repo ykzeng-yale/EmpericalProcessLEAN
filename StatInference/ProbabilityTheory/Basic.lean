@@ -11166,6 +11166,131 @@ theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_top_o
         (P := P) (X := X) (a := a) (k := k) hX_indep hX_meas
 
 /--
+Durrett 2019, Theorem 2.5.13 notation for the convergent half: the moving
+truncation `Y_n = X_n 1_{|X_n| < a_n}`.
+-/
+noncomputable def durrett2019_theorem_2_5_13_truncated
+    {Ω : Type u} (X : ℕ -> Ω -> ℝ) (a : ℕ -> ℝ) (n : ℕ) : Ω -> ℝ :=
+  Set.indicator {ω : Ω | |X n ω| < a n} (fun ω : Ω => X n ω)
+
+/--
+Durrett 2019, Theorem 2.5.13 support: the moving truncation agrees with the
+original variable on the small-jump event.
+-/
+theorem durrett2019_theorem_2_5_13_truncated_eq_self_of_abs_lt
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ} {n : ℕ} {ω : Ω}
+    (hsmall : |X n ω| < a n) :
+    durrett2019_theorem_2_5_13_truncated X a n ω = X n ω := by
+  simp [durrett2019_theorem_2_5_13_truncated, hsmall]
+
+/--
+Durrett 2019, Theorem 2.5.13 support: a mismatch between `X_n` and the moving
+truncation can only occur on the large-jump tail event.
+-/
+theorem durrett2019_theorem_2_5_13_truncation_mismatch_subset_tail
+    {Ω : Type u} {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ} (n : ℕ) :
+    {ω : Ω | X n ω ≠ durrett2019_theorem_2_5_13_truncated X a n ω} ⊆
+      {ω : Ω | a n ≤ |X n ω|} := by
+  intro ω hω
+  by_contra htail
+  have hsmall : |X n ω| < a n := lt_of_not_ge htail
+  have heq :
+      durrett2019_theorem_2_5_13_truncated X a n ω = X n ω :=
+    durrett2019_theorem_2_5_13_truncated_eq_self_of_abs_lt
+      (X := X) (a := a) (n := n) (ω := ω) hsmall
+  exact hω heq.symm
+
+/--
+Durrett 2019, Theorem 2.5.13 support: the moving truncation mismatch
+probability is bounded by the corresponding large-jump tail probability.
+-/
+theorem durrett2019_theorem_2_5_13_measure_mismatch_le_tail
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ} (n : ℕ) :
+    P {ω : Ω | X n ω ≠ durrett2019_theorem_2_5_13_truncated X a n ω} ≤
+      P {ω : Ω | a n ≤ |X n ω|} :=
+  measure_mono
+    (durrett2019_theorem_2_5_13_truncation_mismatch_subset_tail
+      (X := X) (a := a) n)
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent-half support: summable one-based
+large-jump probabilities imply summable one-based moving-truncation mismatch
+probabilities.
+-/
+theorem durrett2019_theorem_2_5_13_oneBased_tsum_mismatch_ne_top_of_tsum_tail_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ}
+    (htail :
+      (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X (n + 1) ω|}) ≠ ∞) :
+    (∑' n : ℕ,
+      P {ω : Ω |
+        X (n + 1) ω ≠
+          durrett2019_theorem_2_5_13_truncated X a (n + 1) ω}) ≠ ∞ := by
+  refine ne_top_of_le_ne_top htail ?_
+  exact ENNReal.tsum_le_tsum fun n =>
+    durrett2019_theorem_2_5_13_measure_mismatch_le_tail
+      (P := P) (X := X) (a := a) (n + 1)
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent-half support: the first
+Borel-Cantelli lemma turns finite one-based tail series into eventual equality
+between `X_{n+1}` and the moving truncation at level `a_{n+1}`.
+-/
+theorem durrett2019_theorem_2_5_13_oneBased_ae_eventuallyEq_truncated_of_tsum_tail_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ}
+    (htail :
+      (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X (n + 1) ω|}) ≠ ∞) :
+    ∀ᵐ ω ∂P,
+      ∀ᶠ n in atTop,
+        X (n + 1) ω =
+          durrett2019_theorem_2_5_13_truncated X a (n + 1) ω :=
+  durrett2019_theorem_2_5_8_ae_eventuallyEq_of_tsum_measure_ne_top
+    (P := P)
+    (X := fun n : ℕ => X (n + 1))
+    (Y := fun n : ℕ => durrett2019_theorem_2_5_13_truncated X a (n + 1))
+    (durrett2019_theorem_2_5_13_oneBased_tsum_mismatch_ne_top_of_tsum_tail_ne_top
+      (P := P) (X := X) (a := a) htail)
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent-half source support: iid marginal
+identical distribution transfers the finite reference tail series into the
+Borel-Cantelli eventual-equality handoff for the moving truncations.
+-/
+theorem durrett2019_theorem_2_5_13_oneBased_ae_eventuallyEq_truncated_of_iid_tail_tsum_ne_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_ident : ∀ n : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X n) X0 P P)
+    (htail :
+      (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) ≠ ∞) :
+    ∀ᵐ ω ∂P,
+      ∀ᶠ n in atTop,
+        X (n + 1) ω =
+          durrett2019_theorem_2_5_13_truncated X a (n + 1) ω := by
+  have htail_law : ∀ n : ℕ,
+      P {ω : Ω | a (n + 1) ≤ |X (n + 1) ω|} =
+        P {ω : Ω | a (n + 1) ≤ |X0 ω|} := by
+    intro n
+    exact
+      durrett2019_theorem_2_5_13_scaled_tail_law_of_identDistrib
+        (P := P) (Y := X (n + 1)) (X0 := X0)
+        (c := a (n + 1)) (hX_ident (n + 1))
+  have htail_actual :
+      (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X (n + 1) ω|}) ≠ ∞ := by
+    have hfun :
+        (fun n : ℕ => P {ω : Ω | a (n + 1) ≤ |X (n + 1) ω|}) =
+          fun n : ℕ => P {ω : Ω | a (n + 1) ≤ |X0 ω|} := by
+      funext n
+      exact htail_law n
+    rw [hfun]
+    exact htail
+  exact
+    durrett2019_theorem_2_5_13_oneBased_ae_eventuallyEq_truncated_of_tsum_tail_ne_top
+      (P := P) (X := X) (a := a) htail_actual
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/
