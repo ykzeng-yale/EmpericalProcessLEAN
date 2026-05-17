@@ -4080,6 +4080,15 @@ def barrierAffineRangeSet
   {y | (y : E) + b ∈ s}
 
 omit [CompleteSpace F] [CompleteSpace E] in
+theorem isOpen_barrierAffineRangeSet
+    (A : F →L[ℝ] E) (b : E) {s : Set E}
+    (hs : IsOpen s) :
+    IsOpen (barrierAffineRangeSet A b s) := by
+  have hcont : Continuous fun y : A.range => (y : E) + b :=
+    continuous_subtype_val.add continuous_const
+  simpa [barrierAffineRangeSet] using (IsOpen.preimage hcont hs)
+
+omit [CompleteSpace F] [CompleteSpace E] in
 theorem convex_barrierAffineRangeSet
     (A : F →L[ℝ] E) (b : E) {s : Set E}
     (hs : Convex ℝ s) :
@@ -25599,6 +25608,17 @@ theorem negLogBarrier_dualLocalNorm_deriv_eq_one
 def positiveOrthant {d : ℕ} : Set (EuclideanSpace ℝ (Fin d)) :=
   {x | ∀ i : Fin d, 0 < x i}
 
+theorem isOpen_positiveOrthant {d : ℕ} :
+    IsOpen (positiveOrthant (d := d)) := by
+  rw [positiveOrthant]
+  convert
+    (isOpen_iInter_of_finite fun i : Fin d =>
+      isOpen_lt
+        (continuous_const : Continuous fun _ : EuclideanSpace ℝ (Fin d) => (0 : ℝ))
+        (PiLp.continuous_apply (p := 2) (β := fun _ : Fin d => ℝ) i)) using 1
+  ext x
+  simp
+
 /-- The finite positive-orthant logarithmic barrier `x ↦ ∑ i, -log (x_i)`. -/
 noncomputable def positiveOrthantNegLogBarrier {d : ℕ}
     (x : EuclideanSpace ℝ (Fin d)) : ℝ :=
@@ -25657,6 +25677,22 @@ theorem barrierAffineRangeValue_positiveOrthantNegLogBarrier_hasGradientAt
     (value := positiveOrthantNegLogBarrier)
     (grad := positiveOrthantNegLogGrad)
     (y := y) (positiveOrthantNegLogBarrier_hasGradientAt hy)
+
+theorem isOpen_barrierAffineRangeSet_positiveOrthant
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (A : F →L[ℝ] (EuclideanSpace ℝ (Fin m)))
+    (b : EuclideanSpace ℝ (Fin m)) :
+    IsOpen (barrierAffineRangeSet A b (positiveOrthant (d := m))) :=
+  isOpen_barrierAffineRangeSet A b isOpen_positiveOrthant
+
+theorem barrierAffineRangeSet_positiveOrthant_mem_nhds
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (A : F →L[ℝ] (EuclideanSpace ℝ (Fin m)))
+    (b : EuclideanSpace ℝ (Fin m))
+    {y : A.range}
+    (hy : y ∈ barrierAffineRangeSet A b (positiveOrthant (d := m))) :
+    barrierAffineRangeSet A b (positiveOrthant (d := m)) ∈ 𝓝 y :=
+  (isOpen_barrierAffineRangeSet_positiveOrthant A b).mem_nhds hy
 
 /--
 The coordinatewise inverse-Hessian model for the finite product logarithmic
@@ -36927,6 +36963,24 @@ def Chewi1316RangeCentralPathValueDomainMinimizerSelector
         (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
           (positiveOrthant (d := m))) center
 
+/--
+Feasible-domain minimizer selector for the concrete finite-row central-path
+value.  Since the positive-slack range is open in its subspace, this is the
+source-facing selector needed to recover the local optimality condition.
+-/
+def Chewi1316RangeCentralPathValueFeasibleMinimizerSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range) : Prop :=
+  ∀ {t : ℝ}, 0 < t ->
+    ∃ center : (polytopeSlackCLM aRow).range,
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) ∧
+      IsMinOn (chewi1316RangeCentralPathValue aRow bSlack t aObj)
+        (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m))) center
+
 theorem chewi1316_rangeCentralPathValueLocalMinimizerSelector_of_valueMinimizerSelector
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
     {m : ℕ}
@@ -36950,6 +37004,22 @@ theorem chewi1316_rangeCentralPathValueLocalMinimizerSelector_of_domainMinimizer
   intro t ht
   rcases hselector ht with ⟨center, hcenter_mem, hdomain_nhds, hmin⟩
   exact ⟨center, hcenter_mem, hmin.isLocalMin hdomain_nhds⟩
+
+theorem chewi1316_rangeCentralPathValueDomainMinimizerSelector_of_feasibleMinimizerSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range)
+    (hselector :
+      Chewi1316RangeCentralPathValueFeasibleMinimizerSelector aRow bSlack aObj) :
+    Chewi1316RangeCentralPathValueDomainMinimizerSelector aRow bSlack aObj := by
+  intro t ht
+  rcases hselector ht with ⟨center, hcenter_mem, hmin⟩
+  exact
+    ⟨center, hcenter_mem,
+      barrierAffineRangeSet_positiveOrthant_mem_nhds
+        (polytopeSlackCLM aRow) bSlack hcenter_mem,
+      hmin⟩
 
 theorem chewi1316_rangeCentralPathMinimizerSelector_of_valueMinimizerSelector
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
@@ -37005,6 +37075,18 @@ theorem chewi1316_rangeCentralPathSelector_of_valueDomainMinimizerSelector
     Chewi1316RangeCentralPathSelector aRow bSlack aObj :=
   chewi1316_rangeCentralPathSelector_of_valueLocalMinimizerSelector aRow bSlack aObj
     (chewi1316_rangeCentralPathValueLocalMinimizerSelector_of_domainMinimizerSelector
+      aRow bSlack aObj hselector)
+
+theorem chewi1316_rangeCentralPathSelector_of_valueFeasibleMinimizerSelector
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range)
+    (hselector :
+      Chewi1316RangeCentralPathValueFeasibleMinimizerSelector aRow bSlack aObj) :
+    Chewi1316RangeCentralPathSelector aRow bSlack aObj :=
+  chewi1316_rangeCentralPathSelector_of_valueDomainMinimizerSelector aRow bSlack aObj
+    (chewi1316_rangeCentralPathValueDomainMinimizerSelector_of_feasibleMinimizerSelector
       aRow bSlack aObj hselector)
 
 theorem chewi1316_standardSourceMainStage_exists_center_mainStageIndex_objective_gap_le_eps_of_preliminaryInit_and_centralPathSelector

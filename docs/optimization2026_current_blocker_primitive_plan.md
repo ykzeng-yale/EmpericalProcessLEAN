@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V30`, this file's top
+   the full book is complete, route from `Live Goal Prompt V37`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V30
+## Live Goal Prompt V37
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -449,16 +449,33 @@ to produce a minimizer of `chewi1316RangeCentralPathValue` on the feasible
 positive slack range, together with the neighborhood/interior certificate
 `barrierAffineRangeSet ... ∈ 𝓝 center`.
 
-Next theorem-sized target: prove the feasible-domain neighborhood/interior
-certificate for points in `barrierAffineRangeSet (polytopeSlackCLM aRow)
-bSlack (positiveOrthant (d := m))`, then combine it with compact/closed
-minimizer existence to construct a
-`Chewi1316RangeCentralPathValueDomainMinimizerSelector`.  Search mathlib first
-for `IsOpen.mem_nhds`, `isOpen_pi_iff`, finite coordinate open-set lemmas,
-`ContinuousLinearMap.continuous`, preimage/add translation openness, and
-`IsCompact.exists_isMinOn`/`ContinuousOn.exists_isMinOn'`; search local code for
-positive-orthant openness, compact feasible-range wrappers, bounded/closed
-polytope endpoints, and barrierAffineRangeSet continuity lemmas.
+Current V37 packet discharges that neighborhood/interior certificate for the
+actual finite positive slack range.  New compiled declarations:
+`isOpen_barrierAffineRangeSet`,
+`isOpen_positiveOrthant`,
+`isOpen_barrierAffineRangeSet_positiveOrthant`,
+`barrierAffineRangeSet_positiveOrthant_mem_nhds`,
+`Chewi1316RangeCentralPathValueFeasibleMinimizerSelector`,
+`chewi1316_rangeCentralPathValueDomainMinimizerSelector_of_feasibleMinimizerSelector`,
+and `chewi1316_rangeCentralPathSelector_of_valueFeasibleMinimizerSelector`.
+Search-first result: mathlib has exactly the needed topology primitives
+`IsOpen.preimage`, `isOpen_iInter_of_finite`, `isOpen_lt`,
+`PiLp.continuous_apply`, and `IsOpen.mem_nhds`; local code already had the
+translated slack-coordinate continuity pattern.  Do not ask again for a
+separate `barrierAffineRangeSet ... ∈ 𝓝 center` premise when the point is in
+the positive slack range.
+
+Next theorem-sized target: construct a
+`Chewi1316RangeCentralPathValueFeasibleMinimizerSelector` for the finite-row
+central-path value from compact/closed feasible-range hypotheses, then feed it
+through the V37 bridge to obtain `Chewi1316RangeCentralPathSelector`.  Search
+mathlib first for `IsCompact.exists_isMinOn`,
+`ContinuousOn.exists_isMinOn'`, `IsClosed`, compact subtype/minimizer APIs,
+continuous-on sum/log APIs on the positive orthant, and local compact
+feasible-range wrappers.  If the raw feasible positive range is open and not
+compact, formalize the standard compact sublevel/envelope argument explicitly:
+state the informal proof in this doc, isolate the coercive/barrier-blowup
+lemma, and only then prove the feasible minimizer selector.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model

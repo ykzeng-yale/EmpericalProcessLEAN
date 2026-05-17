@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V30` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V37` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -165,9 +165,21 @@ barrier gradient.  The V36 packet adds the local Fermat bridge
 central-path value minimizer selectors, and direct bridges from those selectors
 to `Chewi1316RangeCentralPathSelector`.  Search-first reuse for V36: mathlib
 `IsMinOn.isLocalMin`, `IsLocalMinOn.isLocalMin`, and
-`IsLocalMin.hasFDerivAt_eq_zero`.  Next finite-row work should prove the
-positive slack range is a neighborhood of each feasible point and then combine
-that interior certificate with compact/closed minimizer existence.
+`IsLocalMin.hasFDerivAt_eq_zero`.  The V37 packet adds
+`isOpen_barrierAffineRangeSet`,
+`isOpen_positiveOrthant`,
+`isOpen_barrierAffineRangeSet_positiveOrthant`,
+`barrierAffineRangeSet_positiveOrthant_mem_nhds`,
+`Chewi1316RangeCentralPathValueFeasibleMinimizerSelector`,
+`chewi1316_rangeCentralPathValueDomainMinimizerSelector_of_feasibleMinimizerSelector`,
+and `chewi1316_rangeCentralPathSelector_of_valueFeasibleMinimizerSelector`.
+Search-first reuse for V37: mathlib `IsOpen.preimage`,
+`isOpen_iInter_of_finite`, `isOpen_lt`, `PiLp.continuous_apply`, and
+`IsOpen.mem_nhds`, plus the local translated slack-coordinate continuity
+pattern.  Next finite-row work should construct a feasible minimizer selector
+from compact/closed feasible-range hypotheses or a compact sublevel/envelope
+argument, then feed it through the V37 bridge to recover central-path
+centrality.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the

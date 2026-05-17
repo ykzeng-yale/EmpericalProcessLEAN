@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V30` near the top of
+  `Live Goal Prompt V37` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -211,12 +211,23 @@ This dashboard tracks the Chewi optimization formalization lane for
   central-path selector.  This removes the unrealistic need for a global
   `Set.univ` minimizer when the barrier proof only supplies interior constrained
   optimality.
+  The V37 packet adds
+  `isOpen_barrierAffineRangeSet`,
+  `isOpen_positiveOrthant`,
+  `isOpen_barrierAffineRangeSet_positiveOrthant`,
+  `barrierAffineRangeSet_positiveOrthant_mem_nhds`,
+  `Chewi1316RangeCentralPathValueFeasibleMinimizerSelector`,
+  `chewi1316_rangeCentralPathValueDomainMinimizerSelector_of_feasibleMinimizerSelector`,
+  and `chewi1316_rangeCentralPathSelector_of_valueFeasibleMinimizerSelector`.
+  This closes the positive-slack-range neighborhood blocker from actual
+  feasibility and gives the live route a cleaner feasible-minimizer selector
+  surface.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: prove the
-  feasible positive slack range is a neighborhood of each feasible point, then
-  use that interior certificate with compact/closed minimizer existence to build
-  the domain-minimizer selector.
+  `hxseq_mem` or per-step decrement premise.  Next proof target: construct a
+  `Chewi1316RangeCentralPathValueFeasibleMinimizerSelector` from compact/closed
+  feasible-range hypotheses or a compact sublevel/envelope argument, then feed
+  it through the V37 bridge to obtain the central-path selector.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge
