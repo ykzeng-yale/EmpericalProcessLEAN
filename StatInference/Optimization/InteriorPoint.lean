@@ -37080,6 +37080,50 @@ def chewi1316RangeCentralPathClosedFeasibleRange
   {y | ∀ i : Fin m,
     0 ≤ (((y : EuclideanSpace ℝ (Fin m)) + bSlack) i)}
 
+theorem chewi1316RangeCentralPathClosedFeasibleRange_eq_rangeRestrict_image_closedPolytopeSlackSet
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m)) :
+    chewi1316RangeCentralPathClosedFeasibleRange aRow bSlack =
+      (polytopeSlackCLM aRow).rangeRestrict ''
+        closedPolytopeSlackSet aRow bSlack := by
+  ext y
+  constructor
+  · intro hy
+    rcases y.2 with ⟨x, hx⟩
+    refine ⟨x, ?_, ?_⟩
+    · intro i
+      have hslack_nonneg :
+          0 ≤ ((polytopeSlackCLM aRow x + bSlack) i) := by
+        simpa [← hx] using hy i
+      have hcoord :
+          (polytopeSlackCLM aRow x + bSlack) i =
+            bSlack i - inner ℝ (aRow i) x := by
+        simp [polytopeSlackCLM_apply, sub_eq_add_neg, add_comm]
+      have hxi : 0 ≤ bSlack i - inner ℝ (aRow i) x := by
+        simpa [hcoord] using hslack_nonneg
+      linarith
+    · exact Subtype.ext hx
+  · rintro ⟨x, hx_closed, rfl⟩
+    intro i
+    have hxi : inner ℝ (aRow i) x ≤ bSlack i := hx_closed i
+    have hcoord :
+        (((polytopeSlackCLM aRow).rangeRestrict x :
+              EuclideanSpace ℝ (Fin m)) + bSlack) i =
+          bSlack i - inner ℝ (aRow i) x := by
+      simp [polytopeSlackCLM_apply, sub_eq_add_neg, add_comm]
+    rw [hcoord]
+    linarith
+
+theorem chewi1316RangeCentralPathClosedFeasibleRange_isCompact_of_closedPolytope_isCompact
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (hcompact : IsCompact (closedPolytopeSlackSet aRow bSlack)) :
+    IsCompact (chewi1316RangeCentralPathClosedFeasibleRange aRow bSlack) := by
+  rw [chewi1316RangeCentralPathClosedFeasibleRange_eq_rangeRestrict_image_closedPolytopeSlackSet]
+  exact hcompact.image (ContinuousLinearMap.continuous _)
+
 /--
 Sublevel slack-floor selector for the finite-row central-path value.  This is
 the exact quantitative barrier-blowup gate left after the compact-envelope
@@ -53045,6 +53089,147 @@ theorem chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_ma
     hxbar0Set hoptimum_mem hcompact_closed
     (chewi1316_rangeCentralPathSelector_of_compactSublevelEnvelopeSelector
       aRow bSlack aObj hselector)
+    hc0_pos hc0_le heps_pos
+
+theorem chewi1316_standardSourceMainStage_boundedFeasibleRange_exists_center_mainStageIndex_objective_gap_le_eps_of_closedFeasibleRangeCompact
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hbounded :
+      Bornology.IsBounded
+        (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m))))
+    (hclosedCompact :
+      IsCompact (chewi1316RangeCentralPathClosedFeasibleRange aRow bSlack))
+    {eps c0 : ℝ}
+    (hc0_pos : 0 < c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (heps_pos : 0 < eps) :
+    Chewi1316StandardSourceMainStageExistsCenterObjectiveGapConclusion
+      aRow bSlack aObj optimum
+      (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+      eps c0 :=
+  chewi1316_standardSourceMainStage_boundedFeasibleRange_exists_center_mainStageIndex_objective_gap_le_eps_of_centralPathSelector
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (optimum := optimum)
+    hxbar0Set hoptimum_mem hbounded
+    (chewi1316_rangeCentralPathSelector_of_closedFeasibleRangeCompact_of_polytopeSlackSet_mem
+      aRow bSlack hxbar0Set aObj hclosedCompact)
+    hc0_pos hc0_le heps_pos
+
+theorem chewi1316_standardSourceMainStage_boundedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedFeasibleRangeCompact
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hbounded_source : Bornology.IsBounded (polytopeSlackSet aRow bSlack))
+    (hclosedCompact :
+      IsCompact (chewi1316RangeCentralPathClosedFeasibleRange aRow bSlack))
+    {eps c0 : ℝ}
+    (hc0_pos : 0 < c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (heps_pos : 0 < eps) :
+    Chewi1316StandardSourceMainStageExistsCenterObjectiveGapConclusion
+      aRow bSlack aObj optimum
+      (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+      eps c0 :=
+  chewi1316_standardSourceMainStage_boundedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_centralPathSelector
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (optimum := optimum)
+    hxbar0Set hoptimum_mem hbounded_source
+    (chewi1316_rangeCentralPathSelector_of_closedFeasibleRangeCompact_of_polytopeSlackSet_mem
+      aRow bSlack hxbar0Set aObj hclosedCompact)
+    hc0_pos hc0_le heps_pos
+
+theorem chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedFeasibleRangeCompact
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hbounded_closed : Bornology.IsBounded (closedPolytopeSlackSet aRow bSlack))
+    (hclosedCompact :
+      IsCompact (chewi1316RangeCentralPathClosedFeasibleRange aRow bSlack))
+    {eps c0 : ℝ}
+    (hc0_pos : 0 < c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (heps_pos : 0 < eps) :
+    Chewi1316StandardSourceMainStageExistsCenterObjectiveGapConclusion
+      aRow bSlack aObj optimum
+      (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+      eps c0 :=
+  chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_centralPathSelector
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (optimum := optimum)
+    hxbar0Set hoptimum_mem hbounded_closed
+    (chewi1316_rangeCentralPathSelector_of_closedFeasibleRangeCompact_of_polytopeSlackSet_mem
+      aRow bSlack hxbar0Set aObj hclosedCompact)
+    hc0_pos hc0_le heps_pos
+
+theorem chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedFeasibleRangeCompact
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hcompact_closed : IsCompact (closedPolytopeSlackSet aRow bSlack))
+    (hclosedCompact :
+      IsCompact (chewi1316RangeCentralPathClosedFeasibleRange aRow bSlack))
+    {eps c0 : ℝ}
+    (hc0_pos : 0 < c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (heps_pos : 0 < eps) :
+    Chewi1316StandardSourceMainStageExistsCenterObjectiveGapConclusion
+      aRow bSlack aObj optimum
+      (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+      eps c0 :=
+  chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_centralPathSelector
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (optimum := optimum)
+    hxbar0Set hoptimum_mem hcompact_closed
+    (chewi1316_rangeCentralPathSelector_of_closedFeasibleRangeCompact_of_polytopeSlackSet_mem
+      aRow bSlack hxbar0Set aObj hclosedCompact)
+    hc0_pos hc0_le heps_pos
+
+theorem chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedPolytopeCompact
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ} (hm : 0 < m)
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xbar0 : F} {aObj optimum : (polytopeSlackCLM aRow).range}
+    (hxbar0Set : xbar0 ∈ polytopeSlackSet aRow bSlack)
+    (hoptimum_mem :
+      optimum ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hcompact_closed : IsCompact (closedPolytopeSlackSet aRow bSlack))
+    {eps c0 : ℝ}
+    (hc0_pos : 0 < c0)
+    (hc0_le : c0 ≤ 1 / 16)
+    (heps_pos : 0 < eps) :
+    Chewi1316StandardSourceMainStageExistsCenterObjectiveGapConclusion
+      aRow bSlack aObj optimum
+      (chewi1316_standardSourcePreliminaryXSeq aRow bSlack xbar0)
+      eps c0 :=
+  chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedFeasibleRangeCompact
+    (hm := hm) (aRow := aRow) (bSlack := bSlack)
+    (xbar0 := xbar0) (aObj := aObj) (optimum := optimum)
+    hxbar0Set hoptimum_mem hcompact_closed
+    (chewi1316RangeCentralPathClosedFeasibleRange_isCompact_of_closedPolytope_isCompact
+      aRow bSlack hcompact_closed)
     hc0_pos hc0_le heps_pos
 
 /--

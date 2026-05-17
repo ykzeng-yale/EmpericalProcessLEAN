@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V43`, this file's top
+   the full book is complete, route from `Live Goal Prompt V44`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -132,7 +132,7 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V43
+## Live Goal Prompt V44
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
@@ -563,18 +563,37 @@ translated slack vector on the same compact range, converts vector norm bounds
 to coordinate upper bounds, and feeds those constants into the log-blowup
 selector chain.
 
-Next theorem-sized target: turn the V43 generic closed-feasible-range compact
-endpoint into the most source-facing §13.16 wrappers, then discharge
-`IsCompact (chewi1316RangeCentralPathClosedFeasibleRange aRow bSlack)` from the
-existing source-polytope compact/closed hypotheses when available.  Search
-first near existing bounded/closed/compact `*_standardPath` wrappers,
-`chewi1316RangeCentralPathClosedFeasibleRange`,
-`barrierAffineRangeSet`, `rangeRestrict_mem_of_polytopeSlackSet`,
-`IsCompact.image`, `IsClosed.preimage`, `isClosed_iInter`, finite-dimensional
-closed-and-bounded compactness APIs, and local polytope compactness lemmas.
+Current V44 packet pushes V43 through the source-facing compactness surface.
+New compiled declarations:
+`chewi1316RangeCentralPathClosedFeasibleRange_eq_rangeRestrict_image_closedPolytopeSlackSet`,
+`chewi1316RangeCentralPathClosedFeasibleRange_isCompact_of_closedPolytope_isCompact`,
+`chewi1316_standardSourceMainStage_boundedFeasibleRange_exists_center_mainStageIndex_objective_gap_le_eps_of_closedFeasibleRangeCompact`,
+`chewi1316_standardSourceMainStage_boundedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedFeasibleRangeCompact`,
+`chewi1316_standardSourceMainStage_boundedClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedFeasibleRangeCompact`,
+`chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedFeasibleRangeCompact`,
+and
+`chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedPolytopeCompact`.
+Search-first reuse for V44: local `closedPolytopeSlackSet`,
+`polytopeSlackCLM_apply`, `rangeRestrict_mem_of_polytopeSlackSet`, existing
+bounded/closed/compact `*_of_centralPathSelector` endpoint wrappers, and
+mathlib `IsCompact.image` via `ContinuousLinearMap.continuous`.  The proof
+identifies the closed feasible slack range as the `rangeRestrict` image of the
+closed source polytope, then uses compact-image transport to remove the
+previously supplied closed-feasible-range compactness from the compact
+closed-polytope source endpoint.
+
+Next theorem-sized target: promote the V44 compact-closed-polytope endpoint
+into the highest-level source theorem/report route for Chewi Theorem 13.16:
+search first for existing `*_closedPolytopeCompact`, `*_compactClosedPolytope`,
+standard preliminary/main-stage wrappers, and any theorem-report source
+anchors before adding new statements.  If the remaining source statement only
+needs compactness from bounded closed polytope in a proper finite-dimensional
+space, reuse
+`chewi1316_polytopeSlackNegLog_closedPolytope_isCompact_of_isBounded` and the
+V44 endpoint rather than reopening selector/minimizer/slack-floor machinery.
 Do not reintroduce supplied central-path selectors, supplied minimizers, or
-supplied slack-floor/linear-bound selectors: V43 already eliminates those under
-compact closed feasible range plus strict feasibility.
+supplied slack-floor/linear-bound selectors: V44 already eliminates those for
+the compact closed-polytope source hypothesis.
 Do not redo large-parameter stopping/count, barrier-step from terminal
 feasibility, preliminary initialization, main-stage feasibility/decrement
 induction, standard-path auto packaging, or the first-order convex lower-model
@@ -584,8 +603,8 @@ consumers.  Search first near existing `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers; then
-formalize only the genuinely missing compactness/source-facing certificate.
-Older paragraphs below are cached route history and must not override this V43
+formalize only the genuinely missing final source theorem/report certificate.
+Older paragraphs below are cached route history and must not override this V44
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

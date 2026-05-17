@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V43` near the top of
+  `Live Goal Prompt V44` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13 frontier.
@@ -283,13 +283,24 @@ This dashboard tracks the Chewi optimization formalization lane for
   `IsCompact.exists_bound_of_continuousOn`, continuity of linear scalars and
   translated slack vectors, `PiLp.norm_apply_le`, `Real.norm_eq_abs`,
   `neg_abs_le`, and local V40/V41/V42 selector bridges.
+  The V44 packet completes that source-facing compactness discharge:
+  `chewi1316RangeCentralPathClosedFeasibleRange_eq_rangeRestrict_image_closedPolytopeSlackSet`,
+  `chewi1316RangeCentralPathClosedFeasibleRange_isCompact_of_closedPolytope_isCompact`,
+  the bounded-feasible-range, bounded-source-polytope,
+  bounded-closed-polytope, and compact-closed-polytope
+  `*_exists_center_mainStageIndex_objective_gap_le_eps_of_closedFeasibleRangeCompact`
+  wrappers, and the fully source-facing
+  `chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedPolytopeCompact`.
+  Search-first reuse for V44: local closed polytope/source-range membership
+  APIs and mathlib compact image transport through
+  `ContinuousLinearMap.continuous`.
   Prior V16/V17 membership reducers remain available, but the live route should
   now use the V19 auto standard-path handoff instead of passing an external
-  `hxseq_mem` or per-step decrement premise.  Next proof target: source-facing
-  wrapper cleanup plus compactness discharge for
-  `chewi1316RangeCentralPathClosedFeasibleRange` from the existing source
-  compact/closed polytope hypotheses; do not re-open supplied minimizer,
-  central-path selector, or slack-floor premises.
+  `hxseq_mem` or per-step decrement premise.  Next proof target: promote this
+  to the final source theorem/report surface for Chewi Theorem 13.16, or derive
+  compact closed-polytope hypotheses from bounded closed polytope via the
+  already compiled proper-space compactness bridge; do not re-open supplied
+  minimizer, central-path selector, or slack-floor premises.
   Do not repeat
   large-parameter stopping/count, barrier-step from terminal feasibility, or
   the first-order/segment-integral/weighted-kernel/Riccati lower-model bridge

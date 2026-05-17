@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V43` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V44` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -243,6 +243,16 @@ The next source-facing route is to push this through the named standard-path
 wrappers and prove closed-feasible-range compactness from the existing
 closed/compact source hypotheses, rather than reintroducing supplied minimizer
 or slack-floor assumptions.
+The V44 packet completes that source-facing route:
+`chewi1316RangeCentralPathClosedFeasibleRange_eq_rangeRestrict_image_closedPolytopeSlackSet`,
+`chewi1316RangeCentralPathClosedFeasibleRange_isCompact_of_closedPolytope_isCompact`,
+the bounded-feasible/source/closed-source
+`*_exists_center_mainStageIndex_objective_gap_le_eps_of_closedFeasibleRangeCompact`
+wrappers, and
+`chewi1316_standardSourceMainStage_compactClosedPolytope_exists_center_mainStageIndex_objective_gap_le_eps_of_closedPolytopeCompact`.
+It reuses local closed-polytope membership bridges and mathlib compact image
+transport, so future Chapter 13 work should route through this compact
+closed-polytope endpoint instead of exposing selector or slack-floor premises.
 
 Cached predecessor route: the finite-row slack-range §13.16 handoff also
 compiles through source-pullback preliminary decrement transport and the
