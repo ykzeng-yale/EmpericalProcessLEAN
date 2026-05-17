@@ -10532,6 +10532,164 @@ theorem durrett2019_theorem_2_5_13_ratio_eventually_of_ratio_mono
         (a := a) ha_pos hratio_mono hr_pos hr_bounds.2
 
 /--
+Durrett 2019, Theorem 2.5.13 deterministic variance support: monotonicity of
+`a_n / n` turns each reciprocal-square cutoff into the textbook comparison
+`a_n^{-2} <= (m^2 / a_m^2) n^{-2}` for `m <= n`.
+-/
+theorem durrett2019_theorem_2_5_13_inv_sq_le_scaled_nat_inv_sq_of_ratio_mono
+    {a : ℕ -> ℝ} (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    {m n : ℕ} (hm_pos : 0 < m) (hmn : m ≤ n) :
+    ((a n) ^ 2)⁻¹ ≤
+      (((m : ℝ) ^ 2) / ((a m) ^ 2)) * (((n : ℝ) ^ 2)⁻¹) := by
+  have hn_pos : 0 < n := hm_pos.trans_le hmn
+  have hm_real_pos : 0 < (m : ℝ) := Nat.cast_pos.mpr hm_pos
+  have hn_real_pos : 0 < (n : ℝ) := Nat.cast_pos.mpr hn_pos
+  have ham_pos : 0 < a m := ha_pos m
+  have han_pos : 0 < a n := ha_pos n
+  have hratio :
+      (n : ℝ) / a n ≤ (m : ℝ) / a m :=
+    durrett2019_theorem_2_5_13_n_over_a_le_m_over_a_of_ratio_mono
+      (a := a) ha_pos hratio_mono hm_pos hmn
+  have hsq :
+      ((n : ℝ) / a n) ^ 2 ≤ ((m : ℝ) / a m) ^ 2 := by
+    exact
+      (sq_le_sq₀
+        (div_nonneg hn_real_pos.le han_pos.le)
+        (div_nonneg hm_real_pos.le ham_pos.le)).2 hratio
+  have hleft :
+      ((a n) ^ 2)⁻¹ =
+        (((n : ℝ) / a n) ^ 2) * (((n : ℝ) ^ 2)⁻¹) := by
+    field_simp [pow_two, ne_of_gt hn_real_pos, ne_of_gt han_pos]
+  calc
+    ((a n) ^ 2)⁻¹ =
+        (((n : ℝ) / a n) ^ 2) * (((n : ℝ) ^ 2)⁻¹) := hleft
+    _ ≤ (((m : ℝ) / a m) ^ 2) * (((n : ℝ) ^ 2)⁻¹) := by
+          exact mul_le_mul_of_nonneg_right hsq (inv_nonneg.2 (sq_nonneg _))
+    _ =
+        (((m : ℝ) ^ 2) / ((a m) ^ 2)) * (((n : ℝ) ^ 2)⁻¹) := by
+          rw [div_pow]
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic variance support: the finite
+version of the textbook tail estimate
+`sum_{n=m}^infty a_n^{-2} <= C * m * a_m^{-2}`.  The explicit constant here
+is `2`, coming from the existing p-series integral comparison.
+-/
+theorem durrett2019_theorem_2_5_13_inv_sq_Ico_sum_le_ratio_tail_of_ratio_mono
+    {a : ℕ -> ℝ} (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    {m M : ℕ} (hm : 1 ≤ m) :
+    (∑ n ∈ Finset.Ico m M, ((a n) ^ 2)⁻¹) ≤
+      2 * (m : ℝ) / ((a m) ^ 2) := by
+  let C : ℝ := ((m : ℝ) ^ 2) / ((a m) ^ 2)
+  have hm_pos : 0 < m := by omega
+  have hm_real_pos : 0 < (m : ℝ) := Nat.cast_pos.mpr hm_pos
+  have ham_pos : 0 < a m := ha_pos m
+  have hC_nonneg : 0 ≤ C := by
+    exact div_nonneg (sq_nonneg _) (sq_nonneg _)
+  have hterm :
+      (∑ n ∈ Finset.Ico m M, ((a n) ^ 2)⁻¹) ≤
+        ∑ n ∈ Finset.Ico m M, C * (((n : ℝ) ^ 2)⁻¹) := by
+    exact Finset.sum_le_sum fun n hn =>
+      durrett2019_theorem_2_5_13_inv_sq_le_scaled_nat_inv_sq_of_ratio_mono
+        (a := a) ha_pos hratio_mono hm_pos (Finset.mem_Ico.mp hn).1
+  have htail_raw :=
+    durrett2019_theorem_2_5_12_rpow_tail_Ico_sum_le_explicit
+      (q := (2 : ℝ)) (by norm_num) (n := m) (M := M) hm
+  have htail :
+      (∑ n ∈ Finset.Ico m M, (((n : ℝ) ^ 2)⁻¹)) ≤
+        2 * ((m : ℝ)⁻¹) := by
+    calc
+      (∑ n ∈ Finset.Ico m M, (((n : ℝ) ^ 2)⁻¹)) ≤
+          (1 + ((2 : ℝ) - 1)⁻¹) * (m : ℝ) ^ (1 - (2 : ℝ)) := by
+            simpa using htail_raw
+      _ = 2 * ((m : ℝ)⁻¹) := by
+            rw [show (1 : ℝ) - 2 = -1 by norm_num]
+            rw [Real.rpow_neg hm_real_pos.le (1 : ℝ)]
+            norm_num [Real.rpow_one]
+  calc
+    (∑ n ∈ Finset.Ico m M, ((a n) ^ 2)⁻¹) ≤
+        ∑ n ∈ Finset.Ico m M, C * (((n : ℝ) ^ 2)⁻¹) := hterm
+    _ = C * ∑ n ∈ Finset.Ico m M, (((n : ℝ) ^ 2)⁻¹) := by
+          rw [Finset.mul_sum]
+    _ ≤ C * (2 * ((m : ℝ)⁻¹)) := by
+          exact mul_le_mul_of_nonneg_left htail hC_nonneg
+    _ = 2 * (m : ℝ) / ((a m) ^ 2) := by
+          change
+            (((m : ℝ) ^ 2) / ((a m) ^ 2)) * (2 * ((m : ℝ)⁻¹)) =
+              2 * (m : ℝ) / ((a m) ^ 2)
+          field_simp [ne_of_gt hm_real_pos, ne_of_gt ham_pos]
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic variance support: shifted finite
+partial sums of the reciprocal-square tail are bounded by the same textbook
+constant as the corresponding `Ico` tail.
+-/
+theorem durrett2019_theorem_2_5_13_inv_sq_shift_range_sum_le_ratio_tail_of_ratio_mono
+    {a : ℕ -> ℝ} (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    {m N : ℕ} (hm : 1 ≤ m) :
+    (∑ j ∈ Finset.range N, ((a (j + m)) ^ 2)⁻¹) ≤
+      2 * (m : ℝ) / ((a m) ^ 2) := by
+  let f : ℕ -> ℝ := fun n => ((a n) ^ 2)⁻¹
+  calc
+    (∑ j ∈ Finset.range N, ((a (j + m)) ^ 2)⁻¹) =
+        ∑ j ∈ Finset.range N, ((a (m + j)) ^ 2)⁻¹ := by
+          refine Finset.sum_congr rfl fun j _hj => ?_
+          rw [Nat.add_comm]
+    _ =
+        ∑ n ∈ Finset.Ico m (N + m), ((a n) ^ 2)⁻¹ := by
+          rw [Finset.range_eq_Ico]
+          simpa [f, zero_add] using Finset.sum_Ico_add f 0 N m
+    _ ≤ 2 * (m : ℝ) / ((a m) ^ 2) :=
+        durrett2019_theorem_2_5_13_inv_sq_Ico_sum_le_ratio_tail_of_ratio_mono
+          (a := a) ha_pos hratio_mono hm
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic variance support: the shifted
+reciprocal-square tail is summable under the textbook monotonicity of
+`a_n / n`.
+-/
+theorem durrett2019_theorem_2_5_13_inv_sq_shift_summable_of_ratio_mono
+    {a : ℕ -> ℝ} (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    {m : ℕ} (hm : 1 ≤ m) :
+    Summable fun j : ℕ => ((a (j + m)) ^ 2)⁻¹ := by
+  refine summable_of_sum_range_le
+    (c := 2 * (m : ℝ) / ((a m) ^ 2)) ?nonneg ?hpartial
+  · intro j
+    exact inv_nonneg.2 (sq_nonneg _)
+  · intro N
+    exact
+      durrett2019_theorem_2_5_13_inv_sq_shift_range_sum_le_ratio_tail_of_ratio_mono
+        (a := a) ha_pos hratio_mono hm
+
+/--
+Durrett 2019, Theorem 2.5.13 deterministic variance support: infinite shifted
+version of Durrett's tail estimate
+`sum_{n=m}^infty a_n^{-2} <= 2 * m * a_m^{-2}`.
+-/
+theorem durrett2019_theorem_2_5_13_inv_sq_shift_tsum_le_ratio_tail_of_ratio_mono
+    {a : ℕ -> ℝ} (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    {m : ℕ} (hm : 1 ≤ m) :
+    (∑' j : ℕ, ((a (j + m)) ^ 2)⁻¹) ≤
+      2 * (m : ℝ) / ((a m) ^ 2) := by
+  refine Real.tsum_le_of_sum_range_le ?nonneg ?hpartial
+  · intro j
+    exact inv_nonneg.2 (sq_nonneg _)
+  · intro N
+    exact
+      durrett2019_theorem_2_5_13_inv_sq_shift_range_sum_le_ratio_tail_of_ratio_mono
+        (a := a) ha_pos hratio_mono hm
+
+/--
 Durrett 2019, Theorem 2.5.13 deterministic support: an antitone nonnegative
 tail sequence has each block `[kn, k(n+1))` bounded by `k` times its first
 selected subsequence value.

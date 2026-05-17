@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V463`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V464`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -107,6 +107,11 @@ V463 packages Durrett's textbook monotonicity of `a_n / n` into the
 eventual finite-annulus ratio estimate `(n/a_n) <= (r/a_r)`, and adds
 mean, moving-truncated, and original endpoint wrappers that consume the
 source-shaped `a_n / n` monotonicity hypothesis directly.
+V464 proves the deterministic reciprocal-square tail estimate used in the
+variance half of the proof: monotonicity of `a_n / n` gives
+`a_n^{-2} <= (m^2/a_m^2) n^{-2}`, finite `Ico` tails are bounded by
+`2*m/a_m^2`, and the corresponding shifted tail is summable with `tsum`
+bounded by the same constant.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -125,8 +130,14 @@ annulus-first-moment-to-identity-mass bridge, or the solved
 mass-weight-summable-to-shifted-tail-bound bridge, or the solved
 finite-prefix-identity(*) consumer, or the solved monotone-annulus
 finite-identity bridge, or the solved source mean/original endpoint bridge, or
-the solved ratio packaging from Durrett's `a_n / n` monotonicity.
-New compiled anchors through V463:
+the solved ratio packaging from Durrett's `a_n / n` monotonicity, or the
+solved reciprocal-square p-series/tail estimate.
+New compiled anchors through V464:
+`durrett2019_theorem_2_5_13_inv_sq_le_scaled_nat_inv_sq_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_inv_sq_Ico_sum_le_ratio_tail_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_inv_sq_shift_range_sum_le_ratio_tail_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_inv_sq_shift_summable_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_inv_sq_shift_tsum_le_ratio_tail_of_ratio_mono`,
 `durrett2019_theorem_2_5_13_n_over_a_le_m_over_a_of_ratio_mono`,
 `durrett2019_theorem_2_5_13_ratio_eventually_of_ratio_mono`,
 `durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_tail_summable_and_ratio_mono`,

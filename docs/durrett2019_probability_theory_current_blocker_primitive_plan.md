@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V463
+## Live In-Thread Goal Prompt V464
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -97,6 +97,11 @@ V463 packages Durrett's textbook monotonicity of `a_n / n` into the
 eventual finite-annulus ratio estimate `(n/a_n) <= (r/a_r)`, and adds
 mean, moving-truncated, and original endpoint wrappers that consume the
 source-shaped `a_n / n` monotonicity hypothesis directly.
+V464 proves the deterministic reciprocal-square tail estimate used in the
+variance half of the proof: monotonicity of `a_n / n` gives
+`a_n^{-2} <= (m^2/a_m^2) n^{-2}`, finite `Ico` tails are bounded by
+`2*m/a_m^2`, and the corresponding shifted tail is summable with `tsum`
+bounded by the same constant.
 Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
@@ -117,14 +122,28 @@ annulus-first-moment-to-identity-mass bridge, or the solved
 mass-weight-summable-to-shifted-tail-bound bridge, or the solved
 finite-prefix-identity(*) consumer, or the solved monotone-annulus
 finite-identity bridge, or the solved source mean/original endpoint bridge, or
-the solved ratio packaging from Durrett's `a_n / n` monotonicity.
+the solved ratio packaging from Durrett's `a_n / n` monotonicity, or the
+solved reciprocal-square p-series/tail estimate.
 Next aggressive target: prove the scalar truncated-square kernel majorization
-from identity(*) and ratio monotonicity, including the p-series/tail estimate
-`sum_{n=m}^infty a_n^{-2} <= C * m / a_m^2`, and then assemble the Feller
-dichotomy wrapper.
+from identity(*) and ratio monotonicity by using the V464 tail estimate to
+bound the pointwise kernel on each annulus, then package the annulus-index
+majorant as integrable from identity(*) and assemble the Feller dichotomy
+wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V464 proves the deterministic reciprocal-square
+p-series/tail estimate used in the convergent-half variance route.  New
+compiled anchors include:
+`durrett2019_theorem_2_5_13_inv_sq_le_scaled_nat_inv_sq_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_inv_sq_Ico_sum_le_ratio_tail_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_inv_sq_shift_range_sum_le_ratio_tail_of_ratio_mono`,
+`durrett2019_theorem_2_5_13_inv_sq_shift_summable_of_ratio_mono`, and
+`durrett2019_theorem_2_5_13_inv_sq_shift_tsum_le_ratio_tail_of_ratio_mono`.
+The remaining blocker is no longer the reciprocal-square tail estimate; it is
+the annulus-wise scalar truncated-square kernel majorization and its
+identity(*) integrable majorant packaging.
 
 Latest verified target V463 packages the finite-annulus ratio estimate from
 Durrett's source monotonicity of `a_n / n` and threads it through the
@@ -134,9 +153,9 @@ convergent-half endpoints.  New compiled anchors include:
 `durrett2019_theorem_2_5_13_truncatedMean_normalized_sum_tendsto_zero_of_tail_summable_and_ratio_mono`,
 `durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_ratio_mono`, and
 `durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_scalar_kernel_bound_tail_summable_and_ratio_mono`.
-The remaining blocker is no longer the source ratio hypothesis; it is the
-scalar truncated-square kernel majorization plus the p-series/tail estimate
-needed to instantiate the kernel bound from identity(*).
+The reciprocal-square tail estimate is discharged by V464; future cycles
+should use it for the annulus-wise scalar kernel bound, not reprove the
+p-series comparison.
 
 Latest verified target V462 plugs the V461 source mass summability into the
 convergent-half mean and original endpoint route.  New compiled anchors
