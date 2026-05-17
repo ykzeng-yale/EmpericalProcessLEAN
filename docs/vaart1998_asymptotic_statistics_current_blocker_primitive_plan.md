@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseTargetConsistencySource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetAverageSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -29,19 +29,29 @@ commonObservationCore theta + observationOffset observation` and a right
 inverse
 `commonObservationCore (commonObservationCoreRightInverse y) = y`, plus
 coordinate measurability of the common-core right inverse and the observation
-offset.  It also assumes convergence in probability of the common-core target
-`vaart1998PositiveCommonObservationCoreTarget observationOffset` and the local
-`edist` continuity condition that maps that target limit to `theta0`.  It
-derives consistency and coordinate measurability of the explicit inverse
+offset.  It assumes convergence in probability of the positive-sample
+observation-offset average `vaart1998PositiveObservationOffsetAverage
+observationOffset` and the local `edist` continuity condition that maps the
+negative offset mean to `theta0`.  It derives common-core target convergence,
+estimator consistency, and coordinate measurability of the explicit inverse
 estimator, proves the textbook finite estimating-equation identity internally,
 packages it as exact root-set membership, prepends `theta0` at sample size
 zero, applies the compiled exact-root-set Theorem 5.41 source endpoint, and
 then shifts the convergence-in-distribution conclusion back along `Nat.succ`.
 This removes the artificial `n = 0` left-inverse/root-uniqueness obstruction
-and no longer asks the caller to state estimator consistency, estimator
-coordinate measurability, root-set membership, or finite-sum zero directly.
+and no longer asks the caller to state common-core target convergence,
+estimator consistency, estimator coordinate measurability, root-set
+membership, or finite-sum zero directly.
 
-The newest target-consistency packet adds
+The newest offset-average packet adds
+`vaart1998PositiveObservationOffsetAverage`,
+`vaart1998_positiveCommonObservationCoreTarget_tendstoInMeasure_of_offsetAverage`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetAverageSource`.
+It moves the live consistency source to the LLN-shaped positive-sample
+offset-average convergence field.
+
+The previous target-consistency packet adds
 `vaart1998_tendstoInMeasure_continuousAt_const` in
 `StatInference/AsymptoticStatistics/Basic.lean`, the target definition
 `vaart1998PositiveCommonObservationCoreTarget`,
@@ -82,17 +92,18 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: discharge the common-core target convergence from a
-finite-coordinate LLN for `observationOffset`, convert a standard continuity
-or differentiability assumption into the local `edist` inverse-stability field,
-or instantiate the endpoint on a concrete estimating equation from the
-textbook. Do not route back to sample-size zero
+Next aggressive target: discharge the positive-sample offset-average
+convergence from a finite-coordinate LLN for `observationOffset`, convert a
+standard continuity or differentiability assumption into the local `edist`
+inverse-stability field at `-offsetMean`, or instantiate the endpoint on a
+concrete estimating equation from the textbook. Do not route back to
+sample-size zero
 inverses, arbitrary canonical-selector measurability, direct root uniqueness,
 raw finite-sum-map injectivity, a raw left inverse, aggregate finite-sample
 affine-display hypotheses, arbitrary observation-dependent cores, direct
 root-set membership, external finite-sum-zero assumptions, or estimator
-consistency/coordinate-measurability assumptions when the common-core
-right-inverse target-consistency route is available.
+consistency/coordinate-measurability/common-core-target assumptions when the
+common-core right-inverse offset-average route is available.
 
 The previous common-core packet adds
 `vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core

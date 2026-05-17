@@ -20,32 +20,40 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    instructions to replay.
 
 Current frontier: Theorem 5.41 now has a compiled positive-sample common-core
-right-inverse target-consistency source. It states the limit theorem for the explicit estimator
+right-inverse offset-average source. It states the limit theorem for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine display
 and a common-core right inverse, derives coordinate measurability of the
 explicit inverse estimator from primitive right-inverse and offset
-measurability, derives consistency from convergence in probability of the
-common-core target and local inverse stability, packages the finite equation as
-exact-root-set membership, prepends `theta0` at sample size zero, feeds the
-existing exact-root-set source endpoint, and shifts the distributional
-conclusion back along `Nat.succ`. This keeps the live route focused on actual
-positive sample sizes instead of forcing sample-size-zero inverse, uniqueness,
+measurability, derives target convergence from positive-sample offset-average
+convergence, derives consistency from target convergence and local inverse
+stability, packages the finite equation as exact-root-set membership, prepends
+`theta0` at sample size zero, feeds the existing exact-root-set source
+endpoint, and shifts the distributional conclusion back along `Nat.succ`.
+This keeps the live route focused on actual positive sample sizes instead of
+forcing sample-size-zero inverse, uniqueness, common-core target convergence,
 estimator consistency, estimator-coordinate measurability, direct
 root-set-membership, or external finite-sum-zero hypotheses.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseTargetConsistencySource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetAverageSource`.
 
 The newest wrapper adds
+`vaart1998PositiveObservationOffsetAverage`,
+`vaart1998_positiveCommonObservationCoreTarget_tendstoInMeasure_of_offsetAverage`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetAverageSource`.
+The next proof layer should prove the positive-sample offset-average
+convergence from the finite-coordinate LLN for `observationOffset` and package
+ordinary continuity of the right inverse into the local `edist`
+inverse-stability condition at `-offsetMean`.
+
+The previous wrapper adds
 `vaart1998_tendstoInMeasure_continuousAt_const`,
 `vaart1998PositiveCommonObservationCoreTarget`,
 `vaart1998_positiveCommonObservationCoreInverseEstimator_tendstoInMeasure_of_target`,
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseTargetConsistencySource`.
-The next proof layer should prove the target convergence from the
-finite-coordinate LLN for `observationOffset` and package ordinary continuity
-of the right inverse into the local `edist` inverse-stability condition.
 
 The previous wrapper adds
 `vaart1998_positiveCommonObservationCoreInverseEstimator_coordinate_measurable`

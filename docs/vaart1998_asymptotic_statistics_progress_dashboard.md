@@ -15,35 +15,42 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: positive-sample common-core right-inverse target
-consistency source for Theorem 5.41.  The live endpoint now states the
+Latest verified packet: positive-sample common-core right-inverse offset
+average source for Theorem 5.41.  The live endpoint now states the
 asymptotic-normality handoff for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine
 display and a right inverse for the common core, derives coordinate
 measurability of the explicit inverse estimator from primitive measurability
-of the right inverse and observation offset, derives consistency from
-convergence in probability of the common-core target plus local inverse
-stability, turns the finite equation into exact root-set membership, prepends
-`theta0` at sample size zero, reuses the existing exact-root-set Theorem 5.41
-source endpoint, and shifts the distributional conclusion back by `Nat.succ`.
-This removes the artificial sample-size-zero inverse/uniqueness obstruction
-plus the estimator-consistency, estimator-coordinate-measurability, direct
+of the right inverse and observation offset, derives target convergence from
+positive-sample offset-average convergence, derives consistency from that
+target convergence plus local inverse stability, turns the finite equation
+into exact root-set membership, prepends `theta0` at sample size zero, reuses
+the existing exact-root-set Theorem 5.41 source endpoint, and shifts the
+distributional conclusion back by `Nat.succ`.  This removes the artificial
+sample-size-zero inverse/uniqueness obstruction plus the common-core-target,
+estimator-consistency, estimator-coordinate-measurability, direct
 root-set-membership, and finite-sum-zero hypotheses from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseTargetConsistencySource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetAverageSource`.
 
-The new target-consistency packet adds
+The new offset-average packet adds
+`vaart1998PositiveObservationOffsetAverage`,
+`vaart1998_positiveCommonObservationCoreTarget_tendstoInMeasure_of_offsetAverage`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetAverageSource`.
+The next blocker is the finite-coordinate LLN for
+`vaart1998PositiveObservationOffsetAverage observationOffset` and packaging
+ordinary continuity/differentiability of the right inverse into the local
+`edist` inverse-stability field at `-offsetMean`.
+
+The previous target-consistency packet adds
 `vaart1998_tendstoInMeasure_continuousAt_const`,
 `vaart1998PositiveCommonObservationCoreTarget`,
 `vaart1998_positiveCommonObservationCoreInverseEstimator_tendstoInMeasure_of_target`,
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseTargetConsistencySource`.
-The next blocker is the LLN-shaped convergence of
-`vaart1998PositiveCommonObservationCoreTarget observationOffset` and packaging
-ordinary continuity/differentiability of the right inverse into the local
-`edist` inverse-stability field.
 
 The previous coordinate-source packet adds
 `vaart1998_positiveCommonObservationCoreInverseEstimator_coordinate_measurable`
