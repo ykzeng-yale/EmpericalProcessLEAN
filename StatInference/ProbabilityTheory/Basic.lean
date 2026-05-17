@@ -11002,6 +11002,58 @@ theorem durrett2019_theorem_2_5_13_ae_forall_real_frequently_oneBased_partial_su
       (hscaled_meas k hk) (hscaled_indep k hk)
 
 /--
+Durrett 2019, Theorem 2.5.13 divergent-half support: frequent largeness above
+every real bound is exactly the one-sided extended-real `limsup = +∞` display.
+-/
+theorem durrett2019_theorem_2_5_13_ereal_limsup_eq_top_of_frequently_above_real
+    {u : ℕ -> ℝ}
+    (habove : ∀ B : ℝ, ∃ᶠ n in atTop, B ≤ u n) :
+    limsup (fun n : ℕ => (u n : EReal)) atTop = ⊤ := by
+  exact (EReal.eq_top_iff_forall_lt _).2 fun y => by
+    have hle : ((y + 1 : ℝ) : EReal) ≤
+        limsup (fun n : ℕ => (u n : EReal)) atTop := by
+      exact Filter.le_limsup_of_frequently_le' ((habove (y + 1)).mono fun _ hn => by
+        exact EReal.coe_le_coe_iff.mpr hn)
+    have hlt : (y : EReal) < ((y + 1 : ℝ) : EReal) :=
+      EReal.coe_lt_coe_iff.mpr (lt_add_one y)
+    exact lt_of_lt_of_le hlt hle
+
+/--
+Durrett 2019, Theorem 2.5.13 divergent-half support: the uniform-in-`k`
+tail-series hypotheses imply the source-facing extended-real
+`limsup |S_n| / a_n = +∞` display for one-based partial sums.
+-/
+theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_top_of_tail_tsum_eq_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_pos : ∀ n : ℕ, 0 < a n)
+    (ha_mono : Monotone a)
+    (htail_mono : Antitone fun n : ℕ => (P {ω : Ω | a n ≤ |X0 ω|}).toReal)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_top : (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) = ∞)
+    (hscaled_tail_law : ∀ k : ℕ, 0 < k -> ∀ n : ℕ,
+      P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|} =
+        P {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X0 ω|})
+    (hscaled_meas : ∀ k : ℕ, 0 < k -> ∀ n : ℕ,
+      MeasurableSet {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|})
+    (hscaled_indep : ∀ k : ℕ, 0 < k ->
+      _root_.ProbabilityTheory.iIndepSet
+        (fun n : ℕ => {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|}) P) :
+    ∀ᵐ ω ∂P,
+      limsup
+        (fun n : ℕ => ((|∑ i ∈ Finset.range n, X (i + 1) ω| / a n : ℝ) : EReal))
+        atTop = ⊤ := by
+  have habove :=
+    durrett2019_theorem_2_5_13_ae_forall_real_frequently_oneBased_partial_sum_large_of_tail_tsum_eq_top
+      (P := P) (X := X) (X0 := X0) (a := a) ha_pos ha_mono htail_mono
+      hratio_mono htail_top hscaled_tail_law hscaled_meas hscaled_indep
+  filter_upwards [habove] with ω hω
+  exact
+    durrett2019_theorem_2_5_13_ereal_limsup_eq_top_of_frequently_above_real
+      (u := fun n : ℕ => |∑ i ∈ Finset.range n, X (i + 1) ω| / a n) hω
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

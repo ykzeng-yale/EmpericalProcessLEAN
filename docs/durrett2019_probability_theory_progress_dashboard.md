@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V445` in
+Route from `Live In-Thread Goal Prompt V446` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -44,13 +44,16 @@ one-based normalized partial sums at level `k / 2`.  V444 adds the
 deterministic bridge from all positive integer half-thresholds to frequent
 largeness above every real bound.  V445 aggregates the fixed-`k` a.e.
 statements over the countable positive integer scales and packages the
-uniform-in-`k` Durrett source wrapper.  The next source work is the formal
-`limsup_n |S_n| / a_n = ∞` endpoint for the divergent half, then the
-source-facing Feller dichotomy wrapper.  Do not route back into solved Theorem
-2.5.12 plumbing, the solved Theorem 2.5.13 tail-series transfer, the solved
-fixed-`k` Borel-Cantelli partial-sum bridge, the solved integer-to-real
-threshold bridge, or the solved countable a.e. all-threshold wrapper.  New
-compiled anchors through V445:
+uniform-in-`k` Durrett source wrapper.  V446 packages the result as the formal
+extended-real `limsup_n |S_n| / a_n = +∞` endpoint for the divergent half.  The
+next source work is the source-facing Feller dichotomy wrapper.  Do not route
+back into solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13
+tail-series transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge,
+the solved integer-to-real threshold bridge, the solved countable a.e.
+all-threshold wrapper, or the solved extended-real limsup display.  New
+compiled anchors through V446:
+`durrett2019_theorem_2_5_13_ereal_limsup_eq_top_of_frequently_above_real`,
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_top_of_tail_tsum_eq_top`,
 `durrett2019_theorem_2_5_13_ae_frequently_above_real_of_ae_frequently_nat_halves`,
 `durrett2019_theorem_2_5_13_ae_forall_real_frequently_oneBased_partial_sum_large_of_tail_tsum_eq_top`,
 `durrett2019_theorem_2_5_13_frequently_above_real_of_frequently_nat_halves`,
