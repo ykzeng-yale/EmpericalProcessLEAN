@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V483
+## Live In-Thread Goal Prompt V484
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -21,7 +21,8 @@ Glivenko-Cantelli source-entry/canonical-iid wrappers through V390, the full
 2.5.13 infinite-mean lane through V476, the 2.1.12 separated product
 expectation wrappers through V479, the 2.1.13 finite product expectation
 wrappers through V482, and V483's finite-dimensional infinite-product
-restriction/cylinder probability wrappers.
+restriction/cylinder probability wrappers.  V484 adds one-based finite-prefix
+cylinder probability wrappers from iid source hypotheses.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -29,7 +30,19 @@ source-facing 2.4.9 display only if search proves it is absent; otherwise add
 the next Chapter 2.1 product-law/product-expectation wrapper that directly
 supports 2.4.9 or the adjacent Kolmogorov-maximal route.  Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
-infinite-product restriction/cylinder wrappers, or old app-level stale prompts.
+infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
+cylinder source wrappers, or old app-level stale prompts.
+
+Latest verified target V484 adds the one-based finite-prefix source branch of
+Durrett Theorem 2.1.11:
+`durrett2019_theorem_2_1_11_iid_range_cylinder_prob_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_shift_range_cylinder_prob_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_oneBased_Icc_cylinder_prob_of_iIndepFun`, and
+`durrett2019_theorem_2_1_11_iid_oneBased_Icc_cylinder_prob_of_identDistrib`.
+These wrappers compose V483's finite-cylinder product law with the existing
+iid/shift/identically-distributed source constructors, so Durrett-style
+`X_1, ..., X_n` cylinder probability displays can be used directly from source
+independence and marginal-law hypotheses.
 
 Latest verified target V483 adds the finite-dimensional product-law/cylinder
 branch of Durrett Theorem 2.1.11:
@@ -4383,6 +4396,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V483` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V484` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

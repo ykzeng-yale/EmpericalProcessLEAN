@@ -1112,6 +1112,100 @@ theorem durrett2019_theorem_2_1_11_iid_shift_hasLaw_infinitePi_of_identDistrib
     hindep
 
 /--
+Durrett 2019, Theorem 2.1.11, iid finite prefix cylinder probabilities from
+source independence and marginal-law hypotheses.
+-/
+theorem durrett2019_theorem_2_1_11_iid_range_cylinder_prob_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S} {A : ℕ -> Set S}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) (hA : ∀ i, i ∈ Finset.range n -> MeasurableSet (A i)) :
+    μ {ω | ∀ i, i ∈ Finset.range n -> X i ω ∈ A i} =
+      ∏ i ∈ Finset.range n, ν (A i) := by
+  have hJoint :
+      _root_.ProbabilityTheory.HasLaw (fun ω => fun i : ℕ => X i ω)
+        (Measure.infinitePi fun _ : ℕ => ν) μ :=
+    durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi hLaw hindep
+  exact
+    durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_range_cylinder_prob
+      (hJoint := hJoint) n hA
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based iid finite prefix cylinder
+probabilities from source independence and marginal-law hypotheses.
+
+The source variables are indexed as `X (i + 1)`, matching Durrett's
+`X_1, X_2, ...` convention while keeping the finite product indexed by
+`Finset.range n`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_shift_range_cylinder_prob_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S} {A : ℕ -> Set S}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) (hA : ∀ i, i ∈ Finset.range n -> MeasurableSet (A i)) :
+    μ {ω | ∀ i, i ∈ Finset.range n -> X (i + 1) ω ∈ A i} =
+      ∏ i ∈ Finset.range n, ν (A i) := by
+  have hJoint :
+      _root_.ProbabilityTheory.HasLaw
+        (fun ω => fun i : ℕ => X (i + 1) ω)
+        (Measure.infinitePi fun _ : ℕ => ν) μ :=
+    durrett2019_theorem_2_1_11_iid_shift_hasLaw_infinitePi_of_iIndepFun
+      (X := X) hLaw hindep
+  exact
+    durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_range_cylinder_prob
+      (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      (A := A) (hJoint := hJoint) n hA
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based iid finite cylinder probabilities on
+the literal index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_11_iid_oneBased_Icc_cylinder_prob_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S} {A : ℕ -> Set S}
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) ν μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) (hA : ∀ i, i ∈ Finset.Icc 1 n -> MeasurableSet (A i)) :
+    μ {ω | ∀ i, i ∈ Finset.Icc 1 n -> X i ω ∈ A i} =
+      ∏ i ∈ Finset.Icc 1 n, ν (A i) := by
+  have hJoint :
+      _root_.ProbabilityTheory.HasLaw (fun ω => fun i : ℕ => X i ω)
+        (Measure.infinitePi fun _ : ℕ => ν) μ :=
+    durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi hLaw hindep
+  exact
+    durrett2019_theorem_2_1_11_iid_hasLaw_infinitePi_finite_cylinder_prob
+      (hJoint := hJoint) (s := Finset.Icc 1 n) hA
+
+/--
+Durrett 2019, Theorem 2.1.11, one-based iid finite cylinder probabilities from
+the common identical-distribution source shape.
+-/
+theorem durrett2019_theorem_2_1_11_iid_oneBased_Icc_cylinder_prob_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> S} {A : ℕ -> Set S}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X)
+    (n : ℕ) (hA : ∀ i, i ∈ Finset.Icc 1 n -> MeasurableSet (A i)) :
+    μ {ω | ∀ i, i ∈ Finset.Icc 1 n -> X i ω ∈ A i} =
+      ∏ i ∈ Finset.Icc 1 n, ν (A i) :=
+  durrett2019_theorem_2_1_11_iid_oneBased_Icc_cylinder_prob_of_iIndepFun
+    (X := X)
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep n hA
+
+/--
 Durrett 2019, Theorem 2.1.12 product-measure/Fubini form.
 
 This is the reusable product-measure integral identity behind the independent

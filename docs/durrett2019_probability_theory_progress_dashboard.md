@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V483` in
+Route from `Live In-Thread Goal Prompt V484` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -47,7 +47,8 @@ adds the law-side finite-product expectation and iid power branch of Theorem
 power branch of Theorem 2.1.13; V482 adds the law-side real nonnegative
 `ENNReal.ofReal` finite-product and iid power branch of Theorem 2.1.13; V483
 adds finite-dimensional infinite-product restriction and finite-cylinder
-probability wrappers for Theorem 2.1.11.  The
+probability wrappers for Theorem 2.1.11; V484 adds one-based finite-prefix
+cylinder probability wrappers from iid source hypotheses.  The
 historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
 V443 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.
