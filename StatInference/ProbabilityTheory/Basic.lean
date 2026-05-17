@@ -15469,6 +15469,28 @@ theorem durrett2019_theorem_2_5_13_tendsto_atTop_of_n_over_a_tendsto_zero
     exact hb_le_bn.trans hbn_lt_a.le
 
 /--
+Durrett 2019, Theorem 2.5.13 source-growth support: the textbook growth
+condition `a_n / n -> ∞` implies the reciprocal condition consumed by the
+compiled convergent branch.
+-/
+theorem durrett2019_theorem_2_5_13_n_over_a_tendsto_zero_of_ratio_tendsto_atTop
+    {a : ℕ -> ℝ}
+    (ha_pos : ∀ n : ℕ, 0 < a n)
+    (hratio_atTop :
+      Tendsto (fun n : ℕ => a n / (n : ℝ)) atTop atTop) :
+    Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0) := by
+  have hinv :
+      Tendsto (fun n : ℕ => (a n / (n : ℝ))⁻¹) atTop (𝓝 0) :=
+    hratio_atTop.inv_tendsto_atTop
+  refine hinv.congr' ?_
+  refine eventually_atTop.2 ⟨1, ?_⟩
+  intro n hn
+  have hn_ne : (n : ℝ) ≠ 0 := by
+    exact_mod_cast (ne_of_gt hn)
+  have ha_ne : a n ≠ 0 := (ha_pos n).ne'
+  field_simp [hn_ne, ha_ne]
+
+/--
 Durrett 2019, Theorem 2.5.13 source-growth support: divergence of `a_n`
 implies divergence of the shifted normalizer `a_{n+1}`.
 -/
@@ -15553,6 +15575,39 @@ theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_
       hX_indep hX_meas hX0_meas hX_ident ha_pos ha_mono
       ha_increment_nonneg ha_atTop ha_shift_atTop hn_over_a_tendsto_zero
       hratio_mono htail_summable
+
+/--
+Durrett 2019, Theorem 2.5.13 convergent half in iid source form with the
+growth side condition stated as the textbook limit `a_n / n -> ∞`.
+-/
+theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono_of_ratio_tendsto_atTop
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (hratio_atTop :
+      Tendsto (fun n : ℕ => a n / (n : ℝ)) atTop atTop)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    ∀ᵐ ω ∂P,
+      limsup
+        (fun n : ℕ => ((|∑ k ∈ Finset.range n, X (k + 1) ω| / a n : ℝ) : EReal))
+        atTop = 0 := by
+  have hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0) :=
+    durrett2019_theorem_2_5_13_n_over_a_tendsto_zero_of_ratio_tendsto_atTop
+      (a := a) ha_pos hratio_atTop
+  exact
+    durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono_of_n_over_a_tendsto_zero
+      (P := P) (X := X) (X0 := X0) (a := a)
+      hX_indep hX_meas hX0_meas hX_ident ha_pos ha_mono
+      hn_over_a_tendsto_zero hratio_mono htail_summable
 
 /--
 Durrett 2019, Theorem 2.5.13 Feller dichotomy assembly.  The convergent and
@@ -15646,6 +15701,46 @@ theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_d
       durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_top_of_iid_tail_tsum_eq_top
         (P := P) (X := X) (X0 := X0) (a := a)
         hX_indep hX_meas hX_ident ha_pos ha_mono htail_mono hratio_mono htail_top
+
+/--
+Durrett 2019, Theorem 2.5.13 Feller dichotomy assembly with the convergent
+growth side condition stated as the textbook limit `a_n / n -> ∞`.
+-/
+theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_annulusKernelMajorant_tail_summable_or_tail_tsum_top_and_ratio_mono_of_ratio_tendsto_atTop
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (hratio_atTop :
+      Tendsto (fun n : ℕ => a n / (n : ℝ)) atTop atTop)
+    (htail_mono : Antitone fun n : ℕ => (P {ω : Ω | a n ≤ |X0 ω|}).toReal)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ)) :
+    (Summable (fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) ->
+      ∀ᵐ ω ∂P,
+        limsup
+          (fun n : ℕ =>
+            ((|∑ k ∈ Finset.range n, X (k + 1) ω| / a n : ℝ) : EReal))
+          atTop = 0) ∧
+    ((∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) = ∞ ->
+      ∀ᵐ ω ∂P,
+        limsup
+          (fun n : ℕ =>
+            ((|∑ k ∈ Finset.range n, X (k + 1) ω| / a n : ℝ) : EReal))
+          atTop = ⊤) := by
+  have hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0) :=
+    durrett2019_theorem_2_5_13_n_over_a_tendsto_zero_of_ratio_tendsto_atTop
+      (a := a) ha_pos hratio_atTop
+  exact
+    durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_annulusKernelMajorant_tail_summable_or_tail_tsum_top_and_ratio_mono_of_n_over_a_tendsto_zero
+      (P := P) (X := X) (X0 := X0) (a := a)
+      hX_indep hX_meas hX0_meas hX_ident ha_pos ha_mono
+      hn_over_a_tendsto_zero htail_mono hratio_mono
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the

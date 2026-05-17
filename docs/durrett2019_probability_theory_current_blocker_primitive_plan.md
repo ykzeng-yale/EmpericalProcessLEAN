@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V472
+## Live In-Thread Goal Prompt V473
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -145,6 +145,10 @@ V472 removes the easiest remaining explicit growth hypotheses from the
 convergent branch and final assembly: monotonicity of `a_n` supplies increment
 nonnegativity, `n / a_n -> 0` plus positivity supplies `a_n -> infinity`, and
 shifted divergence follows from `a_n -> infinity`.
+V473 packages Durrett's textbook growth display itself into the compiled
+route: `a_n / n -> infinity` implies `n / a_n -> 0`, and the convergent half
+plus final Feller dichotomy now have source wrappers consuming
+`Tendsto (fun n => a n / n) atTop atTop` directly.
 Do not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -172,16 +176,27 @@ solved concrete annulus-series majorant pointwise/endpoint wrappers, or the
 solved concrete majorant integrability bridge from identity(*) mass weights,
 or the solved convergent-half extended-real display wrapper, or the solved
 two-branch Feller dichotomy assembly, or the solved easy growth cleanup from
-monotonicity and `n / a_n -> 0`.
+monotonicity and `n / a_n -> 0`, or the solved source-growth wrapper from
+`a_n / n -> infinity` to `n / a_n -> 0`.
 Next aggressive target: prove the textbook infinite-mean growth handoff that
 finite tail summability plus monotone `a_n / n` and `E|X_1| = infinity`
-force `a_n / n -> infinity` (equivalently `n / a_n -> 0`) in the source shape
-needed by the V472 Feller dichotomy assembly.  Do not return to scalar kernel,
-annulus mass, majorant integrability, display-wrapper, branch-combination, or
-easy growth plumbing.
+force `a_n / n -> infinity`, then feed the V473 source-growth wrappers.  Do
+not return to scalar kernel, annulus mass, majorant integrability,
+display-wrapper, branch-combination, reciprocal-growth conversion, or easy
+growth plumbing.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V473 adds textbook source-growth wrappers:
+`durrett2019_theorem_2_5_13_n_over_a_tendsto_zero_of_ratio_tendsto_atTop`,
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono_of_ratio_tendsto_atTop`,
+and
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_annulusKernelMajorant_tail_summable_or_tail_tsum_top_and_ratio_mono_of_ratio_tendsto_atTop`.
+The remaining blocker is the true textbook infinite-mean implication
+`finite tail summability + monotone a_n / n + E|X_1| = infinity ->
+a_n / n -> infinity`, not any reciprocal-growth conversion or endpoint
+assembly.
 
 Latest verified target V472 adds source-growth cleanup anchors:
 `durrett2019_theorem_2_5_13_increment_nonneg_of_monotone`,
@@ -190,8 +205,7 @@ Latest verified target V472 adds source-growth cleanup anchors:
 `durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono_of_n_over_a_tendsto_zero`,
 and
 `durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_annulusKernelMajorant_tail_summable_or_tail_tsum_top_and_ratio_mono_of_n_over_a_tendsto_zero`.
-The remaining blocker is the textbook infinite-mean implication
-`a_n / n -> infinity`, not the mechanical growth facts derived from
+This blocker is closed; do not reopen mechanical growth facts derived from
 `n / a_n -> 0`.
 
 Latest verified target V471 adds the two-branch theorem assembly
@@ -4415,6 +4429,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V472` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V473` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
