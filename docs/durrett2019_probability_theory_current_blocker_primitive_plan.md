@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V446
+## Live In-Thread Goal Prompt V447
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -23,17 +23,33 @@ bridge.  V445 aggregates the fixed-`k` a.e. statements over the countable
 positive integer scales and packages the uniform-in-`k` Durrett source wrapper
 that gives a.e. frequent largeness above every real bound.  V446 packages this
 as the formal extended-real divergent-half display
-`limsup_n |S_n| / a_n = +∞`.  Do not reroute to solved
+`limsup_n |S_n| / a_n = +∞`.  V447 removes the remaining manual scaled-tail
+plumbing for the divergent half by deriving the scaled-tail law from
+`IdentDistrib`, the scaled-tail event measurability from Borel threshold
+measurability, and the scaled-tail event independence from `iIndepFun`.  Do
+not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
 the solved fixed-`k` Borel-Cantelli partial-sum bridge, or the solved
 integer-to-real threshold bridge, or the solved countable a.e. all-threshold
-wrapper, or the solved extended-real limsup display.  Next aggressive target:
-connect this divergent-half endpoint to the source-facing Feller dichotomy
-wrapper.
+wrapper, or the solved extended-real limsup display, or the solved iid
+divergent-half scaled-tail plumbing.  Next aggressive target: prove the
+convergent-half source wrapper for Theorem 2.5.13 and then assemble the
+source-facing Feller dichotomy wrapper.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V447 adds the iid source wrapper for the divergent half
+of Durrett Theorem 2.5.13.  New compiled anchors:
+`durrett2019_theorem_2_5_13_real_scaled_abs_threshold_measurable`,
+`durrett2019_theorem_2_5_13_scaled_tail_law_of_identDistrib`,
+`durrett2019_theorem_2_5_13_scaled_tail_iIndepSet_of_iIndepFun`, and
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_top_of_iid_tail_tsum_eq_top`.
+They instantiate the V446 endpoint from iid hypotheses, so future cycles should
+not ask for manual uniform scaled-tail law/measurability/independence
+assumptions in the divergent branch.  The remaining blocker is the convergent
+branch and final dichotomy packaging.
 
 Latest verified target V446 adds the formal extended-real divergent-half
 limsup endpoint for Theorem 2.5.13.  New compiled anchors:

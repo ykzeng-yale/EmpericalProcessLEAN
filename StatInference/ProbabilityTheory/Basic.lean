@@ -11054,6 +11054,118 @@ theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_top_o
       (u := fun n : ℕ => |∑ i ∈ Finset.range n, X (i + 1) ω| / a n) hω
 
 /--
+Durrett 2019, Theorem 2.5.13 source support: scaled absolute-value threshold
+sets on the real line are Borel measurable.
+-/
+theorem durrett2019_theorem_2_5_13_real_scaled_abs_threshold_measurable
+    {c : ℝ} :
+    MeasurableSet {x : ℝ | c ≤ |x|} := by
+  exact measurableSet_le measurable_const measurable_abs
+
+/--
+Durrett 2019, Theorem 2.5.13 source support: identical distribution transfers
+the scaled sample-tail probability to the reference marginal law.
+-/
+theorem durrett2019_theorem_2_5_13_scaled_tail_law_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {Y X0 : Ω -> ℝ} {c : ℝ}
+    (hYX : _root_.ProbabilityTheory.IdentDistrib Y X0 P P) :
+    P {ω : Ω | c ≤ |Y ω|} = P {ω : Ω | c ≤ |X0 ω|} := by
+  have hset :
+      MeasurableSet {x : ℝ | c ≤ |x|} :=
+    durrett2019_theorem_2_5_13_real_scaled_abs_threshold_measurable
+      (c := c)
+  simpa [Set.preimage] using hYX.measure_mem_eq hset
+
+/--
+Durrett 2019, Theorem 2.5.13 source support: iid variables make every fixed
+scaled sample-tail event sequence independent.  This packages the Mathlib
+`iIndepFun`/comap machinery needed by the Borel-Cantelli endpoint.
+-/
+theorem durrett2019_theorem_2_5_13_scaled_tail_iIndepSet_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {a : ℕ -> ℝ} {k : ℕ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ n : ℕ, Measurable (X n)) :
+    _root_.ProbabilityTheory.iIndepSet
+      (fun n : ℕ => {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|}) P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun n : ℕ => fun ω : Ω => X (n + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  have hShift_iIndep :
+      _root_.ProbabilityTheory.iIndep
+        (fun n : ℕ =>
+          MeasurableSpace.comap (fun ω : Ω => X (n + 1) ω)
+            (inferInstance : MeasurableSpace ℝ)) P :=
+    hShift_indep.iIndep
+  have hπ :
+      _root_.ProbabilityTheory.iIndepSets
+        (fun n : ℕ =>
+          {s : Set Ω |
+            MeasurableSet[
+              MeasurableSpace.comap (fun ω : Ω => X (n + 1) ω)
+                (inferInstance : MeasurableSpace ℝ)] s}) P :=
+    hShift_iIndep.iIndepSets'
+  refine
+    _root_.ProbabilityTheory.iIndepSets.iIndepSet_of_mem
+      (μ := P)
+      (π := fun n : ℕ =>
+        {s : Set Ω |
+          MeasurableSet[
+            MeasurableSpace.comap (fun ω : Ω => X (n + 1) ω)
+              (inferInstance : MeasurableSpace ℝ)] s})
+      (f := fun n : ℕ =>
+        {ω : Ω | (k : ℝ) * a (n + 1) ≤ |X (n + 1) ω|}) ?_ ?_ hπ
+  · intro n
+    exact (MeasurableSpace.measurableSet_comap).2
+      ⟨{x : ℝ | (k : ℝ) * a (n + 1) ≤ |x|},
+        durrett2019_theorem_2_5_13_real_scaled_abs_threshold_measurable,
+        rfl⟩
+  · intro n
+    exact measurableSet_le measurable_const ((hX_meas (n + 1)).abs)
+
+/--
+Durrett 2019, Theorem 2.5.13 divergent half in iid source form.  For iid
+variables, the already-proved divergent tail-series endpoint needs only the
+textbook tail-series, monotonicity, and normalization assumptions; the
+scaled-tail law, measurability, and independence hypotheses are derived here.
+-/
+theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_top_of_iid_tail_tsum_eq_top
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ n : ℕ, Measurable (X n))
+    (hX_ident : ∀ n : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X n) X0 P P)
+    (ha_pos : ∀ n : ℕ, 0 < a n)
+    (ha_mono : Monotone a)
+    (htail_mono : Antitone fun n : ℕ => (P {ω : Ω | a n ≤ |X0 ω|}).toReal)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_top : (∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) = ∞) :
+    ∀ᵐ ω ∂P,
+      limsup
+        (fun n : ℕ => ((|∑ i ∈ Finset.range n, X (i + 1) ω| / a n : ℝ) : EReal))
+        atTop = ⊤ := by
+  refine
+    durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_top_of_tail_tsum_eq_top
+      (P := P) (X := X) (X0 := X0) (a := a) ha_pos ha_mono htail_mono
+      hratio_mono htail_top ?_ ?_ ?_
+  · intro k _hk n
+    exact
+      durrett2019_theorem_2_5_13_scaled_tail_law_of_identDistrib
+        (P := P) (Y := X (n + 1)) (X0 := X0)
+        (c := (k : ℝ) * a (n + 1)) (hX_ident (n + 1))
+  · intro k _hk n
+    exact measurableSet_le measurable_const ((hX_meas (n + 1)).abs)
+  · intro k _hk
+    exact
+      durrett2019_theorem_2_5_13_scaled_tail_iIndepSet_of_iIndepFun
+        (P := P) (X := X) (a := a) (k := k) hX_indep hX_meas
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

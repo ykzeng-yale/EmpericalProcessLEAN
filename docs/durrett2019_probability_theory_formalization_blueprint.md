@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V446`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V447`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -43,13 +43,19 @@ deterministic bridge from all positive integer half-thresholds to frequent
 largeness above every real bound.  V445 aggregates the fixed-`k` a.e.
 statements over the countable positive integer scales and packages the
 uniform-in-`k` Durrett source wrapper.  V446 packages the result as the formal
-extended-real `limsup_n |S_n| / a_n = +∞` endpoint for the divergent half.  The
-next source work is the source-facing Feller dichotomy wrapper.  Do not route
-back into solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13
-tail-series transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge,
-the solved integer-to-real threshold bridge, the solved countable a.e.
-all-threshold wrapper, or the solved extended-real limsup display.  New
-compiled anchors through V446:
+extended-real `limsup_n |S_n| / a_n = +∞` endpoint for the divergent half.
+V447 derives the divergent branch's scaled-tail law, measurability, and event
+independence from iid source hypotheses.  The next source work is the
+convergent-half wrapper and then the source-facing Feller dichotomy wrapper.
+Do not route back into solved Theorem 2.5.12 plumbing, the solved Theorem
+2.5.13 tail-series transfer, the solved fixed-`k` Borel-Cantelli partial-sum
+bridge, the solved integer-to-real threshold bridge, the solved countable a.e.
+all-threshold wrapper, the solved extended-real limsup display, or the solved
+iid divergent-half scaled-tail plumbing.  New compiled anchors through V447:
+`durrett2019_theorem_2_5_13_real_scaled_abs_threshold_measurable`,
+`durrett2019_theorem_2_5_13_scaled_tail_law_of_identDistrib`,
+`durrett2019_theorem_2_5_13_scaled_tail_iIndepSet_of_iIndepFun`,
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_top_of_iid_tail_tsum_eq_top`,
 `durrett2019_theorem_2_5_13_ereal_limsup_eq_top_of_frequently_above_real`,
 `durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_top_of_tail_tsum_eq_top`,
 `durrett2019_theorem_2_5_13_ae_frequently_above_real_of_ae_frequently_nat_halves`,
