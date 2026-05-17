@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V468
+## Live In-Thread Goal Prompt V469
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -123,6 +123,15 @@ support and summability when `a_n -> infinity`, proves its nonnegativity and
 prefix/annulus domination properties, and adds base-variance plus
 moving/original endpoint wrappers where the only remaining majorant-side input
 is integrability of this concrete majorant composed with `X_0`.
+V469 proves that remaining concrete-majorant integrability bridge: each
+composed annulus term is measurable and integrable, its integral norm is
+exactly `2*m` times the half-open annulus mass, identity(*) mass-weight
+summability makes those integral norms summable, `lintegral_tsum` and
+`lintegral_ofReal_ne_top_iff_integrable` prove integrability of the real
+annulus series, and the full concrete majorant is now integrable from finite
+tail summability through the existing monotone annulus mass bridge.  The
+moving-truncated and original endpoints now have wrappers with no external
+majorant-integrability hypothesis.
 Do
 not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
@@ -147,16 +156,34 @@ the solved ratio packaging from Durrett's `a_n / n` monotonicity, or the
 solved reciprocal-square p-series/tail estimate, or the solved annulus-wise
 scalar-kernel bound, or the solved low-prefix scalar-kernel bound, or the
 solved prefix-plus-annulus pointwise majorant and endpoint handoff, or the
-solved concrete annulus-series majorant pointwise/endpoint wrappers.
-Next aggressive target: prove integrability of
-`fun omega => annulusKernelMajorant a (X0 omega)` from identity(*) mass-weight
-summability plus finite base tail summability, using Bochner
-`integral_tsum_of_summable_integral_norm` or an equivalent lintegral/Fubini
-argument over the half-open annulus indicators.  Then instantiate the V468
-endpoint wrappers and assemble the Feller dichotomy wrapper.
+solved concrete annulus-series majorant pointwise/endpoint wrappers, or the
+solved concrete majorant integrability bridge from identity(*) mass weights.
+Next aggressive target: assemble the convergent-half theorem source wrapper
+for Durrett 2.5.13 using the V469 concrete-majorant endpoint, then combine it
+with the already compiled divergent-half limsup endpoint into the Feller
+dichotomy statement.  If exact statement packaging exposes a missing side
+condition, prove only that side condition; do not return to scalar kernel,
+annulus mass, or majorant-integrability plumbing.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V469 discharges the concrete annulus-series majorant
+integrability blocker and removes the external `hg_int` hypothesis from the
+convergent-half concrete-majorant endpoints.  New compiled anchors include:
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_measurable_comp`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integrable_comp`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integral_comp_eq`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integral_norm_comp_eq`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integral_norm_summable_of_mass_weight_summable`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant_series_aestronglyMeasurable_comp`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant_series_integrable_comp_of_mass_weight_summable`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant_integrable_comp_of_mass_weight_summable`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono`, and
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono`.
+The remaining blocker is no longer majorant integrability; it is exact
+source-level packaging of the convergent-half endpoint and final Feller
+dichotomy assembly.
 
 Latest verified target V468 defines and packages the concrete annulus-series
 majorant.  New compiled anchors include:

@@ -13685,6 +13685,290 @@ theorem durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_summable
       (a := a) ha_atTop x)
 
 /--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: each annulus-series
+term remains measurable after composition with the base random variable.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_measurable_comp
+    {Ω : Type u} [MeasurableSpace Ω] {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX0_meas : Measurable X0) (m : ℕ) :
+    Measurable fun ω : Ω =>
+      durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m := by
+  let A : Set Ω := {ω : Ω | a (m - 1) ≤ |X0 ω| ∧ |X0 ω| < a m}
+  have hA : MeasurableSet A :=
+    (measurableSet_le measurable_const hX0_meas.abs).inter
+      (measurableSet_lt hX0_meas.abs measurable_const)
+  have hfun :
+      (fun ω : Ω =>
+        durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m) =
+        Set.indicator A (fun _ : Ω => 2 * (m : ℝ)) := by
+    funext ω
+    by_cases hω : a (m - 1) ≤ |X0 ω| ∧ |X0 ω| < a m
+    · simp [durrett2019_theorem_2_5_13_annulusKernelMajorantTerm, A, hω]
+    · simp [durrett2019_theorem_2_5_13_annulusKernelMajorantTerm, A, hω]
+  rw [hfun]
+  exact measurable_const.indicator hA
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: each composed
+annulus-series term is integrable on a finite measure space.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integrable_comp
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX0_meas : Measurable X0) (m : ℕ) :
+    Integrable
+      (fun ω : Ω =>
+        durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m) P := by
+  let A : Set Ω := {ω : Ω | a (m - 1) ≤ |X0 ω| ∧ |X0 ω| < a m}
+  have hA : MeasurableSet A :=
+    (measurableSet_le measurable_const hX0_meas.abs).inter
+      (measurableSet_lt hX0_meas.abs measurable_const)
+  have hfun :
+      (fun ω : Ω =>
+        durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m) =
+        Set.indicator A (fun _ : Ω => 2 * (m : ℝ)) := by
+    funext ω
+    by_cases hω : a (m - 1) ≤ |X0 ω| ∧ |X0 ω| < a m
+    · simp [durrett2019_theorem_2_5_13_annulusKernelMajorantTerm, A, hω]
+    · simp [durrett2019_theorem_2_5_13_annulusKernelMajorantTerm, A, hω]
+  rw [hfun]
+  exact (integrable_const (2 * (m : ℝ))).indicator hA
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: the integral of one
+composed annulus term is exactly its constant height times its annulus mass.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integral_comp_eq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX0_meas : Measurable X0) (m : ℕ) :
+    (∫ ω : Ω,
+      durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m ∂P) =
+      P.real {ω : Ω | a (m - 1) ≤ |X0 ω| ∧ |X0 ω| < a m} *
+        (2 * (m : ℝ)) := by
+  let A : Set Ω := {ω : Ω | a (m - 1) ≤ |X0 ω| ∧ |X0 ω| < a m}
+  have hA : MeasurableSet A :=
+    (measurableSet_le measurable_const hX0_meas.abs).inter
+      (measurableSet_lt hX0_meas.abs measurable_const)
+  have hfun :
+      (fun ω : Ω =>
+        durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m) =
+        Set.indicator A (fun _ : Ω => 2 * (m : ℝ)) := by
+    funext ω
+    by_cases hω : a (m - 1) ≤ |X0 ω| ∧ |X0 ω| < a m
+    · simp [durrett2019_theorem_2_5_13_annulusKernelMajorantTerm, A, hω]
+    · simp [durrett2019_theorem_2_5_13_annulusKernelMajorantTerm, A, hω]
+  rw [hfun]
+  simpa [A, smul_eq_mul] using
+    (integral_indicator_const (μ := P) (s := A) (e := 2 * (m : ℝ)) hA)
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: the integral of the
+norm of one composed annulus term has the same exact annulus-mass formula.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integral_norm_comp_eq
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX0_meas : Measurable X0) (m : ℕ) :
+    (∫ ω : Ω,
+      ‖durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m‖ ∂P) =
+      P.real {ω : Ω | a (m - 1) ≤ |X0 ω| ∧ |X0 ω| < a m} *
+        (2 * (m : ℝ)) := by
+  have hnorm :
+      (fun ω : Ω =>
+        ‖durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m‖) =
+        fun ω : Ω =>
+          durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m := by
+    funext ω
+    rw [Real.norm_eq_abs]
+    exact abs_of_nonneg
+      (durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_nonneg
+        (a := a) (X0 ω) m)
+  rw [hnorm]
+  exact
+    durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integral_comp_eq
+      (P := P) (X0 := X0) (a := a) hX0_meas m
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: identity(*) mass
+summability gives the summability of the Bochner integral norms of the
+composed annulus-series terms.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integral_norm_summable_of_mass_weight_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX0_meas : Measurable X0)
+    (hmass_summable :
+      Summable fun m : ℕ =>
+        (m : ℝ) *
+          P.real {ω : Ω | a (m - 1) ≤ |X0 ω| ∧ |X0 ω| < a m}) :
+    Summable fun m : ℕ =>
+      ∫ ω : Ω,
+        ‖durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m‖ ∂P := by
+  have hscaled :
+      Summable fun m : ℕ =>
+        2 *
+          ((m : ℝ) *
+            P.real {ω : Ω | a (m - 1) ≤ |X0 ω| ∧ |X0 ω| < a m}) :=
+    hmass_summable.mul_left 2
+  refine hscaled.congr ?_
+  intro m
+  rw [durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integral_norm_comp_eq
+    (P := P) (X0 := X0) (a := a) hX0_meas m]
+  ring
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: the annulus-series
+part of the concrete majorant is almost everywhere strongly measurable.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorant_series_aestronglyMeasurable_comp
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_atTop : Tendsto a atTop atTop) (hX0_meas : Measurable X0) :
+    AEStronglyMeasurable
+      (fun ω : Ω =>
+        ∑' m : ℕ,
+          durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m) P := by
+  refine
+    aestronglyMeasurable_of_tendsto_ae
+      (μ := P) (β := ℝ) (ι := ℕ)
+      (f := fun n ω =>
+        ∑ m ∈ Finset.range n,
+          durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m)
+      (g := fun ω =>
+        ∑' m : ℕ,
+          durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m)
+      atTop ?_ ?_
+  · intro n
+    exact (Finset.range n).aestronglyMeasurable_fun_sum fun m _hm =>
+      (durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_measurable_comp
+        (X0 := X0) (a := a) hX0_meas m).aestronglyMeasurable
+  · exact ae_of_all P fun ω =>
+      (durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_summable
+        (a := a) ha_atTop (X0 ω)).hasSum.tendsto_sum_nat
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: identity(*) mass
+summability makes the annulus-series part of the concrete majorant integrable.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorant_series_integrable_comp_of_mass_weight_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_atTop : Tendsto a atTop atTop) (hX0_meas : Measurable X0)
+    (hmass_summable :
+      Summable fun m : ℕ =>
+        (m : ℝ) *
+          P.real {ω : Ω | a (m - 1) ≤ |X0 ω| ∧ |X0 ω| < a m}) :
+    Integrable
+      (fun ω : Ω =>
+        ∑' m : ℕ,
+          durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m) P := by
+  let F : ℕ -> Ω -> ℝ := fun m ω =>
+    durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m
+  have hF_int : ∀ m : ℕ, Integrable (F m) P := by
+    intro m
+    exact
+      durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integrable_comp
+        (P := P) (X0 := X0) (a := a) hX0_meas m
+  have hF_nonneg : ∀ m : ℕ, 0 ≤ᵐ[P] F m := by
+    intro m
+    exact ae_of_all P fun ω =>
+      durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_nonneg
+        (a := a) (X0 ω) m
+  have hF_sum_norm :
+      Summable fun m : ℕ => ∫ ω : Ω, ‖F m ω‖ ∂P := by
+    simpa [F] using
+      (durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integral_norm_summable_of_mass_weight_summable
+        (P := P) (X0 := X0) (a := a) hX0_meas hmass_summable)
+  let A : ℕ -> NNReal := fun m =>
+    ⟨∫ ω : Ω, ‖F m ω‖ ∂P, integral_nonneg fun ω => norm_nonneg (F m ω)⟩
+  have hA_summable : Summable A := by
+    exact NNReal.summable_coe.1 (by simpa [A] using hF_sum_norm)
+  have hA_ne_top : (∑' m : ℕ, (A m : ℝ≥0∞)) ≠ ∞ :=
+    ENNReal.tsum_coe_ne_top_iff_summable.2 hA_summable
+  have hlin_term_eq :
+      ∀ m : ℕ,
+        (∫⁻ ω : Ω, ENNReal.ofReal (F m ω) ∂P) = (A m : ℝ≥0∞) := by
+    intro m
+    have hnorm :
+        (fun ω : Ω => ‖F m ω‖) = fun ω : Ω => F m ω := by
+      funext ω
+      rw [Real.norm_eq_abs]
+      exact abs_of_nonneg
+        (durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_nonneg
+          (a := a) (X0 ω) m)
+    have hA_coe :
+        (A m : ℝ≥0∞) = ENNReal.ofReal (∫ ω : Ω, ‖F m ω‖ ∂P) :=
+      (ENNReal.ofReal_eq_coe_nnreal
+        (integral_nonneg fun ω : Ω => norm_nonneg (F m ω))).symm
+    rw [hA_coe, hnorm]
+    exact
+      (ofReal_integral_eq_lintegral_ofReal (hF_int m) (hF_nonneg m)).symm
+  have htsum_lintegral_ne_top :
+      (∑' m : ℕ, ∫⁻ ω : Ω, ENNReal.ofReal (F m ω) ∂P) ≠ ∞ := by
+    rw [tsum_congr hlin_term_eq]
+    exact hA_ne_top
+  have hseries_aesm :
+      AEStronglyMeasurable
+        (fun ω : Ω => ∑' m : ℕ, F m ω) P := by
+    simpa [F] using
+      (durrett2019_theorem_2_5_13_annulusKernelMajorant_series_aestronglyMeasurable_comp
+        (P := P) (X0 := X0) (a := a) ha_atTop hX0_meas)
+  have hseries_nonneg :
+      0 ≤ᵐ[P] fun ω : Ω => ∑' m : ℕ, F m ω :=
+    ae_of_all P fun ω =>
+      tsum_nonneg fun m =>
+        durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_nonneg
+          (a := a) (X0 ω) m
+  refine (lintegral_ofReal_ne_top_iff_integrable hseries_aesm hseries_nonneg).1 ?_
+  have hlin_eq :
+      (∫⁻ ω : Ω, ENNReal.ofReal (∑' m : ℕ, F m ω) ∂P) =
+        ∑' m : ℕ, ∫⁻ ω : Ω, ENNReal.ofReal (F m ω) ∂P := by
+    calc
+      (∫⁻ ω : Ω, ENNReal.ofReal (∑' m : ℕ, F m ω) ∂P) =
+          ∫⁻ ω : Ω, ∑' m : ℕ, ENNReal.ofReal (F m ω) ∂P := by
+            apply lintegral_congr_ae
+            exact ae_of_all P fun ω =>
+              ENNReal.ofReal_tsum_of_nonneg
+                (fun m =>
+                  durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_nonneg
+                    (a := a) (X0 ω) m)
+                (durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_summable
+                  (a := a) ha_atTop (X0 ω))
+      _ =
+          ∑' m : ℕ, ∫⁻ ω : Ω, ENNReal.ofReal (F m ω) ∂P := by
+            rw [lintegral_tsum]
+            intro m
+            exact (hF_int m).aemeasurable.ennreal_ofReal
+  rw [hlin_eq]
+  exact htsum_lintegral_ne_top
+
+/--
+Durrett 2019, Theorem 2.5.13 concrete majorant support: identity(*) mass
+summability makes the full concrete annulus-series majorant integrable.
+-/
+theorem durrett2019_theorem_2_5_13_annulusKernelMajorant_integrable_comp_of_mass_weight_summable
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsFiniteMeasure P]
+    {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (ha_atTop : Tendsto a atTop atTop) (hX0_meas : Measurable X0)
+    (hmass_summable :
+      Summable fun m : ℕ =>
+        (m : ℝ) *
+          P.real {ω : Ω | a (m - 1) ≤ |X0 ω| ∧ |X0 ω| < a m}) :
+    Integrable
+      (fun ω : Ω =>
+        durrett2019_theorem_2_5_13_annulusKernelMajorant a (X0 ω)) P := by
+  have hseries_int :
+      Integrable
+        (fun ω : Ω =>
+          ∑' m : ℕ,
+            durrett2019_theorem_2_5_13_annulusKernelMajorantTerm a (X0 ω) m) P :=
+    durrett2019_theorem_2_5_13_annulusKernelMajorant_series_integrable_comp_of_mass_weight_summable
+      (P := P) (X0 := X0) (a := a) ha_atTop hX0_meas hmass_summable
+  simpa [durrett2019_theorem_2_5_13_annulusKernelMajorant] using
+    (integrable_const (2 : ℝ)).add hseries_int
+
+/--
 Durrett 2019, Theorem 2.5.13 concrete majorant support: the concrete
 annulus-series majorant is nonnegative.
 -/
@@ -15025,6 +15309,82 @@ theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_an
       (a := a))
     (durrett2019_theorem_2_5_13_annulusKernelMajorant_annulus_bound
       (a := a) ha_atTop)
+
+/--
+Durrett 2019, Theorem 2.5.13 moving-truncated endpoint with the concrete
+annulus-series majorant: finite tail summability now also supplies the
+majorant integrability through the identity(*) annulus-mass bridge.
+-/
+theorem durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto a atTop atTop)
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ k ∈ Finset.range n,
+            durrett2019_theorem_2_5_13_truncated X a (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_annulusKernelMajorant_integrable_tail_summable_and_ratio_mono
+    (P := P) (X := X) (X0 := X0) (a := a)
+    hX_indep hX_meas hX0_meas hX_ident
+    (durrett2019_theorem_2_5_13_annulusKernelMajorant_integrable_comp_of_mass_weight_summable
+      (P := P) (X0 := X0) (a := a) ha_atTop hX0_meas
+      (durrett2019_theorem_2_5_13_mass_weight_summable_of_tail_summable_and_monotone
+        (P := P) (X0 := X0) (a := a) ha_mono hX0_meas htail_summable))
+    ha_pos ha_mono ha_increment_nonneg ha_atTop ha_shift_atTop
+    hn_over_a_tendsto_zero hratio_mono htail_summable
+
+/--
+Durrett 2019, Theorem 2.5.13 original normalized-sum endpoint with the
+concrete annulus-series majorant: finite tail summability now also supplies
+the majorant integrability through the identity(*) annulus-mass bridge.
+-/
+theorem durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto a atTop atTop)
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ))
+    (htail_summable :
+      Summable fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) :
+    ∀ᵐ ω ∂P,
+      Tendsto
+        (fun n : ℕ => (∑ k ∈ Finset.range n, X (k + 1) ω) / a n)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_annulusKernelMajorant_integrable_tail_summable_and_ratio_mono
+    (P := P) (X := X) (X0 := X0) (a := a)
+    hX_indep hX_meas hX0_meas hX_ident
+    (durrett2019_theorem_2_5_13_annulusKernelMajorant_integrable_comp_of_mass_weight_summable
+      (P := P) (X0 := X0) (a := a) ha_atTop hX0_meas
+      (durrett2019_theorem_2_5_13_mass_weight_summable_of_tail_summable_and_monotone
+        (P := P) (X0 := X0) (a := a) ha_mono hX0_meas htail_summable))
+    ha_pos ha_mono ha_increment_nonneg ha_atTop ha_shift_atTop
+    hn_over_a_tendsto_zero hratio_mono htail_summable
 
 /--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the

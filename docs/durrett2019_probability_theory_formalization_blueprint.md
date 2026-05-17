@@ -27,10 +27,17 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V468`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V469`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
+
+Current immediate target after V469: assemble the convergent-half source
+wrapper using the concrete-majorant endpoint, then combine it with the already
+compiled divergent-half limsup endpoint into the Feller dichotomy statement.
+Do not return to scalar-kernel estimates, annulus mass summability, or
+concrete majorant integrability unless exact final packaging exposes a missing
+side condition.
 
 Current active frontier for this goal cycle: Durrett Chapter 2.5 random-series
 consequences in `StatInference/ProbabilityTheory/Basic.lean`.  V443 advances
@@ -133,6 +140,13 @@ support and summability when `a_n -> infinity`, proves its nonnegativity and
 prefix/annulus domination properties, and adds base-variance plus
 moving/original endpoint wrappers where the only remaining majorant-side input
 is integrability of this concrete majorant composed with `X_0`.
+V469 proves that concrete-majorant integrability from identity(*) mass weights:
+each composed annulus term is measurable/integrable, its integral norm is
+`2*m` times the half-open annulus mass, the mass-weight series gives summable
+integral norms, and a `lintegral_tsum`/`lintegral_ofReal_ne_top_iff_integrable`
+argument makes both the annulus series and full concrete majorant integrable.
+The concrete-majorant moving/original endpoints now consume finite tail
+summability directly, with no external majorant-integrability assumption.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -155,8 +169,19 @@ the solved ratio packaging from Durrett's `a_n / n` monotonicity, or the
 solved reciprocal-square p-series/tail estimate, or the solved annulus-wise
 scalar-kernel bound, or the solved low-prefix scalar-kernel bound, or the
 solved prefix-plus-annulus pointwise majorant and endpoint handoff, or the
-solved concrete annulus-series majorant pointwise/endpoint wrappers.
-New compiled anchors through V468:
+solved concrete annulus-series majorant pointwise/endpoint wrappers, or the
+solved concrete majorant integrability bridge.
+New compiled anchors through V469:
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_measurable_comp`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integrable_comp`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integral_comp_eq`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integral_norm_comp_eq`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_integral_norm_summable_of_mass_weight_summable`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant_series_aestronglyMeasurable_comp`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant_series_integrable_comp_of_mass_weight_summable`,
+`durrett2019_theorem_2_5_13_annulusKernelMajorant_integrable_comp_of_mass_weight_summable`,
+`durrett2019_theorem_2_5_13_ae_truncated_normalized_sum_tendsto_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono`,
+`durrett2019_theorem_2_5_13_ae_original_normalized_sum_tendsto_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono`,
 `durrett2019_theorem_2_5_13_annulusKernelMajorantTerm`,
 `durrett2019_theorem_2_5_13_annulusKernelMajorant`,
 `durrett2019_theorem_2_5_13_annulusKernelMajorantTerm_nonneg`,
@@ -2617,7 +2642,8 @@ Chapter 3 source inventory:
 - Section 3.3 characteristic functions and inversion formula.
 - Section 3.4 central limit theorems.
 - Section 3.10 limit theorems in `R^d`.
-- Active frontier: Chapter 4.2 martingales.
+- Active frontier: Durrett Chapter 2.5, Theorem 2.5.13 Feller dichotomy
+  final packaging.
 
 Source anchors:
 
