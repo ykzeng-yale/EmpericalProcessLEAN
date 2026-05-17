@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V434
+## Live In-Thread Goal Prompt V435
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -12,23 +12,35 @@ below are provenance, not prompt text.
 
 Continue Durrett 2019 Probability Theory formalization in Lean from latest
 synced `main`.  Immediate lane: Durrett Chapter 2.5 random-series consequences
-in `StatInference/ProbabilityTheory/Basic.lean`.  V434 advances Durrett
-Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: it corrects the
-tail-first small-`x` branch.  When `x^p <= 1`, the original tail-first
-indicator sum is zero; the full-prefix estimate is only needed on the large
-branch `1 <= x`.  Thus the remaining tail-first real-analysis target is
-`sum_{k < ceil(x^p)} (k+1)^(-1/p) <= C x^(p-1)` under `1 <= x`, not under all
-`0 < x`.  The truncated-square consumer still factors out `x^2` and only asks
-for the unscaled indicator tail bound
+in `StatInference/ProbabilityTheory/Basic.lean`.  V435 advances Durrett
+Theorem 2.5.12 Marcinkiewicz-Zygmund rate for `1 < p < 2`: the tail-first
+finite-prefix p-series estimate is now proved from
+`Mathlib.Analysis.SumIntegralComparisons`, evaluated, inserted at
+`ceil(x^p)`, and packaged as a nonnegative-domain scalar kernel bound.  Do not
+reroute to the solved tail-first prefix estimate.  The truncated-square
+consumer still factors out `x^2` and only asks for the unscaled indicator tail
+bound
 `sum_k 1_{|x|^p <= k+1} (k+1)^(-2/p) <= C |x|^(p-2)` when `x != 0`.
-Next aggressive target: import/reuse `Mathlib.Analysis.SumIntegralComparisons`
-and prove exactly those corrected unscaled quantitative p-series estimates.
+Next aggressive target: reuse `Mathlib.Analysis.SumIntegralComparisons`,
+`integral_Ioi_rpow_of_lt`, or a finite-tail reduction to prove that
+truncated-square unscaled quantitative p-series tail estimate.
 The source real goals remain
 `sum_k x 1_{(k+1)^(1/p) < x} / (k+1)^(1/p) <= C x^p` for `x >= 0`, `1 < p`,
 and `sum_k x^2 1_{x <= (k+1)^(1/p)} / (k+1)^(2/p) <= C x^p` for `x >= 0`,
 `p < 2`.  Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V435 adds the Theorem 2.5.12 tail-first explicit
+p-series integral-comparison layer.  New compiled anchors:
+`durrett2019_theorem_2_5_12_rpow_neg_inv_antitoneOn_Ioi`,
+`durrett2019_theorem_2_5_12_rpow_range_sum_le_one_add_integral`,
+`durrett2019_theorem_2_5_12_rpow_range_sum_le_evaluated`,
+`durrett2019_theorem_2_5_12_rpow_range_unscaled_bound_ge_one`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_explicit_rpow_bound`, and
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_explicit_rpow_bound_nonneg`.
+The remaining 2.5.12 blocker is now the truncated-square unscaled indicator
+tail estimate for `x != 0`.
 
 Latest verified target V434 adds the Theorem 2.5.12 corrected small-`x`
 tail-first split.  New compiled anchors:

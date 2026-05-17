@@ -32,17 +32,19 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V434` in
+Route from `Live In-Thread Goal Prompt V435` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
-V434 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
-`1 < p < 2`.  In addition to the V421-V433 endpoint, Tonelli/Fubini,
+V435 advances Durrett Theorem 2.5.12 Marcinkiewicz-Zygmund rate for
+`1 < p < 2`.  In addition to the V421-V434 endpoint, Tonelli/Fubini,
 scalar-kernel, scalar-summability, canonical threshold, standard rpow,
-finite-prefix, and unscaled reducers, the tail-first small-`x` branch is now
-handled by a zero-sum theorem.  The full-prefix p-series estimate is only
-needed under `1 <= x`; the truncated-square branch remains the unscaled
-indicator tail estimate.  New compiled anchors through V434:
+finite-prefix, unscaled reducers, and corrected small-`x` split, the
+tail-first finite-prefix p-series estimate is now proved by Mathlib
+sum-integral comparison, evaluated, inserted at `ceil(x^p)`, and packaged as
+a nonnegative-domain scalar kernel bound.  The truncated-square branch
+remains the unscaled indicator tail estimate.  New compiled anchors through
+V435:
 `durrett2019_theorem_2_5_12_scaled_variance_summable_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_ae_centered_truncated_normalized_sum_tendsto_zero_of_base_truncated_sq_summable`,
 `durrett2019_theorem_2_5_12_truncated_normalized_sum_tendsto_zero_of_centered_and_mean`,
@@ -63,6 +65,11 @@ and
 `durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_mean_abs_scaled_summable`,
 `durrett2019_theorem_2_5_12_abs_truncatedMean_le_tail_integral_of_mean_zero`,
 `durrett2019_theorem_2_5_12_abs_truncatedMean_le_base_tail_integral_of_identDistrib_mean_zero`,
+`durrett2019_theorem_2_5_12_rpow_range_sum_le_one_add_integral`,
+`durrett2019_theorem_2_5_12_rpow_range_sum_le_evaluated`,
+`durrett2019_theorem_2_5_12_rpow_range_unscaled_bound_ge_one`,
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_explicit_rpow_bound`, and
+`durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_explicit_rpow_bound_nonneg`,
 `durrett2019_theorem_2_5_12_truncatedMean_abs_scaled_summable_of_base_tail_scaled_summable`,
 and
 `durrett2019_theorem_2_5_12_ae_original_normalized_sum_tendsto_zero_of_base_truncated_sq_summable_and_base_tail_scaled_summable`,

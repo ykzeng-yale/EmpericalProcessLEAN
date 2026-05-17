@@ -7,6 +7,7 @@ import StatInference.ProbabilityMeasure.Tail
 import StatInference.ProbabilityMeasure.WeakConvergence
 import Mathlib.Analysis.PSeries
 import Mathlib.Analysis.SpecialFunctions.Pow.Integral
+import Mathlib.Analysis.SumIntegralComparisons
 import Mathlib.MeasureTheory.Measure.LevyConvergence
 import Mathlib.MeasureTheory.Measure.CharacteristicFunction.TaylorExpansion
 import Mathlib.Probability.CentralLimitTheorem
@@ -9236,6 +9237,198 @@ theorem durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscale
     exact
       durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscaled_bound
         (p := p) (C := C) (x := x) hp_pos hx_pos (hbound hx_ge_one)
+
+/--
+Durrett 2019, Theorem 2.5.12 real-analysis support: for `p > 1`, the
+prefix summand `t^(-1/p)` is antitone on the positive half-line.
+-/
+theorem durrett2019_theorem_2_5_12_rpow_neg_inv_antitoneOn_Ioi
+    {p : ℝ} (hp_gt_one : 1 < p) :
+    AntitoneOn (fun t : ℝ => t ^ (-(1 / p))) (Set.Ioi 0) := by
+  have hp_pos : 0 < p := lt_trans zero_lt_one hp_gt_one
+  have hinv_nonneg : 0 ≤ 1 / p := by positivity
+  exact Real.antitoneOn_rpow_Ioi_of_exponent_nonpos (by linarith)
+
+/--
+Durrett 2019, Theorem 2.5.12 real-analysis support: the finite prefix
+`sum_{k<n} (k+1)^(-1/p)` is bounded by the integral comparison
+`1 + int_1^n t^(-1/p) dt`.
+-/
+theorem durrett2019_theorem_2_5_12_rpow_range_sum_le_one_add_integral
+    {p : ℝ} (hp_gt_one : 1 < p) {n : ℕ} (hn : 1 ≤ n) :
+    (∑ k ∈ Finset.range n, (((k + 1 : ℕ) : ℝ) ^ (-(1 / p)))) ≤
+      1 + ∫ t in (1 : ℝ)..(n : ℝ), t ^ (-(1 / p)) := by
+  have hantitone :=
+    durrett2019_theorem_2_5_12_rpow_neg_inv_antitoneOn_Ioi
+      (p := p) hp_gt_one
+  rcases n with _ | m
+  · cases hn
+  · cases m with
+    | zero =>
+        simp
+    | succ m =>
+        have htail :
+            (∑ k ∈ Finset.range (m + 1),
+              (((k + 2 : ℕ) : ℝ) ^ (-(1 / p)))) ≤
+              ∫ t in (1 : ℝ)..(m + 2 : ℕ), t ^ (-(1 / p)) := by
+          have hmono :
+              AntitoneOn (fun t : ℝ => t ^ (-(1 / p)))
+                (Set.Icc (1 : ℝ) ((1 : ℝ) + (m + 1 : ℕ))) :=
+            hantitone.mono (by
+              intro y hy
+              exact lt_of_lt_of_le zero_lt_one hy.1)
+          convert
+            (AntitoneOn.sum_le_integral (x₀ := (1 : ℝ)) (a := m + 1) hmono) using 1
+          · refine Finset.sum_congr rfl fun k _ => ?_
+            congr 1
+            norm_num [Nat.cast_add, Nat.cast_one, add_comm, add_left_comm, add_assoc]
+          · congr 1
+            norm_num [Nat.cast_add, Nat.cast_one, add_comm, add_left_comm, add_assoc]
+        calc
+          (∑ k ∈ Finset.range (m + 2),
+              (((k + 1 : ℕ) : ℝ) ^ (-(1 / p)))) =
+            1 + ∑ k ∈ Finset.range (m + 1),
+              (((k + 2 : ℕ) : ℝ) ^ (-(1 / p))) := by
+              rw [Finset.sum_range_succ']
+              simp [add_comm, add_left_comm]
+          _ ≤ 1 + ∫ t in (1 : ℝ)..(m + 2 : ℕ), t ^ (-(1 / p)) := by
+              simpa [add_comm, add_left_comm, add_assoc] using add_le_add_left htail 1
+
+/--
+Durrett 2019, Theorem 2.5.12 real-analysis support: evaluated finite-prefix
+p-series estimate before inserting the `ceil (x^p)` threshold.
+-/
+theorem durrett2019_theorem_2_5_12_rpow_range_sum_le_evaluated
+    {p : ℝ} (hp_gt_one : 1 < p) {n : ℕ} (hn : 1 ≤ n) :
+    (∑ k ∈ Finset.range n, (((k + 1 : ℕ) : ℝ) ^ (-(1 / p)))) ≤
+      (1 + (1 - 1 / p)⁻¹) * (n : ℝ) ^ (1 - 1 / p) := by
+  have hp_pos : 0 < p := lt_trans zero_lt_one hp_gt_one
+  have hpinv_lt_one : 1 / p < 1 := (div_lt_one hp_pos).2 hp_gt_one
+  have hq_pos : 0 < 1 - 1 / p := sub_pos.2 hpinv_lt_one
+  have hexp_gt : -1 < -(1 / p) := by linarith
+  have hn_real : (1 : ℝ) ≤ n := by exact_mod_cast hn
+  have hn_pow : (1 : ℝ) ≤ (n : ℝ) ^ (1 - 1 / p) :=
+    Real.one_le_rpow hn_real hq_pos.le
+  have hintegral :
+      (∫ t in (1 : ℝ)..(n : ℝ), t ^ (-(1 / p))) =
+        ((n : ℝ) ^ (1 - 1 / p) - 1) / (1 - 1 / p) := by
+    rw [integral_rpow (Or.inl hexp_gt)]
+    rw [Real.one_rpow]
+    ring_nf
+  calc
+    (∑ k ∈ Finset.range n, (((k + 1 : ℕ) : ℝ) ^ (-(1 / p)))) ≤
+        1 + ∫ t in (1 : ℝ)..(n : ℝ), t ^ (-(1 / p)) :=
+          durrett2019_theorem_2_5_12_rpow_range_sum_le_one_add_integral
+            (p := p) hp_gt_one hn
+    _ = 1 + (((n : ℝ) ^ (1 - 1 / p) - 1) / (1 - 1 / p)) := by
+          rw [hintegral]
+    _ ≤ 1 + ((n : ℝ) ^ (1 - 1 / p) / (1 - 1 / p)) := by
+          have hsub_le : (n : ℝ) ^ (1 - 1 / p) - 1 ≤
+              (n : ℝ) ^ (1 - 1 / p) := by linarith
+          simpa [add_comm, add_left_comm, add_assoc] using
+            add_le_add_left (div_le_div_of_nonneg_right hsub_le hq_pos.le) 1
+    _ ≤ (1 + (1 - 1 / p)⁻¹) * (n : ℝ) ^ (1 - 1 / p) := by
+          calc
+            1 + ((n : ℝ) ^ (1 - 1 / p) / (1 - 1 / p)) =
+                1 + (1 - 1 / p)⁻¹ * (n : ℝ) ^ (1 - 1 / p) := by ring
+            _ ≤ (n : ℝ) ^ (1 - 1 / p) +
+                (1 - 1 / p)⁻¹ * (n : ℝ) ^ (1 - 1 / p) := by
+                simpa [add_comm, add_left_comm, add_assoc] using
+                  add_le_add_right hn_pow
+                    ((1 - 1 / p)⁻¹ * (n : ℝ) ^ (1 - 1 / p))
+            _ = (1 + (1 - 1 / p)⁻¹) * (n : ℝ) ^ (1 - 1 / p) := by ring
+
+/--
+Durrett 2019, Theorem 2.5.12 real-analysis support: the corrected large-`x`
+finite-prefix p-series estimate with the textbook threshold `ceil (x^p)`.
+-/
+theorem durrett2019_theorem_2_5_12_rpow_range_unscaled_bound_ge_one
+    {p x : ℝ} (hp_gt_one : 1 < p) (hx_ge_one : 1 ≤ x) :
+    (∑ k ∈ Finset.range (Nat.ceil (x ^ p)),
+      (((k + 1 : ℕ) : ℝ) ^ (-(1 / p)))) ≤
+      ((1 + (1 - 1 / p)⁻¹) * 2 ^ (1 - 1 / p)) * x ^ (p - 1) := by
+  have hp_pos : 0 < p := lt_trans zero_lt_one hp_gt_one
+  have hpinv_lt_one : 1 / p < 1 := (div_lt_one hp_pos).2 hp_gt_one
+  have hq_pos : 0 < 1 - 1 / p := sub_pos.2 hpinv_lt_one
+  have hx_pos : 0 < x := lt_of_lt_of_le zero_lt_one hx_ge_one
+  have hxpow_ge_one : 1 ≤ x ^ p := Real.one_le_rpow hx_ge_one (le_of_lt hp_pos)
+  have hn : 1 ≤ Nat.ceil (x ^ p) := by
+    rw [Nat.one_le_ceil_iff]
+    exact lt_of_lt_of_le zero_lt_one hxpow_ge_one
+  have hceil_le : ((Nat.ceil (x ^ p) : ℕ) : ℝ) ≤ 2 * x ^ p := by
+    exact Nat.ceil_le_two_mul (a := x ^ p) (by linarith)
+  have hceil_pow :
+      ((Nat.ceil (x ^ p) : ℕ) : ℝ) ^ (1 - 1 / p) ≤
+        (2 * x ^ p) ^ (1 - 1 / p) := by
+    exact Real.rpow_le_rpow (by positivity) hceil_le hq_pos.le
+  have hmul_pow :
+      (2 * x ^ p) ^ (1 - 1 / p) =
+        2 ^ (1 - 1 / p) * x ^ (p - 1) := by
+    calc
+      (2 * x ^ p) ^ (1 - 1 / p) =
+          2 ^ (1 - 1 / p) * (x ^ p) ^ (1 - 1 / p) := by
+            rw [Real.mul_rpow (by positivity) (Real.rpow_nonneg (le_of_lt hx_pos) p)]
+      _ = 2 ^ (1 - 1 / p) * x ^ (p * (1 - 1 / p)) := by
+            rw [Real.rpow_mul (le_of_lt hx_pos)]
+      _ = 2 ^ (1 - 1 / p) * x ^ (p - 1) := by
+            congr 1
+            field_simp [hp_pos.ne']
+  have hconst_nonneg : 0 ≤ 1 + (1 - 1 / p)⁻¹ := by positivity
+  calc
+    (∑ k ∈ Finset.range (Nat.ceil (x ^ p)),
+      (((k + 1 : ℕ) : ℝ) ^ (-(1 / p)))) ≤
+        (1 + (1 - 1 / p)⁻¹) *
+          ((Nat.ceil (x ^ p) : ℕ) : ℝ) ^ (1 - 1 / p) :=
+          durrett2019_theorem_2_5_12_rpow_range_sum_le_evaluated
+            (p := p) hp_gt_one hn
+    _ ≤ (1 + (1 - 1 / p)⁻¹) * (2 * x ^ p) ^ (1 - 1 / p) := by
+          exact mul_le_mul_of_nonneg_left hceil_pow hconst_nonneg
+    _ = ((1 + (1 - 1 / p)⁻¹) * 2 ^ (1 - 1 / p)) * x ^ (p - 1) := by
+          rw [hmul_pow]
+          ring
+
+/--
+Durrett 2019, Theorem 2.5.12 tail-first scalar estimate with an explicit
+constant obtained from the integral comparison for `sum (k+1)^(-1/p)`.
+-/
+theorem durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_explicit_rpow_bound
+    {p x : ℝ} (hp_gt_one : 1 < p) (hx_pos : 0 < x) :
+    (∑' k : ℕ, durrett2019_theorem_2_5_12_tailFirstKernel p x k) ≤
+      ((1 + (1 - 1 / p)⁻¹) * 2 ^ (1 - 1 / p)) * x ^ p := by
+  have hp_pos : 0 < p := lt_trans zero_lt_one hp_gt_one
+  have hpinv_lt_one : 1 / p < 1 := (div_lt_one hp_pos).2 hp_gt_one
+  have hq_pos : 0 < 1 - 1 / p := sub_pos.2 hpinv_lt_one
+  have hC_nonneg : 0 ≤ (1 + (1 - 1 / p)⁻¹) * 2 ^ (1 - 1 / p) := by
+    exact mul_nonneg (by positivity) (Real.rpow_nonneg (by positivity) _)
+  exact
+    durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_of_rpow_range_unscaled_bound_ge_one
+      (p := p) (C := (1 + (1 - 1 / p)⁻¹) * 2 ^ (1 - 1 / p))
+      (x := x) hp_pos hC_nonneg hx_pos
+      (fun hx_ge_one =>
+        durrett2019_theorem_2_5_12_rpow_range_unscaled_bound_ge_one
+          (p := p) hp_gt_one hx_ge_one)
+
+/--
+Durrett 2019, Theorem 2.5.12 tail-first scalar estimate on the full
+nonnegative domain used in the textbook display.
+-/
+theorem durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_explicit_rpow_bound_nonneg
+    {p x : ℝ} (hp_gt_one : 1 < p) (hx_nonneg : 0 ≤ x) :
+    (∑' k : ℕ, durrett2019_theorem_2_5_12_tailFirstKernel p x k) ≤
+      ((1 + (1 - 1 / p)⁻¹) * 2 ^ (1 - 1 / p)) * x ^ p := by
+  have hp_pos : 0 < p := lt_trans zero_lt_one hp_gt_one
+  have hpinv_lt_one : 1 / p < 1 := (div_lt_one hp_pos).2 hp_gt_one
+  have hq_pos : 0 < 1 - 1 / p := sub_pos.2 hpinv_lt_one
+  have hC_nonneg : 0 ≤ (1 + (1 - 1 / p)⁻¹) * 2 ^ (1 - 1 / p) := by
+    exact mul_nonneg (by positivity) (Real.rpow_nonneg (by positivity) _)
+  by_cases hx_zero : x = 0
+  · subst x
+    rw [durrett2019_theorem_2_5_12_tailFirstKernel_tsum_eq_zero_of_rpow_le_one
+      (p := p) (x := 0) hp_pos le_rfl (Real.zero_rpow_le_one p)]
+    exact mul_nonneg hC_nonneg (Real.rpow_nonneg le_rfl p)
+  · exact
+      durrett2019_theorem_2_5_12_tailFirstKernel_tsum_le_explicit_rpow_bound
+        (p := p) (x := x) hp_gt_one (lt_of_le_of_ne hx_nonneg (Ne.symm hx_zero))
 
 /--
 Durrett 2019, Theorem 2.5.12 scalar truncated-square standard p-series
