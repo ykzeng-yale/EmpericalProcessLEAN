@@ -15457,6 +15457,55 @@ theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_
       (a := a) ha_pos hω
 
 /--
+Durrett 2019, Theorem 2.5.13 Feller dichotomy assembly.  The convergent and
+divergent half-displays are now available from the same iid source data; the
+only remaining non-textbook inputs are the explicit growth side conditions
+currently consumed by the convergent-half proof route.
+-/
+theorem durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_annulusKernelMajorant_tail_summable_or_tail_tsum_top_and_ratio_mono
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω} [IsProbabilityMeasure P]
+    {X : ℕ -> Ω -> ℝ} {X0 : Ω -> ℝ} {a : ℕ -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ k : ℕ, Measurable (X k))
+    (hX0_meas : Measurable X0)
+    (hX_ident : ∀ k : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X k) X0 P P)
+    (ha_pos : ∀ m : ℕ, 0 < a m) (ha_mono : Monotone a)
+    (ha_increment_nonneg : ∀ k : ℕ, 0 ≤ a (k + 2) - a (k + 1))
+    (ha_atTop : Tendsto a atTop atTop)
+    (ha_shift_atTop : Tendsto (fun n : ℕ => a (n + 1)) atTop atTop)
+    (hn_over_a_tendsto_zero :
+      Tendsto (fun n : ℕ => (n : ℝ) / a n) atTop (𝓝 0))
+    (htail_mono : Antitone fun n : ℕ => (P {ω : Ω | a n ≤ |X0 ω|}).toReal)
+    (hratio_mono : ∀ ⦃m n : ℕ⦄, 0 < m -> m ≤ n ->
+      a m / (m : ℝ) ≤ a n / (n : ℝ)) :
+    (Summable (fun n : ℕ => P.real {ω : Ω | a n ≤ |X0 ω|}) ->
+      ∀ᵐ ω ∂P,
+        limsup
+          (fun n : ℕ =>
+            ((|∑ k ∈ Finset.range n, X (k + 1) ω| / a n : ℝ) : EReal))
+          atTop = 0) ∧
+    ((∑' n : ℕ, P {ω : Ω | a (n + 1) ≤ |X0 ω|}) = ∞ ->
+      ∀ᵐ ω ∂P,
+        limsup
+          (fun n : ℕ =>
+            ((|∑ k ∈ Finset.range n, X (k + 1) ω| / a n : ℝ) : EReal))
+          atTop = ⊤) := by
+  constructor
+  · intro htail_summable
+    exact
+      durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono
+        (P := P) (X := X) (X0 := X0) (a := a)
+        hX_indep hX_meas hX0_meas hX_ident ha_pos ha_mono
+        ha_increment_nonneg ha_atTop ha_shift_atTop hn_over_a_tendsto_zero
+        hratio_mono htail_summable
+  · intro htail_top
+    exact
+      durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_top_of_iid_tail_tsum_eq_top
+        (P := P) (X := X) (X0 := X0) (a := a)
+        hX_indep hX_meas hX_ident ha_pos ha_mono htail_mono hratio_mono htail_top
+
+/--
 Durrett 2019, Theorem 2.2.3 support: the variance scaling identity for the
 sample average of an uncorrelated initial block.
 -/

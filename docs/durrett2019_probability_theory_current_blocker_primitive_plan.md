@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V470
+## Live In-Thread Goal Prompt V471
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -136,6 +136,11 @@ V470 packages the convergent half in the same extended-real display used by
 the divergent half: real convergence of `S_n / a_n` now gives
 `limsup_n |S_n| / a_n = 0`, and the V469 concrete-majorant endpoint feeds the
 iid one-based partial-sum source wrapper directly.
+V471 assembles the two branch endpoints into a single Feller-dichotomy theorem:
+finite real tail summability gives the zero extended-real limsup display, and
+divergent ENNReal tail series gives the `+∞` extended-real limsup display,
+under the exact iid and growth hypotheses currently consumed by the two
+compiled branch routes.
 Do not reroute to solved
 Theorem 2.5.12 scalar p-series, threshold, reindex, source-composition,
 integrability, display-wrapper work, the solved 2.5.13 tail-series transfer,
@@ -161,16 +166,23 @@ scalar-kernel bound, or the solved low-prefix scalar-kernel bound, or the
 solved prefix-plus-annulus pointwise majorant and endpoint handoff, or the
 solved concrete annulus-series majorant pointwise/endpoint wrappers, or the
 solved concrete majorant integrability bridge from identity(*) mass weights,
-or the solved convergent-half extended-real display wrapper.
-Next aggressive target: assemble the final Feller dichotomy statement for
-Durrett 2.5.13 by combining the V470 convergent-half display endpoint with
-the already compiled divergent-half limsup endpoint.  If exact statement
-packaging exposes a missing source side condition, prove only that side
-condition; do not return to scalar kernel, annulus mass, majorant
-integrability, or display-wrapper plumbing.
+or the solved convergent-half extended-real display wrapper, or the solved
+two-branch Feller dichotomy assembly.
+Next aggressive target: reduce the remaining explicit growth side conditions
+in the V471 Feller dichotomy assembly toward Durrett's textbook source
+assumptions, especially deriving the convergent branch's `a_n -> infinity`,
+shifted divergence, increments, and `n/a_n -> 0` handoffs from the monotone
+`a_n / n` plus infinite-mean/finite-tail hypotheses when possible.  Do not
+return to scalar kernel, annulus mass, majorant integrability, display-wrapper,
+or branch-combination plumbing.
 Do not route back to Theorem 2.4.9, 2.5.5, 2.5.8, 2.5.9, 2.5.10,
 V416-V420 Theorem 2.5.11 plumbing, or old app-level stale prompts unless
 search proves a concrete missing source display.
+
+Latest verified target V471 adds the two-branch theorem assembly
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_annulusKernelMajorant_tail_summable_or_tail_tsum_top_and_ratio_mono`.
+The remaining blocker is no longer branch assembly; it is source-side growth
+cleanup toward the exact textbook assumptions.
 
 Latest verified target V470 adds the deterministic and source-facing
 convergent-half extended-real display layer.  New compiled anchors include:
@@ -178,9 +190,8 @@ convergent-half extended-real display layer.  New compiled anchors include:
 `durrett2019_theorem_2_5_13_ereal_limsup_abs_div_eq_zero_of_tendsto_div_zero`,
 and
 `durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono`.
-The remaining blocker is final source-level Feller dichotomy assembly and any
-small source-side growth/monotonicity handoff that exact packaging still
-requires.
+This blocker is closed; do not reopen display wrappers unless a later theorem
+requires a strictly sharper statement.
 
 Latest verified target V469 discharges the concrete annulus-series majorant
 integrability blocker and removes the external `hg_int` hypothesis from the
@@ -4389,6 +4400,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V470` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V471` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

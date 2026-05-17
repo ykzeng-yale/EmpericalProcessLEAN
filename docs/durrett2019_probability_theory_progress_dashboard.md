@@ -32,7 +32,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V470` in
+Route from `Live In-Thread Goal Prompt V471` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Chapter 2.5
 random-series consequences in `StatInference/ProbabilityTheory/Basic.lean`.
@@ -146,6 +146,11 @@ V470 packages the convergent half in the textbook extended-real display:
 real convergence of `S_n / a_n` now implies `limsup_n |S_n| / a_n = 0`, and
 the V469 concrete-majorant endpoint now feeds the iid one-based partial-sum
 source wrapper directly.
+V471 assembles the two branch endpoints into a single Feller-dichotomy theorem:
+finite real tail summability gives the zero extended-real limsup display, and
+divergent ENNReal tail series gives the `+∞` extended-real limsup display,
+under the exact iid and growth hypotheses currently consumed by the branch
+routes.
 Do not route back into
 solved Theorem 2.5.12 plumbing, the solved Theorem 2.5.13 tail-series
 transfer, the solved fixed-`k` Borel-Cantelli partial-sum bridge, the solved
@@ -170,8 +175,10 @@ scalar-kernel bound, or the solved low-prefix scalar-kernel bound, or the
 solved prefix-plus-annulus pointwise majorant and endpoint handoff, or the
 solved concrete annulus-series majorant pointwise/endpoint wrappers, or the
 solved concrete majorant integrability bridge, or the solved convergent-half
-extended-real display wrapper.
-New compiled anchors through V470:
+extended-real display wrapper, or the solved two-branch Feller dichotomy
+assembly.
+New compiled anchors through V471:
+`durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_feller_dichotomy_of_annulusKernelMajorant_tail_summable_or_tail_tsum_top_and_ratio_mono`,
 `durrett2019_theorem_2_5_13_ereal_limsup_abs_eq_zero_of_tendsto_zero`,
 `durrett2019_theorem_2_5_13_ereal_limsup_abs_div_eq_zero_of_tendsto_div_zero`,
 `durrett2019_theorem_2_5_13_ae_ereal_limsup_oneBased_partial_sum_eq_zero_of_annulusKernelMajorant_tail_summable_and_ratio_mono`,
@@ -3080,12 +3087,12 @@ whenever the app-level wording lags.  Active frontier: Durrett Chapter 2.5,
 Theorem 2.5.13 Feller infinite-mean dichotomy support in
 `StatInference/ProbabilityTheory/Basic.lean`.
 
-Next proof packet: assemble the final Durrett 2.5.13 Feller dichotomy
-statement from the V470 convergent-half display endpoint and the already
-compiled divergent-half limsup endpoint.  If exact packaging exposes a missing
-source growth or monotonicity handoff, prove only that handoff; do not route
-back to scalar-kernel estimates, annulus mass summability, concrete majorant
-integrability, or display-wrapper plumbing.
+Next proof packet: reduce the remaining explicit growth side conditions in the
+V471 Feller dichotomy assembly toward Durrett's textbook source assumptions,
+especially `a_n -> infinity`, shifted divergence, increments, and
+`n/a_n -> 0` for the convergent branch.  Do not route back to scalar-kernel
+estimates, annulus mass summability, concrete majorant integrability,
+display-wrapper plumbing, or branch-combination plumbing.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement
 one compiled Lean packet, verify focused Lean plus targeted build/scans and root
