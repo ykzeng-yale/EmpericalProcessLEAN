@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearEquivAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapKerRangeAffineMeanZeroOffsetSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -25,18 +25,21 @@ common-core inverse expression
 `vaart1998PositiveCommonObservationCoreInverseEstimator`. The route assumes a
 pointwise common-core affine display
 `observationEstimatingMap observation theta =
-commonObservationCoreLinearEquiv theta + observationOffset observation` and a
-common core supplied as a continuous linear equivalence
-`commonObservationCoreLinearEquiv :
-  (Param -> ℝ) ≃L[ℝ] (Coord -> ℝ)`. It derives both inverse laws from
+commonObservationCoreLinear theta + observationOffset observation` and a
+common core supplied as a continuous linear map
+`commonObservationCoreLinear :
+  (Param -> ℝ) →L[ℝ] (Coord -> ℝ)` with
+`commonObservationCoreLinear.ker = ⊥` and
+`commonObservationCoreLinear.range = ⊤`. It builds the common-core continuous
+linear equivalence via `LinearEquiv.ofBijective` and
+`LinearEquiv.toContinuousLinearEquiv`, then uses the equivalence inverse in
+the explicit estimator. It derives both inverse laws from
 `ContinuousLinearEquiv.apply_symm_apply` and
-`ContinuousLinearEquiv.symm_apply_apply`, then uses
-`commonObservationCoreLinearEquiv.symm.toContinuousLinearMap` in the explicit
-estimator. It derives the coordinate measurability and `ContinuousAt` fields
-for the inverse from the continuous linear map API, and derives common-core
-injectivity from the left-inverse law. It assumes only observation-law
-integrability of each offset coordinate, derives the product-space
-zero-coordinate integrability,
+`ContinuousLinearEquiv.symm_apply_apply`, derives the coordinate
+measurability and `ContinuousAt` fields for the inverse from the continuous
+linear map API, and derives common-core injectivity from the left-inverse law.
+It assumes only observation-law integrability of each offset coordinate,
+derives the product-space zero-coordinate integrability,
 pairwise independence, identical distribution, and positive-sample
 offset-average convergence from the canonical `Measure.infinitePi`
 observation sequence, then derives common-core target convergence, estimator
@@ -60,7 +63,15 @@ membership, finite-sum zero, inverse coordinate measurability, raw local
 inverse continuity, raw common-core injectivity, raw population common-core
 equation, or raw right-inverse value directly.
 
-The newest continuous-linear-equivalence packet adds
+The newest continuous-linear-map ker/range packet adds
+`vaart1998_commonObservationCoreContinuousLinearEquiv_of_ker_range`,
+`vaart1998_commonObservationCoreContinuousLinearEquiv_of_ker_range_apply`, and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapKerRangeAffineMeanZeroOffsetSource`.
+It removes the already-bundled common-core continuous linear equivalence
+assumption when the common core is supplied as a continuous linear map with
+trivial kernel and full range.
+
+The previous continuous-linear-equivalence packet adds
 `vaart1998_commonObservationCore_rightInverse_of_continuousLinearEquiv`,
 `vaart1998_commonObservationCore_leftInverse_of_continuousLinearEquiv`, and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearEquivAffineMeanZeroOffsetSource`.
@@ -175,11 +186,12 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: derive the continuous linear equivalence from an
-explicit finite matrix inverse or nonsingularity source, derive offset
-coordinate measurability/integrability from a more concrete model source when
-available, or instantiate the endpoint on a concrete estimating equation from
-the textbook.
+Next aggressive target: derive the trivial-kernel/full-range facts from an
+explicit finite matrix inverse, determinant/nonsingularity source, or
+textbook estimating-equation algebra; derive offset coordinate
+measurability/integrability from a more concrete model source when available;
+or instantiate the endpoint on a concrete estimating equation from the
+textbook.
 Do not route back to
 sample-size zero
 inverses, arbitrary canonical-selector measurability, direct root uniqueness,
@@ -190,9 +202,9 @@ consistency/coordinate-measurability/common-core-target/offset-average,
 product-space offset-integrability, offset-independence, or offset
 identical-distribution, inverse coordinate-measurability,
 raw local inverse-stability, raw common-core injectivity, raw population
-common-core equation, or raw right-inverse value assumptions when the
-common-core continuous-linear two-sided inverse affine mean-zero
-observation-law offset route is available.
+common-core equation, raw right-inverse value assumptions, or already-bundled
+continuous-linear-equivalence assumptions when the common-core linear-map
+ker/range route is available.
 
 The previous common-core packet adds
 `vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core
@@ -1680,7 +1692,7 @@ endpoint.
 Continuation recipe:
 
 1. Check `git status`, the Vaart diff, and the live hypotheses of the
-   positive-sample common-core continuous-linear-equivalence endpoint.
+   positive-sample common-core continuous-linear-map ker/range endpoint.
 2. If an unfinished local Vaart Lean diff exists, either finish and verify it
    immediately, or remove it from the packet before editing route docs.
 3. Choose exactly one source hypothesis feeding the endpoint and discharge it
@@ -1688,16 +1700,15 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Derive the continuous linear equivalence from a concrete common-core model,
-   explicit finite matrix inverse, nonsingularity certificate, or textbook
-   estimating-equation algebra.
-2. If the equivalence construction is not immediately available, derive a
-   live observation-offset field for the same endpoint: coordinate
-   measurability, coordinate integrability, or the coordinate mean-zero
-   equation at `theta0`.
+1. Derive the trivial-kernel/full-range facts from a concrete common-core
+   model, explicit finite matrix inverse, nonsingularity certificate, or
+   textbook estimating-equation algebra.
+2. If the ker/range construction is not immediately available, derive a live
+   observation-offset field for the same endpoint: coordinate measurability,
+   coordinate integrability, or the coordinate mean-zero equation at `theta0`.
 3. Instantiate the compiled endpoint for the first concrete textbook
    Theorem 5.41 example that can provide the affine display, offset fields,
-   and continuous linear equivalence.
+   and common-core ker/range facts.
 
 Do not replay the vector score-representation or vector score common-law
 transfers, derivative-table common-law transfer, centered
@@ -2986,26 +2997,26 @@ compiling:
    feeds that display into the finite Taylor-zero action-bound endpoint.
 
 Latest verified Vaart frontier before the next packet:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearEquivAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreContinuousLinearMapKerRangeAffineMeanZeroOffsetSource`.
 
-The latest theorem-sized packet removes the two raw common-core inverse-law
-hypotheses by deriving them from `ContinuousLinearEquiv.apply_symm_apply` and
-`ContinuousLinearEquiv.symm_apply_apply` for the common-core continuous linear
-equivalence. The live route now assumes the pointwise affine
-estimating-equation display against that equivalence, coordinate measurability
-and coordinate integrability of the observation offset, and the coordinate
-mean-zero equation at `theta0`.
+The latest theorem-sized packet removes the already-bundled common-core
+continuous-linear-equivalence assumption by building it from a continuous
+linear common core with trivial kernel and full range. The live route now
+assumes the pointwise affine estimating-equation display against that
+continuous linear map, the ker/range nonsingularity facts, coordinate
+measurability and coordinate integrability of the observation offset, and the
+coordinate mean-zero equation at `theta0`.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint. Priority order:
 
-1. Derive the continuous linear equivalence from a concrete linear/common-core
-   model, matrix nonsingularity source, or textbook finite-dimensional
-   estimating equation.
+1. Derive the trivial-kernel/full-range facts from a concrete
+   linear/common-core model, matrix nonsingularity source, or textbook
+   finite-dimensional estimating equation.
 2. Derive observation-offset coordinate measurability and integrability from a
    concrete score/estimating-map model.
 3. Instantiate the endpoint for the first source-shaped textbook example of
-   Theorem 5.41 that can reuse the compiled positive-sample equivalence route.
+   Theorem 5.41 that can reuse the compiled positive-sample ker/range route.
 
 Do not route back to the earlier second-derivative-kernel endpoint,
 fixed-`theta0` derivative joint measurability, direct second-derivative joint
