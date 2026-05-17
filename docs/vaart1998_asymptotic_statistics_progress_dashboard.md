@@ -15,8 +15,8 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: positive-sample common-core right-inverse continuous
-observation-law offset source for Theorem 5.41.  The live endpoint now states the
+Latest verified packet: positive-sample common-core right-inverse injective-core
+observation-law offset source for Theorem 5.41. The live endpoint now states the
 asymptotic-normality handoff for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine
@@ -27,24 +27,34 @@ product-space offset integrability, independence, identical distribution, and
 positive-sample offset-average convergence from observation-law coordinate
 integrability, derives target convergence and consistency from that average
 convergence plus local inverse stability derived from ordinary continuity at
-the limiting target, turns the finite equation into exact root-set membership,
+the limiting target, derives the limiting inverse value from common-core
+injectivity and the population common-core equation, turns the finite equation
+into exact root-set membership,
 prepends `theta0` at sample size zero, reuses the existing exact-root-set
 Theorem 5.41 source endpoint, and shifts the distributional conclusion back by
 `Nat.succ`.  This removes the artificial sample-size-zero inverse/uniqueness
 obstruction plus the offset-average, product-space offset-iid, raw local
 inverse-stability, common-core-target, estimator-consistency,
 estimator-coordinate-measurability, direct root-set-membership, and
-finite-sum-zero hypotheses from the current route.
+finite-sum-zero hypotheses and the raw right-inverse-value hypothesis from the
+current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetContinuousSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetInjectiveCoreSource`.
 
-The new continuous inverse-stability packet adds
+The new injective-core packet adds
+`vaart1998_commonObservationCoreRightInverse_value_of_injective`
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetInjectiveCoreSource`.
+The next blocker is to derive the remaining right-inverse continuity field at
+the negative observation-law offset mean from a concrete inverse-function,
+continuous linear inverse, or model-specific estimating-equation source, and
+then instantiate common-core injectivity/equations in a concrete textbook
+estimating equation.
+
+The previous continuous inverse-stability packet adds
 `vaart1998_edist_local_of_continuousAt` and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetContinuousSource`.
-The next blocker is to derive the right-inverse value and continuity at the
-negative observation-law offset mean from a concrete inverse-function,
-linear-inverse, or model-specific estimating-equation source.
 
 The previous observation-law offset packet adds
 `vaart1998_observationOffset_integrable_infinitePi_eval_zero`,
