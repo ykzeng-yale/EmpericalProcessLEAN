@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetStrongLawSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetObservationLawSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -29,22 +29,36 @@ commonObservationCore theta + observationOffset observation` and a right
 inverse
 `commonObservationCore (commonObservationCoreRightInverse y) = y`, plus
 coordinate measurability of the common-core right inverse and the observation
-offset.  It assumes coordinatewise scalar strong-law inputs for the offset
-process on the infinite product observation space: integrability at time zero,
-pairwise independence across sample indices, and identical distribution with
-time zero.  It derives positive-sample offset-average convergence, common-core
-target convergence, estimator consistency, and coordinate measurability of the
-explicit inverse estimator, proves the textbook finite estimating-equation
-identity internally, packages it as exact root-set membership, prepends
-`theta0` at sample size zero, applies the compiled exact-root-set Theorem 5.41
-source endpoint, and then shifts the convergence-in-distribution conclusion
-back along `Nat.succ`.  This removes the artificial `n = 0`
-left-inverse/root-uniqueness obstruction and no longer asks the caller to state
-offset-average convergence, common-core target convergence, estimator
-consistency, estimator coordinate measurability, root-set membership, or
-finite-sum zero directly.
+offset.  It assumes only observation-law integrability of each offset
+coordinate, derives the product-space zero-coordinate integrability,
+pairwise independence, identical distribution, and positive-sample
+offset-average convergence from the canonical `Measure.infinitePi`
+observation sequence, then derives common-core target convergence, estimator
+consistency, and coordinate measurability of the explicit inverse estimator.
+It proves the textbook finite estimating-equation identity internally,
+packages it as exact root-set membership, prepends `theta0` at sample size
+zero, applies the compiled exact-root-set Theorem 5.41 source endpoint, and
+then shifts the convergence-in-distribution conclusion back along `Nat.succ`.
+This removes the artificial `n = 0` left-inverse/root-uniqueness obstruction
+and no longer asks the caller to state offset-average convergence,
+product-space offset integrability, offset independence, offset identical
+distribution, common-core target convergence, estimator consistency,
+estimator coordinate measurability, root-set membership, or finite-sum zero
+directly.
 
-The newest offset strong-law packet adds
+The newest observation-law offset packet adds
+`vaart1998_observationOffset_integrable_infinitePi_eval_zero`,
+`vaart1998_observationOffset_integral_infinitePi_eval_zero_eq`,
+`vaart1998_observationOffset_pairwise_indepFun_infinitePi`,
+`vaart1998_observationOffset_identDistrib_infinitePi`,
+`vaart1998_positiveObservationOffsetAverage_tendstoInMeasure_of_observationLaw_integrable`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetObservationLawSource`.
+It reuses the canonical infinite-product marginal law, `iIndepFun`, and
+`HasLaw.identDistrib` route already present in `MEstimators.lean`, so the live
+endpoint now needs only base-law coordinate integrability for the offset LLN.
+
+The previous offset strong-law packet adds
 `vaart1998_positiveObservationOffsetAverage_tendstoInMeasure_of_coordinateStrongLaw`
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetStrongLawSource`.
@@ -101,20 +115,20 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: derive the offset coordinate integrability,
-independence, and identical-distribution fields from the primitive
-`Measure.infinitePi` observation-law setup, convert a standard continuity or
-differentiability assumption into the local `edist` inverse-stability field at
-the negative offset mean, or instantiate the endpoint on a concrete estimating
-equation from the textbook. Do not route back to
+Next aggressive target: convert a standard continuity or differentiability
+assumption into the local `edist` inverse-stability field at the negative
+observation-law offset mean, derive offset coordinate integrability from a
+more concrete model source when available, or instantiate the endpoint on a
+concrete estimating equation from the textbook. Do not route back to
 sample-size zero
 inverses, arbitrary canonical-selector measurability, direct root uniqueness,
 raw finite-sum-map injectivity, a raw left inverse, aggregate finite-sample
 affine-display hypotheses, arbitrary observation-dependent cores, direct
 root-set membership, external finite-sum-zero assumptions, or estimator
-consistency/coordinate-measurability/common-core-target/offset-average
-assumptions when the common-core right-inverse offset strong-law route is
-available.
+consistency/coordinate-measurability/common-core-target/offset-average,
+product-space offset-integrability, offset-independence, or offset
+identical-distribution assumptions when the common-core right-inverse
+observation-law offset route is available.
 
 The previous common-core packet adds
 `vaart1998_finiteSum_commonObservationCore_eq_nat_smul` and the common-core

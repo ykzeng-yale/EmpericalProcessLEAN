@@ -15,36 +15,46 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: positive-sample common-core right-inverse offset
-strong-law source for Theorem 5.41.  The live endpoint now states the
+Latest verified packet: positive-sample common-core right-inverse
+observation-law offset source for Theorem 5.41.  The live endpoint now states the
 asymptotic-normality handoff for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine
 display and a right inverse for the common core, derives coordinate
 measurability of the explicit inverse estimator from primitive measurability
-of the right inverse and observation offset, derives positive-sample
-offset-average convergence from coordinatewise scalar strong-law inputs,
-derives target convergence and consistency from that average convergence plus
-local inverse stability, turns the finite equation into exact root-set
-membership, prepends `theta0` at sample size zero, reuses the existing
-exact-root-set Theorem 5.41 source endpoint, and shifts the distributional
-conclusion back by `Nat.succ`.  This removes the artificial sample-size-zero
-inverse/uniqueness obstruction plus the offset-average, common-core-target,
-estimator-consistency, estimator-coordinate-measurability, direct
-root-set-membership, and finite-sum-zero hypotheses from the current route.
+of the right inverse and observation offset, derives the canonical
+product-space offset integrability, independence, identical distribution, and
+positive-sample offset-average convergence from observation-law coordinate
+integrability, derives target convergence and consistency from that average
+convergence plus local inverse stability, turns the finite equation into exact
+root-set membership, prepends `theta0` at sample size zero, reuses the
+existing exact-root-set Theorem 5.41 source endpoint, and shifts the
+distributional conclusion back by `Nat.succ`.  This removes the artificial
+sample-size-zero inverse/uniqueness obstruction plus the offset-average,
+product-space offset-iid, common-core-target, estimator-consistency,
+estimator-coordinate-measurability, direct root-set-membership, and
+finite-sum-zero hypotheses from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetStrongLawSource`.
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetObservationLawSource`.
 
-The new offset strong-law packet adds
+The new observation-law offset packet adds
+`vaart1998_observationOffset_integrable_infinitePi_eval_zero`,
+`vaart1998_observationOffset_integral_infinitePi_eval_zero_eq`,
+`vaart1998_observationOffset_pairwise_indepFun_infinitePi`,
+`vaart1998_observationOffset_identDistrib_infinitePi`,
+`vaart1998_positiveObservationOffsetAverage_tendstoInMeasure_of_observationLaw_integrable`,
+and
+`vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetObservationLawSource`.
+The next blocker is to package ordinary continuity/differentiability of the
+right inverse into the local `edist` inverse-stability field at the negative
+observation-law offset mean, or to instantiate the endpoint on a concrete
+textbook estimating equation.
+
+The previous offset strong-law packet adds
 `vaart1998_positiveObservationOffsetAverage_tendstoInMeasure_of_coordinateStrongLaw`
 and
 `vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetStrongLawSource`.
-The next blocker is to derive the offset coordinate integrability,
-independence, and identical-distribution fields from the primitive
-`Measure.infinitePi` observation-law setup, and to package ordinary
-continuity/differentiability of the right inverse into the local `edist`
-inverse-stability field at the negative offset mean.
 
 The previous offset-average packet adds
 `vaart1998PositiveObservationOffsetAverage`,

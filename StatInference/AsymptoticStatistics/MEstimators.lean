@@ -46741,6 +46741,280 @@ theorem vaart1998_positiveObservationOffsetAverage_tendstoInMeasure_of_coordinat
   simpa [P, X] using hAverage
 
 /--
+Observation-level offset coordinate integrability transfers to the zero
+coordinate of the canonical infinite-product observation sequence.
+-/
+theorem vaart1998_observationOffset_integrable_infinitePi_eval_zero
+    {Observation Coord : Type*}
+    [MeasurableSpace Observation]
+    {observationLaw : Measure Observation} [IsProbabilityMeasure observationLaw]
+    (observationOffset : Observation -> Coord -> ℝ)
+    (hObservationOffset_coordinate_meas :
+      ∀ coordinate : Coord,
+        Measurable
+          (fun observation : Observation =>
+            observationOffset observation coordinate))
+    (hObservationOffset_integrable :
+      ∀ coordinate : Coord,
+        Integrable
+          (fun observation : Observation =>
+            observationOffset observation coordinate)
+          observationLaw) :
+    ∀ coordinate : Coord,
+      Integrable
+        (fun sample : ℕ -> Observation =>
+          observationOffset (sample 0) coordinate)
+        (Measure.infinitePi (fun _ : ℕ => observationLaw)) := by
+  intro coordinate
+  let P : Measure (ℕ -> Observation) :=
+    Measure.infinitePi (fun _ : ℕ => observationLaw)
+  have hEval0_law :
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> Observation => sample 0) observationLaw P :=
+    (measurePreserving_eval_infinitePi
+      (μ := fun _ : ℕ => observationLaw) 0).hasLaw
+  have hMap_integrable :
+      Integrable
+        (fun observation : Observation =>
+          observationOffset observation coordinate)
+        (Measure.map (fun sample : ℕ -> Observation => sample 0) P) := by
+    simpa [hEval0_law.map_eq] using
+      hObservationOffset_integrable coordinate
+  simpa [P, Function.comp_def] using
+    (MeasureTheory.integrable_map_measure
+      (hObservationOffset_coordinate_meas coordinate).aestronglyMeasurable
+      (measurable_pi_apply 0).aemeasurable).1
+      hMap_integrable
+
+/--
+The zero-coordinate integral of an observation-offset coordinate under the
+canonical infinite product agrees with its observation-law integral.
+-/
+theorem vaart1998_observationOffset_integral_infinitePi_eval_zero_eq
+    {Observation Coord : Type*}
+    [MeasurableSpace Observation]
+    {observationLaw : Measure Observation} [IsProbabilityMeasure observationLaw]
+    (observationOffset : Observation -> Coord -> ℝ)
+    (hObservationOffset_coordinate_meas :
+      ∀ coordinate : Coord,
+        Measurable
+          (fun observation : Observation =>
+            observationOffset observation coordinate)) :
+    ∀ coordinate : Coord,
+      (∫ sample : ℕ -> Observation,
+        observationOffset (sample 0) coordinate
+          ∂Measure.infinitePi (fun _ : ℕ => observationLaw)) =
+        ∫ observation,
+          observationOffset observation coordinate ∂observationLaw := by
+  intro coordinate
+  let P : Measure (ℕ -> Observation) :=
+    Measure.infinitePi (fun _ : ℕ => observationLaw)
+  have hEval0_law :
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> Observation => sample 0) observationLaw P :=
+    (measurePreserving_eval_infinitePi
+      (μ := fun _ : ℕ => observationLaw) 0).hasLaw
+  simpa [P, Function.comp_def] using
+    hEval0_law.integral_comp
+      (f := fun observation : Observation =>
+        observationOffset observation coordinate)
+      (hObservationOffset_coordinate_meas coordinate).aestronglyMeasurable
+
+/--
+The coordinate offset processes are pairwise independent on the canonical
+infinite-product observation space.
+-/
+theorem vaart1998_observationOffset_pairwise_indepFun_infinitePi
+    {Observation Coord : Type*}
+    [MeasurableSpace Observation]
+    {observationLaw : Measure Observation} [IsProbabilityMeasure observationLaw]
+    (observationOffset : Observation -> Coord -> ℝ)
+    (hObservationOffset_coordinate_meas :
+      ∀ coordinate : Coord,
+        Measurable
+          (fun observation : Observation =>
+            observationOffset observation coordinate)) :
+    ∀ coordinate : Coord,
+      Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun
+          (fun sample : ℕ -> Observation =>
+            observationOffset (sample i) coordinate)
+          (fun sample : ℕ -> Observation =>
+            observationOffset (sample j) coordinate)
+          (Measure.infinitePi (fun _ : ℕ => observationLaw)) := by
+  intro coordinate
+  let P : Measure (ℕ -> Observation) :=
+    Measure.infinitePi (fun _ : ℕ => observationLaw)
+  have hSequence_law :
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> Observation => sample)
+        (Measure.infinitePi (fun _ : ℕ => observationLaw)) P :=
+    _root_.ProbabilityTheory.HasLaw.id
+  have hObservation_iIndep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> Observation => sample i) P :=
+    vaart1998_iIndepFun_of_common_sequence_law
+      (P := P)
+      (sample := fun i : ℕ => fun sample : ℕ -> Observation => sample i)
+      (sampleLaw := observationLaw)
+      (by simpa [P] using hSequence_law)
+  have hOffset_iIndep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> Observation =>
+          observationOffset (sample i) coordinate) P :=
+    vaart1998_iIndepFun_of_observation_transform
+      (P := P)
+      (observation := fun i : ℕ =>
+        fun sample : ℕ -> Observation => sample i)
+      (sampleTransform := fun observation : Observation =>
+        observationOffset observation coordinate)
+      hObservation_iIndep
+      (hObservationOffset_coordinate_meas coordinate)
+  intro i j hij
+  exact hOffset_iIndep.indepFun hij
+
+/--
+The coordinate offset processes are identically distributed on the canonical
+infinite-product observation space.
+-/
+theorem vaart1998_observationOffset_identDistrib_infinitePi
+    {Observation Coord : Type*}
+    [MeasurableSpace Observation]
+    {observationLaw : Measure Observation} [IsProbabilityMeasure observationLaw]
+    (observationOffset : Observation -> Coord -> ℝ)
+    (hObservationOffset_coordinate_meas :
+      ∀ coordinate : Coord,
+        Measurable
+          (fun observation : Observation =>
+            observationOffset observation coordinate)) :
+    ∀ coordinate : Coord, ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib
+        (fun sample : ℕ -> Observation =>
+          observationOffset (sample i) coordinate)
+        (fun sample : ℕ -> Observation =>
+          observationOffset (sample 0) coordinate)
+        (Measure.infinitePi (fun _ : ℕ => observationLaw))
+        (Measure.infinitePi (fun _ : ℕ => observationLaw)) := by
+  intro coordinate i
+  let P : Measure (ℕ -> Observation) :=
+    Measure.infinitePi (fun _ : ℕ => observationLaw)
+  let offsetCoordinate : Observation -> ℝ :=
+    fun observation : Observation => observationOffset observation coordinate
+  let offsetLaw : Measure ℝ :=
+    observationLaw.map offsetCoordinate
+  have hSequence_law :
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> Observation => sample)
+        (Measure.infinitePi (fun _ : ℕ => observationLaw)) P :=
+    _root_.ProbabilityTheory.HasLaw.id
+  have hObservation_law : ∀ j : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> Observation => sample j) observationLaw P :=
+    vaart1998_marginal_law_of_common_sequence_law
+      (P := P)
+      (sample := fun j : ℕ => fun sample : ℕ -> Observation => sample j)
+      (sampleLaw := observationLaw)
+      (by simpa [P] using hSequence_law)
+  have hOffset_law : ∀ j : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> Observation =>
+          observationOffset (sample j) coordinate)
+        offsetLaw P :=
+    vaart1998_common_law_of_observation_transform
+      (P := P)
+      (observation := fun j : ℕ =>
+        fun sample : ℕ -> Observation => sample j)
+      (observationLaw := observationLaw)
+      (sampleLaw := offsetLaw)
+      offsetCoordinate
+      (vaart1998_hasLaw_map_of_measurable
+        offsetCoordinate
+        (hObservationOffset_coordinate_meas coordinate))
+      hObservation_law
+  exact (hOffset_law i).identDistrib (hOffset_law 0)
+
+/--
+The positive-sample observation-offset average converges in probability by the
+finite-coordinate strong law on the canonical infinite-product observation
+space, starting from observation-law integrability of each coordinate.
+-/
+theorem vaart1998_positiveObservationOffsetAverage_tendstoInMeasure_of_observationLaw_integrable
+    {Observation Coord : Type*} [Fintype Coord]
+    [MeasurableSpace Observation]
+    [PseudoMetricSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)]
+    {observationLaw : Measure Observation} [IsProbabilityMeasure observationLaw]
+    (observationOffset : Observation -> Coord -> ℝ)
+    (hObservationOffset_coordinate_meas :
+      ∀ coordinate : Coord,
+        Measurable
+          (fun observation : Observation =>
+            observationOffset observation coordinate))
+    (hObservationOffset_integrable :
+      ∀ coordinate : Coord,
+        Integrable
+          (fun observation : Observation =>
+            observationOffset observation coordinate)
+          observationLaw) :
+    TendstoInMeasure (Measure.infinitePi (fun _ : ℕ => observationLaw))
+      (vaart1998PositiveObservationOffsetAverage observationOffset)
+      atTop
+      (fun _ : ℕ -> Observation => fun coordinate : Coord =>
+        ∫ observation,
+          observationOffset observation coordinate ∂observationLaw) := by
+  let P : Measure (ℕ -> Observation) :=
+    Measure.infinitePi (fun _ : ℕ => observationLaw)
+  have hProductIntegrable : ∀ coordinate : Coord,
+      Integrable
+        (fun sample : ℕ -> Observation =>
+          observationOffset (sample 0) coordinate) P :=
+    vaart1998_observationOffset_integrable_infinitePi_eval_zero
+      observationOffset hObservationOffset_coordinate_meas
+      hObservationOffset_integrable
+  have hProductIndep : ∀ coordinate : Coord,
+      Pairwise fun i j =>
+        _root_.ProbabilityTheory.IndepFun
+          (fun sample : ℕ -> Observation =>
+            observationOffset (sample i) coordinate)
+          (fun sample : ℕ -> Observation =>
+            observationOffset (sample j) coordinate) P :=
+    vaart1998_observationOffset_pairwise_indepFun_infinitePi
+      observationOffset hObservationOffset_coordinate_meas
+  have hProductIdent : ∀ coordinate : Coord, ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib
+        (fun sample : ℕ -> Observation =>
+          observationOffset (sample i) coordinate)
+        (fun sample : ℕ -> Observation =>
+          observationOffset (sample 0) coordinate) P P :=
+    vaart1998_observationOffset_identDistrib_infinitePi
+      observationOffset hObservationOffset_coordinate_meas
+  have hAverage :
+      TendstoInMeasure P
+        (vaart1998PositiveObservationOffsetAverage observationOffset)
+        atTop
+        (fun _ : ℕ -> Observation => fun coordinate : Coord =>
+          ∫ sample : ℕ -> Observation,
+            observationOffset (sample 0) coordinate ∂P) :=
+    vaart1998_positiveObservationOffsetAverage_tendstoInMeasure_of_coordinateStrongLaw
+      observationOffset hObservationOffset_coordinate_meas
+      hProductIntegrable hProductIndep hProductIdent
+  have hMeanEq :
+      (fun _ : ℕ -> Observation => fun coordinate : Coord =>
+          ∫ sample : ℕ -> Observation,
+            observationOffset (sample 0) coordinate ∂P)
+        =ᵐ[P]
+      (fun _ : ℕ -> Observation => fun coordinate : Coord =>
+          ∫ observation,
+            observationOffset observation coordinate ∂observationLaw) := by
+    exact Eventually.of_forall fun _ => by
+      funext coordinate
+      exact
+        vaart1998_observationOffset_integral_infinitePi_eval_zero_eq
+          observationOffset hObservationOffset_coordinate_meas coordinate
+  exact MeasureTheory.TendstoInMeasure.congr_right hMeanEq hAverage
+
+/--
 Consistency of the explicit positive-sample common-core inverse estimator from
 convergence in probability of its common-core target.
 
@@ -47684,6 +47958,199 @@ theorem vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseO
         observationOffset hObservationOffset_coordinate_meas
         hObservationOffset_integrable hObservationOffset_indep
         hObservationOffset_ident
+  have hLocal :
+      ∀ ε : ℝ≥0∞, 0 < ε ->
+        ∃ δ : ℝ≥0∞, 0 < δ ∧
+          ∀ y : Coord -> ℝ, edist y (-offsetMean) < δ ->
+            edist (commonObservationCoreRightInverse y) theta0 < ε := by
+    simpa [offsetMean] using hCommonObservationCoreRightInverse_local
+  exact
+    vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetAverageSource
+      (Q := Q) (V := V) (Vinv := Vinv)
+      (observationEstimatingMap := observationEstimatingMap)
+      (observationDerivativeAt := observationDerivativeAt)
+      (observationSecondDerivative := observationSecondDerivative)
+      (envelope := envelope) (observationLaw := observationLaw)
+      (theta0 := theta0)
+      (commonObservationCore := commonObservationCore)
+      (commonObservationCoreRightInverse := commonObservationCoreRightInverse)
+      (observationOffset := observationOffset) (offsetMean := offsetMean)
+      (Z := Z)
+      hLeftInverse hObservationEstimatingMapTheta0_coordinate_meas
+      hObservationEstimatingMapTheta0_coordinate_memLp
+      hObservationEstimatingMapTheta0_coordinate_mean_zero
+      hObservationDerivativeAt_joint_measurable_source
+      hObservationDerivativeAtTheta0_operator_integrable
+      hV_observationDerivativeAtTheta0_operator_mean hZ_gaussian
+      hZ_mean_zero Gamma hZ_centered_product
+      hObservationEstimatingMapTheta0_centered_product
+      hObservationEstimatingMap_commonAffine hCommonObservationCore_rightInverse
+      hCommonObservationCoreRightInverse_coordinate_meas
+      hObservationOffset_coordinate_meas hOffsetAverage_tendsto hLocal
+      hEnvelope_meas hAbsEnvelope_integrable
+      hObservationSecondDerivative_measurable hObservationSecondDerivative_bound
+      hContDiffObservationEstimatingMap_univ
+      hObservationDerivativeAt_eq_fderiv_observationEstimatingMap
+      hContDiffObservationDerivativeAt_univ
+      hObservationSecondDerivative_eq_fderiv_observationDerivativeAt
+
+/--
+van der Vaart 1998, Theorem 5.41, positive-sample common-core inverse
+observation-law offset source endpoint.
+
+This endpoint is the canonical iid observation-space version of the offset
+route. It replaces the product-space offset integrability, independence, and
+identical-distribution hypotheses by observation-law integrability of each
+offset coordinate; the remaining iid fields are supplied internally by
+`Measure.infinitePi`.
+-/
+theorem vaart1998_theorem_5_41_positiveSample_commonObservationCoreRightInverseOffsetObservationLawSource
+    {Ω' Observation Coord Param : Type*} [Fintype Coord] [Fintype Param]
+    [DecidableEq Param]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace Observation]
+    [PseudoMetricSpace (Coord -> ℝ)]
+    [SecondCountableTopology (Coord -> ℝ)] [BorelSpace (Coord -> ℝ)]
+    [OpensMeasurableSpace (Coord -> ℝ)] [CompleteSpace (Coord -> ℝ)]
+    [MeasurableSpace (Param -> ℝ)] [SecondCountableTopology (Param -> ℝ)]
+    [BorelSpace (Param -> ℝ)] [OpensMeasurableSpace (Param -> ℝ)]
+    [CompleteSpace (Param -> ℝ)]
+    [MeasurableSub₂ (Param -> ℝ)] [MeasurableSMul₂ ℝ (Param -> ℝ)]
+    [PseudoMetricSpace (Coord × Param -> ℝ)]
+    [SecondCountableTopology (Coord × Param -> ℝ)]
+    [BorelSpace (Coord × Param -> ℝ)]
+    [OpensMeasurableSpace (Coord × Param -> ℝ)]
+    [CompleteSpace (Coord × Param -> ℝ)]
+    [SecondCountableTopology ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [OpensMeasurableSpace ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableAdd₂ ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ ((Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableAdd₂ ((Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    [MeasurableConstSMul ℝ
+      ((Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))]
+    (V : (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (Vinv : (Coord -> ℝ) →L[ℝ] (Param -> ℝ))
+    (observationEstimatingMap : Observation -> (Param -> ℝ) -> Coord -> ℝ)
+    (observationDerivativeAt :
+      Observation -> (Param -> ℝ) ->
+        (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (observationSecondDerivative :
+      Observation -> (Param -> ℝ) →L[ℝ] (Param -> ℝ) →L[ℝ] (Coord -> ℝ))
+    (envelope : Observation -> ℝ)
+    {observationLaw : Measure Observation} [IsProbabilityMeasure observationLaw]
+    {theta0 : Param -> ℝ}
+    (commonObservationCore : (Param -> ℝ) -> Coord -> ℝ)
+    (commonObservationCoreRightInverse : (Coord -> ℝ) -> Param -> ℝ)
+    (observationOffset : Observation -> Coord -> ℝ)
+    {Z : Ω' -> Coord -> ℝ}
+    (hLeftInverse : ∀ x : Param -> ℝ, Vinv (V x) = x)
+    (hObservationEstimatingMapTheta0_coordinate_meas : ∀ coordinate : Coord,
+      Measurable
+        (fun observation : Observation =>
+          observationEstimatingMap observation theta0 coordinate))
+    (hObservationEstimatingMapTheta0_coordinate_memLp : ∀ coordinate : Coord,
+      MemLp
+        (fun observation : Observation =>
+          observationEstimatingMap observation theta0 coordinate)
+        2 observationLaw)
+    (hObservationEstimatingMapTheta0_coordinate_mean_zero :
+      ∀ coordinate : Coord,
+        (∫ observation,
+          observationEstimatingMap observation theta0 coordinate
+            ∂observationLaw) = 0)
+    (hObservationDerivativeAt_joint_measurable_source :
+      Measurable
+        (fun p : Observation × (Param -> ℝ) =>
+          observationDerivativeAt p.1 p.2))
+    (hObservationDerivativeAtTheta0_operator_integrable :
+      Integrable
+        (fun observation : Observation =>
+          observationDerivativeAt observation theta0)
+        observationLaw)
+    (hV_observationDerivativeAtTheta0_operator_mean :
+      (∫ observation,
+        observationDerivativeAt observation theta0 ∂observationLaw) = V)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_mean_zero : (∫ ω, Z ω ∂Q) = 0)
+    (Gamma : Coord -> Coord -> ℝ)
+    (hZ_centered_product : ∀ i j : Coord,
+      (∫ ω, Z ω i * Z ω j ∂Q) = Gamma i j)
+    (hObservationEstimatingMapTheta0_centered_product : ∀ i j : Coord,
+      (∫ observation,
+        observationEstimatingMap observation theta0 i *
+          observationEstimatingMap observation theta0 j ∂observationLaw) =
+        Gamma i j)
+    (hObservationEstimatingMap_commonAffine : ∀ observation : Observation,
+      ∀ theta : Param -> ℝ,
+        observationEstimatingMap observation theta =
+          commonObservationCore theta + observationOffset observation)
+    (hCommonObservationCore_rightInverse : ∀ y : Coord -> ℝ,
+      commonObservationCore (commonObservationCoreRightInverse y) = y)
+    (hCommonObservationCoreRightInverse_coordinate_meas :
+      ∀ param : Param,
+        Measurable
+          (fun y : Coord -> ℝ =>
+            commonObservationCoreRightInverse y param))
+    (hObservationOffset_coordinate_meas :
+      ∀ coordinate : Coord,
+        Measurable
+          (fun observation : Observation =>
+            observationOffset observation coordinate))
+    (hObservationOffset_integrable :
+      ∀ coordinate : Coord,
+        Integrable
+          (fun observation : Observation =>
+            observationOffset observation coordinate)
+          observationLaw)
+    (hCommonObservationCoreRightInverse_local :
+      ∀ ε : ℝ≥0∞, 0 < ε ->
+        ∃ δ : ℝ≥0∞, 0 < δ ∧
+          ∀ y : Coord -> ℝ,
+            edist y
+                (-(fun coordinate : Coord =>
+                  ∫ observation,
+                    observationOffset observation coordinate ∂observationLaw)) <
+              δ ->
+            edist (commonObservationCoreRightInverse y) theta0 < ε)
+    (hEnvelope_meas : Measurable envelope)
+    (hAbsEnvelope_integrable : Integrable (fun x => |envelope x|) observationLaw)
+    (hObservationSecondDerivative_measurable :
+      Measurable observationSecondDerivative)
+    (hObservationSecondDerivative_bound : ∀ x,
+      ‖observationSecondDerivative x‖ ≤ |envelope x|)
+    (hContDiffObservationEstimatingMap_univ : ∀ observation : Observation,
+      ContDiffOn ℝ 1 (observationEstimatingMap observation) Set.univ)
+    (hObservationDerivativeAt_eq_fderiv_observationEstimatingMap :
+      ∀ observation : Observation, ∀ theta : Param -> ℝ,
+        fderiv ℝ (observationEstimatingMap observation) theta =
+          observationDerivativeAt observation theta)
+    (hContDiffObservationDerivativeAt_univ : ∀ observation : Observation,
+      ContDiffOn ℝ 1 (observationDerivativeAt observation) Set.univ)
+    (hObservationSecondDerivative_eq_fderiv_observationDerivativeAt :
+      ∀ observation : Observation, ∀ theta : Param -> ℝ,
+        fderiv ℝ (observationDerivativeAt observation) theta =
+          observationSecondDerivative observation) :
+    TendstoInDistribution
+      (fun (n : ℕ) sample =>
+        √((n + 1 : ℕ) : ℝ) •
+          (vaart1998PositiveCommonObservationCoreInverseEstimator
+              commonObservationCoreRightInverse observationOffset n sample -
+            theta0))
+      atTop
+      (fun ω => (-Vinv : (Coord -> ℝ) →L[ℝ] (Param -> ℝ)) (Z ω))
+      (fun _ => Measure.infinitePi (fun _ : ℕ => observationLaw)) Q := by
+  let offsetMean : Coord -> ℝ :=
+    fun coordinate : Coord =>
+      ∫ observation,
+        observationOffset observation coordinate ∂observationLaw
+  have hOffsetAverage_tendsto :
+      TendstoInMeasure (Measure.infinitePi (fun _ : ℕ => observationLaw))
+        (vaart1998PositiveObservationOffsetAverage observationOffset)
+        atTop (fun _ : ℕ -> Observation => offsetMean) := by
+    simpa [offsetMean] using
+      vaart1998_positiveObservationOffsetAverage_tendstoInMeasure_of_observationLaw_integrable
+        observationOffset hObservationOffset_coordinate_meas
+        hObservationOffset_integrable
   have hLocal :
       ∀ ε : ℝ≥0∞, 0 < ε ->
         ∃ δ : ℝ≥0∞, 0 < δ ∧
