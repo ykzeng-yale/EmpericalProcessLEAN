@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V487
+## Live In-Thread Goal Prompt V488
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -27,6 +27,8 @@ finite-prefix product-law `HasLaw` wrappers from iid source hypotheses and
 canonical infinite-product coordinates.  V486 adds the corresponding
 general/non-iid finite-prefix product-law and joint infinite-product extraction
 wrappers.  V487 adds arbitrary finite-index-set product-law and cylinder
+probability wrappers from source independence/marginal laws.  V488 adds the
+shifted one-based arbitrary finite-index-set product-law and cylinder
 probability wrappers from source independence/marginal laws.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
@@ -39,7 +41,20 @@ infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
 cylinder source wrappers, solved `Fin n` finite-prefix product-law wrappers,
 solved general/non-iid finite-prefix product-law wrappers,
 solved arbitrary finite-index-set product-law/cylinder wrappers,
+solved shifted arbitrary finite-index-set product-law/cylinder wrappers,
 or old app-level stale prompts.
+
+Latest verified target V488 adds shifted arbitrary finite-dimensional
+distribution support for Durrett Theorem 2.1.11:
+`durrett2019_theorem_2_1_11_iIndepFun_shift_finite_restrict_hasLaw_pi`,
+`durrett2019_theorem_2_1_11_iIndepFun_shift_finite_cylinder_prob`,
+`durrett2019_theorem_2_1_11_iid_shift_finite_restrict_hasLaw_pi_of_iIndepFun`,
+`durrett2019_theorem_2_1_11_iid_shift_finite_restrict_hasLaw_pi_of_identDistrib`,
+`durrett2019_theorem_2_1_11_iid_shift_finite_cylinder_prob_of_iIndepFun`,
+and `durrett2019_theorem_2_1_11_iid_shift_finite_cylinder_prob_of_identDistrib`.
+These wrappers handle an arbitrary finite set `s : Finset ℕ` in Durrett's
+one-based notation `X_{i+1}`, complementing V487's zero-based arbitrary
+finite-set statements and V484/V485's one-based finite-prefix statements.
 
 Latest verified target V487 adds arbitrary finite-dimensional distribution
 support for Durrett Theorem 2.1.11:
@@ -4438,6 +4453,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V487` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V488` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

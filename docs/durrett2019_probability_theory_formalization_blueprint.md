@@ -27,12 +27,12 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V487`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V488`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V487: stay on Durrett Theorem 2.4.9
+Current immediate target after V488: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -50,7 +50,9 @@ hypotheses; V485 adds `Fin n` finite-prefix product-law `HasLaw` wrappers from
 iid source hypotheses and canonical infinite-product coordinates; V486 adds
 the general/non-iid finite-prefix product-law and joint infinite-product
 extraction wrappers; V487 adds arbitrary finite-index-set product-law and
-cylinder probability wrappers from source independence/marginal laws.  The
+cylinder probability wrappers from source independence/marginal laws; V488
+adds the shifted one-based arbitrary finite-index-set product-law and cylinder
+probability wrappers from source independence/marginal laws.  The
 next packet should close only a proved-missing
 2.4.9 display or add the next Chapter 2.1 product-law/product-expectation
 wrapper that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
