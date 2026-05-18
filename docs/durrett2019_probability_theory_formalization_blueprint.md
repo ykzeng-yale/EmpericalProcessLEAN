@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V499`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V500`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -74,13 +74,14 @@ empirical-CDF burn-in wrappers for `iIndepFun`, identical-distribution source,
 and pairwise-identically-distributed source hypotheses.  V499 adds the
 matching middle-partition-with-tails source wrappers for identical-distribution
 and pairwise-identically-distributed hypotheses, including exact one-based
-textbook displays.
+textbook displays.  V500 adds the countable supplied-partition and final
+middle-partition outer-a.s. endpoint source wrappers for the same
+identical-distribution and pairwise-identically-distributed hypotheses.
 The
 next packet should close only a proved-missing
-2.4.9 proof-step source wrapper, especially in the countable supplied
-middle-partition or outer-a.s. partition layer, or add the next Chapter 2.1
-product-law/product-expectation wrapper that directly supports 2.4.9 or the
-adjacent Kolmogorov-maximal route.
+2.4.9 proof-step or final-display source wrapper not already covered by V500,
+or add the next Chapter 2.1 product-law/product-expectation wrapper that
+directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 Do not return to scalar-kernel estimates, annulus mass summability, concrete
 majorant integrability, display-wrapper plumbing, branch-combination plumbing,
 reciprocal-growth conversion, monotone-convergence shell, linear-tail transfer,
@@ -96,6 +97,8 @@ or the general/non-iid finite-prefix product-law wrappers,
 or the arbitrary finite-index-set product-law/cylinder wrappers,
 or the finite-cutpoint closed/left empirical-CDF burn-in source wrappers,
 or the middle-partition-with-tails source wrappers,
+or the countable supplied-partition/final middle-partition endpoint source
+wrappers,
 unless a focused source check exposes a missing handoff.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.4.9

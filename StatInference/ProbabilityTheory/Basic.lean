@@ -25062,6 +25062,134 @@ theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUnifor
         hleftTail hrightTail)
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step from the standard iid source shape:
+the countable supplied middle-partition route gives the pathwise
+uniform-deviation conclusion on one a.s. event.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (width : ℕ -> ℝ)
+    (hwidth_pos : ∀ scale, 0 < width scale)
+    (hwidth_tendsto : Tendsto width atTop (𝓝 0))
+    (a b : ℕ -> ℝ) (middleCells : ℕ -> ℕ)
+    (partition : ∀ scale,
+      SuppliedRealMiddleCDFPartition P (width scale / 2)
+        (a scale) (b scale) (middleCells scale))
+    (hleftTail : ∀ scale, P.real (Set.Iio (a scale)) < width scale / 2)
+    (hrightTail : ∀ scale, P.real (Set.Ioi (b scale)) < width scale / 2)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    AlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions
+    X width hwidth_pos hwidth_tendsto a b middleCells partition
+    hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the standard iid source shape:
+the countable supplied middle-partition route packaged in the VdV&W
+outer-a.s. uniform-deviation interface.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_tendsto_partitions_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (width : ℕ -> ℝ)
+    (hwidth_pos : ∀ scale, 0 < width scale)
+    (hwidth_tendsto : Tendsto width atTop (𝓝 0))
+    (a b : ℕ -> ℝ) (middleCells : ℕ -> ℕ)
+    (partition : ∀ scale,
+      SuppliedRealMiddleCDFPartition P (width scale / 2)
+        (a scale) (b scale) (middleCells scale))
+    (hleftTail : ∀ scale, P.real (Set.Iio (a scale)) < width scale / 2)
+    (hrightTail : ∀ scale, P.real (Set.Ioi (b scale)) < width scale / 2)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_tendsto_partitions
+    X width hwidth_pos hwidth_tendsto a b middleCells partition
+    hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the pairwise-iid source shape:
+the countable supplied middle-partition route gives the pathwise
+uniform-deviation conclusion on one a.s. event.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (width : ℕ -> ℝ)
+    (hwidth_pos : ∀ scale, 0 < width scale)
+    (hwidth_tendsto : Tendsto width atTop (𝓝 0))
+    (a b : ℕ -> ℝ) (middleCells : ℕ -> ℕ)
+    (partition : ∀ scale,
+      SuppliedRealMiddleCDFPartition P (width scale / 2)
+        (a scale) (b scale) (middleCells scale))
+    (hleftTail : ∀ scale, P.real (Set.Iio (a scale)) < width scale / 2)
+    (hrightTail : ∀ scale, P.real (Set.Ioi (b scale)) < width scale / 2)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    AlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_almostSureUniformDeviation_of_tendsto_partitions
+    X width hwidth_pos hwidth_tendsto a b middleCells partition
+    hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the pairwise-iid source shape:
+the countable supplied middle-partition route packaged in the VdV&W
+outer-a.s. uniform-deviation interface.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_tendsto_partitions_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (width : ℕ -> ℝ)
+    (hwidth_pos : ∀ scale, 0 < width scale)
+    (hwidth_tendsto : Tendsto width atTop (𝓝 0))
+    (a b : ℕ -> ℝ) (middleCells : ℕ -> ℕ)
+    (partition : ∀ scale,
+      SuppliedRealMiddleCDFPartition P (width scale / 2)
+        (a scale) (b scale) (middleCells scale))
+    (hleftTail : ∀ scale, P.real (Set.Iio (a scale)) < width scale / 2)
+    (hrightTail : ∀ scale, P.real (Set.Ioi (b scale)) < width scale / 2)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_tendsto_partitions
+    X width hwidth_pos hwidth_tendsto a b middleCells partition
+    hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
 Durrett 2019, Theorem 2.4.9 proof step: arbitrary real laws supply a bounded
 middle partition together with lower and upper tail bounds at every positive
 scale.
@@ -25193,6 +25321,48 @@ theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUnifor
       hLaw hindep
 
 /--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint from the standard iid source
+shape: the countable middle-partition-with-tails construction gives the
+outer-a.s. empirical-CDF uniform-deviation statement.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
+    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint from the pairwise-iid source
+shape: the countable middle-partition-with-tails construction gives the
+outer-a.s. empirical-CDF uniform-deviation statement.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
+    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
 Durrett 2019, Theorem 2.4.9 proof-step endpoint in one-based textbook
 notation: the V377/V378 middle-partition-with-tails route proves
 `sup_c |n^{-1} * sum_{i < n} 1{X_{i+1} <= c} - F(c)| -> 0` outer-a.s.
@@ -25281,6 +25451,65 @@ theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_oute
   exact
     durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun
       (fun i => fun sample : ℕ -> ℝ => sample i) hCoord.1 hCoord.2.1
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint in one-based textbook
+notation from the standard iid source shape.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun
+    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint in one-based textbook
+notation from the pairwise-iid source shape.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_outerAlmostSureUniformDeviation_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) := by
+  have hLawAll :
+      ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) P μ :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  have hLawShift :
+      ∀ i : ℕ,
+        _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) P μ := by
+    intro i
+    exact hLawAll (i + 1)
+  have hindepShift :
+      Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on
+        (fun i : ℕ => fun ω => X (i + 1) ω)) := by
+    intro i j hij
+    have hne : Nat.succ i ≠ Nat.succ j := by
+      intro h
+      exact hij (Nat.succ.inj h)
+    simpa [Function.onFun, Nat.succ_eq_add_one] using hindep hne
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum,
+    div_eq_mul_inv, mul_comm] using
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
+      (fun i => fun ω => X (i + 1) ω) hLawShift hindepShift
 
 /--
 Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem under the
