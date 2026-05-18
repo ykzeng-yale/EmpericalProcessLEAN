@@ -7586,6 +7586,157 @@ theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_law_indexed_p
     hX hX_meas hLaw hf_meas hf m n
 
 /--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform finite
+zero-factor product with existence.
+
+This common-law `HasLaw` form packages the mixed-moment cancellation: if one
+law-side indexed transform has zero integral, then the composed source product
+is integrable and has expectation zero.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_law_indexed_prod_eq_zero_of_integrable_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {μ : Measure S}
+    {f : ι -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) μ)
+    {s : Finset ι} {i : ι} (hi : i ∈ s)
+    (hzero : ∫ x, f i x ∂μ = 0) :
+    Integrable (fun ω => ∏ j ∈ s, f j (X j ω)) P ∧
+      ∫ ω, ∏ j ∈ s, f j (X j ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_finset_law_prod_eq_zero_of_integrable_and_integral_eq_zero
+    (P := P) (S := fun _ : ι => S) (X := X)
+    (μ := fun _ : ι => μ) (f := f)
+    hX hX_meas hLaw hf_meas hf (s := s) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform initial-range
+zero-factor product with existence.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_law_indexed_prod_eq_zero_of_integrable_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) μ)
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hzero : ∫ x, f i x ∂μ = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.range n, f j (X j ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.range n, f j (X j ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_law_indexed_prod_eq_zero_of_integrable_and_integral_eq_zero
+    (P := P) (X := X) (μ := μ) (f := f)
+    hX hX_meas hLaw hf_meas hf (s := Finset.range n) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform interval-block
+zero-factor product with existence.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_law_indexed_prod_eq_zero_of_integrable_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) μ)
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hzero : ∫ x, f i x ∂μ = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.Ico m n, f j (X j ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.Ico m n, f j (X j ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_law_indexed_prod_eq_zero_of_integrable_and_integral_eq_zero
+    (P := P) (X := X) (μ := μ) (f := f)
+    hX hX_meas hLaw hf_meas hf (s := Finset.Ico m n) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform zero-factor
+product with existence on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_oneBased_Icc_law_indexed_prod_eq_zero_of_integrable_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) μ)
+    {n i : ℕ} (hi : i ∈ Finset.Icc 1 n)
+    (hzero : ∫ x, f i x ∂μ = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.Icc 1 n, f j (X j ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.Icc 1 n, f j (X j ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_law_indexed_prod_eq_zero_of_integrable_and_integral_eq_zero
+    (P := P) (X := X) (μ := μ) (f := f)
+    hX hX_meas hLaw hf_meas hf (s := Finset.Icc 1 n) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform one-based
+initial-range zero-factor product with existence.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_law_indexed_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) μ)
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hzero : ∫ x, f (i + 1) x ∂μ = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.range n, f (j + 1) (X (j + 1) ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.range n, f (j + 1) (X (j + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_law_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero
+    (P := P) (S := fun _ : ℕ => S) (X := X)
+    (μ := fun _ : ℕ => μ) (f := f)
+    hX hX_meas hLaw hf_meas hf hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform one-based
+interval-block zero-factor product with existence.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_law_indexed_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) μ)
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hzero : ∫ x, f (i + 1) x ∂μ = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.Ico m n, f (j + 1) (X (j + 1) ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.Ico m n, f (j + 1) (X (j + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_law_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero
+    (P := P) (S := fun _ : ℕ => S) (X := X)
+    (μ := fun _ : ℕ => μ) (f := f)
+    hX hX_meas hLaw hf_meas hf hi hzero
+
+/--
 Durrett 2019, Theorem 2.1.13, source-side composed finite-subfamily
 expectation-exists-and-value formula.
 

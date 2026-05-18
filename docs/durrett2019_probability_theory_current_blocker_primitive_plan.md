@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V539
+## Live In-Thread Goal Prompt V540
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -214,6 +214,12 @@ expectation-exists-and-value wrappers: under common-law `HasLaw` hypotheses,
 index-dependent measurable transforms `f_i(X_i)` have source-space product
 integrability and product-of-law-expectations formulas over `∫ f_i dμ` for
 finite/range/Ico and one-based products.
+V540 adds law-side iid/indexed-transform Chapter 2.1.13 zero-factor
+expectation-exists wrappers: under common-law `HasLaw` hypotheses,
+index-dependent measurable transforms `f_i(X_i)` have source-space product
+integrability and zero product expectation whenever one selected law-side
+factor integral `∫ f_i dμ` is zero, for finite/range/Ico and one-based
+products.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -326,6 +332,10 @@ or one-based range/Ico/`Icc` products unless an exact later consumer needs a
 different source shape.
 After V539, do not rebuild the law-side iid/indexed-transform Theorem 2.1.13
 expectation-exists-and-value wrappers for finite/range/Ico or one-based
+range/Ico/`Icc` products unless an exact later consumer needs a different
+source shape.
+After V540, do not rebuild the law-side iid/indexed-transform Theorem 2.1.13
+zero-factor expectation-exists wrappers for finite/range/Ico or one-based
 range/Ico/`Icc` products unless an exact later consumer needs a different
 source shape.
 Do not return to
@@ -479,10 +489,33 @@ expectation-exists wrappers for finite/range/Ico and one-based range/Ico/
 solved law-side iid/indexed-transform Theorem 2.1.13
 expectation-exists-and-value wrappers for finite/range/Ico and one-based
 range/Ico/`Icc` products,
+solved law-side iid/indexed-transform Theorem 2.1.13 zero-factor
+expectation-exists wrappers for finite/range/Ico and one-based range/Ico/
+`Icc` products,
 or old app-level stale prompts.
 
-Latest verified target V539 adds law-side iid/indexed-transform Chapter 2.1.13
-expectation-exists-and-value wrappers:
+Latest verified target V540 adds law-side iid/indexed-transform Chapter 2.1.13
+zero-factor expectation-exists wrappers:
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_law_indexed_prod_eq_zero_of_integrable_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_law_indexed_prod_eq_zero_of_integrable_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_law_indexed_prod_eq_zero_of_integrable_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_oneBased_Icc_law_indexed_prod_eq_zero_of_integrable_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_law_indexed_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero`,
+and
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_law_indexed_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero`.
+These specialize the generic law-side zero-factor product formula to a common
+law `μ` with index-dependent transforms `f_i`, packaging source-space
+integrability and the mixed product cancellation
+`∫ ∏ f_i(X_i) dP = 0` when one law-side factor integral vanishes.  They are
+the `HasLaw` common-law zero-factor companion to V539 and support Durrett
+centered mixed-power cancellations through law-side moments.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V539 adds law-side iid/indexed-transform Chapter
+2.1.13 expectation-exists-and-value wrappers:
 `durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_law_indexed_prod_eq_prod_integral`,
 `durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_law_indexed_prod_eq_prod_integral`,
 `durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_law_indexed_prod_eq_prod_integral`,
@@ -496,10 +529,6 @@ mixed product expectation
 `∫ ∏ f_i(X_i) dP = ∏ ∫ f_i dμ`.  They are the `HasLaw` common-law companion to
 V537 and match Durrett mixed-power factorization when the proof is being run
 through law-side moments.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V538 adds source-side iid/indexed-transform composed
 Chapter 2.1.13 zero-factor expectation-exists wrappers:
