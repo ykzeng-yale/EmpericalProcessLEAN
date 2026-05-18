@@ -36,7 +36,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V554` in
+Route from `Live In-Thread Goal Prompt V555` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -321,6 +321,12 @@ zero-factor formulas for finite/range/Ico and one-based range/Ico/
 source independence, measurability of `X_i` and `f_i`, and one zero composed
 norm factor `lintegral`, without `HasLaw` or ordinary integrability
 assumptions.
+V555 adds source-side iid/indexed-transform Chapter 2.1.13 absolute-value/norm
+product formulas for finite/range/Ico and one-based range/Ico/
+`Finset.Icc 1 n` products, reducing indexed norm-product factorizations under
+`IdentDistrib` to source independence, measurability of `X_i` and `f_i`, and
+base-coordinate norm `lintegral`s over `X_0`, without `HasLaw` or ordinary
+integrability assumptions.
 The
 historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
@@ -2407,6 +2413,8 @@ products.
 V554 adds source-side composed-function Chapter 2.1.13 absolute-value/norm
 zero-factor formulas for finite/range/Ico and one-based range/Ico/`Icc`
 composed products.
+V555 adds source-side iid/indexed-transform Chapter 2.1.13 absolute-value/norm
+product formulas for finite/range/Ico and one-based range/Ico/`Icc` products.
 Theorem 2.4.9 now has
 the arbitrary-law cutpoint-chain route and both the book-style and exact
 outer-a.s. empirical-CDF endpoints:
@@ -3593,7 +3601,7 @@ Next proof packet: search for a genuinely missing 2.4.9 proof-step or
 final-display source wrapper, or add the next Chapter 2.1
 product-law/product-expectation handoff that directly supports 2.4.9 or the
 adjacent Kolmogorov-maximal route.  Do not route back to solved 2.5.13
-plumbing or the closed V500-V554 2.4.9/2.1 source-wrapper surfaces unless an
+plumbing or the closed V500-V555 2.4.9/2.1 source-wrapper surfaces unless an
 exact source-shape consumer is missing.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement

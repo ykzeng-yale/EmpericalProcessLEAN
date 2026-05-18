@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V554
+## Live In-Thread Goal Prompt V555
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -303,6 +303,12 @@ measurable transforms `f_i : S_i -> 𝕜`, the source-space `lintegral` of
 `‖∏ f_i(X_i)‖` is zero whenever one composed norm factor `lintegral` is zero,
 for finite/range/Ico and one-based products, without requiring `HasLaw` or
 ordinary integrability assumptions.
+V555 adds source-side iid/indexed-transform Chapter 2.1.13 absolute-value/norm
+product formulas: under `IdentDistrib`, index-dependent measurable transforms
+`f_i(X_i)` have source-space `lintegral` formulas for `‖∏ f_i(X_i)‖` as
+products of base-coordinate norm `lintegral`s over `X_0`, for finite/range/Ico
+and one-based products, without requiring `HasLaw` or ordinary integrability
+assumptions.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -477,6 +483,10 @@ After V554, do not rebuild the source-side composed-function Theorem 2.1.13
 absolute-value/norm zero-factor formulas for finite/range/Ico or one-based
 range/Ico/`Icc` composed products unless an exact later consumer needs a
 different source shape.
+After V555, do not rebuild the source-side iid/indexed-transform Theorem
+2.1.13 absolute-value/norm product formulas for finite/range/Ico or one-based
+range/Ico/`Icc` products unless an exact later consumer needs a different
+source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -671,10 +681,33 @@ products,
 solved source-side composed-function Theorem 2.1.13 absolute-value/norm
 zero-factor formulas for finite/range/Ico and one-based range/Ico/`Icc`
 composed products,
+solved source-side iid/indexed-transform Theorem 2.1.13 absolute-value/norm
+product formulas for finite/range/Ico and one-based range/Ico/`Icc` products,
 or old app-level stale prompts.
 
-Latest verified target V554 adds source-side composed-function Chapter 2.1.13
-absolute-value/norm zero-factor formulas:
+Latest verified target V555 adds source-side iid/indexed-transform Chapter
+2.1.13 absolute-value/norm product formulas:
+`durrett2019_theorem_2_1_13_iid_lintegral_finset_norm_comp_prod_eq_prod_lintegral_norm_base_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_norm_comp_prod_eq_prod_lintegral_norm_base_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_norm_comp_prod_eq_prod_lintegral_norm_base_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_norm_comp_prod_eq_prod_lintegral_norm_base_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_norm_comp_prod_eq_prod_lintegral_norm_base_oneBased_of_identDistrib`,
+and
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_norm_comp_prod_eq_prod_lintegral_norm_base_oneBased_of_identDistrib`.
+These specialize the composed norm product formula through identical
+distribution: for an independent source family `X_i` with `IdentDistrib`
+marginals and index-dependent measurable transforms `f_i : S -> 𝕜`, they
+package the source-space `lintegral` of `‖∏ f_i(X_i)‖` as products of
+base-coordinate norm `lintegral`s over `X_0`, on finite/range/Ico and
+one-based index sets without `HasLaw` hypotheses or ordinary integrability
+assumptions.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V554 adds source-side composed-function Chapter
+2.1.13 absolute-value/norm zero-factor formulas:
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero`,
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero`,
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero`,
@@ -688,10 +721,6 @@ transforms `f_i : S_i -> 𝕜`, they package the source-space `lintegral` of
 `‖∏ f_i(X_i)‖` as zero whenever one selected composed norm factor `lintegral`
 vanishes, on finite/range/Ico and one-based index sets without `HasLaw`
 hypotheses or ordinary integrability assumptions.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V553 adds source-side composed-function Chapter
 2.1.13 absolute-value/norm product formulas:
@@ -6140,6 +6169,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V554` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V555` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

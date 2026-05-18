@@ -9222,6 +9222,194 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_comp_prod_eq_zer
   exact Finset.prod_eq_zero hi hzero
 
 /--
+Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform
+absolute-value finite product formula.
+
+For an independent identically distributed source family, index-dependent
+measurable transforms have a norm-product `lintegral` that factors against one
+base coordinate `X_i0`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_finset_norm_comp_prod_eq_prod_lintegral_norm_base_of_identDistrib
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {f : ι -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    {s : Finset ι} {i0 : ι}
+    (hident : ∀ i ∈ s,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X i0) P P) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ s, f i (X i ω)‖ ∂P =
+      ∏ i ∈ s, ∫⁻ ω, ENNReal.ofReal ‖f i (X i0 ω)‖ ∂P := by
+  calc
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ s, f i (X i ω)‖ ∂P =
+        ∏ i ∈ s, ∫⁻ ω, ENNReal.ofReal ‖f i (X i ω)‖ ∂P := by
+      exact
+        durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_comp_prod_eq_prod_lintegral_norm
+          (P := P) (S := fun _ : ι => S) (X := X) (f := f)
+          hX hX_meas hf_meas s
+    _ = ∏ i ∈ s, ∫⁻ ω, ENNReal.ofReal ‖f i (X i0 ω)‖ ∂P := by
+      refine Finset.prod_congr rfl ?_
+      intro i hi
+      have hcomp :
+          _root_.ProbabilityTheory.IdentDistrib
+            (fun ω : Ω => f i (X i ω)) (fun ω : Ω => f i (X i0 ω)) P P := by
+        simpa [Function.comp_def] using (hident i hi).comp (hf_meas i)
+      exact
+        (hcomp.comp
+          (ENNReal.measurable_ofReal.comp continuous_norm.measurable)).lintegral_eq
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform
+absolute-value initial-range product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_norm_comp_prod_eq_prod_lintegral_norm_base_of_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.range n, f i (X i ω)‖ ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ ω, ENNReal.ofReal ‖f i (X 0 ω)‖ ∂P :=
+  durrett2019_theorem_2_1_13_iid_lintegral_finset_norm_comp_prod_eq_prod_lintegral_norm_base_of_identDistrib
+    (P := P) (X := X) (f := f) hX hX_meas hf_meas
+    (s := Finset.range n) (i0 := 0) (fun i _hi => hident i)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform
+absolute-value interval-block product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_norm_comp_prod_eq_prod_lintegral_norm_base_of_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.Ico m n, f i (X i ω)‖ ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ ω, ENNReal.ofReal ‖f i (X 0 ω)‖ ∂P :=
+  durrett2019_theorem_2_1_13_iid_lintegral_finset_norm_comp_prod_eq_prod_lintegral_norm_base_of_identDistrib
+    (P := P) (X := X) (f := f) hX hX_meas hf_meas
+    (s := Finset.Ico m n) (i0 := 0) (fun i _hi => hident i)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform
+absolute-value product formula on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_norm_comp_prod_eq_prod_lintegral_norm_base_of_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.Icc 1 n, f i (X i ω)‖ ∂P =
+      ∏ i ∈ Finset.Icc 1 n, ∫⁻ ω, ENNReal.ofReal ‖f i (X 0 ω)‖ ∂P :=
+  durrett2019_theorem_2_1_13_iid_lintegral_finset_norm_comp_prod_eq_prod_lintegral_norm_base_of_identDistrib
+    (P := P) (X := X) (f := f) hX hX_meas hf_meas
+    (s := Finset.Icc 1 n) (i0 := 0) (fun i _hi => hident i)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform
+absolute-value one-based initial-range product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_norm_comp_prod_eq_prod_lintegral_norm_base_oneBased_of_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal
+        ‖∏ i ∈ Finset.range n, f (i + 1) (X (i + 1) ω)‖ ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ ω, ENNReal.ofReal ‖f (i + 1) (X 0 ω)‖ ∂P := by
+  calc
+    ∫⁻ ω, ENNReal.ofReal
+        ‖∏ i ∈ Finset.range n, f (i + 1) (X (i + 1) ω)‖ ∂P =
+        ∏ i ∈ Finset.range n,
+          ∫⁻ ω, ENNReal.ofReal ‖f (i + 1) (X (i + 1) ω)‖ ∂P := by
+      exact
+        durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_comp_prod_eq_prod_lintegral_norm_oneBased
+          (P := P) (S := fun _ : ℕ => S) (X := X) (f := f)
+          hX hX_meas hf_meas n
+    _ = ∏ i ∈ Finset.range n, ∫⁻ ω, ENNReal.ofReal ‖f (i + 1) (X 0 ω)‖ ∂P := by
+      refine Finset.prod_congr rfl ?_
+      intro i _hi
+      have hcomp :
+          _root_.ProbabilityTheory.IdentDistrib
+            (fun ω : Ω => f (i + 1) (X (i + 1) ω))
+            (fun ω : Ω => f (i + 1) (X 0 ω)) P P := by
+        simpa [Function.comp_def] using (hident (i + 1)).comp (hf_meas (i + 1))
+      exact
+        (hcomp.comp
+          (ENNReal.measurable_ofReal.comp continuous_norm.measurable)).lintegral_eq
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform
+absolute-value one-based interval-block product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_norm_comp_prod_eq_prod_lintegral_norm_base_oneBased_of_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal
+        ‖∏ i ∈ Finset.Ico m n, f (i + 1) (X (i + 1) ω)‖ ∂P =
+      ∏ i ∈ Finset.Ico m n,
+        ∫⁻ ω, ENNReal.ofReal ‖f (i + 1) (X 0 ω)‖ ∂P := by
+  calc
+    ∫⁻ ω, ENNReal.ofReal
+        ‖∏ i ∈ Finset.Ico m n, f (i + 1) (X (i + 1) ω)‖ ∂P =
+        ∏ i ∈ Finset.Ico m n,
+          ∫⁻ ω, ENNReal.ofReal ‖f (i + 1) (X (i + 1) ω)‖ ∂P := by
+      exact
+        durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_comp_prod_eq_prod_lintegral_norm_oneBased
+          (P := P) (S := fun _ : ℕ => S) (X := X) (f := f)
+          hX hX_meas hf_meas m n
+    _ = ∏ i ∈ Finset.Ico m n,
+          ∫⁻ ω, ENNReal.ofReal ‖f (i + 1) (X 0 ω)‖ ∂P := by
+      refine Finset.prod_congr rfl ?_
+      intro i _hi
+      have hcomp :
+          _root_.ProbabilityTheory.IdentDistrib
+            (fun ω : Ω => f (i + 1) (X (i + 1) ω))
+            (fun ω : Ω => f (i + 1) (X 0 ω)) P P := by
+        simpa [Function.comp_def] using (hident (i + 1)).comp (hf_meas (i + 1))
+      exact
+        (hcomp.comp
+          (ENNReal.measurable_ofReal.comp continuous_norm.measurable)).lintegral_eq
+
+/--
 Durrett 2019, Theorem 2.1.13, source-side iid composed finite-subfamily
 expectation-exists-and-power-value formula.
 
