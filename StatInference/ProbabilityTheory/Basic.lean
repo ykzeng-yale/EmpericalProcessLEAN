@@ -28361,6 +28361,354 @@ theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_unif
     div_eq_mul_inv, mul_comm] using hn c
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step in one-based empirical-CDF notation:
+tail cells plus the bounded middle-partition squeeze give a global empirical-CDF
+bound.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction
+              (samplePath (fun i => fun ω => X (i + 1) ω) ω n) c -
+            ProbabilityTheory.cdf P c| < 2 * epsilon := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul
+      (fun i => fun ω => X (i + 1) ω) hepsilon partition hleftTail hrightTail
+      hShift.1 (fun _ _ hij => hShift.2.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in one-based range-sum notation:
+tail cells plus the bounded middle-partition squeeze give a global empirical-CDF
+bound.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_two_mul_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω)) /
+              (n : ℝ) -
+            ProbabilityTheory.cdf P c| < 2 * epsilon := by
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_iIndepFun
+      X hepsilon partition hleftTail hrightTail hLaw hindep] with ω hω
+  filter_upwards [hω] with n hn c
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using hn c
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from a full infinite-product joint law,
+in one-based empirical-CDF notation for the global middle-partition-with-tails
+squeeze.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction
+              (samplePath (fun i => fun ω => X (i + 1) ω) ω n) c -
+            ProbabilityTheory.cdf P c| < 2 * epsilon := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_iIndepFun
+      X hepsilon partition hleftTail hrightTail hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from a full infinite-product joint law,
+in one-based range-sum notation for the global middle-partition-with-tails
+squeeze.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_two_mul_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω)) /
+              (n : ℝ) -
+            ProbabilityTheory.cdf P c| < 2 * epsilon := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_two_mul_of_iIndepFun
+      X hepsilon partition hleftTail hrightTail hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from a shifted infinite-product joint
+law, in one-based empirical-CDF notation for the global
+middle-partition-with-tails squeeze.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_shift_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction
+              (samplePath (fun i => fun ω => X (i + 1) ω) ω n) c -
+            ProbabilityTheory.cdf P c| < 2 * epsilon := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul
+      (fun i => fun ω => X (i + 1) ω) hepsilon partition hleftTail hrightTail
+      hSource.1 (fun _ _ hij => hSource.2.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from a shifted infinite-product joint
+law, in one-based range-sum notation for the global middle-partition-with-tails
+squeeze.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_two_mul_of_shift_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω)) /
+              (n : ℝ) -
+            ProbabilityTheory.cdf P c| < 2 * epsilon := by
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_shift_hasLaw_infinitePi
+      X hepsilon partition hleftTail hrightTail hJoint] with ω hω
+  filter_upwards [hω] with n hn c
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using hn c
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from identically distributed
+coordinates plus `iIndepFun`, in one-based empirical-CDF notation for the
+global middle-partition-with-tails squeeze.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction
+              (samplePath (fun i => fun ω => X (i + 1) ω) ω n) c -
+            ProbabilityTheory.cdf P c| < 2 * epsilon :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_iIndepFun
+    X hepsilon partition hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from identically distributed
+coordinates plus `iIndepFun`, in one-based range-sum notation for the global
+middle-partition-with-tails squeeze.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_two_mul_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω)) /
+              (n : ℝ) -
+            ProbabilityTheory.cdf P c| < 2 * epsilon :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_two_mul_of_iIndepFun
+    X hepsilon partition hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from pairwise-identically distributed
+coordinates, in one-based empirical-CDF notation for the global
+middle-partition-with-tails squeeze.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction
+              (samplePath (fun i => fun ω => X (i + 1) ω) ω n) c -
+            ProbabilityTheory.cdf P c| < 2 * epsilon := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_pairwise_identDistrib_oneBased_source
+      (X := X) hBase hident hindep
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul
+      (fun i => fun ω => X (i + 1) ω) hepsilon partition hleftTail hrightTail
+      hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from pairwise-identically distributed
+coordinates, in one-based range-sum notation for the global
+middle-partition-with-tails squeeze.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_two_mul_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω)) /
+              (n : ℝ) -
+            ProbabilityTheory.cdf P c| < 2 * epsilon := by
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_pairwise_identDistrib
+      X hepsilon partition hleftTail hrightTail hBase hident hindep] with ω hω
+  filter_upwards [hω] with n hn c
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using hn c
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+one-based empirical-CDF notation for the global middle-partition-with-tails
+squeeze.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition :
+      SuppliedRealMiddleCDFPartition (P : Measure ℝ) epsilon a b middleCells)
+    (hleftTail : (P : Measure ℝ).real (Set.Iio a) < epsilon)
+    (hrightTail : (P : Measure ℝ).real (Set.Ioi b) < epsilon) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction
+              (samplePath
+                (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) sample n) c -
+            ProbabilityTheory.cdf (P : Measure ℝ) c| < 2 * epsilon := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased P
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul
+      (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) hepsilon partition
+      hleftTail hrightTail hCoord.1 (fun _ _ hij => hCoord.2.1.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+one-based range-sum notation for the global middle-partition-with-tails
+squeeze.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_two_mul_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition :
+      SuppliedRealMiddleCDFPartition (P : Measure ℝ) epsilon a b middleCells)
+    (hleftTail : (P : Measure ℝ).real (Set.Iio a) < epsilon)
+    (hrightTail : (P : Measure ℝ).real (Set.Ioi b) < epsilon) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(∑ i ∈ Finset.range n, realHalfLineIndicator c (sample (i + 1))) /
+              (n : ℝ) -
+            ProbabilityTheory.cdf (P : Measure ℝ) c| < 2 * epsilon := by
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_canonical_iid
+      P hepsilon partition hleftTail hrightTail] with sample hsample
+  filter_upwards [hsample] with n hn c
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using hn c
+
+/--
 Durrett 2019, Theorem 2.4.9 proof step: a countable sequence of supplied
 middle partitions with tail mass tending to zero gives the pathwise
 uniform-deviation conclusion on one a.s. event.

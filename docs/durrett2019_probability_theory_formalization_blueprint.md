@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V513`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V514`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V513: stay on Durrett Theorem 2.4.9
+Current immediate target after V514: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -139,6 +139,10 @@ product samples, in raw shifted empirical-function and range-sum display
 forms.  V513 adds the matching one-based bounded middle-partition squeeze
 wrappers for source, joint-law, shifted-joint-law, identical-distribution,
 pairwise-identically-distributed, and canonical iid source shapes, in raw
+shifted empirical-function and range-sum display forms.  V514 adds the
+matching one-based global middle-partition-with-tails squeeze wrappers for
+source, joint-law, shifted-joint-law, identical-distribution,
+pairwise-identically-distributed, and canonical iid source shapes, in raw
 shifted empirical-function and range-sum display forms.
 The
 next packet should close only a proved-missing
@@ -176,6 +180,8 @@ or the one-based Theorem 2.4.9 pointwise empirical-CDF/left empirical-CDF
 raw/range source wrappers,
 or the one-based Theorem 2.4.9 finite-cutpoint raw/range burn-in wrappers,
 or the one-based Theorem 2.4.9 bounded middle-partition raw/range squeeze wrappers,
+or the one-based Theorem 2.4.9 global middle-partition-with-tails raw/range
+squeeze wrappers,
 unless a focused source check exposes a missing handoff.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.4.9
@@ -2093,6 +2099,11 @@ pairwise-identically-distributed, and canonical iid source shapes,
 the V513 one-based source-shaped Theorem 2.4.9
 `middlePartition_oneBased_*_uniform_error_lt_two_mul` raw/range
 bounded-squeeze families for source, joint-law, shifted-joint-law,
+identical-distribution, pairwise-identically-distributed, and canonical iid
+source shapes,
+the V514 one-based source-shaped Theorem 2.4.9
+`middlePartitionWithTails_oneBased_*_uniform_error_lt_two_mul` raw/range
+global-squeeze families for source, joint-law, shifted-joint-law,
 identical-distribution, pairwise-identically-distributed, and canonical iid
 source shapes,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,

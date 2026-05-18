@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V513
+## Live In-Thread Goal Prompt V514
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -100,6 +100,10 @@ empirical-function and range-sum display forms.  V513 adds the matching
 one-based bounded middle-partition squeeze wrappers for source, joint-law,
 shifted-joint-law, identical-distribution, pairwise-identically-distributed,
 and canonical iid source shapes, in raw shifted empirical-function and
+range-sum display forms.  V514 adds the matching one-based global
+middle-partition-with-tails squeeze wrappers for source, joint-law,
+shifted-joint-law, identical-distribution, pairwise-identically-distributed,
+and canonical iid source shapes, in raw shifted empirical-function and
 range-sum display forms.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
@@ -118,6 +122,8 @@ raw/range source proof-step wrappers unless an exact source-shape consumer is
 missing.  After V512, do not rebuild the one-based finite-cutpoint raw/range
 burn-in wrappers unless an exact source-shape consumer is missing.  After
 V513, do not rebuild the one-based bounded middle-partition raw/range squeeze
+wrappers unless an exact source-shape consumer is missing.  After V514, do
+not rebuild the one-based global middle-partition-with-tails raw/range squeeze
 wrappers unless an exact source-shape consumer is missing.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
@@ -189,9 +195,27 @@ solved Theorem 2.4.9 one-based bounded middle-partition squeeze wrappers in
 raw shifted empirical-function and range-sum display forms for source,
 joint-law, shifted-joint-law, identical-distribution,
 pairwise-identically-distributed, and canonical iid source shapes,
+solved Theorem 2.4.9 one-based global middle-partition-with-tails squeeze
+wrappers in raw shifted empirical-function and range-sum display forms for
+source, joint-law, shifted-joint-law, identical-distribution,
+pairwise-identically-distributed, and canonical iid source shapes,
 or old app-level stale prompts.
 
-Latest verified target V513 adds one-based source-shaped Durrett Theorem
+Latest verified target V514 adds one-based source-shaped Durrett Theorem
+2.4.9 global middle-partition-with-tails squeeze wrappers:
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_two_mul_of_iIndepFun`,
+and the matching joint infinite-product, shifted joint infinite-product,
+identical-distribution, pairwise-identically-distributed, and canonical iid
+families.  These wrappers expose the fixed-`epsilon` tail squeeze in the same
+one-based raw empirical-function and range-sum displays now available at the
+pointwise, finite-cutpoint, and bounded-middle-partition layers, before
+consumers rewrite to exact `n⁻¹ * sum` notation.  Next target: search for
+another genuinely missing 2.4.9 proof-step/final-display source wrapper, or
+add the next Chapter 2.1 product-law/product-expectation handoff that directly
+supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V513 adds one-based source-shaped Durrett Theorem
 2.4.9 bounded middle-partition squeeze wrappers:
 `durrett2019_theorem_2_4_9_middlePartition_oneBased_eventually_uniform_error_lt_two_mul_of_iIndepFun`,
 `durrett2019_theorem_2_4_9_middlePartition_oneBased_range_sum_uniform_error_lt_two_mul_of_iIndepFun`,
