@@ -30008,6 +30008,246 @@ theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_ou
       X hBase hident hindep
 
 /--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint in zero-based range-sum
+notation: the V377/V378 middle-partition-with-tails route proves the
+outer-a.s. uniform-deviation conclusion.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) /
+          (sampleSize : ℝ)) := by
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
+      X hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint in zero-based exact textbook
+notation: the V377/V378 middle-partition-with-tails route proves the
+outer-a.s. uniform-deviation conclusion.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_inv_mul_outerAlmostSureUniformDeviation
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) := by
+  simpa [div_eq_mul_inv, mul_comm] using
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation
+      X hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint in zero-based range-sum
+notation under `iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) /
+          (sampleSize : ℝ)) :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation
+    X hLaw (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint in zero-based exact textbook
+notation under `iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_inv_mul_outerAlmostSureUniformDeviation
+    X hLaw (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint from a full infinite-product
+joint law, in zero-based range-sum notation.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) /
+          (sampleSize : ℝ)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation_of_iIndepFun
+      X hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint from a full infinite-product
+joint law, in zero-based exact textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_inv_mul_outerAlmostSureUniformDeviation_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun
+      X hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint for canonical iid product
+samples, in zero-based range-sum notation.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn
+      (Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)) Set.univ
+      (fun c => ProbabilityTheory.cdf (P : Measure ℝ) c)
+      (fun sample sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (sample i)) /
+          (sampleSize : ℝ)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation_of_iIndepFun
+      (fun i => fun sample : ℕ -> ℝ => sample i) hCoord.1 hCoord.2.1
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint for canonical iid product
+samples, in zero-based exact textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_inv_mul_outerAlmostSureUniformDeviation_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn
+      (Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)) Set.univ
+      (fun c => ProbabilityTheory.cdf (P : Measure ℝ) c)
+      (fun sample sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (sample i)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates P
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun
+      (fun i => fun sample : ℕ -> ℝ => sample i) hCoord.1 hCoord.2.1
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint from the standard iid source
+shape, in zero-based range-sum notation.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) /
+          (sampleSize : ℝ)) :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation_of_iIndepFun
+    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint from the standard iid source
+shape, in zero-based exact textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_inv_mul_outerAlmostSureUniformDeviation_of_iIndepFun
+    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint from the pairwise-iid source
+shape, in zero-based range-sum notation.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) /
+          (sampleSize : ℝ)) :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation
+    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof-step endpoint from the pairwise-iid source
+shape, in zero-based exact textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_inv_mul_outerAlmostSureUniformDeviation_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_inv_mul_outerAlmostSureUniformDeviation
+    X (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
 Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem under the
 standard iid-source independence assumption `iIndepFun`.
 -/

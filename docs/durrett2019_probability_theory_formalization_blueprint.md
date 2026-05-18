@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V516`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V517`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V516: stay on Durrett Theorem 2.4.9
+Current immediate target after V517: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -149,7 +149,11 @@ squeeze wrappers for the same source shapes, in raw shifted empirical-function
 and range-sum display forms.  V516 adds the matching one-based route-named
 `middlePartitionWithTails` outer-a.s. uniform-deviation range-sum endpoints
 for source, joint-law, shifted-joint-law, identical-distribution,
-pairwise-identically-distributed, and canonical iid source shapes.
+pairwise-identically-distributed, and canonical iid source shapes.  V517 adds
+the matching zero-based route-named `middlePartitionWithTails` outer-a.s.
+uniform-deviation range-sum and exact `n⁻¹ * sum` endpoints for the generic
+pairwise route plus source, joint-law, canonical iid, identical-distribution,
+and pairwise-identically-distributed source shapes.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
@@ -192,6 +196,8 @@ or the arbitrary-tolerance one-based Theorem 2.4.9 global
 middle-partition-with-tails raw/range squeeze wrappers,
 or the one-based route-named Theorem 2.4.9 `middlePartitionWithTails`
 outer-a.s. uniform-deviation range-sum endpoints,
+or the zero-based route-named Theorem 2.4.9 `middlePartitionWithTails`
+outer-a.s. uniform-deviation range-sum/exact `n⁻¹ * sum` endpoints,
 unless a focused source check exposes a missing handoff.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.4.9
@@ -2125,6 +2131,10 @@ the V516 one-based route-named Theorem 2.4.9
 `middlePartitionWithTails_oneBased_range_sum_outerAlmostSureUniformDeviation`
 families for source, joint-law, shifted-joint-law, identical-distribution,
 pairwise-identically-distributed, and canonical iid source shapes,
+the V517 zero-based route-named Theorem 2.4.9
+`middlePartitionWithTails_(range_sum|inv_mul)_outerAlmostSureUniformDeviation`
+families for the generic pairwise route plus source, joint-law, canonical iid,
+identical-distribution, and pairwise-identically-distributed source shapes,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and

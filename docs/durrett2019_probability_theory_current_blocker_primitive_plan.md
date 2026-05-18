@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V516
+## Live In-Thread Goal Prompt V517
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -111,6 +111,10 @@ V516 adds the matching one-based route-named `middlePartitionWithTails`
 outer-a.s. uniform-deviation range-sum endpoints for source, joint-law,
 shifted-joint-law, identical-distribution, pairwise-identically-distributed,
 and canonical iid source shapes.
+V517 adds the matching zero-based route-named `middlePartitionWithTails`
+outer-a.s. uniform-deviation range-sum and exact `n⁻¹ * sum` endpoints for
+the generic pairwise route plus source, joint-law, canonical iid,
+identical-distribution, and pairwise-identically-distributed source shapes.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -135,7 +139,9 @@ not rebuild the arbitrary-tolerance one-based global
 middle-partition-with-tails raw/range squeeze wrappers unless an exact
 source-shape consumer is missing.  After V516, do not rebuild the one-based
 route-named `middlePartitionWithTails` outer-a.s. range-sum endpoints unless
-an exact source-shape consumer is missing.
+an exact source-shape consumer is missing.  After V517, do not rebuild the
+zero-based route-named `middlePartitionWithTails` outer-a.s. range-sum or
+exact `n⁻¹ * sum` endpoints unless an exact source-shape consumer is missing.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -219,9 +225,28 @@ solved Theorem 2.4.9 one-based route-named `middlePartitionWithTails`
 outer-a.s. uniform-deviation range-sum endpoints for source, joint-law,
 shifted-joint-law, identical-distribution, pairwise-identically-distributed,
 and canonical iid source shapes,
+solved Theorem 2.4.9 zero-based route-named `middlePartitionWithTails`
+outer-a.s. uniform-deviation range-sum and exact `n⁻¹ * sum` endpoints for
+the generic pairwise route plus source, joint-law, canonical iid,
+identical-distribution, and pairwise-identically-distributed source shapes,
 or old app-level stale prompts.
 
-Latest verified target V516 adds one-based route-named Durrett Theorem 2.4.9
+Latest verified target V517 adds zero-based route-named Durrett Theorem 2.4.9
+`middlePartitionWithTails` outer-a.s. uniform-deviation range-sum and exact
+`n⁻¹ * sum` endpoints:
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_inv_mul_outerAlmostSureUniformDeviation`,
+and the matching `iIndepFun`, joint infinite-product,
+identically-distributed, pairwise-identically-distributed, and canonical iid
+families.  These wrappers expose the final route-specific zero-based
+outer-a.s. conclusion in display forms parallel to the later
+`empiricalDistributionFunction_outerAlmostSure_*` aliases while keeping the
+middle-partition-with-tails provenance visible.  Next target: search for
+another genuinely missing 2.4.9 proof-step/final-display source wrapper, or
+add the next Chapter 2.1 product-law/product-expectation handoff that directly
+supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V516 adds one-based route-named Durrett Theorem 2.4.9
 `middlePartitionWithTails` outer-a.s. uniform-deviation range-sum endpoints:
 `durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_outerAlmostSureUniformDeviation_of_iIndepFun`,
 and the matching joint infinite-product, shifted joint infinite-product,
