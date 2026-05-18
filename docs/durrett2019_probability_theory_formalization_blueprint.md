@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V506`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V507`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V506: stay on Durrett Theorem 2.4.9
+Current immediate target after V507: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -116,12 +116,17 @@ identically-distributed source hypotheses.  V506 adds the matching
 source-shaped Durrett Theorem 2.1.16 additive-convolution law wrappers for
 iid, identical-distribution, joint infinite-product, canonical
 product-coordinate, one-based, and pairwise identically-distributed source
-hypotheses.
+hypotheses.  V507 adds the matching Theorem 2.1.16 left-density and
+two-density source wrappers, in both `ℝ≥0∞` and real-valued
+`ENNReal.ofReal` density forms, for the same zero-based, one-based,
+joint-law, canonical, identical-distribution, and pairwise source shapes.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
 or add the next Chapter 2.1 product-law/product-expectation/sum-law wrapper
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.  Only
+return to Theorem 2.1.16 for a proved-missing density-existence or
+supplied-density source handoff.
 Do not return to scalar-kernel estimates, annulus mass summability, concrete
 majorant integrability, display-wrapper plumbing, branch-combination plumbing,
 reciprocal-growth conversion, monotone-convergence shell, linear-tail transfer,
@@ -144,6 +149,7 @@ or the route-named one-based empirical-CDF endpoints from the final
 middle-partition construction,
 or the Theorem 2.1.15 CDF-convolution source wrappers,
 or the Theorem 2.1.16 additive-convolution law source wrappers,
+or the Theorem 2.1.16 left-density/two-density source wrappers,
 unless a focused source check exposes a missing handoff.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.4.9
@@ -2034,6 +2040,11 @@ Treat
 `durrett2019_theorem_2_1_16_two_density_lintegral_kernel_eq`,
 `durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_lintegral_density`,
 `durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_real_lintegral_density`,
+the V507 source-shaped `left_lintegral_density`,
+`left_real_lintegral_density`, `two_lintegral_density`, and
+`two_real_lintegral_density` families for iid, identical-distribution, joint
+infinite-product, canonical product-coordinate, one-based, and
+pairwise-identically-distributed source hypotheses,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V506
+## Live In-Thread Goal Prompt V507
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -72,13 +72,20 @@ joint infinite-product, canonical product-coordinate, one-based, and pairwise
 identically-distributed source shapes.  V506 adds the matching Theorem 2.1.16
 additive-convolution law source wrappers for iid, identical-distribution,
 joint infinite-product, canonical product-coordinate, one-based, and pairwise
-identically-distributed source shapes.
+identically-distributed source shapes.  V507 adds the matching Theorem 2.1.16
+left-density and two-density source wrappers, in both `ℝ≥0∞` and
+real-valued `ENNReal.ofReal` density forms, for the same zero-based,
+one-based, joint-law, canonical, identical-distribution, and pairwise source
+shapes.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
 source-facing 2.4.9 proof-step wrapper only if search proves it is absent;
 otherwise add the next Chapter 2.1 product-law/product-expectation wrapper
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.  After
+V507, only revisit Theorem 2.1.16 for a proved-missing density-existence or
+supplied-density source handoff; do not duplicate the compiled density-formula
+source surface.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -126,9 +133,29 @@ solved Theorem 2.1.15 iid/source/joint/canonical/one-based/pairwise
 CDF-convolution wrappers,
 solved Theorem 2.1.16 iid/source/joint/canonical/one-based/pairwise
 additive-convolution law wrappers,
+solved Theorem 2.1.16 iid/source/joint/canonical/one-based/pairwise
+left-density and two-density source wrappers in both `ℝ≥0∞` and
+real-valued `ENNReal.ofReal` density forms,
 or old app-level stale prompts.
 
-Latest verified target V506 adds source-shaped Durrett Theorem 2.1.16
+Latest verified target V507 adds source-shaped Durrett Theorem 2.1.16 density
+formula wrappers over the already-compiled Fubini core:
+`durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_of_iIndepFun`
+and its identical-distribution, joint infinite-product, canonical,
+one-based, and pairwise variants;
+`durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_of_iIndepFun`
+and its matching source-shape variants; plus the corresponding
+`left_real_lintegral_density` and `two_real_lintegral_density` families
+encoded by `ENNReal.ofReal`.  These wrappers expose Durrett's
+`h(x) = ∫ f (x - y) dG(y)` and, when both summands have density, the
+Lebesgue-display `h(x) = ∫ f(y) f(x - y) dy` for iid/common-density source
+hypotheses without re-opening the measure-level convolution proof.
+Next target: search for a genuinely missing Chapter 2.1 handoff that supports
+2.4.9 or the adjacent Kolmogorov-maximal route.  If returning to Theorem
+2.1.16, prefer density-existence/supplied-density source wrappers only when
+an exact source-shape search proves a consumer gap.
+
+Previous verified target V506 adds source-shaped Durrett Theorem 2.1.16
 additive-convolution law wrappers:
 `durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_of_iIndepFun`,
 `durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_of_identDistrib`,
@@ -142,11 +169,8 @@ additive-convolution law wrappers:
 `durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_conv_oneBased`.
 The generic `IndepFun` additive-convolution law was already compiled; V506
 exposes the same source-entry surface as V505 for the law-level handoff.
-Next target: search the Theorem 2.1.16 density formulas for missing
-source-shaped iid/joint/canonical/one-based/pairwise wrappers.  Add only
-wrappers that consume the existing density/Fubini core; do not reopen the
-measure-level convolution proof unless a source check proves a genuine
-formula gap.
+V507 closed the next density-formula source layer over the existing
+density/Fubini core.
 
 Latest verified target V505 adds source-shaped Durrett Theorem 2.1.15
 CDF-convolution wrappers:
@@ -262,9 +286,9 @@ Chapter 2.1 product-law support.
   call directly.
 - Separate law-level handoffs from density/Fubini handoffs.  V506 first
   packages Theorem 2.1.16's additive-convolution law for all common source
-  shapes; the next density packet can then be strictly a wrapper layer over the
-  existing density formulas, instead of mixing source extraction with measure
-  calculation.
+  shapes; V507 then keeps the density packet strictly as a wrapper layer over
+  the existing density formulas, instead of mixing source extraction with
+  measure calculation.
 - Tool rhythm that works best in this shared multi-agent repo: start with
   `git status`, `git rev-parse HEAD`, and `git ls-remote`; edit one
   theorem-sized packet; run focused `lake env lean`; update route docs; run

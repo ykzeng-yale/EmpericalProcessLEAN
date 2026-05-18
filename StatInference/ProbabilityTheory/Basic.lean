@@ -6944,6 +6944,889 @@ theorem durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_real_lintegral_densit
     (g := fun x => ENNReal.ofReal (g x))
     hf.ennreal_ofReal hg.ennreal_ofReal hXY hX hY
 
+/--
+Durrett 2019, Theorem 2.1.16, iid left-density source form.
+
+This is the sequence-level version of the density formula
+`h(x) = ∫ f (x - y) dG(y)` when the common law is `volume.withDensity f`.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞} [SigmaFinite (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (X i) (volume.withDensity f) P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x => ∫⁻ y, f (x - y) ∂volume.withDensity f) P := by
+  exact
+    durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_left_lintegral_density
+      (P := P) (ν := volume.withDensity f) (f := f)
+      (X := X 0) (Y := X 1)
+      hf (hindep.indepFun (by decide : (0 : ℕ) ≠ 1)) (hLaw 0) (hLaw 1)
+
+/--
+Durrett 2019, Theorem 2.1.16, identical-distribution left-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞} [SigmaFinite (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) (volume.withDensity f) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x => ∫⁻ y, f (x - y) ∂volume.withDensity f) P := by
+  have hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (X i) (volume.withDensity f) P :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_of_iIndepFun
+      (P := P) (f := f) (X := X) hf hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, joint infinite-product left-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞}
+    [SigmaFinite (volume.withDensity f)] [IsProbabilityMeasure (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => volume.withDensity f) P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x => ∫⁻ y, f (x - y) ∂volume.withDensity f) P := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi
+      (ν := volume.withDensity f) (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_of_iIndepFun
+      (P := P) (f := f) (X := X) hf hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.1.16, canonical density product-coordinate form.
+-/
+theorem durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_left_lintegral_density
+    {f : ℝ -> ℝ≥0∞}
+    [SigmaFinite (volume.withDensity f)] [IsProbabilityMeasure (volume.withDensity f)]
+    (hf : Measurable f) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> ℝ => sample 0 + sample 1)
+      (volume.withDensity fun x => ∫⁻ y, f (x - y) ∂volume.withDensity f)
+      (Measure.infinitePi fun _ : ℕ => volume.withDensity f) := by
+  have hJoint :
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> ℝ => fun i : ℕ => sample i)
+        (Measure.infinitePi fun _ : ℕ => volume.withDensity f)
+        (Measure.infinitePi fun _ : ℕ => volume.withDensity f) := by
+    simpa using
+      (_root_.ProbabilityTheory.HasLaw.id :
+        _root_.ProbabilityTheory.HasLaw
+          (fun sample : ℕ -> ℝ => sample)
+          (Measure.infinitePi fun _ : ℕ => volume.withDensity f)
+          (Measure.infinitePi fun _ : ℕ => volume.withDensity f))
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_of_hasLaw_infinitePi
+      (P := Measure.infinitePi fun _ : ℕ => volume.withDensity f)
+      (f := f)
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hf hJoint
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based iid left-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_oneBased_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞} [SigmaFinite (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (X i) (volume.withDensity f) P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x => ∫⁻ y, f (x - y) ∂volume.withDensity f) P := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  simpa using
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_of_iIndepFun
+      (P := P) (f := f) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hf hShift.1 hShift.2
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based identical-distribution left-density
+source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_oneBased_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞} [SigmaFinite (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) (volume.withDensity f) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x => ∫⁻ y, f (x - y) ∂volume.withDensity f) P := by
+  have hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (X i) (volume.withDensity f) P :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_oneBased_of_iIndepFun
+      (P := P) (f := f) (X := X) hf hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based joint infinite-product left-density
+source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_oneBased_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞}
+    [SigmaFinite (volume.withDensity f)] [IsProbabilityMeasure (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => volume.withDensity f) P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x => ∫⁻ y, f (x - y) ∂volume.withDensity f) P := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi
+      (ν := volume.withDensity f) (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_oneBased_of_iIndepFun
+      (P := P) (f := f) (X := X) hf hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based canonical density product-coordinate
+form.
+-/
+theorem durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_left_lintegral_density_oneBased
+    {f : ℝ -> ℝ≥0∞}
+    [SigmaFinite (volume.withDensity f)] [IsProbabilityMeasure (volume.withDensity f)]
+    (hf : Measurable f) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> ℝ => sample 1 + sample 2)
+      (volume.withDensity fun x => ∫⁻ y, f (x - y) ∂volume.withDensity f)
+      (Measure.infinitePi fun _ : ℕ => volume.withDensity f) := by
+  have hJoint :
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> ℝ => fun i : ℕ => sample i)
+        (Measure.infinitePi fun _ : ℕ => volume.withDensity f)
+        (Measure.infinitePi fun _ : ℕ => volume.withDensity f) := by
+    simpa using
+      (_root_.ProbabilityTheory.HasLaw.id :
+        _root_.ProbabilityTheory.HasLaw
+          (fun sample : ℕ -> ℝ => sample)
+          (Measure.infinitePi fun _ : ℕ => volume.withDensity f)
+          (Measure.infinitePi fun _ : ℕ => volume.withDensity f))
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_oneBased_of_hasLaw_infinitePi
+      (P := Measure.infinitePi fun _ : ℕ => volume.withDensity f)
+      (f := f)
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hf hJoint
+
+/--
+Durrett 2019, Theorem 2.1.16, pairwise-identically-distributed left-density
+source form.
+-/
+theorem durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_left_lintegral_density
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞} [SigmaFinite (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) (volume.withDensity f) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := P)) on X)) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x => ∫⁻ y, f (x - y) ∂volume.withDensity f) P := by
+  have hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (X i) (volume.withDensity f) P :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  exact
+    durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_left_lintegral_density
+      (P := P) (ν := volume.withDensity f) (f := f)
+      (X := X 0) (Y := X 1)
+      hf (hindep (by decide : (0 : ℕ) ≠ 1)) (hLaw 0) (hLaw 1)
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based pairwise-identically-distributed
+left-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_left_lintegral_density_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞} [SigmaFinite (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) (volume.withDensity f) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := P)) on X)) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x => ∫⁻ y, f (x - y) ∂volume.withDensity f) P := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_pairwise_identDistrib_oneBased_source
+      (X := X) hBase hident hindep
+  exact
+    durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_left_lintegral_density
+      (P := P) (ν := volume.withDensity f) (f := f)
+      (X := fun ω => X 1 ω) (Y := fun ω => X 2 ω)
+      hf (hSource.2 (by decide : (0 : ℕ) ≠ 1)) (hSource.1 0) (hSource.1 1)
+
+/--
+Durrett 2019, Theorem 2.1.16, iid two-density source form.
+
+This is the sequence-level version of the display
+`h(x) = ∫ f (x - y) f y dy` for two independent coordinates with common
+density `f`.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞} [SigmaFinite (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (X i) (volume.withDensity f) P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x => ∫⁻ y, f y * f (x - y) ∂volume) P := by
+  exact
+    durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_lintegral_density
+      (P := P) (f := f) (g := f) (X := X 0) (Y := X 1)
+      hf hf (hindep.indepFun (by decide : (0 : ℕ) ≠ 1)) (hLaw 0) (hLaw 1)
+
+/--
+Durrett 2019, Theorem 2.1.16, identical-distribution two-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞} [SigmaFinite (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) (volume.withDensity f) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x => ∫⁻ y, f y * f (x - y) ∂volume) P := by
+  have hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (X i) (volume.withDensity f) P :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_of_iIndepFun
+      (P := P) (f := f) (X := X) hf hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, joint infinite-product two-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞}
+    [SigmaFinite (volume.withDensity f)] [IsProbabilityMeasure (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => volume.withDensity f) P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x => ∫⁻ y, f y * f (x - y) ∂volume) P := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi
+      (ν := volume.withDensity f) (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_of_iIndepFun
+      (P := P) (f := f) (X := X) hf hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.1.16, canonical two-density product-coordinate form.
+-/
+theorem durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_two_lintegral_density
+    {f : ℝ -> ℝ≥0∞}
+    [SigmaFinite (volume.withDensity f)] [IsProbabilityMeasure (volume.withDensity f)]
+    (hf : Measurable f) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> ℝ => sample 0 + sample 1)
+      (volume.withDensity fun x => ∫⁻ y, f y * f (x - y) ∂volume)
+      (Measure.infinitePi fun _ : ℕ => volume.withDensity f) := by
+  have hJoint :
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> ℝ => fun i : ℕ => sample i)
+        (Measure.infinitePi fun _ : ℕ => volume.withDensity f)
+        (Measure.infinitePi fun _ : ℕ => volume.withDensity f) := by
+    simpa using
+      (_root_.ProbabilityTheory.HasLaw.id :
+        _root_.ProbabilityTheory.HasLaw
+          (fun sample : ℕ -> ℝ => sample)
+          (Measure.infinitePi fun _ : ℕ => volume.withDensity f)
+          (Measure.infinitePi fun _ : ℕ => volume.withDensity f))
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_of_hasLaw_infinitePi
+      (P := Measure.infinitePi fun _ : ℕ => volume.withDensity f)
+      (f := f)
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hf hJoint
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based iid two-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_oneBased_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞} [SigmaFinite (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (X i) (volume.withDensity f) P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x => ∫⁻ y, f y * f (x - y) ∂volume) P := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  simpa using
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_of_iIndepFun
+      (P := P) (f := f) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hf hShift.1 hShift.2
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based identical-distribution two-density
+source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_oneBased_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞} [SigmaFinite (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) (volume.withDensity f) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x => ∫⁻ y, f y * f (x - y) ∂volume) P := by
+  have hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (X i) (volume.withDensity f) P :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_oneBased_of_iIndepFun
+      (P := P) (f := f) (X := X) hf hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based joint infinite-product two-density
+source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_oneBased_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞}
+    [SigmaFinite (volume.withDensity f)] [IsProbabilityMeasure (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => volume.withDensity f) P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x => ∫⁻ y, f y * f (x - y) ∂volume) P := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi
+      (ν := volume.withDensity f) (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_oneBased_of_iIndepFun
+      (P := P) (f := f) (X := X) hf hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based canonical two-density
+product-coordinate form.
+-/
+theorem durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_two_lintegral_density_oneBased
+    {f : ℝ -> ℝ≥0∞}
+    [SigmaFinite (volume.withDensity f)] [IsProbabilityMeasure (volume.withDensity f)]
+    (hf : Measurable f) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> ℝ => sample 1 + sample 2)
+      (volume.withDensity fun x => ∫⁻ y, f y * f (x - y) ∂volume)
+      (Measure.infinitePi fun _ : ℕ => volume.withDensity f) := by
+  have hJoint :
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> ℝ => fun i : ℕ => sample i)
+        (Measure.infinitePi fun _ : ℕ => volume.withDensity f)
+        (Measure.infinitePi fun _ : ℕ => volume.withDensity f) := by
+    simpa using
+      (_root_.ProbabilityTheory.HasLaw.id :
+        _root_.ProbabilityTheory.HasLaw
+          (fun sample : ℕ -> ℝ => sample)
+          (Measure.infinitePi fun _ : ℕ => volume.withDensity f)
+          (Measure.infinitePi fun _ : ℕ => volume.withDensity f))
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_oneBased_of_hasLaw_infinitePi
+      (P := Measure.infinitePi fun _ : ℕ => volume.withDensity f)
+      (f := f)
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hf hJoint
+
+/--
+Durrett 2019, Theorem 2.1.16, pairwise-identically-distributed two-density
+source form.
+-/
+theorem durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_two_lintegral_density
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞} [SigmaFinite (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) (volume.withDensity f) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := P)) on X)) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x => ∫⁻ y, f y * f (x - y) ∂volume) P := by
+  have hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (X i) (volume.withDensity f) P :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  exact
+    durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_lintegral_density
+      (P := P) (f := f) (g := f) (X := X 0) (Y := X 1)
+      hf hf (hindep (by decide : (0 : ℕ) ≠ 1)) (hLaw 0) (hLaw 1)
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based pairwise-identically-distributed
+two-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_two_lintegral_density_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ≥0∞} [SigmaFinite (volume.withDensity f)]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) (volume.withDensity f) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := P)) on X)) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x => ∫⁻ y, f y * f (x - y) ∂volume) P := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_pairwise_identDistrib_oneBased_source
+      (X := X) hBase hident hindep
+  exact
+    durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_two_lintegral_density
+      (P := P) (f := f) (g := f)
+      (X := fun ω => X 1 ω) (Y := fun ω => X 2 ω)
+      hf hf (hSource.2 (by decide : (0 : ℕ) ≠ 1)) (hSource.1 0) (hSource.1 1)
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued iid left-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_real_lintegral_density_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i)
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f (x - y))
+          ∂(volume.withDensity fun y => ENNReal.ofReal (f y))) P := by
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_of_iIndepFun
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued identical-distribution left-density
+source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_real_lintegral_density_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0)
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f (x - y))
+          ∂(volume.withDensity fun y => ENNReal.ofReal (f y))) P := by
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_of_identDistrib
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hBase hident hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued joint infinite-product
+left-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_real_lintegral_density_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ}
+    [IsProbabilityMeasure (volume.withDensity fun x => ENNReal.ofReal (f x))]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ =>
+        volume.withDensity fun x => ENNReal.ofReal (f x)) P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f (x - y))
+          ∂(volume.withDensity fun y => ENNReal.ofReal (f y))) P := by
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_of_hasLaw_infinitePi
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hJoint
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued canonical left-density
+product-coordinate form.
+-/
+theorem durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_left_real_lintegral_density
+    {f : ℝ -> ℝ}
+    [IsProbabilityMeasure (volume.withDensity fun x => ENNReal.ofReal (f x))]
+    (hf : Measurable f) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> ℝ => sample 0 + sample 1)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f (x - y))
+          ∂(volume.withDensity fun y => ENNReal.ofReal (f y)))
+      (Measure.infinitePi fun _ : ℕ =>
+        volume.withDensity fun x => ENNReal.ofReal (f x)) := by
+  exact
+    durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_left_lintegral_density
+      (f := fun x => ENNReal.ofReal (f x)) hf.ennreal_ofReal
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued one-based iid left-density source
+form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_real_lintegral_density_oneBased_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i)
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f (x - y))
+          ∂(volume.withDensity fun y => ENNReal.ofReal (f y))) P := by
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_oneBased_of_iIndepFun
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued one-based
+identical-distribution left-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_real_lintegral_density_oneBased_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0)
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f (x - y))
+          ∂(volume.withDensity fun y => ENNReal.ofReal (f y))) P := by
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_oneBased_of_identDistrib
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hBase hident hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued one-based joint infinite-product
+left-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_real_lintegral_density_oneBased_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ}
+    [IsProbabilityMeasure (volume.withDensity fun x => ENNReal.ofReal (f x))]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ =>
+        volume.withDensity fun x => ENNReal.ofReal (f x)) P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f (x - y))
+          ∂(volume.withDensity fun y => ENNReal.ofReal (f y))) P := by
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_left_lintegral_density_oneBased_of_hasLaw_infinitePi
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hJoint
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued one-based canonical left-density
+product-coordinate form.
+-/
+theorem durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_left_real_lintegral_density_oneBased
+    {f : ℝ -> ℝ}
+    [IsProbabilityMeasure (volume.withDensity fun x => ENNReal.ofReal (f x))]
+    (hf : Measurable f) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> ℝ => sample 1 + sample 2)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f (x - y))
+          ∂(volume.withDensity fun y => ENNReal.ofReal (f y)))
+      (Measure.infinitePi fun _ : ℕ =>
+        volume.withDensity fun x => ENNReal.ofReal (f x)) := by
+  exact
+    durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_left_lintegral_density_oneBased
+      (f := fun x => ENNReal.ofReal (f x)) hf.ennreal_ofReal
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued pairwise-identically-distributed
+left-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_left_real_lintegral_density
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0)
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := P)) on X)) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f (x - y))
+          ∂(volume.withDensity fun y => ENNReal.ofReal (f y))) P := by
+  exact
+    durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_left_lintegral_density
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hBase hident hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued one-based
+pairwise-identically-distributed left-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_left_real_lintegral_density_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0)
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := P)) on X)) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f (x - y))
+          ∂(volume.withDensity fun y => ENNReal.ofReal (f y))) P := by
+  exact
+    durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_left_lintegral_density_oneBased
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hBase hident hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued iid two-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_real_lintegral_density_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i)
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f y) * ENNReal.ofReal (f (x - y)) ∂volume) P := by
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_of_iIndepFun
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued identical-distribution two-density
+source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_real_lintegral_density_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0)
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f y) * ENNReal.ofReal (f (x - y)) ∂volume) P := by
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_of_identDistrib
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hBase hident hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued joint infinite-product two-density
+source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_real_lintegral_density_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ}
+    [IsProbabilityMeasure (volume.withDensity fun x => ENNReal.ofReal (f x))]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ =>
+        volume.withDensity fun x => ENNReal.ofReal (f x)) P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f y) * ENNReal.ofReal (f (x - y)) ∂volume) P := by
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_of_hasLaw_infinitePi
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hJoint
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued canonical two-density
+product-coordinate form.
+-/
+theorem durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_two_real_lintegral_density
+    {f : ℝ -> ℝ}
+    [IsProbabilityMeasure (volume.withDensity fun x => ENNReal.ofReal (f x))]
+    (hf : Measurable f) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> ℝ => sample 0 + sample 1)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f y) * ENNReal.ofReal (f (x - y)) ∂volume)
+      (Measure.infinitePi fun _ : ℕ =>
+        volume.withDensity fun x => ENNReal.ofReal (f x)) := by
+  exact
+    durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_two_lintegral_density
+      (f := fun x => ENNReal.ofReal (f x)) hf.ennreal_ofReal
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued one-based iid two-density source
+form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_real_lintegral_density_oneBased_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i)
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f y) * ENNReal.ofReal (f (x - y)) ∂volume) P := by
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_oneBased_of_iIndepFun
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued one-based
+identical-distribution two-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_real_lintegral_density_oneBased_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0)
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f y) * ENNReal.ofReal (f (x - y)) ∂volume) P := by
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_oneBased_of_identDistrib
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hBase hident hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued one-based joint infinite-product
+two-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_real_lintegral_density_oneBased_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ}
+    [IsProbabilityMeasure (volume.withDensity fun x => ENNReal.ofReal (f x))]
+    {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ =>
+        volume.withDensity fun x => ENNReal.ofReal (f x)) P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f y) * ENNReal.ofReal (f (x - y)) ∂volume) P := by
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_two_lintegral_density_oneBased_of_hasLaw_infinitePi
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hJoint
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued one-based canonical two-density
+product-coordinate form.
+-/
+theorem durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_two_real_lintegral_density_oneBased
+    {f : ℝ -> ℝ}
+    [IsProbabilityMeasure (volume.withDensity fun x => ENNReal.ofReal (f x))]
+    (hf : Measurable f) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> ℝ => sample 1 + sample 2)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f y) * ENNReal.ofReal (f (x - y)) ∂volume)
+      (Measure.infinitePi fun _ : ℕ =>
+        volume.withDensity fun x => ENNReal.ofReal (f x)) := by
+  exact
+    durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_two_lintegral_density_oneBased
+      (f := fun x => ENNReal.ofReal (f x)) hf.ennreal_ofReal
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued pairwise-identically-distributed
+two-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_two_real_lintegral_density
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0)
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := P)) on X)) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f y) * ENNReal.ofReal (f (x - y)) ∂volume) P := by
+  exact
+    durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_two_lintegral_density
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hBase hident hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, real-valued one-based
+pairwise-identically-distributed two-density source form.
+-/
+theorem durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_two_real_lintegral_density_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {f : ℝ -> ℝ} {X : ℕ -> Ω -> ℝ}
+    (hf : Measurable f)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0)
+      (volume.withDensity fun x => ENNReal.ofReal (f x)) P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := P)) on X)) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (volume.withDensity fun x =>
+        ∫⁻ y, ENNReal.ofReal (f y) * ENNReal.ofReal (f (x - y)) ∂volume) P := by
+  exact
+    durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_two_lintegral_density_oneBased
+      (P := P) (f := fun x => ENNReal.ofReal (f x)) (X := X)
+      hf.ennreal_ofReal hBase hident hindep
+
 /-! ## Durrett, Section 2.2 -/
 
 /--
