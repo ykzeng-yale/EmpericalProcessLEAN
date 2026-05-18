@@ -51712,6 +51712,210 @@ theorem
       hObservationSecondDerivative_eq_fderiv_observationDerivativeAt
 
 /--
+The observation offset for the sample-mean estimating equation
+`theta - observation`.
+-/
+def vaart1998_negativeObservationOffset
+    (Idx : Type*) : (Idx -> ℝ) -> Idx -> ℝ :=
+  fun observation => -observation
+
+/--
+The negative-observation offset is measurable on a finite-coordinate
+observation space.
+-/
+theorem vaart1998_negativeObservationOffset_measurable
+    {Idx : Type*} [MeasurableSpace (Idx -> ℝ)]
+    [MeasurableSub₂ (Idx -> ℝ)] :
+    Measurable (vaart1998_negativeObservationOffset Idx) := by
+  have hSub :
+      Measurable
+        (fun observation : Idx -> ℝ =>
+          (0 : Idx -> ℝ) - observation) :=
+    measurable_const.sub measurable_id
+  simpa [vaart1998_negativeObservationOffset] using hSub
+
+/--
+The vector `L²` source for observations transfers to the negative-observation
+offset used by the sample-mean estimating equation.
+-/
+theorem vaart1998_negativeObservationOffset_memLp
+    {Idx : Type*} [Fintype Idx] [MeasurableSpace (Idx -> ℝ)]
+    {observationLaw : Measure (Idx -> ℝ)}
+    (hObservation_memLp :
+      MemLp (fun observation : Idx -> ℝ => observation) 2 observationLaw) :
+    MemLp (vaart1998_negativeObservationOffset Idx) 2 observationLaw := by
+  simpa [vaart1998_negativeObservationOffset] using hObservation_memLp.neg
+
+/--
+If `theta0` is the observation mean, then it is the negative mean of the
+negative-observation offset.
+-/
+theorem vaart1998_theta0_negativeObservationOffsetMean_of_observationMean
+    {Idx : Type*} [Fintype Idx] [MeasurableSpace (Idx -> ℝ)]
+    {observationLaw : Measure (Idx -> ℝ)}
+    {theta0 : Idx -> ℝ}
+    (hTheta0_mean :
+      theta0 =
+        ∫ observation,
+          observation ∂observationLaw) :
+    theta0 =
+      -(∫ observation,
+        vaart1998_negativeObservationOffset Idx observation ∂observationLaw) := by
+  have hOffsetIntegral :
+      (∫ observation,
+        vaart1998_negativeObservationOffset Idx observation ∂observationLaw) =
+        -(∫ observation : Idx -> ℝ,
+          observation ∂observationLaw) := by
+    simpa [vaart1998_negativeObservationOffset] using
+      (integral_neg
+        (f := fun observation : Idx -> ℝ => observation)
+        (μ := observationLaw))
+  rw [hOffsetIntegral]
+  simpa using hTheta0_mean
+
+/--
+van der Vaart 1998, Theorem 5.41, positive-sample identity common-core
+sample-mean observation source endpoint.
+
+This wrapper specializes the observation space to finite-coordinate vectors
+and uses the textbook sample-mean estimating equation `theta - observation`.
+It derives the offset measurability, offset `L²`, and population offset-mean
+fields from the observation `L²` source and the population mean identity
+`theta0 = P observation`.
+-/
+theorem
+    vaart1998_theorem_5_41_positiveSample_identityMeanObservationSource
+    {Ω' Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [PseudoMetricSpace (Idx -> ℝ)]
+    [SecondCountableTopology (Idx -> ℝ)] [BorelSpace (Idx -> ℝ)]
+    [OpensMeasurableSpace (Idx -> ℝ)] [CompleteSpace (Idx -> ℝ)]
+    [MeasurableSub₂ (Idx -> ℝ)] [MeasurableSMul₂ ℝ (Idx -> ℝ)]
+    [PseudoMetricSpace (Idx × Idx -> ℝ)]
+    [SecondCountableTopology (Idx × Idx -> ℝ)]
+    [BorelSpace (Idx × Idx -> ℝ)]
+    [OpensMeasurableSpace (Idx × Idx -> ℝ)]
+    [CompleteSpace (Idx × Idx -> ℝ)]
+    [SecondCountableTopology ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [OpensMeasurableSpace ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [MeasurableAdd₂ ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [MeasurableConstSMul ℝ ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [MeasurableAdd₂ ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [MeasurableConstSMul ℝ
+      ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    (V : (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))
+    (Vinv : (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))
+    (observationEstimatingMap :
+      (Idx -> ℝ) -> (Idx -> ℝ) -> Idx -> ℝ)
+    (observationDerivativeAt :
+      (Idx -> ℝ) -> (Idx -> ℝ) ->
+        (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))
+    (observationSecondDerivative :
+      (Idx -> ℝ) -> (Idx -> ℝ) →L[ℝ] (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))
+    (envelope : (Idx -> ℝ) -> ℝ)
+    {observationLaw : Measure (Idx -> ℝ)}
+    [IsProbabilityMeasure observationLaw]
+    {theta0 : Idx -> ℝ}
+    {Z : Ω' -> Idx -> ℝ}
+    (hLeftInverse : ∀ x : Idx -> ℝ, Vinv (V x) = x)
+    (hObservation_memLp :
+      MemLp (fun observation : Idx -> ℝ => observation) 2 observationLaw)
+    (hTheta0_mean :
+      theta0 =
+        ∫ observation,
+          observation ∂observationLaw)
+    (hObservationDerivativeAt_joint_measurable_source :
+      Measurable
+        (fun p : (Idx -> ℝ) × (Idx -> ℝ) =>
+          observationDerivativeAt p.1 p.2))
+    (hObservationDerivativeAtTheta0_operator_integrable :
+      Integrable
+        (fun observation : Idx -> ℝ =>
+          observationDerivativeAt observation theta0)
+        observationLaw)
+    (hV_observationDerivativeAtTheta0_operator_mean :
+      (∫ observation,
+        observationDerivativeAt observation theta0 ∂observationLaw) = V)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_mean_zero : (∫ ω, Z ω ∂Q) = 0)
+    (Gamma : Idx -> Idx -> ℝ)
+    (hZ_centered_product : ∀ i j : Idx,
+      (∫ ω, Z ω i * Z ω j ∂Q) = Gamma i j)
+    (hObservationEstimatingMapTheta0_centered_product : ∀ i j : Idx,
+      (∫ observation,
+        observationEstimatingMap observation theta0 i *
+          observationEstimatingMap observation theta0 j ∂observationLaw) =
+        Gamma i j)
+    (hObservationEstimatingMap_meanAffine : ∀ observation : Idx -> ℝ,
+      ∀ theta : Idx -> ℝ,
+        observationEstimatingMap observation theta =
+          theta - observation)
+    (hEnvelope_meas : Measurable envelope)
+    (hAbsEnvelope_integrable : Integrable (fun x => |envelope x|) observationLaw)
+    (hObservationSecondDerivative_measurable :
+      Measurable observationSecondDerivative)
+    (hObservationSecondDerivative_bound : ∀ x,
+      ‖observationSecondDerivative x‖ ≤ |envelope x|)
+    (hContDiffObservationEstimatingMap_univ : ∀ observation : Idx -> ℝ,
+      ContDiffOn ℝ 1 (observationEstimatingMap observation) Set.univ)
+    (hObservationDerivativeAt_eq_fderiv_observationEstimatingMap :
+      ∀ observation : Idx -> ℝ, ∀ theta : Idx -> ℝ,
+        fderiv ℝ (observationEstimatingMap observation) theta =
+          observationDerivativeAt observation theta)
+    (hContDiffObservationDerivativeAt_univ : ∀ observation : Idx -> ℝ,
+      ContDiffOn ℝ 1 (observationDerivativeAt observation) Set.univ)
+    (hObservationSecondDerivative_eq_fderiv_observationDerivativeAt :
+      ∀ observation : Idx -> ℝ, ∀ theta : Idx -> ℝ,
+        fderiv ℝ (observationDerivativeAt observation) theta =
+          observationSecondDerivative observation) :
+    TendstoInDistribution
+      (fun (n : ℕ) sample =>
+        √((n + 1 : ℕ) : ℝ) •
+          (vaart1998PositiveCommonObservationCoreInverseEstimator
+              (vaart1998_identityCommonObservationCoreInverse Idx)
+              (vaart1998_negativeObservationOffset Idx) n sample -
+            theta0))
+      atTop
+      (fun ω => (-Vinv : (Idx -> ℝ) →L[ℝ] (Idx -> ℝ)) (Z ω))
+      (fun _ => Measure.infinitePi (fun _ : ℕ => observationLaw)) Q := by
+  have hObservationEstimatingMap_identityAffine :
+      ∀ observation : Idx -> ℝ, ∀ theta : Idx -> ℝ,
+        observationEstimatingMap observation theta =
+          theta +
+            vaart1998_negativeObservationOffset Idx observation := by
+    intro observation theta
+    simpa [vaart1998_negativeObservationOffset, sub_eq_add_neg] using
+      hObservationEstimatingMap_meanAffine observation theta
+  exact
+    vaart1998_theorem_5_41_positiveSample_identityCommonObservationCoreAffineTheta0OffsetVectorMeanSource
+      (Q := Q) (V := V) (Vinv := Vinv)
+      (observationEstimatingMap := observationEstimatingMap)
+      (observationDerivativeAt := observationDerivativeAt)
+      (observationSecondDerivative := observationSecondDerivative)
+      (envelope := envelope) (observationLaw := observationLaw)
+      (theta0 := theta0)
+      (observationOffset := vaart1998_negativeObservationOffset Idx)
+      (Z := Z)
+      hLeftInverse
+      (vaart1998_negativeObservationOffset_measurable (Idx := Idx))
+      (vaart1998_negativeObservationOffset_memLp
+        (Idx := Idx) hObservation_memLp)
+      (vaart1998_theta0_negativeObservationOffsetMean_of_observationMean
+        (Idx := Idx) hTheta0_mean)
+      hObservationDerivativeAt_joint_measurable_source
+      hObservationDerivativeAtTheta0_operator_integrable
+      hV_observationDerivativeAtTheta0_operator_mean hZ_gaussian
+      hZ_mean_zero Gamma hZ_centered_product
+      hObservationEstimatingMapTheta0_centered_product
+      hObservationEstimatingMap_identityAffine
+      hEnvelope_meas hAbsEnvelope_integrable
+      hObservationSecondDerivative_measurable hObservationSecondDerivative_bound
+      hContDiffObservationEstimatingMap_univ
+      hObservationDerivativeAt_eq_fderiv_observationEstimatingMap
+      hContDiffObservationDerivativeAt_univ
+      hObservationSecondDerivative_eq_fderiv_observationDerivativeAt
+
+/--
 van der Vaart 1998, Theorem 5.41, selected-root source endpoint.
 
 This wrapper matches the textbook estimator construction one level more
