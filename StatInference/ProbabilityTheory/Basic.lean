@@ -9097,6 +9097,131 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_comp_prod_eq_pro
       hcomp_indep (fun i => (hf_meas i).comp (hX_meas i)) m n
 
 /--
+Durrett 2019, Theorem 2.1.13, source-side composed absolute-value finite
+zero-factor formula.
+
+If one composed norm factor has zero `lintegral`, then the norm `lintegral`
+of the whole finite composed product is zero.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ι -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    {s : Finset ι} {i : ι} (hi : i ∈ s)
+    (hzero : ∫⁻ ω, ENNReal.ofReal ‖f i (X i ω)‖ ∂P = 0) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ j ∈ s, f j (X j ω)‖ ∂P = 0 := by
+  rw [durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_comp_prod_eq_prod_lintegral_norm
+    (P := P) (X := X) (f := f) hX hX_meas hf_meas s]
+  exact Finset.prod_eq_zero hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed absolute-value
+initial-range zero-factor formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hzero : ∫⁻ ω, ENNReal.ofReal ‖f i (X i ω)‖ ∂P = 0) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ j ∈ Finset.range n, f j (X j ω)‖ ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero
+    (P := P) (X := X) (f := f)
+    hX hX_meas hf_meas (s := Finset.range n) (i := i) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed absolute-value
+interval-block zero-factor formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hzero : ∫⁻ ω, ENNReal.ofReal ‖f i (X i ω)‖ ∂P = 0) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ j ∈ Finset.Ico m n, f j (X j ω)‖ ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero
+    (P := P) (X := X) (f := f)
+    hX hX_meas hf_meas (s := Finset.Ico m n) (i := i) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed absolute-value zero-factor
+formula on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    {n i : ℕ} (hi : i ∈ Finset.Icc 1 n)
+    (hzero : ∫⁻ ω, ENNReal.ofReal ‖f i (X i ω)‖ ∂P = 0) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ j ∈ Finset.Icc 1 n, f j (X j ω)‖ ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero
+    (P := P) (X := X) (f := f)
+    hX hX_meas hf_meas (s := Finset.Icc 1 n) (i := i) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed absolute-value one-based
+initial-range zero-factor formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hzero : ∫⁻ ω, ENNReal.ofReal ‖f (i + 1) (X (i + 1) ω)‖ ∂P = 0) :
+    ∫⁻ ω, ENNReal.ofReal
+      ‖∏ j ∈ Finset.range n, f (j + 1) (X (j + 1) ω)‖ ∂P = 0 := by
+  rw [durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_comp_prod_eq_prod_lintegral_norm_oneBased
+    (P := P) (X := X) (f := f) hX hX_meas hf_meas n]
+  exact Finset.prod_eq_zero hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed absolute-value one-based
+interval-block zero-factor formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hzero : ∫⁻ ω, ENNReal.ofReal ‖f (i + 1) (X (i + 1) ω)‖ ∂P = 0) :
+    ∫⁻ ω, ENNReal.ofReal
+      ‖∏ j ∈ Finset.Ico m n, f (j + 1) (X (j + 1) ω)‖ ∂P = 0 := by
+  rw [durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_comp_prod_eq_prod_lintegral_norm_oneBased
+    (P := P) (X := X) (f := f) hX hX_meas hf_meas m n]
+  exact Finset.prod_eq_zero hi hzero
+
+/--
 Durrett 2019, Theorem 2.1.13, source-side iid composed finite-subfamily
 expectation-exists-and-power-value formula.
 
