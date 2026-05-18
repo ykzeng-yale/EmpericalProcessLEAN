@@ -27,12 +27,16 @@ must reuse Billingsley/local probability primitives whenever possible.
   search-first reuse, start/final GitHub sync checks, and isolated worktrees for
   long Durrett builds or disjoint local lanes.  Use subagents only after
   explicit user authorization.
+- Methodology policy: keep a living proof-pipeline map in the blocker plan and
+  blueprint.  Record which search patterns, wrapper criteria, build order, and
+  file-order lessons improved throughput, and route future Durrett/statistics
+  formalization cycles from those notes before adding more display variants.
 - Communication policy: chat updates may be bilingual, but all code, theorem
   comments, docs, and commit messages in this lane stay in English.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V501` in
+Route from `Live In-Thread Goal Prompt V502` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -82,7 +86,10 @@ middle-partition outer-a.s. endpoint source wrappers for the same
 identical-distribution and pairwise-identically-distributed hypotheses; V501
 adds direct zero-based final middle-partition endpoint wrappers for
 `iIndepFun`, joint `Measure.infinitePi` laws, and canonical iid product
-samples.  The
+samples; V502 adds the matching route-named one-based empirical-CDF endpoints
+from the final middle-partition construction for source, joint-law,
+shifted-joint-law, canonical iid, identical-distribution, and
+pairwise-identically-distributed source shapes.  The
 historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
 V443 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.

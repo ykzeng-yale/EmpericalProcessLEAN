@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V501
+## Live In-Thread Goal Prompt V502
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -57,15 +57,17 @@ supplied-partition and final middle-partition outer-a.s. endpoint source
 wrappers for the same identical-distribution and pairwise-identically
 distributed hypotheses.  V501 adds direct zero-based final
 middle-partition endpoint wrappers for `iIndepFun`, joint
-`Measure.infinitePi` laws, and canonical iid product samples.
+`Measure.infinitePi` laws, and canonical iid product samples.  V502 adds the
+matching route-named one-based empirical-CDF endpoints from the final
+middle-partition construction for source, joint-law, shifted-joint-law,
+canonical iid, identical-distribution, and pairwise-identically-distributed
+source shapes.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
-source-facing 2.4.9 proof-step wrapper only if search proves it is absent,
-with priority now on final theorem-display handoffs from the middle-partition
-route into the existing empirical-CDF and half-line Glivenko-Cantelli source
-statements; otherwise add the next Chapter 2.1 product-law/product-expectation
-wrapper that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+source-facing 2.4.9 proof-step wrapper only if search proves it is absent;
+otherwise add the next Chapter 2.1 product-law/product-expectation wrapper
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -101,7 +103,27 @@ distributed hypotheses,
 solved direct zero-based final middle-partition endpoint wrappers for
 `iIndepFun`, joint `Measure.infinitePi` laws, and canonical iid product
 samples,
+solved route-named one-based empirical-CDF endpoints from the final
+middle-partition construction for source, joint-law, shifted-joint-law,
+canonical iid, identical-distribution, and pairwise-identically-distributed
+source shapes,
 or old app-level stale prompts.
+
+Latest verified target V502 adds route-named one-based empirical-CDF endpoints
+from the final middle-partition construction:
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_iIndepFun_oneBased`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_hasLaw_infinitePi_oneBased`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_shift_hasLaw_infinitePi_oneBased`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_canonical_iid_oneBased`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_iIndepFun_identDistrib_oneBased`, and
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_pairwise_identDistrib_oneBased`.
+These wrappers expose the final middle-partition route in the empirical-CDF
+`samplePath (X_{i+1})` display, complementing the exact inv-mul display
+wrappers.
+Next target: if final Theorem 2.4.9 display search finds no remaining
+source-shape gaps, shift to the adjacent Chapter 2.1 product-law/product-
+expectation support that directly feeds the same empirical-CDF/half-line
+pipeline or Kolmogorov-maximal route.
 
 Latest verified target V501 adds direct zero-based final
 middle-partition endpoint wrappers:
@@ -114,6 +136,38 @@ Next target: search the final `glivenkoCantelli`, `outerAlmostSureGlivenkoCantel
 and empirical-CDF display wrappers for remaining direct reuse opportunities
 from the V500/V501 middle-partition endpoint layer before shifting to adjacent
 Chapter 2.1 product-law support.
+
+## Methodology Notes For Faster Durrett/Statistics Formalization
+
+- Search before every theorem packet.  For this lane, the highest-signal
+  searches are exact theorem-name prefixes, source-shape suffixes
+  (`iIndepFun`, `hasLaw_infinitePi`, `identDistrib`, `pairwise`, `canonical`,
+  `oneBased`), and consumer phrases (`outerAlmostSure`, `range_sum`,
+  `inv_mul`, `finite_cutpoints`, `middlePartitionWithTails`).  This prevents
+  re-proving solved display wrappers.
+- Treat route-named wrappers as useful only when they close a real missing
+  source shape, expose a textbook display, or remove repeated source unpacking
+  in later consumers.  Stop adding wrappers once each active display layer has
+  the required source/joint/canonical/identically-distributed/pairwise coverage.
+- Keep a proof-pipeline map for every theorem family:
+  source hypotheses -> product-law/independence support -> pointwise SLLN ->
+  finite cutpoints -> uniform partition squeeze -> final textbook displays.
+  Choose the next target at the first uncovered edge in that map.
+- The main efficiency blockers observed here are stale app-level goal text,
+  repeating already solved product-display layers, using a theorem before its
+  file-order definition, and running expensive root builds before a final
+  fetch/rebase.  Mitigations: route from this file, `rg` the exact source
+  shape before editing, keep helper proofs before their consumers or inline
+  tiny source extraction, and run focused Lean before module/root builds.
+- Tool rhythm that works best in this shared multi-agent repo: start with
+  `git status`, `git rev-parse HEAD`, and `git ls-remote`; edit one
+  theorem-sized packet; run focused `lake env lean`; update route docs; run
+  scans and module build; fetch/rebase; run root build on the rebased tree;
+  fetch once more before commit/push.
+- Avoid broad agents/automation in this chat unless explicitly requested.
+  Worktrees are useful for isolating long Durrett builds from other local
+  theorem lanes, but the current turn should still keep one precise
+  mathematical frontier.
 
 Latest verified target V500 closes the countable supplied-partition and final
 middle-partition endpoint source layer for Durrett Theorem 2.4.9:

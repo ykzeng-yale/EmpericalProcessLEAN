@@ -14,6 +14,28 @@ route docs, then sync GitHub.  The goal is full-book coverage over time, but
 each in-thread cycle should choose the next largest theorem step that can
 actually compile.
 
+## Working Methodology
+
+The fastest reliable pattern in this lane is to maintain an explicit theorem
+pipeline map: textbook source hypotheses, product-law/independence support,
+pointwise convergence, finite cutpoint aggregation, uniform partition squeeze,
+and final textbook displays.  Each proof packet should close the first missing
+edge in that pipeline rather than adding another variant of an already covered
+display.
+
+Before editing, search exact theorem-name prefixes and source-shape suffixes
+(`iIndepFun`, `hasLaw_infinitePi`, `identDistrib`, `pairwise`, `canonical`,
+`oneBased`) in both the Durrett file and the local reusable folders.  Add a
+route-named wrapper only when it removes repeated source unpacking, exposes a
+Durrett display, or gives a later theorem a stable theorem-sized input.
+
+Common drag sources to avoid: stale app-level goal text, re-entering solved
+product-display branches, relying on a theorem that appears later in the same
+file, and doing a full root build before checking whether another agent moved
+`origin/main`.  The preferred verification rhythm is focused Lean first,
+module build second, fetch/rebase, root build on the rebased tree, then one
+last fetch before commit and push.
+
 ## Local Sources
 
 - Markdown chunks:
@@ -27,7 +49,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V501`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V502`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -79,7 +101,10 @@ middle-partition outer-a.s. endpoint source wrappers for the same
 identical-distribution and pairwise-identically-distributed hypotheses.  V501
 adds direct zero-based final middle-partition endpoint wrappers for
 `iIndepFun`, joint `Measure.infinitePi` laws, and canonical iid product
-samples.
+samples.  V502 adds the matching route-named one-based empirical-CDF endpoints
+from the final middle-partition construction for source, joint-law,
+shifted-joint-law, canonical iid, identical-distribution, and
+pairwise-identically-distributed source shapes.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
@@ -103,6 +128,8 @@ or the middle-partition-with-tails source wrappers,
 or the countable supplied-partition/final middle-partition endpoint source
 wrappers,
 or the direct zero-based final middle-partition endpoint source wrappers,
+or the route-named one-based empirical-CDF endpoints from the final
+middle-partition construction,
 unless a focused source check exposes a missing handoff.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.4.9
