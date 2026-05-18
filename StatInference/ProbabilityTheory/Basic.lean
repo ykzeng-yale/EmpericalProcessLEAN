@@ -8005,6 +8005,146 @@ theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_indexed_ofReal_prod_eq_
     (μ := fun _ : ℕ => μ) (f := f) hX hLaw hX_meas hf hf_nonneg m n
 
 /--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform real
+nonnegative zero-factor finite product formula.
+
+If one law-side `ENNReal.ofReal` factor integral vanishes, then the
+source-space real nonnegative product integral vanishes.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_finset_law_indexed_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero
+    {Ω : Type u} {ι : Type w}
+    [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {μ : Measure S}
+    {f : ι -> S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (hf_nonneg : ∀ i x, 0 ≤ f i x)
+    {s : Finset ι} {i : ι} (hi : i ∈ s)
+    (hzero : ∫⁻ x, ENNReal.ofReal (f i x) ∂μ = 0) :
+    ∫⁻ ω, ENNReal.ofReal (∏ j ∈ s, f j (X j ω)) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero
+    (P := P) (S := fun _ : ι => S) (X := X)
+    (μ := fun _ : ι => μ) (f := f)
+    hX hLaw hX_meas hf hf_nonneg hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform real
+nonnegative zero-factor initial-range product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_law_indexed_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (hf_nonneg : ∀ i x, 0 ≤ f i x)
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hzero : ∫⁻ x, ENNReal.ofReal (f i x) ∂μ = 0) :
+    ∫⁻ ω, ENNReal.ofReal (∏ j ∈ Finset.range n, f j (X j ω)) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_lintegral_finset_law_indexed_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero
+    (P := P) (X := X) (μ := μ) (f := f)
+    hX hLaw hX_meas hf hf_nonneg (s := Finset.range n) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform real
+nonnegative zero-factor interval-block product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_indexed_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (hf_nonneg : ∀ i x, 0 ≤ f i x)
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hzero : ∫⁻ x, ENNReal.ofReal (f i x) ∂μ = 0) :
+    ∫⁻ ω, ENNReal.ofReal (∏ j ∈ Finset.Ico m n, f j (X j ω)) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_lintegral_finset_law_indexed_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero
+    (P := P) (X := X) (μ := μ) (f := f)
+    hX hLaw hX_meas hf hf_nonneg (s := Finset.Ico m n) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform real
+nonnegative zero-factor product formula on the literal one-based index set
+`{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_law_indexed_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (hf_nonneg : ∀ i x, 0 ≤ f i x)
+    {n i : ℕ} (hi : i ∈ Finset.Icc 1 n)
+    (hzero : ∫⁻ x, ENNReal.ofReal (f i x) ∂μ = 0) :
+    ∫⁻ ω, ENNReal.ofReal (∏ j ∈ Finset.Icc 1 n, f j (X j ω)) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_lintegral_finset_law_indexed_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero
+    (P := P) (X := X) (μ := μ) (f := f)
+    hX hLaw hX_meas hf hf_nonneg (s := Finset.Icc 1 n) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform real
+nonnegative zero-factor one-based initial-range product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_law_indexed_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (hf_nonneg : ∀ i x, 0 ≤ f i x)
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hzero : ∫⁻ x, ENNReal.ofReal (f (i + 1) x) ∂μ = 0) :
+    ∫⁻ ω, ENNReal.ofReal
+      (∏ j ∈ Finset.range n, f (j + 1) (X (j + 1) ω)) ∂P = 0 := by
+  rw [durrett2019_theorem_2_1_13_iid_lintegral_range_law_indexed_ofReal_prod_eq_prod_lintegral_ofReal_oneBased
+    (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf hf_nonneg n]
+  exact Finset.prod_eq_zero hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform real
+nonnegative zero-factor one-based interval-block product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_indexed_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (hf_nonneg : ∀ i x, 0 ≤ f i x)
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hzero : ∫⁻ x, ENNReal.ofReal (f (i + 1) x) ∂μ = 0) :
+    ∫⁻ ω, ENNReal.ofReal
+      (∏ j ∈ Finset.Ico m n, f (j + 1) (X (j + 1) ω)) ∂P = 0 := by
+  rw [durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_indexed_ofReal_prod_eq_prod_lintegral_ofReal_oneBased
+    (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf hf_nonneg m n]
+  exact Finset.prod_eq_zero hi hzero
+
+/--
 Durrett 2019, Theorem 2.1.13, source-side composed finite-subfamily
 expectation-exists-and-value formula.
 
