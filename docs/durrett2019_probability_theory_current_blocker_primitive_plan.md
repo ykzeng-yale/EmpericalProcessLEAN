@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V504
+## Live In-Thread Goal Prompt V505
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -66,7 +66,10 @@ source extraction into Chapter 2.1 and rewires the 2.4.9 pairwise one-based
 consumers to reuse it instead of duplicating file-order workarounds.  V504
 adds the concrete Theorem 2.1.10 first-variable/tail-product independence
 wrappers and the matching Theorem 2.1.13 expectation-factorization and
-zero-mean corollaries, including one-based textbook notation.
+zero-mean corollaries, including one-based textbook notation.  V505 adds
+Theorem 2.1.15 CDF-convolution source wrappers for iid, identical-distribution,
+joint infinite-product, canonical product-coordinate, one-based, and pairwise
+identically-distributed source shapes.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -116,7 +119,28 @@ solved pairwise-identically-distributed one-based source extraction from
 Chapter 2.1 and its 2.4.9 pairwise one-based rewiring,
 solved Theorem 2.1.10 first-variable/tail-product independence and
 Theorem 2.1.13 first-times-tail-product expectation/zero-mean wrappers,
+solved Theorem 2.1.15 iid/source/joint/canonical/one-based/pairwise
+CDF-convolution wrappers,
 or old app-level stale prompts.
+
+Latest verified target V505 adds source-shaped Durrett Theorem 2.1.15
+CDF-convolution wrappers:
+`durrett2019_theorem_2_1_15_iid_pair_cdf_convolution_of_iIndepFun`,
+`durrett2019_theorem_2_1_15_iid_pair_cdf_convolution_of_identDistrib`,
+`durrett2019_theorem_2_1_15_iid_pair_cdf_convolution_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_15_canonical_iid_pair_cdf_convolution`,
+`durrett2019_theorem_2_1_15_iid_pair_cdf_convolution_oneBased_of_iIndepFun`,
+`durrett2019_theorem_2_1_15_iid_pair_cdf_convolution_oneBased_of_identDistrib`,
+`durrett2019_theorem_2_1_15_iid_pair_cdf_convolution_oneBased_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_15_canonical_iid_pair_cdf_convolution_oneBased`,
+`durrett2019_theorem_2_1_15_pairwise_identDistrib_pair_cdf_convolution`, and
+`durrett2019_theorem_2_1_15_pairwise_identDistrib_pair_cdf_convolution_oneBased`.
+The analytic product-space and generic independent-pair convolution theorem
+already existed; V505 deliberately adds only reusable source-entry wrappers.
+Next target: search Theorem 2.1.16 for the same exact source-shape gap around
+sum densities/convolution laws.  Add those wrappers only if absent; otherwise
+move to the next Chapter 2.1 support theorem that feeds 2.4.9 or the adjacent
+Kolmogorov-maximal route.
 
 Latest verified target V504 packages Durrett's concrete post-Theorem 2.1.10
 special case and its expectation consumer:
@@ -205,6 +229,12 @@ Chapter 2.1 product-law support.
   keeps the raw first/tail-product independence statement in Theorem 2.1.10,
   while placing the integral factorization and zero-mean consequences after
   the base Theorem 2.1.13 two-variable expectation theorem.
+- After an analytic theorem is already compiled, prefer source-entry wrappers
+  over re-opening the analytic proof.  V505 applies this to Theorem 2.1.15:
+  product-space CDF convolution and the generic independent-pair form were
+  already present, so the efficient packet was to expose iid, joint-law,
+  canonical, one-based, and pairwise source shapes that future consumers can
+  call directly.
 - Tool rhythm that works best in this shared multi-agent repo: start with
   `git status`, `git rev-parse HEAD`, and `git ls-remote`; edit one
   theorem-sized packet; run focused `lake env lean`; update route docs; run

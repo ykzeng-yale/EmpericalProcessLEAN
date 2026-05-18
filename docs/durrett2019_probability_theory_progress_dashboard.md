@@ -36,7 +36,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V504` in
+Route from `Live In-Thread Goal Prompt V505` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -94,7 +94,10 @@ one-based source extraction into Chapter 2.1 and rewires the 2.4.9 pairwise
 one-based consumers to reuse that earlier theorem; V504 adds the concrete
 Theorem 2.1.10 first-variable/tail-product independence wrappers and the
 matching Theorem 2.1.13 expectation-factorization and zero-mean corollaries
-in zero-based and one-based notation.  The
+in zero-based and one-based notation.  V505 adds source-shaped Durrett Theorem
+2.1.15 CDF-convolution wrappers for iid, identical-distribution, joint
+infinite-product, canonical product-coordinate, one-based, and pairwise
+identically-distributed source hypotheses.  The
 historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
 V443 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.
