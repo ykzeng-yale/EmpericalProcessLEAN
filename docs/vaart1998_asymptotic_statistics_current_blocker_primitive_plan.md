@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMeanSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMomentSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -43,13 +43,11 @@ laws from
 `ContinuousLinearEquiv.symm_apply_apply`, derives the coordinate
 measurability and `ContinuousAt` fields for the inverse from the continuous
 linear map API, and feeds the determinant-derived injectivity into the
-compiled common-core route. It derives observation-offset coordinate
-measurability from the affine display at `theta0` and coordinate
-measurability of the estimating map at `theta0`; it derives
-observation-offset coordinate integrability from the same affine display and
-the `MemLp 2` assumptions on the estimating map at `theta0`. It derives the
-coordinate mean-zero estimating equation at `theta0` from the population
-common-core equation
+compiled common-core route. It derives theta0 estimating-map coordinate
+measurability and theta0 estimating-map coordinate `MemLp 2` from the affine
+display at `theta0` plus observation-offset coordinate measurability and
+observation-offset coordinate `MemLp 2`. It derives the coordinate mean-zero
+estimating equation at `theta0` from the population common-core equation
 `LinearMap.toContinuousLinearMap commonObservationCoreMatrix.mulVecLin theta0
 = -E[offset]`. From these derived offset fields it derives the product-space
 zero-coordinate
@@ -73,11 +71,21 @@ distribution, raw local inverse stability, common-core target convergence,
 estimator consistency, estimator coordinate measurability, root-set
 membership, finite-sum zero, inverse coordinate measurability, raw local
 inverse continuity, raw common-core injectivity, raw right-inverse value, raw
-function-space finrank equality, observation-offset coordinate measurability,
-observation-offset coordinate integrability, or direct coordinate mean-zero
-for this square-matrix route.
+function-space finrank equality, observation-offset coordinate integrability,
+direct theta0-coordinate measurability, direct theta0-coordinate `MemLp 2`, or
+direct coordinate mean-zero for this square-matrix route.
 
-The newest theta0 offset-mean packet adds
+The newest theta0 offset-moment packet adds
+`vaart1998_observationEstimatingMapTheta0_coordinate_measurable_of_commonAffine_offset`,
+`vaart1998_observationEstimatingMapTheta0_coordinate_memLp_of_commonAffine_offset_memLp`,
+and
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMomentSource`.
+It removes the direct theta0-coordinate measurability and theta0-coordinate
+`MemLp 2` fields by deriving them from observation-offset coordinate
+measurability, observation-offset coordinate `MemLp 2`, and the affine
+display.
+
+The previous theta0 offset-mean packet adds
 `vaart1998_observationEstimatingMapTheta0_coordinate_mean_zero_of_commonAffine_offsetMean`
 and
 `vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMeanSource`.
@@ -243,12 +251,12 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: derive the coordinate mean-zero equation,
-theta0-coordinate `MemLp 2`, or theta0-coordinate measurability from a more
-concrete score or estimating-map source when available; otherwise instantiate
-the theta0-offset square-matrix determinant endpoint on the first concrete
-textbook estimating equation whose affine display and determinant source are
-immediate.
+Next aggressive target: derive observation-offset coordinate measurability,
+observation-offset coordinate `MemLp 2`, or the population offset-mean
+equation from a more concrete score or estimating-map source when available;
+otherwise instantiate the theta0-offset-moment square-matrix determinant
+endpoint on the first concrete textbook estimating equation whose affine
+display and determinant source are immediate.
 Do not route back to
 sample-size zero
 inverses, arbitrary canonical-selector measurability, direct root uniqueness,
@@ -3079,30 +3087,32 @@ compiling:
    feeds that display into the finite Taylor-zero action-bound endpoint.
 
 Latest verified Vaart frontier before the next packet:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMeanSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMomentSource`.
 
 The latest theorem-sized packet adds
-`vaart1998_observationEstimatingMapTheta0_coordinate_mean_zero_of_commonAffine_offsetMean`
+`vaart1998_observationEstimatingMapTheta0_coordinate_measurable_of_commonAffine_offset`,
+`vaart1998_observationEstimatingMapTheta0_coordinate_memLp_of_commonAffine_offset_memLp`,
 and
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMeanSource`.
-The live route now derives the coordinate mean-zero estimating equation at
-`theta0` from the population common-core equation
-`commonObservationCoreMatrix.mulVecLin theta0 = -E[offset]`. It therefore no
-longer asks for the coordinate mean-zero field directly. The remaining live
-source fields are the pointwise affine estimating-equation display against
-`commonObservationCoreMatrix.mulVecLin`, the determinant nonsingularity source,
-theta0-coordinate measurability, theta0-coordinate `MemLp 2`, and the
-population offset-mean equation.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMomentSource`.
+The live route now derives theta0-coordinate measurability and
+theta0-coordinate `MemLp 2` from observation-offset coordinate measurability,
+observation-offset coordinate `MemLp 2`, and the affine display. It therefore
+no longer asks for the theta0 estimating-map coordinate moment fields
+directly. The remaining live source fields are the pointwise affine
+estimating-equation display against `commonObservationCoreMatrix.mulVecLin`,
+the determinant nonsingularity source, observation-offset coordinate
+measurability, observation-offset coordinate `MemLp 2`, and the population
+offset-mean equation.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint. Priority order:
 
-1. Derive theta0-coordinate `MemLp 2` or theta0-coordinate measurability from
-   a concrete score/estimating-map model, or package a concrete source for the
-   population offset-mean equation.
+1. Derive observation-offset coordinate measurability, observation-offset
+   coordinate `MemLp 2`, or the population offset-mean equation from a
+   concrete score/estimating-map model.
 2. Instantiate the endpoint for the first source-shaped textbook example of
    Theorem 5.41 that can reuse the compiled positive-sample injective
-   theta0-offset-mean square-matrix determinant route.
+   theta0-offset-moment square-matrix determinant route.
 3. Generalize the determinant source from the square same-index case to
    reindexed equal-cardinality parameter and observation coordinate types
    only if that directly supports a concrete textbook example.
