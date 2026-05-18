@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V550`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V551`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V550: stay on Durrett Theorem 2.4.9
+Current immediate target after V551: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -311,6 +311,12 @@ zero-factor formulas for finite/range/Ico and one-based range/Ico/
 `Finset.Icc 1 n` products, reducing composed nonnegative transformed-product
 cancellations to source independence, measurability of `X_i` and `f_i`, and
 one zero composed factor `lintegral`, without `HasLaw` or ordinary
+integrability assumptions.
+V551 adds source-side composed-function Chapter 2.1.13 real nonnegative
+`ENNReal.ofReal` product formulas for finite/range/Ico and one-based
+range/Ico/`Finset.Icc 1 n` products, reducing composed real-valued
+nonnegative transformed-product factorizations to source independence,
+measurability and nonnegativity of each `f_i`, without `HasLaw` or ordinary
 integrability assumptions.
 The
 next packet should close only a proved-missing
@@ -2406,6 +2412,9 @@ products,
 the V550 source-side composed-function Chapter 2.1.13 nonnegative `ℝ≥0∞`
 zero-factor formulas for finite/range/Ico and one-based range/Ico/`Icc`
 composed products,
+the V551 source-side composed-function Chapter 2.1.13 real nonnegative
+`ENNReal.ofReal` product formulas for finite/range/Ico and one-based
+range/Ico/`Icc` composed products,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and
