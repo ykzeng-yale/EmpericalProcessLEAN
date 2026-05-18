@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V500
+## Live In-Thread Goal Prompt V501
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -55,16 +55,17 @@ for identical-distribution and pairwise-identically-distributed hypotheses,
 including exact one-based textbook displays.  V500 adds the countable
 supplied-partition and final middle-partition outer-a.s. endpoint source
 wrappers for the same identical-distribution and pairwise-identically
-distributed hypotheses.
+distributed hypotheses.  V501 adds direct zero-based final
+middle-partition endpoint wrappers for `iIndepFun`, joint
+`Measure.infinitePi` laws, and canonical iid product samples.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
 source-facing 2.4.9 proof-step wrapper only if search proves it is absent,
-with priority now on any remaining final theorem-display handoffs from the
-middle-partition route into the existing empirical-CDF and half-line
-Glivenko-Cantelli source statements; otherwise add the next Chapter 2.1
-product-law/product-expectation wrapper that directly supports 2.4.9 or the
-adjacent Kolmogorov-maximal route.
+with priority now on final theorem-display handoffs from the middle-partition
+route into the existing empirical-CDF and half-line Glivenko-Cantelli source
+statements; otherwise add the next Chapter 2.1 product-law/product-expectation
+wrapper that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -97,7 +98,22 @@ identical-distribution and pairwise-identically-distributed hypotheses,
 solved countable supplied-partition and final middle-partition outer-a.s.
 endpoint source wrappers for identical-distribution and pairwise-identically
 distributed hypotheses,
+solved direct zero-based final middle-partition endpoint wrappers for
+`iIndepFun`, joint `Measure.infinitePi` laws, and canonical iid product
+samples,
 or old app-level stale prompts.
+
+Latest verified target V501 adds direct zero-based final
+middle-partition endpoint wrappers:
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_of_hasLaw_infinitePi`, and
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation_canonical_iid`.
+These wrappers make the final countable middle-partition construction
+available without passing through the empirical-CDF display theorem first.
+Next target: search the final `glivenkoCantelli`, `outerAlmostSureGlivenkoCantelli`,
+and empirical-CDF display wrappers for remaining direct reuse opportunities
+from the V500/V501 middle-partition endpoint layer before shifting to adjacent
+Chapter 2.1 product-law support.
 
 Latest verified target V500 closes the countable supplied-partition and final
 middle-partition endpoint source layer for Durrett Theorem 2.4.9:

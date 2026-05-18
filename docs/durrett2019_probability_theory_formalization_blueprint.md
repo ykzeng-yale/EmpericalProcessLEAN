@@ -27,7 +27,7 @@ actually compile.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V500`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V501`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -76,7 +76,10 @@ matching middle-partition-with-tails source wrappers for identical-distribution
 and pairwise-identically-distributed hypotheses, including exact one-based
 textbook displays.  V500 adds the countable supplied-partition and final
 middle-partition outer-a.s. endpoint source wrappers for the same
-identical-distribution and pairwise-identically-distributed hypotheses.
+identical-distribution and pairwise-identically-distributed hypotheses.  V501
+adds direct zero-based final middle-partition endpoint wrappers for
+`iIndepFun`, joint `Measure.infinitePi` laws, and canonical iid product
+samples.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
@@ -99,6 +102,7 @@ or the finite-cutpoint closed/left empirical-CDF burn-in source wrappers,
 or the middle-partition-with-tails source wrappers,
 or the countable supplied-partition/final middle-partition endpoint source
 wrappers,
+or the direct zero-based final middle-partition endpoint source wrappers,
 unless a focused source check exposes a missing handoff.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.4.9
