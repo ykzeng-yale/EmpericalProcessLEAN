@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V549
+## Live In-Thread Goal Prompt V550
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -271,6 +271,12 @@ measurable transforms `f_i`, the source-space product `lintegral` of
 `f_i(X_i)` factors as the product of composed `lintegral`s for finite/range/
 Ico and one-based products, without requiring `HasLaw` or ordinary
 integrability hypotheses.
+V550 adds source-side composed-function Chapter 2.1.13 nonnegative `ℝ≥0∞`
+zero-factor formulas: for an independent measurable source family `X_i` and
+measurable transforms `f_i`, the source-space product `lintegral` of
+`f_i(X_i)` is zero whenever one composed factor `lintegral` is zero, for
+finite/range/Ico and one-based products, without requiring `HasLaw` or
+ordinary integrability hypotheses.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -423,6 +429,10 @@ range/Ico or one-based range/Ico/`Icc` products unless an exact later
 consumer needs a different source shape.
 After V549, do not rebuild the source-side composed-function Theorem 2.1.13
 nonnegative `ℝ≥0∞` product formulas for finite/range/Ico or one-based
+range/Ico/`Icc` composed products unless an exact later consumer needs a
+different source shape.
+After V550, do not rebuild the source-side composed-function Theorem 2.1.13
+nonnegative `ℝ≥0∞` zero-factor formulas for finite/range/Ico or one-based
 range/Ico/`Icc` composed products unless an exact later consumer needs a
 different source shape.
 Do not return to
@@ -604,10 +614,33 @@ range/Ico/`Icc` products,
 solved source-side composed-function Theorem 2.1.13 nonnegative `ℝ≥0∞`
 product formulas for finite/range/Ico and one-based range/Ico/`Icc` composed
 products,
+solved source-side composed-function Theorem 2.1.13 nonnegative `ℝ≥0∞`
+zero-factor formulas for finite/range/Ico and one-based range/Ico/`Icc`
+composed products,
 or old app-level stale prompts.
 
-Latest verified target V549 adds source-side composed-function Chapter 2.1.13
-nonnegative `ℝ≥0∞` product formulas:
+Latest verified target V550 adds source-side composed-function Chapter 2.1.13
+nonnegative `ℝ≥0∞` zero-factor formulas:
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_comp_prod_eq_zero_of_lintegral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_comp_prod_eq_zero_of_lintegral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_comp_prod_eq_zero_of_lintegral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_comp_prod_eq_zero_of_lintegral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_comp_prod_eq_zero_of_lintegral_eq_zero_oneBased`,
+and
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_comp_prod_eq_zero_of_lintegral_eq_zero_oneBased`.
+These specialize the V549 composed nonnegative `lintegral` product formulas to
+zero-factor conclusions: for an independent measurable source family `X_i`
+and measurable transforms `f_i : S_i -> ℝ≥0∞`, they package
+`∫⁻ ∏ f_i(X_i) dP = 0` whenever one selected composed factor
+`∫⁻ f_i(X_i) dP` vanishes, on finite/range/Ico and one-based index sets
+without `HasLaw` hypotheses or ordinary integrability assumptions.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V549 adds source-side composed-function Chapter
+2.1.13 nonnegative `ℝ≥0∞` product formulas:
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_comp_prod_eq_prod_lintegral`,
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_comp_prod_eq_prod_lintegral`,
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_comp_prod_eq_prod_lintegral`,
@@ -620,10 +653,6 @@ measurable composition: for an independent measurable source family `X_i` and
 measurable transforms `f_i : S_i -> ℝ≥0∞`, they package
 `∫⁻ ∏ f_i(X_i) dP = ∏ ∫⁻ f_i(X_i) dP` on finite/range/Ico and one-based index
 sets without `HasLaw` hypotheses or ordinary integrability assumptions.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V548 adds source-side iid/indexed-transform Chapter
 2.1.13 real nonnegative `ENNReal.ofReal` zero-factor formulas:
@@ -5991,6 +6020,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V549` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V550` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
