@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V517`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V518`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V517: stay on Durrett Theorem 2.4.9
+Current immediate target after V518: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -153,7 +153,11 @@ pairwise-identically-distributed, and canonical iid source shapes.  V517 adds
 the matching zero-based route-named `middlePartitionWithTails` outer-a.s.
 uniform-deviation range-sum and exact `n⁻¹ * sum` endpoints for the generic
 pairwise route plus source, joint-law, canonical iid, identical-distribution,
-and pairwise-identically-distributed source shapes.
+and pairwise-identically-distributed source shapes.  V518 adds one-based
+Chapter 2.1.10 late-increment/partial-sum-difference independence wrappers and
+one-based Chapter 2.1.13 partial-sum-difference mixed-term-zero wrappers for
+the Kolmogorov-maximal route, and rewires the one-based first-crossing mixed
+term to consume that Chapter 2.1.13 surface directly.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
@@ -188,6 +192,10 @@ or the zero-based Theorem 2.4.9 pointwise empirical-CDF/left empirical-CDF
 identDistrib and pairwise source wrappers,
 or the one-based Theorem 2.4.9 pointwise empirical-CDF/left empirical-CDF
 raw/range source wrappers,
+or the one-based Theorem 2.1.10 late-increment/partial-sum-difference
+independence wrappers and one-based Theorem 2.1.13
+partial-sum-difference mixed-term-zero wrappers for the Kolmogorov-maximal
+route,
 or the one-based Theorem 2.4.9 finite-cutpoint raw/range burn-in wrappers,
 or the one-based Theorem 2.4.9 bounded middle-partition raw/range squeeze wrappers,
 or the one-based Theorem 2.4.9 global middle-partition-with-tails raw/range
@@ -2135,6 +2143,8 @@ the V517 zero-based route-named Theorem 2.4.9
 `middlePartitionWithTails_(range_sum|inv_mul)_outerAlmostSureUniformDeviation`
 families for the generic pairwise route plus source, joint-law, canonical iid,
 identical-distribution, and pairwise-identically-distributed source shapes,
+the V518 one-based Chapter 2.1.10/2.1.13 Kolmogorov-support
+late-increment/early-block independence and mixed-term-zero wrappers,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and

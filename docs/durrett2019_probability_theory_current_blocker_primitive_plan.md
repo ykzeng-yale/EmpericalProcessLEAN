@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V517
+## Live In-Thread Goal Prompt V518
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -115,6 +115,10 @@ V517 adds the matching zero-based route-named `middlePartitionWithTails`
 outer-a.s. uniform-deviation range-sum and exact `n⁻¹ * sum` endpoints for
 the generic pairwise route plus source, joint-law, canonical iid,
 identical-distribution, and pairwise-identically-distributed source shapes.
+V518 adds the one-based Chapter 2.1.10/2.1.13 Kolmogorov-support wrappers for
+late increments and early-block statistics, plus one-based mixed-term-zero
+forms for future partial-sum increments; the one-based first-crossing mixed
+term now consumes this Chapter 2.1.13 surface directly.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -142,6 +146,10 @@ route-named `middlePartitionWithTails` outer-a.s. range-sum endpoints unless
 an exact source-shape consumer is missing.  After V517, do not rebuild the
 zero-based route-named `middlePartitionWithTails` outer-a.s. range-sum or
 exact `n⁻¹ * sum` endpoints unless an exact source-shape consumer is missing.
+After V518, do not rebuild the one-based Theorem 2.1.10 late-increment/
+partial-sum-difference independence wrappers or the one-based Theorem 2.1.13
+partial-sum-difference mixed-term-zero wrappers unless an exact later
+consumer needs a different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -229,9 +237,30 @@ solved Theorem 2.4.9 zero-based route-named `middlePartitionWithTails`
 outer-a.s. uniform-deviation range-sum and exact `n⁻¹ * sum` endpoints for
 the generic pairwise route plus source, joint-law, canonical iid,
 identical-distribution, and pairwise-identically-distributed source shapes,
+solved one-based Theorem 2.1.10 late-increment/partial-sum-difference
+independence wrappers and one-based Theorem 2.1.13
+partial-sum-difference mixed-term-zero wrappers for the Kolmogorov-maximal
+route,
 or old app-level stale prompts.
 
-Latest verified target V517 adds zero-based route-named Durrett Theorem 2.4.9
+Latest verified target V518 adds one-based Chapter 2.1.10/2.1.13
+Kolmogorov-support wrappers:
+`durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction_oneBased`,
+`durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction_oneBased`,
+`durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator_oneBased`,
+`durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_oneBased`,
+`durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integral_Ico_eq_zero_oneBased`,
+`durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_integral_Ico_eq_zero_oneBased`,
+and
+`durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_oneBased`.
+The one-based first-crossing mixed-term theorem now calls the Chapter 2.1.13
+one-based indicator-sum wrapper directly, exposing Durrett's `X_1, X_2, ...`
+Kolmogorov-maximal bridge as a reusable source handoff.  Next target: search
+for another genuinely missing 2.4.9 proof-step/final-display source wrapper,
+or add the next Chapter 2.1 product-law/product-expectation handoff that
+directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V517 adds zero-based route-named Durrett Theorem 2.4.9
 `middlePartitionWithTails` outer-a.s. uniform-deviation range-sum and exact
 `n⁻¹ * sum` endpoints:
 `durrett2019_theorem_2_4_9_middlePartitionWithTails_range_sum_outerAlmostSureUniformDeviation`,

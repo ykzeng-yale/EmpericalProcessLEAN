@@ -453,6 +453,84 @@ theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator
       (measurable_const.indicator hA)
 
 /--
+Durrett 2019, Theorem 2.1.10, one-based late-increment versus early-block
+statistic form.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {T : Type v} [MeasurableSpace T]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ}
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => ∑ k ∈ Finset.Ico m n, X (k + 1) ω)
+      (fun ω => ψ (fun i : Finset.range m => X (i + 1) ω)) := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  exact
+    durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => hX_meas (i + 1)) hψ
+
+/--
+Durrett 2019, Theorem 2.1.10, one-based partial-sum difference versus
+early-block statistic form.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {T : Type v} [MeasurableSpace T]
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => (∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω)
+      (fun ω => ψ (fun i : Finset.range m => X (i + 1) ω)) := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  exact
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => hX_meas (i + 1)) hmn hψ
+
+/--
+Durrett 2019, Theorem 2.1.10, one-based partial-sum difference independent
+of an early-block event indicator.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => (∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω)
+      (fun ω =>
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X (i + 1) ω)) := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  exact
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => hX_meas (i + 1)) hmn hA
+
+/--
 Durrett 2019, Theorem 2.1.10, concrete first-variable/tail-product form.
 
 This packages the source sentence following Theorem 2.1.10: if a finite block
@@ -4442,6 +4520,106 @@ theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_int
       (P := P) (X := X) hX_indep hX_meas hmn hX_int hzero hψ
 
 /--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation: a
+centered future partial-sum increment is orthogonal in expectation to any
+measurable statistic of the earlier block.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    {ψ : ((i : Finset.range m) -> ℝ) -> ℝ} (hψ : Measurable ψ)
+    (hmeanDiff :
+      ∫ ω, ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0) :
+    ∫ ω, ψ (fun i : Finset.range m => X (i + 1) ω) *
+      ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => hX_meas (i + 1)) hmn hψ hmeanDiff
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation: if
+each summand in the future interval has mean zero, then the future
+partial-sum increment has mean zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integral_Ico_eq_zero_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    {m n : ℕ} (hmn : m ≤ n)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X (i + 1)) P)
+    (hzero : ∀ i ∈ Finset.Ico m n, ∫ ω, X (i + 1) ω ∂P = 0) :
+    ∫ ω, ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+      ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integral_Ico_eq_zero
+    (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω) hmn hX_int hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation:
+source-shaped zero mixed term when the future interval variables have mean
+zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_integral_Ico_eq_zero_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X (i + 1)) P)
+    (hzero : ∀ i ∈ Finset.Ico m n, ∫ ω, X (i + 1) ω ∂P = 0)
+    {ψ : ((i : Finset.range m) -> ℝ) -> ℝ} (hψ : Measurable ψ) :
+    ∫ ω, ψ (fun i : Finset.range m => X (i + 1) ω) *
+      ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_integral_Ico_eq_zero
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => hX_meas (i + 1)) hmn hX_int hzero hψ
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation: the
+concrete mixed term `2 S_m 1_A (S_n - S_m)` vanishes for any measurable
+early-block event `A` when the future interval has mean zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X (i + 1)) P)
+    (hzero : ∀ i ∈ Finset.Ico m n, ∫ ω, X (i + 1) ω ∂P = 0)
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    ∫ ω, ((2 : ℝ) * (∑ i : Finset.range m, X (i + 1) ω) *
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X (i + 1) ω)) *
+      ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => hX_meas (i + 1)) hmn hX_int hzero hA
+
+/--
 Durrett 2019, Theorem 2.5.5 first-crossing block set.  On this set, the
 partial sum at time `m` has crossed the threshold `x`, while every earlier
 partial sum has stayed below `x` in absolute value.
@@ -5028,15 +5206,10 @@ theorem durrett2019_theorem_2_5_5_firstCrossing_mixed_integral_eq_zero_oneBased
           (fun i : Finset.range m => X (i + 1) ω)) *
       ((∑ k ∈ Finset.range n, X (k + 1) ω) -
         ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 := by
-  have hShift_indep :
-      _root_.ProbabilityTheory.iIndepFun (μ := P)
-        (fun i : ℕ => fun ω => X (i + 1) ω) := by
-    simpa [Nat.succ_eq_add_one] using
-      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
   exact
-    durrett2019_theorem_2_5_5_firstCrossing_mixed_integral_eq_zero
-      (P := P) (X := fun i => fun ω => X (i + 1) ω)
-      hShift_indep (fun i => hX_meas (i + 1)) hmn hX_int hzero x
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_oneBased
+      (P := P) (X := X) hX_indep hX_meas hmn hX_int hzero
+      (durrett2019_theorem_2_5_5_measurableSet_firstCrossingBlockSet m x)
 
 /--
 Durrett 2019, Theorem 2.5.5 support: pointwise square expansion on a
