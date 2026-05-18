@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V534
+## Live In-Thread Goal Prompt V535
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -188,6 +188,11 @@ expectation-exists-and-value wrappers: for an independent measurable source
 family `X_i` and measurable functions `f_i`, integrable composed factors
 `f_i (X_i)` have product integrability and product-of-expectations formulas
 without requiring `HasLaw` hypotheses.
+V535 adds source-side iid/common-transform composed Chapter 2.1.13
+expectation-exists-and-power-value wrappers: under `IdentDistrib`, one
+integrable transformed base marginal `f(X_0)` gives product integrability and
+power expectation formulas for finite/range/Ico and one-based products of
+`f(X_i)` without requiring `HasLaw` hypotheses.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -282,6 +287,10 @@ After V534, do not rebuild the source-side composed-function Theorem 2.1.13
 expectation-exists-and-value wrappers for finite/range/Ico or one-based
 range/Ico/`Icc` composed products unless an exact later consumer needs a
 different source shape.
+After V535, do not rebuild the source-side iid/common-transform composed
+Theorem 2.1.13 expectation-exists-and-power-value wrappers for finite/range/
+Ico or one-based range/Ico/`Icc` products unless an exact later consumer needs
+a different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -418,10 +427,32 @@ range/Ico/`Icc` composed products,
 solved source-side composed-function Theorem 2.1.13
 expectation-exists-and-value wrappers for finite/range/Ico and one-based
 range/Ico/`Icc` composed products,
+solved source-side iid/common-transform composed Theorem 2.1.13
+expectation-exists-and-power-value wrappers for finite/range/Ico and
+one-based range/Ico/`Icc` products,
 or old app-level stale prompts.
 
-Latest verified target V534 adds source-side composed-function Chapter 2.1.13
-expectation-exists-and-value wrappers:
+Latest verified target V535 adds source-side iid/common-transform composed
+Chapter 2.1.13 expectation-exists-and-power-value wrappers:
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_comp_prod_eq_pow_integral_of_integrable_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_comp_prod_eq_pow_integral_of_integrable_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_comp_prod_eq_pow_integral_of_integrable_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_comp_prod_eq_pow_integral_oneBased_of_integrable_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_comp_prod_eq_pow_integral_oneBased_of_integrable_identDistrib`,
+and
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_oneBased_Icc_comp_prod_eq_pow_integral_of_integrable_identDistrib`.
+These compose `IdentDistrib` through a common measurable transform `f`, then
+reuse the source-side iid V527 power-value formulas for the transformed
+family.  They are the no-`HasLaw` source counterpart of the iid law-side
+composed power formulas and support Durrett mixed-moment terms such as products
+of identical powers/functions of distinct iid variables.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V534 adds source-side composed-function Chapter
+2.1.13 expectation-exists-and-value wrappers:
 `durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_finset_comp_prod_eq_prod_integral_of_integrable`,
 `durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_comp_prod_eq_prod_integral_of_integrable`,
 `durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_comp_prod_eq_prod_integral_of_integrable`,
@@ -433,10 +464,6 @@ These apply the Chapter 2.1.10 composition theorem to `f_i ∘ X_i` and then
 reuse the source-side V527 product formula, matching Durrett mixed-moment
 steps where powers/functions of distinct independent variables factor without
 first passing through law-side integrals.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V533 adds source-side composed-function Chapter
 2.1.13 zero-factor expectation-exists wrappers:
