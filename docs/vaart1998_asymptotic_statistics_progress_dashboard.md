@@ -16,7 +16,7 @@ The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
 Latest verified packet: positive-sample common-core continuous-linear-map
-square-matrix determinant affine theta0-offset-vector-moment source for
+square-matrix determinant affine theta0-offset-vector-mean source for
 Theorem 5.41.
 The live endpoint now states the asymptotic-normality handoff for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
@@ -60,20 +60,26 @@ theta0-coordinate measurability and direct theta0-coordinate `MemLp 2`
 hypotheses, direct observation-offset coordinate measurability and direct
 observation-offset coordinate `MemLp 2` hypotheses, and the raw ker/range
 nonsingularity hypotheses and the raw function-space finrank equality and raw
-observation-offset coordinate integrability from the current route.
+observation-offset coordinate integrability plus the coordinatewise
+population offset-mean equation from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMomentSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMeanSource`.
 
-The newest theta0 offset-vector-moment packet adds
+The newest theta0 offset-vector-mean packet adds
+`vaart1998_commonObservationCore_theta0_offsetMean_of_vector_offsetMean`
+and
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMeanSource`.
+The next blocker is to instantiate the first source-shaped textbook Theorem
+5.41 example that can use the theta0-offset-vector-mean square-matrix
+determinant route, including the vector-valued offset moment and vector
+population offset-mean sources.
+
+The previous theta0 offset-vector-moment packet adds
 `vaart1998_observationOffset_coordinate_measurable_of_vector_measurable`,
 `vaart1998_observationOffset_coordinate_memLp_of_vector_memLp`,
 and
 `vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMomentSource`.
-The next blocker is to derive the population offset-mean equation from a
-concrete score/estimating-map model, or instantiate the first source-shaped
-textbook Theorem 5.41 example that can use the theta0-offset-vector-moment
-square-matrix determinant route.
 
 The previous theta0 offset-moment packet adds
 `vaart1998_observationEstimatingMapTheta0_coordinate_measurable_of_commonAffine_offset`,
@@ -1225,9 +1231,9 @@ Superseded blocker note: the derivative-transform measurability
 fixed-`theta0` route has been replaced by the positive-sample common-core
 continuous-linear-map square-matrix determinant affine theta0-offset
 source. The current live blocker is recorded at the top of this dashboard and
-in the current blocker plan: derive the population offset-mean equation from a
-concrete model, or instantiate a concrete textbook estimating equation with a
-vector-valued offset moment source.
+in the current blocker plan: instantiate a concrete textbook estimating
+equation with vector-valued offset moment and vector population offset-mean
+sources.
 Do not replay the centered derivative-coordinate residual algebra,
 smooth/raw/scaled Taylor transfer, score-at-theta0 vector scaling transfer,
 estimator-definition a.e. wrappers, raw-root a.e. wrappers, selected

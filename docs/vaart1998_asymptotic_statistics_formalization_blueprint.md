@@ -23,7 +23,7 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    possible task would create redundant work.
 
 Current frontier: Theorem 5.41 now has a compiled positive-sample common-core
-continuous-linear-map square-matrix determinant affine theta0-offset-vector-moment
+continuous-linear-map square-matrix determinant affine theta0-offset-vector-mean
 source. It states the limit theorem for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine display
@@ -46,8 +46,9 @@ identical distribution, and positive-sample offset-average convergence from
 observation-law coordinate integrability, derives target convergence and
 consistency from that average convergence and local inverse stability derived
 from ordinary continuity at the limiting target, derives the inverse value at
-the limiting target from the inverse laws, derives the population common-core
-equation from the population offset-mean equation, packages the finite
+the limiting target from the inverse laws, derives the coordinatewise
+population common-core equation from the vector population offset-mean
+equation, packages the finite
 equation as exact-root-set membership, prepends
 `theta0` at sample size zero, feeds the
 existing exact-root-set source endpoint, and shifts the distributional
@@ -62,21 +63,27 @@ nonsingularity facts, raw function-space finrank equality, raw common-core
 injectivity, raw observation-offset coordinate integrability, direct
 observation-offset coordinate measurability, direct observation-offset
 coordinate `MemLp 2`, direct theta0-coordinate measurability, direct
-theta0-coordinate `MemLp 2`, the direct coordinate mean-zero field, or a raw
-right-inverse value at the limiting target.
+theta0-coordinate `MemLp 2`, the coordinatewise population offset-mean
+equation, the direct coordinate mean-zero field, or a raw right-inverse value
+at the limiting target.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMomentSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMeanSource`.
 
 The newest wrapper adds
+`vaart1998_commonObservationCore_theta0_offsetMean_of_vector_offsetMean`
+and
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMeanSource`.
+The next proof layer should instantiate the first source-shaped textbook
+Theorem 5.41 example that can use this theta0-offset-vector-mean square-matrix
+determinant route, including its vector-valued offset moment and vector
+population offset-mean sources.
+
+The previous wrapper adds
 `vaart1998_observationOffset_coordinate_measurable_of_vector_measurable`,
 `vaart1998_observationOffset_coordinate_memLp_of_vector_memLp`,
 and
 `vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMomentSource`.
-The next proof layer should derive the population offset-mean equation from a
-concrete score/estimating-map model, or instantiate the first source-shaped
-textbook Theorem 5.41 example that can use this theta0-offset-vector-moment
-square-matrix determinant route.
 
 The previous wrapper adds
 `vaart1998_observationEstimatingMapTheta0_coordinate_measurable_of_commonAffine_offset`,
