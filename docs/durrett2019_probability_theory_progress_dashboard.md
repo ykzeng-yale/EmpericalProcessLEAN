@@ -36,7 +36,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V507` in
+Route from `Live In-Thread Goal Prompt V508` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -104,7 +104,10 @@ product-coordinate, one-based, and pairwise identically-distributed source
 hypotheses.  V507 adds the matching Theorem 2.1.16 left-density and
 two-density source wrappers, in both `ℝ≥0∞` and real-valued
 `ENNReal.ofReal` density forms, for the same zero-based, one-based,
-joint-law, canonical, identical-distribution, and pairwise source shapes.  The
+joint-law, canonical, identical-distribution, and pairwise source shapes.
+V508 adds the matching Theorem 2.1.16 density-existence source wrappers from
+absolute-continuity of the common law, plus real-density `ENNReal.ofReal`
+specializations, for the same source shapes.  The
 historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
 V443 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.
@@ -2042,6 +2045,9 @@ V507 also exposes the source-shaped `left_lintegral_density`,
 `two_real_lintegral_density` families for iid, identical-distribution, joint
 infinite-product, canonical product-coordinate, one-based, and
 pairwise-identically-distributed source hypotheses.
+V508 adds the matching source-shaped `sum_law_absolutelyContinuous` and
+`sum_law_absolutelyContinuous_left_real_density` families for those source
+hypotheses.
 Theorem 2.4.9 now has
 the arbitrary-law cutpoint-chain route and both the book-style and exact
 outer-a.s. empirical-CDF endpoints:
