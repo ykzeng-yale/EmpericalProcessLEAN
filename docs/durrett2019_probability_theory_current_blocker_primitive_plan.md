@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V531
+## Live In-Thread Goal Prompt V532
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -173,6 +173,11 @@ V531 adds source-side iid Chapter 2.1.13 zero-factor expectation-exists
 wrappers: under `IdentDistrib`, one integrable zero-mean base marginal gives
 product integrability and zero expectation for finite/range/Ico and one-based
 range/Ico/`Finset.Icc 1 n` products that contain a factor.
+V532 adds law-side iid Chapter 2.1.13 zero-factor expectation-exists wrappers:
+for iid `HasLaw` families with common law `μ`, one integrable law-side
+zero-integral function gives source-space product integrability and zero
+expectation for finite/range/Ico and one-based range/Ico/`Finset.Icc 1 n`
+composed products that contain a factor.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -255,6 +260,10 @@ After V531, do not rebuild the source-side iid Theorem 2.1.13 zero-factor
 expectation-exists wrappers under `IdentDistrib` for finite/range/Ico or
 one-based range/Ico/`Icc` products unless an exact later consumer needs a
 different source shape.
+After V532, do not rebuild the law-side iid Theorem 2.1.13 zero-factor
+expectation-exists wrappers for finite/range/Ico or one-based range/Ico/`Icc`
+common-law composed products unless an exact later consumer needs a different
+source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -382,9 +391,29 @@ finite/range/Ico and one-based range/Ico/`Icc` products,
 solved source-side iid Theorem 2.1.13 zero-factor expectation-exists wrappers
 under `IdentDistrib` for finite/range/Ico and one-based range/Ico/`Icc`
 products,
+solved law-side iid Theorem 2.1.13 zero-factor expectation-exists wrappers
+for finite/range/Ico and one-based range/Ico/`Icc` common-law composed
+products,
 or old app-level stale prompts.
 
-Latest verified target V531 adds source-side iid Chapter 2.1.13 zero-factor
+Latest verified target V532 adds law-side iid Chapter 2.1.13 zero-factor
+expectation-exists wrappers for common-law `HasLaw` products:
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_law_prod_eq_zero_of_integrable_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_law_prod_eq_zero_of_integrable_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_law_prod_eq_zero_of_integrable_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_oneBased_Icc_law_prod_eq_zero_of_integrable_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_law_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero`,
+and
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_law_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero`.
+These are the `HasLaw`/common-law analogues of V531, avoiding repeated
+unpacking when product terms vanish because one law-side factor has zero
+integral.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V531 adds source-side iid Chapter 2.1.13 zero-factor
 expectation-exists wrappers under `IdentDistrib`:
 `durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_prod_eq_zero_of_integrable_identDistrib_and_integral_eq_zero`,
 `durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_prod_eq_zero_of_integrable_identDistrib_and_integral_eq_zero`,
@@ -396,10 +425,6 @@ and
 These turn one integrable zero-mean base marginal plus identical distribution
 into the exact proof-text package Durrett uses when product terms vanish
 because one factor has expectation zero.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V530 adds law-side Chapter 2.1.13 zero-factor
 expectation-exists wrappers:
