@@ -25075,6 +25075,136 @@ theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_su
       X c hSource.1 hSource.2
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step from identically distributed
+coordinates plus `iIndepFun`: `F_n(c) -> F(c)` almost surely.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          empiricalDistributionFunction (samplePath X ω n) c -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae_of_iIndepFun
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in range-sum notation from
+identically distributed coordinates plus `iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ i ∈ Finset.range n, realHalfLineIndicator c (X i ω)) /
+            (n : ℝ) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae_of_iIndepFun
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in exact textbook notation from
+identically distributed coordinates plus `iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realHalfLineIndicator c (X i ω) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae_of_iIndepFun
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from pairwise-identically distributed
+coordinates: `F_n(c) -> F(c)` almost surely.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          empiricalDistributionFunction (samplePath X ω n) c -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in range-sum notation from the
+pairwise-identically distributed source shape.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ i ∈ Finset.range n, realHalfLineIndicator c (X i ω)) /
+            (n : ℝ) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in exact textbook notation from the
+pairwise-identically distributed source shape.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realHalfLineIndicator c (X i ω) -
+            ProbabilityTheory.cdf P c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalDistributionFunction_inv_mul_range_sum_tendsto_cdf_ae
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
 Durrett 2019, Theorem 2.4.9 proof step in one-based exact textbook notation
 under `iIndepFun`: `n^{-1} * sum_{m=1}^n 1{X_m <= c} -> F(c)` almost surely.
 -/
@@ -25551,6 +25681,136 @@ theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_rang
   exact
     durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae_of_iIndepFun
       X c hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from identically distributed
+coordinates plus `iIndepFun`: `F_n(c-) -> F(c-)` almost surely.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          empiricalLeftDistributionFunction (samplePath X ω n) c -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae_of_iIndepFun
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in range-sum notation from
+identically distributed coordinates plus `iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X i ω)) /
+            (n : ℝ) -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae_of_iIndepFun
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in exact textbook notation from
+identically distributed coordinates plus `iIndepFun`.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X i ω) -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae_of_iIndepFun
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from pairwise-identically distributed
+coordinates: `F_n(c-) -> F(c-)` almost surely.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          empiricalLeftDistributionFunction (samplePath X ω n) c -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_tendsto_leftLim_ae
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in range-sum notation from the
+pairwise-identically distributed source shape.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X i ω)) /
+            (n : ℝ) -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_range_sum_tendsto_leftLim_ae
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in exact textbook notation from the
+pairwise-identically distributed source shape.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ) (c : ℝ)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      Tendsto
+        (fun n : ℕ =>
+          (n : ℝ)⁻¹ *
+            ∑ i ∈ Finset.range n, realOpenHalfLineIndicator c (X i ω) -
+            Function.leftLim (ProbabilityTheory.cdf P) c)
+        atTop (𝓝 0) :=
+  durrett2019_theorem_2_4_9_empiricalLeftDistributionFunction_inv_mul_range_sum_tendsto_leftLim_ae
+    X c (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident) hindep
 
 /--
 Durrett 2019, Theorem 2.4.9 proof step in one-based exact textbook notation

@@ -36,7 +36,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V509` in
+Route from `Live In-Thread Goal Prompt V510` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -109,7 +109,11 @@ V508 adds the matching Theorem 2.1.16 density-existence source wrappers from
 absolute-continuity of the common law, plus real-density `ENNReal.ofReal`
 specializations, for the same source shapes.  V509 adds the matching
 Theorem 2.1.16 supplied-density source wrappers from a supplied
-convolution-density identity, for the same source shapes.  The
+convolution-density identity, for the same source shapes.  V510 adds
+zero-based Theorem 2.4.9 pointwise empirical-CDF and left empirical-CDF
+convergence source wrappers for identical-distribution plus `iIndepFun` and
+pairwise-identically-distributed source hypotheses, in raw empirical-function,
+range-sum, and exact `n⁻¹ * sum` display forms.  The
 historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
 V443 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.
@@ -2052,6 +2056,11 @@ V508 adds the matching source-shaped `sum_law_absolutelyContinuous` and
 hypotheses.
 V509 adds the matching source-shaped `sum_hasLaw_of_supplied_density` family
 for those source hypotheses.
+V510 adds the zero-based source-shaped Theorem 2.4.9
+`empiricalDistributionFunction_*_cdf_ae` and
+`empiricalLeftDistributionFunction_*_leftLim_ae` pointwise convergence
+families for identical-distribution plus `iIndepFun` and
+pairwise-identically-distributed hypotheses.
 Theorem 2.4.9 now has
 the arbitrary-law cutpoint-chain route and both the book-style and exact
 outer-a.s. empirical-CDF endpoints:
@@ -3230,17 +3239,16 @@ Every Lean packet should pass:
 ## Current Next Goal Cycle Contract
 
 Use the current blocker plan's live prompt as the active `/goal` replacement
-whenever the app-level wording lags.  Active frontier: Durrett Chapter 2.5,
-Theorem 2.5.13 Feller infinite-mean dichotomy support in
+whenever the app-level wording lags.  Active frontier: Durrett Theorem 2.4.9
+Glivenko-Cantelli plus Chapter 2.1 product-law/product-expectation support in
 `StatInference/ProbabilityTheory/Basic.lean`.
 
-Next proof packet: polish the exact source-facing statement of Durrett Theorem
-2.5.13, especially the infinite-mean display and tail-series indexing, then
-move to the next Durrett Chapter 2 theorem lane if no source wrapper remains.
-Do not route back to scalar-kernel estimates, annulus mass summability,
-concrete majorant integrability, display-wrapper plumbing, branch-combination
-plumbing, reciprocal-growth conversion, monotone-convergence shell,
-linear-tail transfer, layer-cake/counting plumbing, or easy growth cleanup.
+Next proof packet: search for a genuinely missing 2.4.9 proof-step or
+final-display source wrapper, or add the next Chapter 2.1
+product-law/product-expectation handoff that directly supports 2.4.9 or the
+adjacent Kolmogorov-maximal route.  Do not route back to solved 2.5.13
+plumbing or the closed V500-V510 2.4.9/2.1 source-wrapper surfaces unless an
+exact source-shape consumer is missing.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement
 one compiled Lean packet, verify focused Lean plus targeted build/scans and root
