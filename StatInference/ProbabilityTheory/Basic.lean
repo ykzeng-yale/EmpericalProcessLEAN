@@ -6198,6 +6198,295 @@ theorem durrett2019_theorem_2_1_13_iid_integral_oneBased_Icc_prod_eq_pow_integra
       congr 1
 
 /--
+Durrett 2019, Theorem 2.1.13, finite-subfamily integrable product expectation
+formula.
+
+This is the source-side "the expectation exists and has the value given"
+package for a finite independent subfamily.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_finset_prod_eq_prod_integral_of_integrable
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ι -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    {s : Finset ι}
+    (hX_int : ∀ i ∈ s, Integrable (X i) P) :
+    Integrable (fun ω => ∏ i ∈ s, X i ω) P ∧
+      ∫ ω, ∏ i ∈ s, X i ω ∂P = ∏ i ∈ s, ∫ ω, X i ω ∂P := by
+  constructor
+  · exact
+      durrett2019_theorem_2_1_13_iIndepFun_integrable_finset_prod_of_integrable
+        (P := P) (X := X) hX mX hX_int
+  · exact
+      durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_prod_integral
+        (P := P) (X := X) hX (fun i => (mX i).aestronglyMeasurable) s
+
+/--
+Durrett 2019, Theorem 2.1.13, initial-range integrable product expectation
+formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_prod_eq_prod_integral_of_integrable
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (n : ℕ)
+    (hX_int : ∀ i ∈ Finset.range n, Integrable (X i) P) :
+    Integrable (fun ω => ∏ i ∈ Finset.range n, X i ω) P ∧
+      ∫ ω, ∏ i ∈ Finset.range n, X i ω ∂P =
+        ∏ i ∈ Finset.range n, ∫ ω, X i ω ∂P := by
+  constructor
+  · exact
+      durrett2019_theorem_2_1_13_iIndepFun_integrable_range_prod_of_integrable
+        (P := P) (X := X) hX mX n hX_int
+  · exact
+      durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_prod_integral
+        (P := P) (X := X) hX (fun i => (mX i).aestronglyMeasurable) n
+
+/--
+Durrett 2019, Theorem 2.1.13, interval-block integrable product expectation
+formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_prod_eq_prod_integral_of_integrable
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (m n : ℕ)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X i) P) :
+    Integrable (fun ω => ∏ i ∈ Finset.Ico m n, X i ω) P ∧
+      ∫ ω, ∏ i ∈ Finset.Ico m n, X i ω ∂P =
+        ∏ i ∈ Finset.Ico m n, ∫ ω, X i ω ∂P := by
+  constructor
+  · exact
+      durrett2019_theorem_2_1_13_iIndepFun_integrable_Ico_prod_of_integrable
+        (P := P) (X := X) hX mX m n hX_int
+  · exact
+      durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_prod_integral
+        (P := P) (X := X) hX (fun i => (mX i).aestronglyMeasurable) m n
+
+/--
+Durrett 2019, Theorem 2.1.13, integrable product expectation formula on the
+literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_oneBased_Icc_prod_eq_prod_integral_of_integrable
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (n : ℕ)
+    (hX_int : ∀ i ∈ Finset.Icc 1 n, Integrable (X i) P) :
+    Integrable (fun ω => ∏ i ∈ Finset.Icc 1 n, X i ω) P ∧
+      ∫ ω, ∏ i ∈ Finset.Icc 1 n, X i ω ∂P =
+        ∏ i ∈ Finset.Icc 1 n, ∫ ω, X i ω ∂P := by
+  constructor
+  · exact
+      durrett2019_theorem_2_1_13_iIndepFun_integrable_oneBased_Icc_prod_of_integrable
+        (P := P) (X := X) hX mX n hX_int
+  · exact
+      durrett2019_theorem_2_1_13_iIndepFun_integral_oneBased_Icc_prod_eq_prod_integral
+        (P := P) (X := X) hX (fun i => (mX i).aestronglyMeasurable) n
+
+/--
+Durrett 2019, Theorem 2.1.13, one-based initial-range integrable product
+expectation formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_prod_eq_prod_integral_oneBased_of_integrable
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (n : ℕ)
+    (hX_int : ∀ i ∈ Finset.range n, Integrable (X (i + 1)) P) :
+    Integrable (fun ω => ∏ i ∈ Finset.range n, X (i + 1) ω) P ∧
+      ∫ ω, ∏ i ∈ Finset.range n, X (i + 1) ω ∂P =
+        ∏ i ∈ Finset.range n, ∫ ω, X (i + 1) ω ∂P := by
+  constructor
+  · exact
+      durrett2019_theorem_2_1_13_iIndepFun_integrable_range_prod_oneBased_of_integrable
+        (P := P) (X := X) hX mX n hX_int
+  · exact
+      durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_prod_integral_oneBased
+        (P := P) (X := X) hX (fun i => (mX i).aestronglyMeasurable) n
+
+/--
+Durrett 2019, Theorem 2.1.13, one-based interval-block integrable product
+expectation formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_prod_eq_prod_integral_oneBased_of_integrable
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (m n : ℕ)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X (i + 1)) P) :
+    Integrable (fun ω => ∏ i ∈ Finset.Ico m n, X (i + 1) ω) P ∧
+      ∫ ω, ∏ i ∈ Finset.Ico m n, X (i + 1) ω ∂P =
+        ∏ i ∈ Finset.Ico m n, ∫ ω, X (i + 1) ω ∂P := by
+  constructor
+  · exact
+      durrett2019_theorem_2_1_13_iIndepFun_integrable_Ico_prod_oneBased_of_integrable
+        (P := P) (X := X) hX mX m n hX_int
+  · exact
+      durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_prod_integral_oneBased
+        (P := P) (X := X) hX (fun i => (mX i).aestronglyMeasurable) m n
+
+/--
+Durrett 2019, Theorem 2.1.13, iid finite-subfamily expectation-exists and
+power-value formula from one integrable marginal.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_prod_eq_pow_integral_of_integrable_identDistrib
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ι -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    {s : Finset ι} {i0 : ι}
+    (hident : ∀ i ∈ s,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X i0) P P)
+    (hbase_int : Integrable (X i0) P) :
+    Integrable (fun ω => ∏ i ∈ s, X i ω) P ∧
+      ∫ ω, ∏ i ∈ s, X i ω ∂P = (∫ ω, X i0 ω ∂P) ^ s.card := by
+  constructor
+  · exact
+      durrett2019_theorem_2_1_13_iid_integrable_finset_prod_of_integrable_identDistrib
+        (P := P) (X := X) hX mX hident hbase_int
+  · exact
+      durrett2019_theorem_2_1_13_iid_integral_finset_prod_eq_pow_integral_of_identDistrib
+        (P := P) (X := X) hX (fun i => (mX i).aestronglyMeasurable) hident
+
+/--
+Durrett 2019, Theorem 2.1.13, iid initial-range expectation-exists and
+power-value formula from one integrable marginal.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_prod_eq_pow_integral_of_integrable_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.range n, X i ω) P ∧
+      ∫ ω, ∏ i ∈ Finset.range n, X i ω ∂P =
+        (∫ ω, X 0 ω ∂P) ^ n := by
+  constructor
+  · exact
+      durrett2019_theorem_2_1_13_iid_integrable_range_prod_of_integrable_identDistrib
+        (P := P) (X := X) hX mX hident hbase_int n
+  · exact
+      durrett2019_theorem_2_1_13_iid_integral_range_prod_eq_pow_integral_of_identDistrib
+        (P := P) (X := X) hX (fun i => (mX i).aestronglyMeasurable) hident n
+
+/--
+Durrett 2019, Theorem 2.1.13, iid interval-block expectation-exists and
+power-value formula from one integrable marginal.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_prod_eq_pow_integral_of_integrable_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (m n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.Ico m n, X i ω) P ∧
+      ∫ ω, ∏ i ∈ Finset.Ico m n, X i ω ∂P =
+        (∫ ω, X 0 ω ∂P) ^ (n - m) := by
+  constructor
+  · exact
+      durrett2019_theorem_2_1_13_iid_integrable_Ico_prod_of_integrable_identDistrib
+        (P := P) (X := X) hX mX hident hbase_int m n
+  · exact
+      durrett2019_theorem_2_1_13_iid_integral_Ico_prod_eq_pow_integral_of_identDistrib
+        (P := P) (X := X) hX (fun i => (mX i).aestronglyMeasurable) hident m n
+
+/--
+Durrett 2019, Theorem 2.1.13, iid one-based initial-range expectation-exists
+and power-value formula from one integrable marginal.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_prod_eq_pow_integral_oneBased_of_integrable_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.range n, X (i + 1) ω) P ∧
+      ∫ ω, ∏ i ∈ Finset.range n, X (i + 1) ω ∂P =
+        (∫ ω, X 0 ω ∂P) ^ n := by
+  constructor
+  · exact
+      durrett2019_theorem_2_1_13_iid_integrable_range_prod_oneBased_of_integrable_identDistrib
+        (P := P) (X := X) hX mX hident hbase_int n
+  · exact
+      durrett2019_theorem_2_1_13_iid_integral_range_prod_eq_pow_integral_oneBased_of_identDistrib
+        (P := P) (X := X) hX (fun i => (mX i).aestronglyMeasurable) hident n
+
+/--
+Durrett 2019, Theorem 2.1.13, iid one-based interval-block expectation-exists
+and power-value formula from one integrable marginal.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_prod_eq_pow_integral_oneBased_of_integrable_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (m n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.Ico m n, X (i + 1) ω) P ∧
+      ∫ ω, ∏ i ∈ Finset.Ico m n, X (i + 1) ω ∂P =
+        (∫ ω, X 0 ω ∂P) ^ (n - m) := by
+  constructor
+  · exact
+      durrett2019_theorem_2_1_13_iid_integrable_Ico_prod_oneBased_of_integrable_identDistrib
+        (P := P) (X := X) hX mX hident hbase_int m n
+  · exact
+      durrett2019_theorem_2_1_13_iid_integral_Ico_prod_eq_pow_integral_oneBased_of_identDistrib
+        (P := P) (X := X) hX (fun i => (mX i).aestronglyMeasurable) hident m n
+
+/--
+Durrett 2019, Theorem 2.1.13, iid literal one-based expectation-exists and
+power-value formula from one integrable marginal.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_oneBased_Icc_prod_eq_pow_integral_of_integrable_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.Icc 1 n, X i ω) P ∧
+      ∫ ω, ∏ i ∈ Finset.Icc 1 n, X i ω ∂P =
+        (∫ ω, X 0 ω ∂P) ^ n := by
+  constructor
+  · exact
+      durrett2019_theorem_2_1_13_iid_integrable_oneBased_Icc_prod_of_integrable_identDistrib
+        (P := P) (X := X) hX mX hident hbase_int n
+  · exact
+      durrett2019_theorem_2_1_13_iid_integral_oneBased_Icc_prod_eq_pow_integral_of_identDistrib
+        (P := P) (X := X) hX (fun i => (mX i).aestronglyMeasurable) hident n
+
+/--
 Durrett 2019, Theorem 2.1.13, iid source-side nonnegative finite-subfamily
 power form.
 -/
