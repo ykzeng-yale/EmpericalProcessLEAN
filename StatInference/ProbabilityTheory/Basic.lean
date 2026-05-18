@@ -8952,6 +8952,151 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_ofReal_comp_prod_eq_z
   exact Finset.prod_eq_zero hi hzero
 
 /--
+Durrett 2019, Theorem 2.1.13, source-side composed absolute-value finite
+product formula.
+
+Measurable functions of an independent source family remain independent, so
+the norm-product factorization applies to the composed factors `f_i (X_i)`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_comp_prod_eq_prod_lintegral_norm
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ι -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (s : Finset ι) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ s, f i (X i ω)‖ ∂P =
+      ∏ i ∈ s, ∫⁻ ω, ENNReal.ofReal ‖f i (X i ω)‖ ∂P := by
+  have hcomp_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ι => fun ω : Ω => f i (X i ω)) := by
+    simpa [Function.comp_def] using
+      (durrett2019_theorem_2_1_10_iIndepFun_comp
+        (P := P) (X := X) (f := f) hX hf_meas)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_prod_eq_prod_lintegral_norm
+      (P := P) (X := fun i : ι => fun ω : Ω => f i (X i ω))
+      hcomp_indep (fun i => (hf_meas i).comp (hX_meas i)) s
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed absolute-value
+initial-range product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_comp_prod_eq_prod_lintegral_norm
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.range n, f i (X i ω)‖ ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ ω, ENNReal.ofReal ‖f i (X i ω)‖ ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_comp_prod_eq_prod_lintegral_norm
+    (P := P) (X := X) (f := f) hX hX_meas hf_meas (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed absolute-value
+interval-block product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_comp_prod_eq_prod_lintegral_norm
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.Ico m n, f i (X i ω)‖ ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ ω, ENNReal.ofReal ‖f i (X i ω)‖ ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_comp_prod_eq_prod_lintegral_norm
+    (P := P) (X := X) (f := f) hX hX_meas hf_meas (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed absolute-value product
+formula on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_norm_comp_prod_eq_prod_lintegral_norm
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.Icc 1 n, f i (X i ω)‖ ∂P =
+      ∏ i ∈ Finset.Icc 1 n, ∫⁻ ω, ENNReal.ofReal ‖f i (X i ω)‖ ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_comp_prod_eq_prod_lintegral_norm
+    (P := P) (X := X) (f := f) hX hX_meas hf_meas (Finset.Icc 1 n)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed absolute-value one-based
+initial-range product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_comp_prod_eq_prod_lintegral_norm_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal
+        ‖∏ i ∈ Finset.range n, f (i + 1) (X (i + 1) ω)‖ ∂P =
+      ∏ i ∈ Finset.range n,
+        ∫⁻ ω, ENNReal.ofReal ‖f (i + 1) (X (i + 1) ω)‖ ∂P := by
+  have hcomp_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω : Ω => f i (X i ω)) := by
+    simpa [Function.comp_def] using
+      (durrett2019_theorem_2_1_10_iIndepFun_comp
+        (P := P) (X := X) (f := f) hX hf_meas)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_prod_eq_prod_lintegral_norm_oneBased
+      (P := P) (X := fun i : ℕ => fun ω : Ω => f i (X i ω))
+      hcomp_indep (fun i => (hf_meas i).comp (hX_meas i)) n
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed absolute-value one-based
+interval-block product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_comp_prod_eq_prod_lintegral_norm_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal
+        ‖∏ i ∈ Finset.Ico m n, f (i + 1) (X (i + 1) ω)‖ ∂P =
+      ∏ i ∈ Finset.Ico m n,
+        ∫⁻ ω, ENNReal.ofReal ‖f (i + 1) (X (i + 1) ω)‖ ∂P := by
+  have hcomp_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω : Ω => f i (X i ω)) := by
+    simpa [Function.comp_def] using
+      (durrett2019_theorem_2_1_10_iIndepFun_comp
+        (P := P) (X := X) (f := f) hX hf_meas)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_prod_eq_prod_lintegral_norm_oneBased
+      (P := P) (X := fun i : ℕ => fun ω : Ω => f i (X i ω))
+      hcomp_indep (fun i => (hf_meas i).comp (hX_meas i)) m n
+
+/--
 Durrett 2019, Theorem 2.1.13, source-side iid composed finite-subfamily
 expectation-exists-and-power-value formula.
 
