@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V541
+## Live In-Thread Goal Prompt V542
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -225,6 +225,11 @@ V541 adds law-side iid/indexed-transform Chapter 2.1.13 nonnegative
 measurable transforms `f_i(X_i) : ℝ≥0∞` have source-space product
 `lintegral` formulas as products of law-side `lintegral`s over `∫⁻ f_i dμ`,
 for finite/range/Ico and one-based products.
+V542 adds law-side iid/indexed-transform Chapter 2.1.13 real nonnegative
+`ENNReal.ofReal` wrappers: under common-law `HasLaw` hypotheses,
+index-dependent nonnegative measurable real transforms `f_i(X_i)` have
+source-space `lintegral` formulas as products of law-side `lintegral`s over
+`∫⁻ ENNReal.ofReal (f_i x) dμ`, for finite/range/Ico and one-based products.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -347,6 +352,10 @@ After V541, do not rebuild the law-side iid/indexed-transform Theorem 2.1.13
 nonnegative `lintegral` product formulas for finite/range/Ico or one-based
 range/Ico/`Icc` products unless an exact later consumer needs a different
 source shape.
+After V542, do not rebuild the law-side iid/indexed-transform Theorem 2.1.13
+real nonnegative `ENNReal.ofReal` product formulas for finite/range/Ico or
+one-based range/Ico/`Icc` products unless an exact later consumer needs a
+different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -503,10 +512,36 @@ expectation-exists wrappers for finite/range/Ico and one-based range/Ico/
 `Icc` products,
 solved law-side iid/indexed-transform Theorem 2.1.13 nonnegative `lintegral`
 product formulas for finite/range/Ico and one-based range/Ico/`Icc` products,
+solved law-side iid/indexed-transform Theorem 2.1.13 real nonnegative
+`ENNReal.ofReal` product formulas for finite/range/Ico and one-based
+range/Ico/`Icc` products,
 or old app-level stale prompts.
 
-Latest verified target V541 adds law-side iid/indexed-transform Chapter 2.1.13
-nonnegative `lintegral` product formulas:
+Latest verified target V542 adds law-side iid/indexed-transform Chapter 2.1.13
+real nonnegative `ENNReal.ofReal` product formulas:
+`durrett2019_theorem_2_1_13_iid_lintegral_finset_law_indexed_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_law_indexed_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_indexed_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_law_indexed_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_law_indexed_ofReal_prod_eq_prod_lintegral_ofReal_oneBased`,
+and
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_indexed_ofReal_prod_eq_prod_lintegral_ofReal_oneBased`.
+These specialize the generic law-side real nonnegative product formula to a
+common law `μ` with index-dependent nonnegative measurable transforms
+`f_i : S -> ℝ`, packaging
+`∫⁻ ENNReal.ofReal (∏ f_i(X_i)) dP =
+  ∏ ∫⁻ ENNReal.ofReal (f_i x) dμ` without ordinary integrability assumptions.
+They are the `HasLaw` common-law real nonnegative companion to V541 and support
+Durrett mixed moment and indicator-product handoffs in real-valued notation.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route,
+especially the matching real nonnegative `ENNReal.ofReal` indexed law-side
+zero-factor formulas if search confirms they are still absent.
+
+Previous verified target V541 adds law-side iid/indexed-transform Chapter
+2.1.13 nonnegative `lintegral` product formulas:
 `durrett2019_theorem_2_1_13_iid_lintegral_finset_law_indexed_prod_eq_prod_lintegral`,
 `durrett2019_theorem_2_1_13_iid_lintegral_range_law_indexed_prod_eq_prod_lintegral`,
 `durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_indexed_prod_eq_prod_lintegral`,
@@ -516,16 +551,7 @@ and
 `durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_indexed_prod_eq_prod_lintegral_oneBased`.
 These specialize the generic law-side nonnegative product formula to a common
 law `μ` with index-dependent transforms `f_i : S -> ℝ≥0∞`, packaging the
-mixed nonnegative identity `∫⁻ ∏ f_i(X_i) dP = ∏ ∫⁻ f_i dμ`.  They are the
-`HasLaw` common-law nonnegative companion to V539/V540 and support Durrett
-mixed moment and indicator-product handoffs without ordinary integrability
-assumptions.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route,
-especially the matching real nonnegative `ENNReal.ofReal` indexed law-side
-formulas if search confirms they are still absent.
+mixed nonnegative identity `∫⁻ ∏ f_i(X_i) dP = ∏ ∫⁻ f_i dμ`.
 
 Previous verified target V540 adds law-side iid/indexed-transform Chapter
 2.1.13 zero-factor expectation-exists wrappers:
