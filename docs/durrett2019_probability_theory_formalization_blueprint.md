@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V544`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V545`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V544: stay on Durrett Theorem 2.4.9
+Current immediate target after V545: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -275,6 +275,12 @@ zero-factor formulas for finite/range/Ico and one-based range/Ico/
 under common-law `HasLaw` hypotheses to source independence, measurability,
 law-side measurability for each indexed transform, and one zero law-side
 factor `lintegral`.
+V545 adds source-side iid/indexed-transform Chapter 2.1.13 nonnegative
+`ℝ≥0∞` product formulas for finite/range/Ico and one-based range/Ico/
+`Finset.Icc 1 n` products, reducing mixed nonnegative transformed-product
+factorizations under `IdentDistrib` to source independence, measurability for
+each indexed transform, and products of base-coordinate `lintegral`s, without
+`HasLaw` or ordinary integrability assumptions.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
@@ -2350,6 +2356,9 @@ the V543 law-side iid/indexed-transform Chapter 2.1.13 real nonnegative
 range/Ico/`Icc` products,
 the V544 law-side iid/indexed-transform Chapter 2.1.13 nonnegative `ℝ≥0∞`
 zero-factor formulas for finite/range/Ico and one-based range/Ico/`Icc`
+products,
+the V545 source-side iid/indexed-transform Chapter 2.1.13 nonnegative
+`ℝ≥0∞` product formulas for finite/range/Ico and one-based range/Ico/`Icc`
 products,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
