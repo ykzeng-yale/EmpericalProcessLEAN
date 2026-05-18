@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V508`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V509`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V508: stay on Durrett Theorem 2.4.9
+Current immediate target after V509: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -122,13 +122,14 @@ two-density source wrappers, in both `ℝ≥0∞` and real-valued
 joint-law, canonical, identical-distribution, and pairwise source shapes.
 V508 adds the matching Theorem 2.1.16 density-existence source wrappers from
 absolute-continuity of the common law, plus real-density `ENNReal.ofReal`
-specializations, for the same source shapes.
+specializations, for the same source shapes.  V509 adds the matching
+Theorem 2.1.16 supplied-density source wrappers from a supplied
+convolution-density identity, for the same source shapes.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
 or add the next Chapter 2.1 product-law/product-expectation/sum-law wrapper
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.  Only
-return to Theorem 2.1.16 for a proved-missing supplied-density source handoff.
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 Do not return to scalar-kernel estimates, annulus mass summability, concrete
 majorant integrability, display-wrapper plumbing, branch-combination plumbing,
 reciprocal-growth conversion, monotone-convergence shell, linear-tail transfer,
@@ -153,6 +154,7 @@ or the Theorem 2.1.15 CDF-convolution source wrappers,
 or the Theorem 2.1.16 additive-convolution law source wrappers,
 or the Theorem 2.1.16 left-density/two-density source wrappers,
 or the Theorem 2.1.16 density-existence source wrappers,
+or the Theorem 2.1.16 supplied-density source wrappers,
 unless a focused source check exposes a missing handoff.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.4.9
@@ -2051,6 +2053,8 @@ pairwise-identically-distributed source hypotheses,
 the V508 source-shaped `sum_law_absolutelyContinuous` and
 `sum_law_absolutelyContinuous_left_real_density` families for the same source
 hypotheses,
+the V509 source-shaped `sum_hasLaw_of_supplied_density` family for the same
+source hypotheses,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and

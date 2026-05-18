@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V508
+## Live In-Thread Goal Prompt V509
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -80,16 +80,22 @@ shapes.  V508 adds the matching Theorem 2.1.16 density-existence source
 wrappers: absolute-continuity of `X_i + X_j` from an absolutely continuous
 common law, plus the real-density `ENNReal.ofReal` source specializations, for
 the same zero-based, one-based, joint-law, canonical, identical-distribution,
-and pairwise source shapes.
+and pairwise source shapes.  V509 adds the matching Theorem 2.1.16
+supplied-density source wrappers: once a separate calculation identifies
+`ν * ν` with `volume.withDensity (fun x => ENNReal.ofReal (h x))`, the
+zero-based, one-based, joint-law, canonical, identical-distribution, and
+pairwise source shapes immediately produce the supplied density law for
+`X_i + X_j`.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
 source-facing 2.4.9 proof-step wrapper only if search proves it is absent;
 otherwise add the next Chapter 2.1 product-law/product-expectation wrapper
 that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.  After
-V508, only revisit Theorem 2.1.16 for a proved-missing supplied-density source
-handoff; do not duplicate the compiled convolution-law, density-formula, or
-density-existence source surfaces.
+V509, do not revisit Theorem 2.1.16 unless an exact source-shape search finds
+a genuinely missing consumer handoff; do not duplicate the compiled
+convolution-law, density-formula, density-existence, or supplied-density
+source surfaces.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -143,9 +149,25 @@ real-valued `ENNReal.ofReal` density forms,
 solved Theorem 2.1.16 iid/source/joint/canonical/one-based/pairwise
 density-existence source wrappers from absolute-continuity of the common law
 and from real-valued `ENNReal.ofReal` density laws,
+solved Theorem 2.1.16 iid/source/joint/canonical/one-based/pairwise
+supplied-density source wrappers from a supplied convolution-density identity,
 or old app-level stale prompts.
 
-Latest verified target V508 adds source-shaped Durrett Theorem 2.1.16
+Latest verified target V509 adds source-shaped Durrett Theorem 2.1.16
+supplied-density wrappers over the already-compiled generic independent-pair
+handoff:
+`durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_of_supplied_density_of_iIndepFun`
+and its identical-distribution, joint infinite-product, canonical,
+one-based, and pairwise variants.  These wrappers expose the final theorem
+hand-off "a supplied calculation gives the density of the sum" directly from
+iid/source/joint/canonical/pairwise hypotheses, so future concrete examples
+such as gamma or normal convolution can consume a source-shaped endpoint
+without rebuilding selected-pair independence.  Next target: search for a
+genuinely missing Chapter 2.1 handoff that supports 2.4.9 or the adjacent
+Kolmogorov-maximal route; otherwise return to a proved-missing 2.4.9
+proof-step/final-display source wrapper.
+
+Previous verified target V508 adds source-shaped Durrett Theorem 2.1.16
 density-existence wrappers over the already-compiled absolute-continuity
 core:
 `durrett2019_theorem_2_1_16_iid_pair_sum_law_absolutelyContinuous_of_iIndepFun`
@@ -155,10 +177,7 @@ one-based, and pairwise variants; plus the matching
 `ENNReal.ofReal`.  These wrappers expose the textbook phrase "X+Y has a
 density" directly from iid/source/joint/canonical/pairwise hypotheses without
 requiring future consumers to reconstruct the selected-pair independence and
-law extraction.  Next target: search for a genuinely missing Chapter 2.1
-handoff that supports 2.4.9 or the adjacent Kolmogorov-maximal route.  If
-returning to Theorem 2.1.16, prefer supplied-density source wrappers only when
-an exact source-shape search proves a consumer gap.
+law extraction.  V509 closed the supplied-density source layer.
 
 Previous verified target V507 adds source-shaped Durrett Theorem 2.1.16 density
 formula wrappers over the already-compiled Fubini core:
