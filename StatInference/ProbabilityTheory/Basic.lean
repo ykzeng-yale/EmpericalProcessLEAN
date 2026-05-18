@@ -3883,6 +3883,26 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_law_prod_eq_prod_integ
       (fun i => hLaw (i + 1)) (fun i => hf (i + 1)) m n
 
 /--
+Durrett 2019, Theorem 2.1.13, law-side product expectation factorization on
+the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_oneBased_Icc_law_prod_eq_prod_integral
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {μ : ∀ i, Measure (S i)}
+    {f : ∀ i, S i -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (μ i) P)
+    (hf : ∀ i, Integrable (f i) (μ i))
+    (n : ℕ) :
+    ∫ ω, ∏ i ∈ Finset.Icc 1 n, f i (X i ω) ∂P =
+      ∏ i ∈ Finset.Icc 1 n, ∫ x, f i x ∂μ i :=
+  durrett2019_theorem_2_1_13_iIndepFun_integral_finset_law_prod_eq_prod_integral
+    (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf (Finset.Icc 1 n)
+
+/--
 Durrett 2019, Theorem 2.1.13, iid law-side finite-subfamily power form.
 
 When the functions and laws are common, the factorized product becomes a power.
@@ -4010,6 +4030,27 @@ theorem durrett2019_theorem_2_1_13_iid_integral_Ico_law_prod_eq_pow_integral_one
     durrett2019_theorem_2_1_13_iid_integral_Ico_law_prod_eq_pow_integral
       (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
       (μ := μ) (f := f) hShift_indep hShift_law hf m n
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side product power form on the literal
+one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integral_oneBased_Icc_law_prod_eq_pow_integral
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf : Integrable f μ)
+    (n : ℕ) :
+    ∫ ω, ∏ i ∈ Finset.Icc 1 n, f (X i ω) ∂P =
+      (∫ x, f x ∂μ) ^ n := by
+  simpa [Nat.card_Icc] using
+    durrett2019_theorem_2_1_13_iid_integral_finset_law_prod_eq_pow_integral
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf (Finset.Icc 1 n)
 
 /--
 Durrett 2019, Theorem 2.1.13, law-side nonnegative finite-subfamily
@@ -4154,6 +4195,27 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_prod_eq_prod_lint
       (fun i => hf (i + 1)) m n
 
 /--
+Durrett 2019, Theorem 2.1.13, law-side nonnegative product expectation
+factorization on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_law_prod_eq_prod_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {μ : ∀ i, Measure (S i)}
+    {f : ∀ i, S i -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (μ i) P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Icc 1 n, f i (X i ω) ∂P =
+      ∏ i ∈ Finset.Icc 1 n, ∫⁻ x, f i x ∂μ i :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_prod_eq_prod_lintegral
+    (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf
+    (Finset.Icc 1 n)
+
+/--
 Durrett 2019, Theorem 2.1.13, iid law-side nonnegative finite-subfamily
 power form.
 -/
@@ -4284,6 +4346,28 @@ theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_prod_eq_pow_lintegral_o
       (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
       (μ := μ) (f := f) hShift_indep hShift_law
       (fun i => hX_meas (i + 1)) hf m n
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side nonnegative product power form on
+the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_law_prod_eq_pow_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Icc 1 n, f (X i ω) ∂P =
+      (∫⁻ x, f x ∂μ) ^ n := by
+  simpa [Nat.card_Icc] using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_law_prod_eq_pow_lintegral
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf
+      (Finset.Icc 1 n)
 
 /--
 Durrett 2019, Theorem 2.1.13, law-side real nonnegative finite-subfamily
@@ -4434,6 +4518,28 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_ofReal_prod_eq_pr
       (fun i => hf (i + 1)) (fun i x => hf_nonneg (i + 1) x) m n
 
 /--
+Durrett 2019, Theorem 2.1.13, law-side real nonnegative product expectation
+factorization on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_law_ofReal_prod_eq_prod_lintegral_ofReal
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {μ : ∀ i, Measure (S i)}
+    {f : ∀ i, S i -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) (μ i) P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (hf_nonneg : ∀ i x, 0 ≤ f i x)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.Icc 1 n, f i (X i ω)) ∂P =
+      ∏ i ∈ Finset.Icc 1 n, ∫⁻ x, ENNReal.ofReal (f i x) ∂μ i :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_ofReal_prod_eq_prod_lintegral_ofReal
+    (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf hf_nonneg
+    (Finset.Icc 1 n)
+
+/--
 Durrett 2019, Theorem 2.1.13, iid law-side real nonnegative finite-subfamily
 power form.
 -/
@@ -4574,6 +4680,29 @@ theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_ofReal_prod_eq_pow_lint
       (fun i => hX_meas (i + 1)) hf hf_nonneg m n
 
 /--
+Durrett 2019, Theorem 2.1.13, iid law-side real nonnegative product power
+form on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_law_ofReal_prod_eq_pow_lintegral_ofReal
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    (hf_nonneg : ∀ x, 0 ≤ f x)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.Icc 1 n, f (X i ω)) ∂P =
+      (∫⁻ x, ENNReal.ofReal (f x) ∂μ) ^ n := by
+  simpa [Nat.card_Icc] using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_law_ofReal_prod_eq_pow_lintegral_ofReal
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf hf_nonneg
+      (Finset.Icc 1 n)
+
+/--
 Durrett 2019, Theorem 2.1.13, nonnegative finite-subfamily expectation
 factorization.
 
@@ -4620,6 +4749,21 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_prod_eq_prod_lintegra
       ∏ i ∈ Finset.Ico m n, ∫⁻ ω, X i ω ∂P :=
   durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_prod_eq_prod_lintegral
     (P := P) (X := X) hX mX (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13, nonnegative product expectation factorization
+on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_prod_eq_prod_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Icc 1 n, X i ω ∂P =
+      ∏ i ∈ Finset.Icc 1 n, ∫⁻ ω, X i ω ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_prod_eq_prod_lintegral
+    (P := P) (X := X) hX mX (Finset.Icc 1 n)
 
 /--
 Durrett 2019, Theorem 2.1.13, one-based nonnegative initial-range
@@ -4728,6 +4872,22 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_ofReal_prod_eq_prod_l
       ∏ i ∈ Finset.Ico m n, ∫⁻ ω, ENNReal.ofReal (X i ω) ∂P :=
   durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_ofReal_prod_eq_prod_lintegral_ofReal
     (P := P) (X := X) hX mX hX_nonneg (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13, real nonnegative product expectation
+factorization on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_ofReal_prod_eq_prod_lintegral_ofReal
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hX_nonneg : ∀ i ω, 0 ≤ X i ω)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.Icc 1 n, X i ω) ∂P =
+      ∏ i ∈ Finset.Icc 1 n, ∫⁻ ω, ENNReal.ofReal (X i ω) ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_ofReal_prod_eq_prod_lintegral_ofReal
+    (P := P) (X := X) hX mX hX_nonneg (Finset.Icc 1 n)
 
 /--
 Durrett 2019, Theorem 2.1.13, one-based real nonnegative initial-range
@@ -4854,6 +5014,38 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_zero_of_integr
     {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
     (hzero : ∫ ω, X i ω ∂P = 0) :
     ∫ ω, ∏ j ∈ Finset.Ico m n, X j ω ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_zero_of_integral_eq_zero
+    (P := P) (X := X) hX mX hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, product expectation factorization on the
+literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_oneBased_Icc_prod_eq_prod_integral
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, AEStronglyMeasurable (X i) P)
+    (n : ℕ) :
+    ∫ ω, ∏ i ∈ Finset.Icc 1 n, X i ω ∂P =
+      ∏ i ∈ Finset.Icc 1 n, ∫ ω, X i ω ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_prod_integral
+    (P := P) (X := X) hX mX (Finset.Icc 1 n)
+
+/--
+Durrett 2019, Theorem 2.1.13, zero-mean product corollary on the literal
+one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_oneBased_Icc_prod_eq_zero_of_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, AEStronglyMeasurable (X i) P)
+    {n i : ℕ} (hi : i ∈ Finset.Icc 1 n)
+    (hzero : ∫ ω, X i ω ∂P = 0) :
+    ∫ ω, ∏ j ∈ Finset.Icc 1 n, X j ω ∂P = 0 :=
   durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_zero_of_integral_eq_zero
     (P := P) (X := X) hX mX hi hzero
 

@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V520
+## Live In-Thread Goal Prompt V521
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -127,6 +127,11 @@ V520 adds the matching one-based law-side Chapter 2.1.13 range/Ico product
 expectation wrappers for non-iid dependent-type families, plus nonnegative and
 real nonnegative law-side versions and the remaining iid `lintegral` and
 `ENNReal.ofReal` power displays.
+V521 adds literal one-based `Finset.Icc 1 n` Chapter 2.1.13
+product-expectation displays: law-side and source-side ordinary Bochner
+products, nonnegative `lintegral` products, real nonnegative
+`ENNReal.ofReal` products, iid law-side power displays, and the source-side
+zero-factor corollary.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -168,6 +173,10 @@ product-expectation wrappers for non-iid families, their nonnegative
 `lintegral` and real nonnegative `ENNReal.ofReal` branches, or the remaining
 iid law-side nonnegative power displays unless an exact later consumer needs a
 different source shape.
+After V521, do not rebuild the literal one-based `Finset.Icc 1 n` Theorem
+2.1.13 product-expectation displays, including law-side/source-side ordinary,
+nonnegative, real nonnegative, iid power, and zero-factor branches, unless an
+exact later consumer needs a different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -265,9 +274,33 @@ zero-factor corollaries, nonnegative `lintegral` wrappers, real nonnegative
 solved one-based law-side Theorem 2.1.13 range/Ico product-expectation
 wrappers for non-iid families, nonnegative and real nonnegative law-side
 branches, and the remaining iid law-side nonnegative power displays,
+solved literal one-based `Finset.Icc 1 n` Theorem 2.1.13
+product-expectation displays for law-side/source-side ordinary,
+nonnegative, real nonnegative, iid power, and zero-factor branches,
 or old app-level stale prompts.
 
-Latest verified target V520 adds one-based law-side Chapter 2.1.13
+Latest verified target V521 adds literal one-based `Finset.Icc 1 n`
+Chapter 2.1.13 product-expectation displays:
+`durrett2019_theorem_2_1_13_iIndepFun_integral_oneBased_Icc_law_prod_eq_prod_integral`,
+`durrett2019_theorem_2_1_13_iid_integral_oneBased_Icc_law_prod_eq_pow_integral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_law_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_law_prod_eq_pow_lintegral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_law_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_law_ofReal_prod_eq_pow_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_prod_eq_prod_lintegral`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_ofReal_prod_eq_prod_lintegral_ofReal`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_oneBased_Icc_prod_eq_prod_integral`,
+and
+`durrett2019_theorem_2_1_13_iIndepFun_integral_oneBased_Icc_prod_eq_zero_of_integral_eq_zero`.
+These close Durrett's literal `{1, ..., n}` product-expectation notation for
+Chapter 2.1.13 across law-side ordinary/nonnegative/real-nonnegative displays,
+the matching iid law-side powers, and source-side nonnegative/ordinary
+displays.  Next target: search for another genuinely missing 2.4.9 proof-step/
+final-display source wrapper, or add the next Chapter 2.1 product-law/product-
+expectation handoff that directly supports 2.4.9 or the adjacent
+Kolmogorov-maximal route.
+
+Previous verified target V520 adds one-based law-side Chapter 2.1.13
 product-expectation wrappers:
 `durrett2019_theorem_2_1_13_iIndepFun_integral_range_law_prod_eq_prod_integral_oneBased`,
 `durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_law_prod_eq_prod_integral_oneBased`,

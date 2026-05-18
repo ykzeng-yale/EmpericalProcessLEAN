@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V520`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V521`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V520: stay on Durrett Theorem 2.4.9
+Current immediate target after V521: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -164,6 +164,10 @@ corollaries, nonnegative `lintegral` wrappers, real nonnegative
 adds the matching one-based law-side range/Ico product-expectation wrappers
 for non-iid dependent-type families, the nonnegative and real nonnegative
 law-side branches, and the remaining iid law-side nonnegative power displays.
+V521 adds literal one-based `Finset.Icc 1 n` Chapter 2.1.13
+product-expectation displays for law-side/source-side ordinary products,
+nonnegative `lintegral` products, real nonnegative `ENNReal.ofReal` products,
+iid law-side powers, and the source-side zero-factor corollary.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
@@ -208,6 +212,9 @@ zero-factor corollaries, nonnegative `lintegral` wrappers, real nonnegative
 or the one-based law-side Theorem 2.1.13 range/Ico product-expectation
 wrappers for non-iid families, their nonnegative/real-nonnegative branches,
 or the remaining iid law-side nonnegative power displays,
+or the literal one-based `Finset.Icc 1 n` Theorem 2.1.13
+product-expectation displays for law-side/source-side ordinary, nonnegative,
+real nonnegative, iid power, and zero-factor branches,
 or the one-based Theorem 2.4.9 finite-cutpoint raw/range burn-in wrappers,
 or the one-based Theorem 2.4.9 bounded middle-partition raw/range squeeze wrappers,
 or the one-based Theorem 2.4.9 global middle-partition-with-tails raw/range
@@ -2163,6 +2170,9 @@ zero-factor corollaries, nonnegative `lintegral` wrappers, real nonnegative
 the V520 one-based law-side Chapter 2.1.13 range/Ico product-expectation
 wrappers for non-iid families, their nonnegative/real-nonnegative branches,
 and the remaining iid law-side nonnegative power displays,
+the V521 literal one-based `Finset.Icc 1 n` Chapter 2.1.13
+product-expectation displays for law-side/source-side ordinary, nonnegative,
+real nonnegative, iid power, and zero-factor branches,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and
