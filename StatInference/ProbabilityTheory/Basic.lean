@@ -8439,6 +8439,140 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_comp_pr
       m n hf_int
 
 /--
+Durrett 2019, Theorem 2.1.13, source-side composed nonnegative finite
+expectation formula.
+
+Measurable nonnegative functions of independent variables remain independent,
+so the nonnegative product factorization applies to the composed factors
+`f_i (X_i)`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_comp_prod_eq_prod_lintegral
+    {Ω : Type u} {ι : Type w}
+    [MeasurableSpace Ω] {P : Measure Ω}
+    {S : ι -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (s : Finset ι) :
+    ∫⁻ ω, ∏ i ∈ s, f i (X i ω) ∂P =
+      ∏ i ∈ s, ∫⁻ ω, f i (X i ω) ∂P := by
+  have hcomp_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ι => fun ω : Ω => f i (X i ω)) := by
+    simpa [Function.comp_def] using
+      (durrett2019_theorem_2_1_10_iIndepFun_comp
+        (P := P) (X := X) (f := f) hX hf_meas)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_prod_eq_prod_lintegral
+      (P := P) (X := fun i : ι => fun ω : Ω => f i (X i ω))
+      hcomp_indep (fun i => (hf_meas i).comp (hX_meas i)) s
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed nonnegative
+initial-range expectation formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_comp_prod_eq_prod_lintegral
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.range n, f i (X i ω) ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ ω, f i (X i ω) ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_comp_prod_eq_prod_lintegral
+    (P := P) (X := X) (f := f)
+    hX hX_meas hf_meas (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed nonnegative
+interval-block expectation formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_comp_prod_eq_prod_lintegral
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (m n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Ico m n, f i (X i ω) ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ ω, f i (X i ω) ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_comp_prod_eq_prod_lintegral
+    (P := P) (X := X) (f := f)
+    hX hX_meas hf_meas (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed nonnegative expectation
+formula on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_comp_prod_eq_prod_lintegral
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Icc 1 n, f i (X i ω) ∂P =
+      ∏ i ∈ Finset.Icc 1 n, ∫⁻ ω, f i (X i ω) ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_comp_prod_eq_prod_lintegral
+    (P := P) (X := X) (f := f)
+    hX hX_meas hf_meas (Finset.Icc 1 n)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed nonnegative one-based
+initial-range expectation formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_comp_prod_eq_prod_lintegral_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.range n, f (i + 1) (X (i + 1) ω) ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ ω, f (i + 1) (X (i + 1) ω) ∂P := by
+  have hcomp_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω : Ω => f i (X i ω)) := by
+    simpa [Function.comp_def] using
+      (durrett2019_theorem_2_1_10_iIndepFun_comp
+        (P := P) (X := X) (f := f) hX hf_meas)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_prod_eq_prod_lintegral_oneBased
+      (P := P) (X := fun i : ℕ => fun ω : Ω => f i (X i ω))
+      hcomp_indep (fun i => (hf_meas i).comp (hX_meas i)) n
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side composed nonnegative one-based
+interval-block expectation formula.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_comp_prod_eq_prod_lintegral_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : ℕ -> Type*} [∀ i, MeasurableSpace (S i)]
+    {X : ∀ i, Ω -> S i} {f : ∀ i, S i -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (m n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Ico m n, f (i + 1) (X (i + 1) ω) ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ ω, f (i + 1) (X (i + 1) ω) ∂P := by
+  have hcomp_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω : Ω => f i (X i ω)) := by
+    simpa [Function.comp_def] using
+      (durrett2019_theorem_2_1_10_iIndepFun_comp
+        (P := P) (X := X) (f := f) hX hf_meas)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_prod_eq_prod_lintegral_oneBased
+      (P := P) (X := fun i : ℕ => fun ω : Ω => f i (X i ω))
+      hcomp_indep (fun i => (hf_meas i).comp (hX_meas i)) m n
+
+/--
 Durrett 2019, Theorem 2.1.13, source-side iid composed finite-subfamily
 expectation-exists-and-power-value formula.
 
