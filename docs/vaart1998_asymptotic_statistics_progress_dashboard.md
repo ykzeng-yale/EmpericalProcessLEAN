@@ -16,7 +16,7 @@ The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
 Latest verified packet: positive-sample common-core continuous-linear-map
-square-matrix determinant affine theta0-offset-moment source for
+square-matrix determinant affine theta0-offset-vector-moment source for
 Theorem 5.41.
 The live endpoint now states the asymptotic-normality handoff for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
@@ -32,8 +32,9 @@ the continuous linear equivalence used by the explicit inverse estimator,
 derives coordinate measurability and continuity of that inverse from
 mathlib's continuous linear map API, derives theta0 estimating-map coordinate
 measurability and theta0 estimating-map coordinate `MemLp 2` from the affine
-display at `theta0` plus observation-offset coordinate measurability and
-observation-offset coordinate `MemLp 2`,
+display at `theta0` plus vector-valued observation-offset measurability and
+vector-valued observation-offset `MemLp 2`, projecting those vector fields to
+coordinate fields with the finite `Pi` APIs,
 derives the coordinate mean-zero estimating equation at `theta0` from the
 population common-core equation `commonObservationCoreMatrix.mulVecLin theta0
 = -E[offset]`,
@@ -56,23 +57,29 @@ finite-sum-zero hypotheses, the inverse coordinate-measurability hypothesis,
 the raw common-core injectivity hypotheses, the raw right-inverse-value
 hypothesis, the direct coordinate mean-zero hypothesis, the direct
 theta0-coordinate measurability and direct theta0-coordinate `MemLp 2`
-hypotheses, and the raw ker/range nonsingularity hypotheses and the raw
-function-space finrank equality and raw observation-offset coordinate
-integrability from the current route.
+hypotheses, direct observation-offset coordinate measurability and direct
+observation-offset coordinate `MemLp 2` hypotheses, and the raw ker/range
+nonsingularity hypotheses and the raw function-space finrank equality and raw
+observation-offset coordinate integrability from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMomentSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMomentSource`.
 
-The newest theta0 offset-moment packet adds
+The newest theta0 offset-vector-moment packet adds
+`vaart1998_observationOffset_coordinate_measurable_of_vector_measurable`,
+`vaart1998_observationOffset_coordinate_memLp_of_vector_memLp`,
+and
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMomentSource`.
+The next blocker is to derive the population offset-mean equation from a
+concrete score/estimating-map model, or instantiate the first source-shaped
+textbook Theorem 5.41 example that can use the theta0-offset-vector-moment
+square-matrix determinant route.
+
+The previous theta0 offset-moment packet adds
 `vaart1998_observationEstimatingMapTheta0_coordinate_measurable_of_commonAffine_offset`,
 `vaart1998_observationEstimatingMapTheta0_coordinate_memLp_of_commonAffine_offset_memLp`,
 and
 `vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMomentSource`.
-The next blocker is to derive observation-offset coordinate measurability,
-observation-offset coordinate `MemLp 2`, or the population offset-mean
-equation from a concrete score/estimating-map model, or instantiate the first
-source-shaped textbook Theorem 5.41 example that can use the
-theta0-offset-moment square-matrix determinant route.
 
 The previous theta0 offset-mean packet adds
 `vaart1998_observationEstimatingMapTheta0_coordinate_mean_zero_of_commonAffine_offsetMean`
@@ -1218,9 +1225,9 @@ Superseded blocker note: the derivative-transform measurability
 fixed-`theta0` route has been replaced by the positive-sample common-core
 continuous-linear-map square-matrix determinant affine theta0-offset
 source. The current live blocker is recorded at the top of this dashboard and
-in the current blocker plan: derive the offset-coordinate moment fields or the
-population offset-mean equation from a concrete model, or instantiate a
-concrete textbook estimating equation.
+in the current blocker plan: derive the population offset-mean equation from a
+concrete model, or instantiate a concrete textbook estimating equation with a
+vector-valued offset moment source.
 Do not replay the centered derivative-coordinate residual algebra,
 smooth/raw/scaled Taylor transfer, score-at-theta0 vector scaling transfer,
 estimator-definition a.e. wrappers, raw-root a.e. wrappers, selected
