@@ -22,15 +22,19 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    pattern improved throughput, which blocker remains structural, and which
    possible task would create redundant work.
 
-Current frontier: Theorem 5.41 now has a compiled positive-sample common-core
-continuous-linear-map square-matrix determinant affine theta0-offset-vector-mean
-source. It states the limit theorem for the explicit estimator
-`vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
-finite estimating-equation identity from a pointwise common-core affine display
-and a common core supplied by a square real matrix through
-`commonObservationCoreMatrix.mulVecLin`, derives injectivity from
-`IsUnit commonObservationCoreMatrix.det` using mathlib's matrix nonsingularity
-API, derives equality of the function-space finranks from
+Current frontier: Theorem 5.41 now has a compiled positive-sample identity
+common-core affine theta0-offset-vector-mean source. It states the limit
+theorem for the explicit estimator
+`vaart1998PositiveCommonObservationCoreInverseEstimator` using
+`vaart1998_identityCommonObservationCoreInverse`, proves the textbook finite
+estimating-equation identity from the pointwise identity affine display
+`observationEstimatingMap observation theta = theta + observationOffset observation`,
+fixes the common core to the identity matrix, discharges the determinant
+source internally with `vaart1998_identityCommonObservationCore_det`, derives
+the square-matrix common-core display and population equation with
+`Matrix.mulVecLin_one`, and reuses the square-matrix determinant route.  That
+route derives injectivity from the identity determinant using mathlib's matrix
+nonsingularity API, derives equality of the function-space finranks from
 `Module.finrank_fintype_fun_eq_card`, derives the
 trivial-kernel and full-range facts from mathlib's linear-map finite-dimensional API, builds the continuous
 linear equivalence used by the explicit inverse estimator, derives coordinate
@@ -64,20 +68,27 @@ injectivity, raw observation-offset coordinate integrability, direct
 observation-offset coordinate measurability, direct observation-offset
 coordinate `MemLp 2`, direct theta0-coordinate measurability, direct
 theta0-coordinate `MemLp 2`, the coordinatewise population offset-mean
-equation, the direct coordinate mean-zero field, or a raw right-inverse value
-at the limiting target.
+equation, the direct coordinate mean-zero field, a caller-supplied square
+matrix, a caller-supplied determinant source, the matrix common-core affine
+display, the matrix population equation, or a raw right-inverse value at the
+limiting target.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMeanSource`.
+`vaart1998_theorem_5_41_positiveSample_identityCommonObservationCoreAffineTheta0OffsetVectorMeanSource`.
 
 The newest wrapper adds
+`vaart1998_identityCommonObservationCore_det`,
+`vaart1998_identityCommonObservationCoreInverse`, and
+`vaart1998_theorem_5_41_positiveSample_identityCommonObservationCoreAffineTheta0OffsetVectorMeanSource`.
+The next proof layer should instantiate the first source-shaped textbook
+Theorem 5.41 example that can use this identity common-core route, including
+its identity affine display, vector-valued offset moment, and vector
+population offset-mean sources.
+
+The previous wrapper adds
 `vaart1998_commonObservationCore_theta0_offsetMean_of_vector_offsetMean`
 and
 `vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMeanSource`.
-The next proof layer should instantiate the first source-shaped textbook
-Theorem 5.41 example that can use this theta0-offset-vector-mean square-matrix
-determinant route, including its vector-valued offset moment and vector
-population offset-mean sources.
 
 The previous wrapper adds
 `vaart1998_observationOffset_coordinate_measurable_of_vector_measurable`,

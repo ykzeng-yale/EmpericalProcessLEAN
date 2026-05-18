@@ -17,54 +17,41 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMeanSource`.
+`vaart1998_theorem_5_41_positiveSample_identityCommonObservationCoreAffineTheta0OffsetVectorMeanSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
-common-core inverse expression
-`vaart1998PositiveCommonObservationCoreInverseEstimator`. The route assumes a
-pointwise common-core affine display
-`observationEstimatingMap observation theta =
-LinearMap.toContinuousLinearMap commonObservationCoreMatrix.mulVecLin theta +
+identity common-core inverse expression
+`vaart1998_identityCommonObservationCoreInverse` inside
+`vaart1998PositiveCommonObservationCoreInverseEstimator`. The route assumes
+the textbook-shaped pointwise affine display
+`observationEstimatingMap observation theta = theta +
 observationOffset observation` in the square finite-coordinate case
-`Coord = Param = Idx`. The common core is supplied by a square real matrix
-`commonObservationCoreMatrix : Matrix Idx Idx ℝ` and the determinant source
-`IsUnit commonObservationCoreMatrix.det`. It derives injectivity from
-`Matrix.mulVec_injective_iff_isUnit` and `Matrix.isUnit_iff_isUnit_det`,
-derives equality of the function-space finranks from
-`Module.finrank_fintype_fun_eq_card`, derives
-`commonObservationCoreLinear.ker = ⊥` from injectivity and
-`commonObservationCoreLinear.range = ⊤` from injectivity plus equal finrank,
-then builds the common-core continuous linear equivalence via
-`LinearEquiv.ofBijective` and `LinearEquiv.toContinuousLinearEquiv`. It uses
-the equivalence inverse in the explicit estimator and derives both inverse
-laws from
-`ContinuousLinearEquiv.apply_symm_apply` and
-`ContinuousLinearEquiv.symm_apply_apply`, derives the coordinate
-measurability and `ContinuousAt` fields for the inverse from the continuous
-linear map API, and feeds the determinant-derived injectivity into the
-compiled common-core route. It derives theta0 estimating-map coordinate
-measurability and theta0 estimating-map coordinate `MemLp 2` from the affine
-display at `theta0` plus vector-valued observation-offset measurability and
-vector-valued observation-offset `MemLp 2`, projecting those vector fields to
-coordinate fields with the finite `Pi` APIs. It derives the coordinate
-mean-zero estimating equation at `theta0` from the vector-valued population common-core equation
-`LinearMap.toContinuousLinearMap commonObservationCoreMatrix.mulVecLin theta0
-= -E[offset]`. From these derived offset fields it derives the product-space
-zero-coordinate
-integrability,
-pairwise independence, identical distribution, and positive-sample
-offset-average convergence from the canonical `Measure.infinitePi`
-observation sequence, then derives common-core target convergence, estimator
-consistency, and coordinate measurability of the explicit inverse estimator.
-It derives the local `edist` inverse-stability field from ordinary
-continuity of the continuous linear inverse at the negative observation-law
-offset mean. The right-inverse value at that point is derived from
-the two inverse laws and the population common-core equation.
-It proves the textbook finite estimating-equation identity internally,
-packages it as exact root-set membership, prepends `theta0` at sample size
-zero, applies the compiled exact-root-set Theorem 5.41 source endpoint, and
-then shifts the convergence-in-distribution conclusion back along `Nat.succ`.
+`Coord = Param = Idx`. It fixes the common core to the identity matrix,
+discharges the determinant source internally with
+`vaart1998_identityCommonObservationCore_det`, and uses
+`Matrix.mulVecLin_one` to derive the square-matrix common-core affine display
+and the population common-core vector equation from the direct population
+offset-mean source `theta0 = -E[offset]`. It then reuses the compiled
+theta0-offset-vector-mean square-matrix route, which derives theta0
+estimating-map coordinate measurability and theta0 estimating-map coordinate
+`MemLp 2` from the affine display at `theta0` plus vector-valued
+observation-offset measurability and vector-valued observation-offset
+`MemLp 2`, projecting those vector fields to coordinate fields with the
+finite `Pi` APIs. From these derived offset fields it derives the
+product-space zero-coordinate integrability, pairwise independence,
+identical distribution, and positive-sample offset-average convergence from
+the canonical `Measure.infinitePi` observation sequence, then derives
+common-core target convergence, estimator consistency, and coordinate
+measurability of the explicit inverse estimator. It derives the local
+`edist` inverse-stability field from ordinary continuity of the continuous
+linear inverse at the negative observation-law offset mean. The right-inverse
+value at that point is derived from the two inverse laws and the population
+common-core equation. It proves the textbook finite estimating-equation
+identity internally, packages it as exact root-set membership, prepends
+`theta0` at sample size zero, applies the compiled exact-root-set Theorem
+5.41 source endpoint, and then shifts the convergence-in-distribution
+conclusion back along `Nat.succ`.
 This removes the artificial `n = 0` left-inverse/root-uniqueness obstruction
 and no longer asks the caller to state offset-average convergence,
 product-space offset integrability, offset independence, offset identical
@@ -76,9 +63,19 @@ function-space finrank equality, observation-offset coordinate integrability,
 direct observation-offset coordinate measurability, direct observation-offset
 coordinate `MemLp 2`, direct theta0-coordinate measurability, direct
 theta0-coordinate `MemLp 2`, the coordinatewise population offset-mean
-equation, or direct coordinate mean-zero for this square-matrix route.
+equation, direct coordinate mean-zero, a caller-supplied square matrix, a
+caller-supplied determinant source, the matrix common-core affine display, or
+the matrix population equation for the identity common-core route.
 
-The newest theta0 offset-vector-mean packet adds
+The newest identity common-core packet adds
+`vaart1998_identityCommonObservationCore_det`,
+`vaart1998_identityCommonObservationCoreInverse`, and
+`vaart1998_theorem_5_41_positiveSample_identityCommonObservationCoreAffineTheta0OffsetVectorMeanSource`.
+It removes the determinant source and matrix common-core display for the
+identity case by fixing the common observation core to `1`, and it replaces
+`A theta0 = -P offset` by the direct source `theta0 = -P offset`.
+
+The previous theta0 offset-vector-mean packet adds
 `vaart1998_commonObservationCore_theta0_offsetMean_of_vector_offsetMean`
 and
 `vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMeanSource`.
@@ -272,10 +269,10 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: instantiate the theta0-offset-vector-mean square-matrix
-determinant endpoint on the first concrete textbook estimating equation whose
-affine display, determinant source, vector-valued offset moment source, and
-vector population offset-mean source are immediate.
+Next aggressive target: instantiate the identity-common-core theta0-offset-vector-mean
+endpoint on the first concrete textbook estimating equation whose identity
+affine display, vector-valued offset moment source, and vector population
+offset-mean source are immediate.
 Do not route back to
 sample-size zero
 inverses, arbitrary canonical-selector measurability, direct root uniqueness,
@@ -1776,7 +1773,7 @@ endpoint.
 Continuation recipe:
 
 1. Check `git status`, the Vaart diff, and the live hypotheses of the
-   positive-sample square-matrix common-core determinant
+   positive-sample identity common-core theta0-offset-vector-mean
    endpoint.
 2. If an unfinished local Vaart Lean diff exists, either finish and verify it
    immediately, or remove it from the packet before editing route docs.
@@ -1785,12 +1782,13 @@ Continuation recipe:
 
 Priority order for the next packet:
 
-1. Derive a live observation-offset field for the same endpoint: coordinate measurability,
-   coordinate integrability, or the coordinate mean-zero equation at `theta0`.
+1. Derive or instantiate a live vector-valued observation-offset field for
+   the same endpoint: vector measurability, vector `MemLp 2`, or the vector
+   population offset-mean equation at `theta0`.
 2. Instantiate the compiled endpoint for the first concrete textbook
-   Theorem 5.41 example that can provide the affine display, offset fields,
-   and square-matrix determinant source.
-3. Generalize beyond the square same-index determinant source only when a
+   Theorem 5.41 example that can provide the identity affine display and
+   vector offset fields.
+3. Generalize beyond the identity common-core route only when a
    concrete textbook example requires distinct but equal-cardinality
    coordinate types.
 
@@ -3106,21 +3104,20 @@ compiling:
    feeds that display into the finite Taylor-zero action-bound endpoint.
 
 Latest verified Vaart frontier before the next packet:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMeanSource`.
+`vaart1998_theorem_5_41_positiveSample_identityCommonObservationCoreAffineTheta0OffsetVectorMeanSource`.
 
 The latest theorem-sized packet adds
-`vaart1998_commonObservationCore_theta0_offsetMean_of_vector_offsetMean`,
-and
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMeanSource`.
-The live route now derives the coordinatewise population offset-mean equation
-from the vector equation `commonObservationCoreMatrix.mulVecLin theta0 =
--E[offset]`. It therefore no longer asks for the coordinatewise population
-offset-mean field directly. The remaining live source fields are the
-pointwise affine estimating-equation display against
-`commonObservationCoreMatrix.mulVecLin`, the determinant nonsingularity
-source, vector-valued observation-offset measurability, vector-valued
-observation-offset `MemLp 2`, and the vector-valued population offset-mean
-equation.
+`vaart1998_identityCommonObservationCore_det`,
+`vaart1998_identityCommonObservationCoreInverse`, and
+`vaart1998_theorem_5_41_positiveSample_identityCommonObservationCoreAffineTheta0OffsetVectorMeanSource`.
+The live route now fixes the common core to the identity matrix, discharges
+the determinant source internally, derives the square-matrix affine display
+from `observationEstimatingMap observation theta = theta +
+observationOffset observation`, and derives the square-matrix population
+equation from `theta0 = -E[offset]`. The remaining live source fields are the
+identity affine estimating-equation display, vector-valued observation-offset
+measurability, vector-valued observation-offset `MemLp 2`, and the
+vector-valued population offset-mean equation.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint. Priority order:
@@ -3130,11 +3127,10 @@ current endpoint. Priority order:
    observation-offset `MemLp 2` for the first concrete model using the current
    endpoint.
 2. Instantiate the endpoint for the first source-shaped textbook example of
-   Theorem 5.41 that can reuse the compiled positive-sample injective
-   theta0-offset-vector-mean square-matrix determinant route.
-3. Generalize the determinant source from the square same-index case to
-   reindexed equal-cardinality parameter and observation coordinate types
-   only if that directly supports a concrete textbook example.
+   Theorem 5.41 that can reuse the compiled positive-sample identity
+   common-core theta0-offset-vector-mean route.
+3. Generalize beyond the identity common-core route only if that directly
+   supports a concrete textbook example.
 
 Do not route back to the earlier second-derivative-kernel endpoint,
 fixed-`theta0` derivative joint measurability, direct second-derivative joint

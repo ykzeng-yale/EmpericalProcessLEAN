@@ -1,6 +1,6 @@
 # van der Vaart 1998 Progress Dashboard
 
-Status date: 2026-05-17.
+Status date: 2026-05-18.
 
 ## Current Lane
 
@@ -15,16 +15,20 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: positive-sample common-core continuous-linear-map
-square-matrix determinant affine theta0-offset-vector-mean source for
-Theorem 5.41.
+Latest verified packet: positive-sample identity common-core affine
+theta0-offset-vector-mean source for Theorem 5.41.
 The live endpoint now states the asymptotic-normality handoff for the explicit estimator
-`vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
-finite estimating-equation identity from a pointwise common-core affine
-display and a common core supplied by a square real matrix through
-`commonObservationCoreMatrix.mulVecLin`, derives common-core injectivity from
-`IsUnit commonObservationCoreMatrix.det` using mathlib's
-`Matrix.mulVec_injective_iff_isUnit` and `Matrix.isUnit_iff_isUnit_det`,
+`vaart1998PositiveCommonObservationCoreInverseEstimator` using
+`vaart1998_identityCommonObservationCoreInverse`, proves the textbook finite
+estimating-equation identity from the identity affine display
+`observationEstimatingMap observation theta = theta + observationOffset observation`,
+fixes the common core to the identity matrix, discharges the determinant
+source internally with `vaart1998_identityCommonObservationCore_det`, derives
+the square-matrix common-core display and population equation with
+`Matrix.mulVecLin_one`, and reuses the square-matrix determinant route.  That
+route derives common-core injectivity from the identity determinant using
+mathlib's `Matrix.mulVec_injective_iff_isUnit` and
+`Matrix.isUnit_iff_isUnit_det`,
 derives equality of the function-space finranks from
 `Module.finrank_fintype_fun_eq_card`, derives the ker/range nonsingularity
 facts from mathlib's linear-map finite-dimensional API, builds
@@ -61,19 +65,26 @@ hypotheses, direct observation-offset coordinate measurability and direct
 observation-offset coordinate `MemLp 2` hypotheses, and the raw ker/range
 nonsingularity hypotheses and the raw function-space finrank equality and raw
 observation-offset coordinate integrability plus the coordinatewise
+population offset-mean equation, the caller-supplied square matrix, the
+determinant source, the matrix common-core affine display, and the matrix
 population offset-mean equation from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMeanSource`.
+`vaart1998_theorem_5_41_positiveSample_identityCommonObservationCoreAffineTheta0OffsetVectorMeanSource`.
 
-The newest theta0 offset-vector-mean packet adds
+The newest identity common-core packet adds
+`vaart1998_identityCommonObservationCore_det`,
+`vaart1998_identityCommonObservationCoreInverse`, and
+`vaart1998_theorem_5_41_positiveSample_identityCommonObservationCoreAffineTheta0OffsetVectorMeanSource`.
+The next blocker is to instantiate the first source-shaped textbook Theorem
+5.41 example that can use the identity common-core theta0-offset-vector-mean
+route, including the identity affine display, vector-valued offset moment,
+and vector population offset-mean sources.
+
+The previous theta0 offset-vector-mean packet adds
 `vaart1998_commonObservationCore_theta0_offsetMean_of_vector_offsetMean`
 and
 `vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetVectorMeanSource`.
-The next blocker is to instantiate the first source-shaped textbook Theorem
-5.41 example that can use the theta0-offset-vector-mean square-matrix
-determinant route, including the vector-valued offset moment and vector
-population offset-mean sources.
 
 The previous theta0 offset-vector-moment packet adds
 `vaart1998_observationOffset_coordinate_measurable_of_vector_measurable`,
