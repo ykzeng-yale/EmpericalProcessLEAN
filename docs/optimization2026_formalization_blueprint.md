@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V58` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V59` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,7 +30,7 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V58 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V59 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -125,9 +125,17 @@ reuse came from `ContinuousLinearMap.opNorm_le_bound`,
 `Matrix.toLpLin_apply`, the local quadratic-form/Loewner bridge, and the V51
 symmetric norm/order bridge.  Methodology note: when an elegant high-level API
 route times out, test it in a minimal scratch file; if it still times out,
-switch proof geometry instead of repeating the same route.  Next source-shaped
-work is to assemble Theorem 13.1's Newton local quadratic recurrence under a
-supplied or newly proved Taylor/integral identity.
+switch proof geometry instead of repeating the same route.  The V59 layer adds
+the root-imported module `StatInference/Optimization/Theorem131.lean` with
+`chewi131_local_quadratic_step_of_taylor_bound`,
+`chewi131_local_quadratic_step_and_half_of_taylor_bound`, and
+`chewi131_local_quadratic_recurrence_of_taylor_bound`, assembling the source
+local quadratic recurrence and half-contraction from the Taylor/integral
+Newton remainder estimate plus V56/V58.  Methodology note: keep source-main
+theorem assembly in a small theorem module once Appendix A facts become
+dependencies.  Next source-shaped work is to discharge the Taylor/integral
+Newton remainder estimate with mathlib/local FTC and finite-dimensional
+Hessian-gradient APIs.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source

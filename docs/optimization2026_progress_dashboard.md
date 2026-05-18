@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V58` near the top of
+  `Live Goal Prompt V59` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -147,9 +147,17 @@ This dashboard tracks the Chewi optimization formalization lane for
   quadratic-form/Loewner bridge, and the V51 symmetric norm/order bridge.
   Methodology note: prototype heavy candidate routes in a minimal scratch file;
   if a route times out there too, switch mathematical proof geometry instead
-  of replaying the same API attempt in the heavy module.  Next high-impact step
-  is to assemble Theorem 13.1's local Newton quadratic recurrence under a
-  supplied or newly proved Taylor/integral identity.
+  of replaying the same API attempt in the heavy module.  The V59 layer adds
+  the root-imported module `StatInference/Optimization/Theorem131.lean` with
+  `chewi131_local_quadratic_step_of_taylor_bound`,
+  `chewi131_local_quadratic_step_and_half_of_taylor_bound`, and
+  `chewi131_local_quadratic_recurrence_of_taylor_bound`, assembling the source
+  local quadratic recurrence and half-contraction from the Taylor/integral
+  Newton remainder estimate plus V56/V58.  Methodology note: once Appendix A
+  facts become dependencies, keep source-main theorem assembly in a small
+  theorem module so the real next blocker is visible.  Next high-impact step is
+  to discharge that Taylor/integral Newton remainder estimate with
+  mathlib/local FTC and finite-dimensional Hessian-gradient APIs.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

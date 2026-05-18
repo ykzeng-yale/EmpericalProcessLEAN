@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V58`, this file's top
+   the full book is complete, route from `Live Goal Prompt V59`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -138,13 +138,29 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V58
+## Live Goal Prompt V59
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V58 discharges the Chewi Theorem 13.1 inverse-order
-gate rather than leaving it supplied.  Newly compiled declarations in
+Current active frontier: V59 adds a source-facing Chewi Theorem 13.1 recurrence
+module.  Newly compiled declarations in
+`StatInference/Optimization/Theorem131.lean` are
+`chewi131_local_quadratic_step_of_taylor_bound`,
+`chewi131_local_quadratic_step_and_half_of_taylor_bound`, and
+`chewi131_local_quadratic_recurrence_of_taylor_bound`.  They assemble the
+display
+`||x_{n+1} - x_star|| <= (gamma / alpha) ||x_n - x_star||^2 <=
+(1 / 2) ||x_n - x_star||` from the source Taylor/integral remainder estimate,
+the V56 Hessian perturbation lower bound, and the V58 inverse-Hessian norm
+bound.  The module is imported by `StatInference.lean`; both
+`lake build StatInference.Optimization.Theorem131` and
+`lake env lean StatInference.lean` pass.  The remaining Theorem 13.1 blocker is
+now the actual Taylor/integral Newton remainder identity rather than matrix
+inverse or scalar recurrence algebra.
+
+V58 dependency cache: V58 discharges the Chewi Theorem 13.1 inverse-order gate
+rather than leaving it supplied.  Compiled declarations in
 `StatInference/Optimization/AppendixA.lean` are
 `continuousLinearMap_opNorm_right_inverse_le_of_inner_lower`,
 `chewi131_inverse_l2_opNorm_le_two_div_alpha_of_hessian_lower_half`, and
@@ -172,11 +188,11 @@ operator-norm/Loewner sandwich.  Compiled declarations are
 source proof step
 `lambda_min(nabla^2 f(x_n)) >= lambda_min(nabla^2 f(x_star)) -
 gamma ||x_n - x_star|| >= alpha / 2` in scalar Loewner form.  Next
-theorem-sized target: assemble Chewi Theorem 13.1's Newton local quadratic
-recurrence by combining the V56 Hessian perturbation lower bound, the V58
-inverse-norm/Loewner discharge, and a supplied or newly proved Taylor/integral
-identity for the Hessian-gradient remainder.  Do not replay the solved
-inverse-order proof route.
+theorem-sized target: discharge the Taylor/integral Newton remainder estimate
+consumed by `chewi131_local_quadratic_recurrence_of_taylor_bound`, preferably
+through mathlib FTC/interval-integral APIs or a small finite-dimensional
+Euclidean supplied-Hessian bridge.  Do not replay the solved inverse-order or
+scalar recurrence proof route.
 
 Older dependency cache: the concrete standard preliminary stage now feeds a
 concrete source-coordinate standard main-stage Newton recursion for §13.16
@@ -792,8 +808,14 @@ Loewner upper gate `H^{-1} <= (2 / alpha) I`.  V58 removes that gate with
 `chewi131_inverse_loewner_upper_of_hessian_lower_half`, proving the inverse
 operator-norm display and inverse Loewner upper bound directly from
 `(alpha / 2) I <= H`.
+V59 adds the root-imported module `StatInference/Optimization/Theorem131.lean`
+with `chewi131_local_quadratic_step_of_taylor_bound`,
+`chewi131_local_quadratic_step_and_half_of_taylor_bound`, and
+`chewi131_local_quadratic_recurrence_of_taylor_bound`, assembling the source
+local quadratic and half-contraction recurrence from the supplied
+Taylor/integral Newton remainder estimate plus V56/V58.
 
-Search-first reuse for V53-V58: source Definition A.5 and Theorem 13.1;
+Search-first reuse for V53-V59: source Definition A.5 and Theorem 13.1;
 mathlib singular values
 via `T†T`; `spectrum.nonzero_mul_comm` for same-algebra square products;
 local V50 `A^T A <= C^2 I <-> ||A||_op <= C`; V52 scalar eigenvalue bounds
@@ -810,7 +832,11 @@ symmetric sandwich to avoid duplicating operator-norm theory.  V58 reuses
 `ContinuousLinearMap.opNorm_le_bound`, `abs_real_inner_le_norm`,
 `Matrix.mul_nonsing_inv`, `Matrix.toEuclideanLin`, `Matrix.toLpLin_apply`,
 the local quadratic-form/Loewner bridge, and the V51 symmetric norm/order
-bridge.  Timed-out attempted APIs for the exact inverse-order discharge:
+bridge.  V59 reuses V56/V58 plus scalar `div_le_div_of_nonneg_right`,
+`mul_le_mul_of_nonneg_left`, `mul_le_mul_of_nonneg_right`, and focused
+`field_simp`/`ring` normalization; no new mathlib theorem was needed for the
+recurrence algebra.  Timed-out attempted APIs for the exact inverse-order
+discharge:
 `CStarAlgebra.inv_le_inv` on Units and
 `CStarAlgebra.rpow_neg_one_le_rpow_neg_one` after
 `Matrix.nonsing_inv_eq_ringInverse`; both hit deterministic heartbeat
@@ -826,11 +852,15 @@ move was to switch proof geometry to vector coercivity instead of repeating
 the same theorem in `AppendixA.lean`.  Read-only scout agents are best used to
 confirm API availability and recommend one route while the main thread proves
 the active endpoint.
+Methodology note from V59: source-main theorem assembly deserves its own
+small module once Appendix A facts become dependencies.  This made the next
+goal obvious, kept `AppendixA.lean` from becoming a catch-all, and exposed the
+true remaining blocker as a Taylor/FTC identity instead of matrix algebra.
 
-Next theorem-sized target: stay in Chewi Theorem 13.1 and assemble the Newton
-local quadratic recurrence under a supplied or newly proved Taylor/integral
-identity, using the V56 Hessian lower perturbation and V58 inverse-norm/Loewner
-facts.
+Next theorem-sized target: stay in Chewi Theorem 13.1 and discharge the
+Taylor/integral Newton remainder estimate consumed by the V59 recurrence
+module, using mathlib interval-integral/FTC APIs and local finite-dimensional
+Hessian-gradient interfaces where possible.
 Create
 the Chewi Lemma 13.16 report only after the PDF screenshot
 and report compilation tools are available.  Do not reopen the completed
@@ -847,9 +877,9 @@ consumers.  The old §13.16 search surface near `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers is only relevant if a later run
-returns to the report/tooling gate; the active V58 Lean proof target is
-Theorem 13.1 local Newton recurrence assembly.
-Older paragraphs below are cached route history and must not override this V58
+returns to the report/tooling gate; the active V59 Lean proof target is
+Theorem 13.1 Taylor/integral Newton remainder discharge.
+Older paragraphs below are cached route history and must not override this V59
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
