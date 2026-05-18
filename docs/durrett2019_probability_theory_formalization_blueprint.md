@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V528`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V529`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V528: stay on Durrett Theorem 2.4.9
+Current immediate target after V529: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -193,6 +193,10 @@ V528 adds law-side Chapter 2.1.13 expectation-exists-and-value wrappers:
 finite/range/Ico and one-based range/Ico/`Finset.Icc 1 n` `HasLaw` product
 formulas now package source-space integrability of the composed product
 together with the law-side product or iid power expectation value.
+V529 adds source-side Chapter 2.1.13 zero-factor expectation-exists wrappers:
+finite/range/Ico and one-based range/Ico/`Finset.Icc 1 n` products now package
+product integrability together with the vanishing expectation conclusion when
+one integrable factor has expectation zero.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
@@ -2224,6 +2228,8 @@ including iid `IdentDistrib` power-value variants,
 the V528 law-side Chapter 2.1.13 paired expectation-exists-and-value wrappers
 for finite/range/Ico and one-based range/Ico/`Icc` products, including iid
 law-side power-value variants,
+the V529 source-side Chapter 2.1.13 zero-factor expectation-exists wrappers
+for finite/range/Ico and one-based range/Ico/`Icc` products,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and

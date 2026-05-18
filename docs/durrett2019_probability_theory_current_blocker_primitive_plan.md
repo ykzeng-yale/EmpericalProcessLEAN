@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V528
+## Live In-Thread Goal Prompt V529
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -160,6 +160,10 @@ V528 adds law-side Chapter 2.1.13 expectation-exists-and-value wrappers:
 finite/range/Ico and one-based range/Ico/`Finset.Icc 1 n` `HasLaw` product
 formulas now package source-space integrability of the composed product
 together with the law-side product or iid power expectation value.
+V529 adds source-side Chapter 2.1.13 zero-factor expectation-exists wrappers:
+finite/range/Ico and one-based range/Ico/`Finset.Icc 1 n` products now package
+product integrability together with the vanishing expectation conclusion when
+one integrable factor has expectation zero.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -232,6 +236,9 @@ After V528, do not rebuild the law-side Theorem 2.1.13 paired
 expectation-exists-and-value wrappers for finite/range/Ico or one-based
 range/Ico/`Icc` products, including iid law-side power-value variants, unless
 an exact later consumer needs a different source shape.
+After V529, do not rebuild the source-side Theorem 2.1.13 zero-factor
+expectation-exists wrappers for finite/range/Ico or one-based range/Ico/`Icc`
+products unless an exact later consumer needs a different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -352,9 +359,29 @@ for finite/range/Ico and one-based range/Ico/`Icc` products, including iid
 solved law-side Theorem 2.1.13 paired expectation-exists-and-value wrappers
 for finite/range/Ico and one-based range/Ico/`Icc` products, including iid
 law-side power-value variants,
+solved source-side Theorem 2.1.13 zero-factor expectation-exists wrappers for
+finite/range/Ico and one-based range/Ico/`Icc` products,
 or old app-level stale prompts.
 
-Latest verified target V528 adds law-side Chapter 2.1.13
+Latest verified target V529 adds source-side Chapter 2.1.13 zero-factor
+expectation-exists wrappers:
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_finset_prod_eq_zero_of_integrable_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_prod_eq_zero_of_integrable_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_prod_eq_zero_of_integrable_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_oneBased_Icc_prod_eq_zero_of_integrable_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero`,
+and
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero`.
+These are the source-side proof-text packages that combine product
+integrability with the zero-factor expectation conclusion, matching Durrett's
+"expectation exists and vanishes because one factor has mean zero" uses in
+Chapter 2.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V528 adds law-side Chapter 2.1.13
 expectation-exists-and-value wrappers:
 `durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_finset_law_prod_eq_prod_integral`,
 `durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_law_prod_eq_prod_integral`,
@@ -372,10 +399,6 @@ and
 These are the `HasLaw` consumer analogues of V527, proving source-space
 integrability of the composed finite product and the corresponding law-side
 product or iid power expectation value.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V527 adds source-side Chapter 2.1.13
 expectation-exists-and-value wrappers:
