@@ -28709,6 +28709,358 @@ theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_un
   simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using hn c
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step in one-based empirical-CDF notation:
+the global middle-partition-with-tails squeeze normalized to an arbitrary
+requested tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction
+              (samplePath (fun i => fun ω => X (i + 1) ω) ω n) c -
+            ProbabilityTheory.cdf P c| < tolerance := by
+  have hhalf : 0 < tolerance / 2 := by linarith
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_iIndepFun
+      X hhalf partition hleftTail hrightTail hLaw hindep] with ω hω
+  filter_upwards [hω] with n hn c
+  have htwo : 2 * (tolerance / 2) = tolerance := by ring
+  simpa [htwo] using hn c
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step in one-based range-sum notation:
+the global middle-partition-with-tails squeeze normalized to an arbitrary
+requested tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω)) /
+              (n : ℝ) -
+            ProbabilityTheory.cdf P c| < tolerance := by
+  have hhalf : 0 < tolerance / 2 := by linarith
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_two_mul_of_iIndepFun
+      X hhalf partition hleftTail hrightTail hLaw hindep] with ω hω
+  filter_upwards [hω] with n hn c
+  have htwo : 2 * (tolerance / 2) = tolerance := by ring
+  simpa [htwo] using hn c
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from a full infinite-product joint law,
+in one-based empirical-CDF notation and normalized to an arbitrary tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction
+              (samplePath (fun i => fun ω => X (i + 1) ω) ω n) c -
+            ProbabilityTheory.cdf P c| < tolerance := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_of_iIndepFun
+      X htolerance partition hleftTail hrightTail hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from a full infinite-product joint law,
+in one-based range-sum notation and normalized to an arbitrary tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω)) /
+              (n : ℝ) -
+            ProbabilityTheory.cdf P c| < tolerance := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_of_iIndepFun
+      X htolerance partition hleftTail hrightTail hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from a shifted infinite-product joint
+law, in one-based empirical-CDF notation and normalized to an arbitrary
+tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_of_shift_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction
+              (samplePath (fun i => fun ω => X (i + 1) ω) ω n) c -
+            ProbabilityTheory.cdf P c| < tolerance := by
+  have hhalf : 0 < tolerance / 2 := by linarith
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_shift_hasLaw_infinitePi
+      X hhalf partition hleftTail hrightTail hJoint] with ω hω
+  filter_upwards [hω] with n hn c
+  have htwo : 2 * (tolerance / 2) = tolerance := by ring
+  simpa [htwo] using hn c
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from a shifted infinite-product joint
+law, in one-based range-sum notation and normalized to an arbitrary tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_of_shift_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => P) μ) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω)) /
+              (n : ℝ) -
+            ProbabilityTheory.cdf P c| < tolerance := by
+  have hhalf : 0 < tolerance / 2 := by linarith
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_two_mul_of_shift_hasLaw_infinitePi
+      X hhalf partition hleftTail hrightTail hJoint] with ω hω
+  filter_upwards [hω] with n hn c
+  have htwo : 2 * (tolerance / 2) = tolerance := by ring
+  simpa [htwo] using hn c
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from identically distributed
+coordinates plus `iIndepFun`, in one-based empirical-CDF notation and
+normalized to an arbitrary tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction
+              (samplePath (fun i => fun ω => X (i + 1) ω) ω n) c -
+            ProbabilityTheory.cdf P c| < tolerance :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_of_iIndepFun
+    X htolerance partition hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from identically distributed
+coordinates plus `iIndepFun`, in one-based range-sum notation and normalized
+to an arbitrary tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω)) /
+              (n : ℝ) -
+            ProbabilityTheory.cdf P c| < tolerance :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_of_iIndepFun
+    X htolerance partition hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from pairwise-identically distributed
+coordinates, in one-based empirical-CDF notation and normalized to an arbitrary
+tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction
+              (samplePath (fun i => fun ω => X (i + 1) ω) ω n) c -
+            ProbabilityTheory.cdf P c| < tolerance := by
+  have hhalf : 0 < tolerance / 2 := by linarith
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_of_pairwise_identDistrib
+      X hhalf partition hleftTail hrightTail hBase hident hindep] with ω hω
+  filter_upwards [hω] with n hn c
+  have htwo : 2 * (tolerance / 2) = tolerance := by ring
+  simpa [htwo] using hn c
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from pairwise-identically distributed
+coordinates, in one-based range-sum notation and normalized to an arbitrary
+tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω)) /
+              (n : ℝ) -
+            ProbabilityTheory.cdf P c| < tolerance := by
+  have hhalf : 0 < tolerance / 2 := by linarith
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_two_mul_of_pairwise_identDistrib
+      X hhalf partition hleftTail hrightTail hBase hident hindep] with ω hω
+  filter_upwards [hω] with n hn c
+  have htwo : 2 * (tolerance / 2) = tolerance := by ring
+  simpa [htwo] using hn c
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+one-based empirical-CDF notation and normalized to an arbitrary tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition :
+      SuppliedRealMiddleCDFPartition (P : Measure ℝ) (tolerance / 2) a b middleCells)
+    (hleftTail : (P : Measure ℝ).real (Set.Iio a) < tolerance / 2)
+    (hrightTail : (P : Measure ℝ).real (Set.Ioi b) < tolerance / 2) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction
+              (samplePath
+                (fun i => fun sample : ℕ -> ℝ => sample (i + 1)) sample n) c -
+            ProbabilityTheory.cdf (P : Measure ℝ) c| < tolerance := by
+  have hhalf : 0 < tolerance / 2 := by linarith
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_eventually_uniform_error_lt_two_mul_canonical_iid
+      P hhalf partition hleftTail hrightTail] with sample hsample
+  filter_upwards [hsample] with n hn c
+  have htwo : 2 * (tolerance / 2) = tolerance := by ring
+  simpa [htwo] using hn c
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step for canonical iid product samples, in
+one-based range-sum notation and normalized to an arbitrary tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_canonical_iid
+    (P : MeasureTheory.ProbabilityMeasure ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition :
+      SuppliedRealMiddleCDFPartition (P : Measure ℝ) (tolerance / 2) a b middleCells)
+    (hleftTail : (P : Measure ℝ).real (Set.Iio a) < tolerance / 2)
+    (hrightTail : (P : Measure ℝ).real (Set.Ioi b) < tolerance / 2) :
+    ∀ᵐ sample ∂(Measure.infinitePi fun _ : ℕ => (P : Measure ℝ)),
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(∑ i ∈ Finset.range n, realHalfLineIndicator c (sample (i + 1))) /
+              (n : ℝ) -
+            ProbabilityTheory.cdf (P : Measure ℝ) c| < tolerance := by
+  have hhalf : 0 < tolerance / 2 := by linarith
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_range_sum_uniform_error_lt_two_mul_canonical_iid
+      P hhalf partition hleftTail hrightTail] with sample hsample
+  filter_upwards [hsample] with n hn c
+  have htwo : 2 * (tolerance / 2) = tolerance := by ring
+  simpa [htwo] using hn c
+
+/--
 Durrett 2019, Theorem 2.4.9 proof step: a countable sequence of supplied
 middle partitions with tail mass tending to zero gives the pathwise
 uniform-deviation conclusion on one a.s. event.
