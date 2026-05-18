@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V536
+## Live In-Thread Goal Prompt V537
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -198,6 +198,11 @@ zero-factor expectation-exists wrappers: under `IdentDistrib`, one integrable
 zero-mean transformed base marginal `f(X_0)` gives product integrability and
 zero expectation for finite/range/Ico and one-based products of `f(X_i)` that
 contain a factor, without requiring `HasLaw` hypotheses.
+V537 adds source-side iid/indexed-transform composed Chapter 2.1.13
+expectation-exists-and-value wrappers: under `IdentDistrib`, index-dependent
+measurable transforms `f_i(X_i)` have product integrability and
+product-of-base-expectations formulas over `f_i(X_0)` for finite/range/Ico and
+one-based products, without requiring `HasLaw` hypotheses.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -299,6 +304,10 @@ a different source shape.
 After V536, do not rebuild the source-side iid/common-transform composed
 Theorem 2.1.13 zero-factor expectation-exists wrappers for finite/range/Ico
 or one-based range/Ico/`Icc` products unless an exact later consumer needs a
+different source shape.
+After V537, do not rebuild the source-side iid/indexed-transform composed
+Theorem 2.1.13 expectation-exists-and-value wrappers for finite/range/Ico or
+one-based range/Ico/`Icc` products unless an exact later consumer needs a
 different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
@@ -442,9 +451,31 @@ one-based range/Ico/`Icc` products,
 solved source-side iid/common-transform composed Theorem 2.1.13 zero-factor
 expectation-exists wrappers for finite/range/Ico and one-based range/Ico/
 `Icc` products,
+solved source-side iid/indexed-transform composed Theorem 2.1.13
+expectation-exists-and-value wrappers for finite/range/Ico and one-based
+range/Ico/`Icc` products,
 or old app-level stale prompts.
 
-Latest verified target V536 adds source-side iid/common-transform composed
+Latest verified target V537 adds source-side iid/indexed-transform composed
+Chapter 2.1.13 expectation-exists-and-value wrappers:
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_comp_prod_eq_prod_integral_base_of_integrable_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_comp_prod_eq_prod_integral_base_of_integrable_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_comp_prod_eq_prod_integral_base_of_integrable_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_oneBased_Icc_comp_prod_eq_prod_integral_base_of_integrable_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_comp_prod_eq_prod_integral_base_oneBased_of_integrable_identDistrib`,
+and
+`durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_comp_prod_eq_prod_integral_base_oneBased_of_integrable_identDistrib`.
+These compose each indexed measurable transform `f_i` through
+`IdentDistrib (X_i) (X_0)`, transfer integrability from the base coordinate,
+and then reuse the source-side composed product formula.  They are the
+no-`HasLaw` source wrapper for Durrett's mixed-power factorization step, e.g.
+`E(X_i^3 X_j)` and `E(X_i^2 X_j X_k)`.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V536 adds source-side iid/common-transform composed
 Chapter 2.1.13 zero-factor expectation-exists wrappers:
 `durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_comp_prod_eq_zero_of_integrable_identDistrib_and_integral_eq_zero`,
 `durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_comp_prod_eq_zero_of_integrable_identDistrib_and_integral_eq_zero`,
@@ -457,10 +488,6 @@ These compose `IdentDistrib` through a common measurable transform `f`, transfer
 integrability and zero mean from `f(X_0)`, and then reuse the source-side
 zero-factor product package for the transformed family.  They are the no-
 `HasLaw` common-transform analogue of the V532 law-side iid zero-factor surface.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V535 adds source-side iid/common-transform composed
 Chapter 2.1.13 expectation-exists-and-power-value wrappers:
