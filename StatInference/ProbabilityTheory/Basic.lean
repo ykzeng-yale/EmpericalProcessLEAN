@@ -3894,6 +3894,66 @@ theorem durrett2019_theorem_2_1_13_iid_integral_Ico_law_prod_eq_pow_integral
       (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf (Finset.Ico m n)
 
 /--
+Durrett 2019, Theorem 2.1.13, one-based iid law-side range power form.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integral_range_law_prod_eq_pow_integral_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf : Integrable f μ)
+    (n : ℕ) :
+    ∫ ω, ∏ i ∈ Finset.range n, f (X (i + 1) ω) ∂P =
+      (∫ x, f x ∂μ) ^ n := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  have hShift_law : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) μ P := by
+    intro i
+    simpa [Nat.succ_eq_add_one] using hLaw (Nat.succ i)
+  exact
+    durrett2019_theorem_2_1_13_iid_integral_range_law_prod_eq_pow_integral
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      (μ := μ) (f := f) hShift_indep hShift_law hf n
+
+/--
+Durrett 2019, Theorem 2.1.13, one-based iid law-side interval power form.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integral_Ico_law_prod_eq_pow_integral_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf : Integrable f μ)
+    (m n : ℕ) :
+    ∫ ω, ∏ i ∈ Finset.Ico m n, f (X (i + 1) ω) ∂P =
+      (∫ x, f x ∂μ) ^ (n - m) := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  have hShift_law : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) μ P := by
+    intro i
+    simpa [Nat.succ_eq_add_one] using hLaw (Nat.succ i)
+  exact
+    durrett2019_theorem_2_1_13_iid_integral_Ico_law_prod_eq_pow_integral
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      (μ := μ) (f := f) hShift_indep hShift_law hf m n
+
+/--
 Durrett 2019, Theorem 2.1.13, law-side nonnegative finite-subfamily
 expectation factorization.
 
@@ -4248,6 +4308,50 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_prod_eq_prod_lintegra
     (P := P) (X := X) hX mX (Finset.Ico m n)
 
 /--
+Durrett 2019, Theorem 2.1.13, one-based nonnegative initial-range
+expectation factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_prod_eq_prod_lintegral_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.range n, X (i + 1) ω ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ ω, X (i + 1) ω ∂P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_prod_eq_prod_lintegral
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => mX (i + 1)) n
+
+/--
+Durrett 2019, Theorem 2.1.13, one-based nonnegative interval-block
+expectation factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_prod_eq_prod_lintegral_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (m n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Ico m n, X (i + 1) ω ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ ω, X (i + 1) ω ∂P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_prod_eq_prod_lintegral
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => mX (i + 1)) m n
+
+/--
 Durrett 2019, Theorem 2.1.13, real nonnegative finite-subfamily expectation
 factorization.  The real nonnegative variables are encoded by
 `ENNReal.ofReal`, matching the nonnegative expectation branch of the source
@@ -4310,6 +4414,54 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_ofReal_prod_eq_prod_l
       ∏ i ∈ Finset.Ico m n, ∫⁻ ω, ENNReal.ofReal (X i ω) ∂P :=
   durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_ofReal_prod_eq_prod_lintegral_ofReal
     (P := P) (X := X) hX mX hX_nonneg (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13, one-based real nonnegative initial-range
+expectation factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_ofReal_prod_eq_prod_lintegral_ofReal_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hX_nonneg : ∀ i ω, 0 ≤ X i ω)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.range n, X (i + 1) ω) ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ ω, ENNReal.ofReal (X (i + 1) ω) ∂P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_ofReal_prod_eq_prod_lintegral_ofReal
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => mX (i + 1))
+      (fun i ω => hX_nonneg (i + 1) ω) n
+
+/--
+Durrett 2019, Theorem 2.1.13, one-based real nonnegative interval-block
+expectation factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_ofReal_prod_eq_prod_lintegral_ofReal_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hX_nonneg : ∀ i ω, 0 ≤ X i ω)
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.Ico m n, X (i + 1) ω) ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ ω, ENNReal.ofReal (X (i + 1) ω) ∂P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_ofReal_prod_eq_prod_lintegral_ofReal
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => mX (i + 1))
+      (fun i ω => hX_nonneg (i + 1) ω) m n
 
 /--
 Durrett 2019, Theorem 2.1.13, zero-mean finite-product corollary.
@@ -4390,6 +4542,98 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_zero_of_integr
     ∫ ω, ∏ j ∈ Finset.Ico m n, X j ω ∂P = 0 :=
   durrett2019_theorem_2_1_13_iIndepFun_integral_finset_prod_eq_zero_of_integral_eq_zero
     (P := P) (X := X) hX mX hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, one-based initial-range product expectation
+factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_prod_integral_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, AEStronglyMeasurable (X i) P)
+    (n : ℕ) :
+    ∫ ω, ∏ i ∈ Finset.range n, X (i + 1) ω ∂P =
+      ∏ i ∈ Finset.range n, ∫ ω, X (i + 1) ω ∂P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_prod_integral
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => mX (i + 1)) n
+
+/--
+Durrett 2019, Theorem 2.1.13, one-based zero-mean initial-range product
+corollary.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_zero_of_integral_eq_zero_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, AEStronglyMeasurable (X i) P)
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hzero : ∫ ω, X (i + 1) ω ∂P = 0) :
+    ∫ ω, ∏ j ∈ Finset.range n, X (j + 1) ω ∂P = 0 := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integral_range_prod_eq_zero_of_integral_eq_zero
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => mX (i + 1)) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, one-based interval-block product expectation
+factorization.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_prod_integral_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, AEStronglyMeasurable (X i) P)
+    (m n : ℕ) :
+    ∫ ω, ∏ i ∈ Finset.Ico m n, X (i + 1) ω ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫ ω, X (i + 1) ω ∂P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_prod_integral
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => mX (i + 1)) m n
+
+/--
+Durrett 2019, Theorem 2.1.13, one-based zero-mean interval-block product
+corollary.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_zero_of_integral_eq_zero_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, AEStronglyMeasurable (X i) P)
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hzero : ∫ ω, X (i + 1) ω ∂P = 0) :
+    ∫ ω, ∏ j ∈ Finset.Ico m n, X (j + 1) ω ∂P = 0 := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_prod_eq_zero_of_integral_eq_zero
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => mX (i + 1)) hi hzero
 
 /--
 Durrett 2019, Theorem 2.1.13 support: a centered future partial-sum
