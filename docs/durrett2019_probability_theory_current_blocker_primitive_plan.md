@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V519
+## Live In-Thread Goal Prompt V520
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -123,6 +123,10 @@ V519 adds one-based Chapter 2.1.13 product-expectation wrappers for initial
 ranges and interval blocks: ordinary Bochner products, zero-factor
 corollaries, nonnegative `lintegral` products, real nonnegative
 `ENNReal.ofReal` products, and iid law-side range/Ico power displays.
+V520 adds the matching one-based law-side Chapter 2.1.13 range/Ico product
+expectation wrappers for non-iid dependent-type families, plus nonnegative and
+real nonnegative law-side versions and the remaining iid `lintegral` and
+`ENNReal.ofReal` power displays.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -159,6 +163,11 @@ product-expectation wrappers, zero-factor corollaries, nonnegative
 `lintegral` wrappers, real nonnegative `ENNReal.ofReal` wrappers, or iid
 law-side power displays unless an exact later consumer needs a different
 source shape.
+After V520, do not rebuild the one-based law-side Theorem 2.1.13 range/Ico
+product-expectation wrappers for non-iid families, their nonnegative
+`lintegral` and real nonnegative `ENNReal.ofReal` branches, or the remaining
+iid law-side nonnegative power displays unless an exact later consumer needs a
+different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -253,9 +262,32 @@ route,
 solved one-based Theorem 2.1.13 range/Ico product-expectation wrappers,
 zero-factor corollaries, nonnegative `lintegral` wrappers, real nonnegative
 `ENNReal.ofReal` wrappers, and iid law-side power displays,
+solved one-based law-side Theorem 2.1.13 range/Ico product-expectation
+wrappers for non-iid families, nonnegative and real nonnegative law-side
+branches, and the remaining iid law-side nonnegative power displays,
 or old app-level stale prompts.
 
-Latest verified target V519 adds one-based Chapter 2.1.13
+Latest verified target V520 adds one-based law-side Chapter 2.1.13
+product-expectation wrappers:
+`durrett2019_theorem_2_1_13_iIndepFun_integral_range_law_prod_eq_prod_integral_oneBased`,
+`durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_law_prod_eq_prod_integral_oneBased`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_prod_eq_prod_lintegral_oneBased`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_prod_eq_prod_lintegral_oneBased`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_law_prod_eq_pow_lintegral_oneBased`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_prod_eq_pow_lintegral_oneBased`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_ofReal_prod_eq_prod_lintegral_ofReal_oneBased`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_ofReal_prod_eq_prod_lintegral_ofReal_oneBased`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_law_ofReal_prod_eq_pow_lintegral_ofReal_oneBased`,
+and
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_ofReal_prod_eq_pow_lintegral_ofReal_oneBased`.
+These close the shifted `X_1, X_2, ...` law-side range/Ico product display for
+dependent non-iid families and the remaining nonnegative iid law-side power
+branches.  Next target: search for another genuinely missing 2.4.9 proof-step/
+final-display source wrapper, or add the next Chapter 2.1 product-law/product-
+expectation handoff that directly supports 2.4.9 or the adjacent
+Kolmogorov-maximal route.
+
+Previous verified target V519 adds one-based Chapter 2.1.13
 product-expectation wrappers:
 `durrett2019_theorem_2_1_13_iid_integral_range_law_prod_eq_pow_integral_oneBased`,
 `durrett2019_theorem_2_1_13_iid_integral_Ico_law_prod_eq_pow_integral_oneBased`,

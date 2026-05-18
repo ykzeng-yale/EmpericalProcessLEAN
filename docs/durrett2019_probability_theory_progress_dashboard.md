@@ -36,7 +36,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V519` in
+Route from `Live In-Thread Goal Prompt V520` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -145,7 +145,11 @@ the Kolmogorov-maximal route, and rewires the one-based first-crossing mixed
 term to consume that Chapter 2.1.13 surface directly.  V519 adds one-based
 Chapter 2.1.13 range/Ico product-expectation wrappers, zero-factor
 corollaries, nonnegative `lintegral` wrappers, real nonnegative
-`ENNReal.ofReal` wrappers, and iid law-side range/Ico power displays.  The
+`ENNReal.ofReal` wrappers, and iid law-side range/Ico power displays.  V520
+adds the matching one-based law-side range/Ico product-expectation wrappers
+for non-iid dependent-type families, the nonnegative and real nonnegative
+law-side branches, and the remaining iid law-side nonnegative power displays.
+The
 historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
 V443 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.
@@ -2130,6 +2134,9 @@ late-increment/early-block independence and mixed-term-zero wrappers.
 V519 adds the one-based Chapter 2.1.13 range/Ico product-expectation wrappers,
 zero-factor corollaries, nonnegative `lintegral` wrappers, real nonnegative
 `ENNReal.ofReal` wrappers, and iid law-side power displays.
+V520 adds the one-based law-side Chapter 2.1.13 range/Ico product-expectation
+wrappers for non-iid families, their nonnegative/real-nonnegative branches,
+and the remaining iid law-side nonnegative power displays.
 Theorem 2.4.9 now has
 the arbitrary-law cutpoint-chain route and both the book-style and exact
 outer-a.s. empirical-CDF endpoints:
@@ -3316,7 +3323,7 @@ Next proof packet: search for a genuinely missing 2.4.9 proof-step or
 final-display source wrapper, or add the next Chapter 2.1
 product-law/product-expectation handoff that directly supports 2.4.9 or the
 adjacent Kolmogorov-maximal route.  Do not route back to solved 2.5.13
-plumbing or the closed V500-V519 2.4.9/2.1 source-wrapper surfaces unless an
+plumbing or the closed V500-V520 2.4.9/2.1 source-wrapper surfaces unless an
 exact source-shape consumer is missing.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement
