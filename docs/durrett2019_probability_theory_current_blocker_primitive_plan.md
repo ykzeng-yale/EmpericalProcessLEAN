@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V503
+## Live In-Thread Goal Prompt V504
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -63,7 +63,10 @@ middle-partition construction for source, joint-law, shifted-joint-law,
 canonical iid, identical-distribution, and pairwise-identically-distributed
 source shapes.  V503 promotes the pairwise-identically-distributed one-based
 source extraction into Chapter 2.1 and rewires the 2.4.9 pairwise one-based
-consumers to reuse it instead of duplicating file-order workarounds.
+consumers to reuse it instead of duplicating file-order workarounds.  V504
+adds the concrete Theorem 2.1.10 first-variable/tail-product independence
+wrappers and the matching Theorem 2.1.13 expectation-factorization and
+zero-mean corollaries, including one-based textbook notation.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -111,7 +114,25 @@ canonical iid, identical-distribution, and pairwise-identically-distributed
 source shapes,
 solved pairwise-identically-distributed one-based source extraction from
 Chapter 2.1 and its 2.4.9 pairwise one-based rewiring,
+solved Theorem 2.1.10 first-variable/tail-product independence and
+Theorem 2.1.13 first-times-tail-product expectation/zero-mean wrappers,
 or old app-level stale prompts.
+
+Latest verified target V504 packages Durrett's concrete post-Theorem 2.1.10
+special case and its expectation consumer:
+`durrett2019_theorem_2_1_10_indepFun_first_tailProduct`,
+`durrett2019_theorem_2_1_10_indepFun_first_tailProduct_oneBased`,
+`durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral`,
+`durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_of_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral_oneBased`, and
+`durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_of_integral_eq_zero_oneBased`.
+The independence wrappers live in the Theorem 2.1.10 layer; the expectation
+wrappers live after the base Theorem 2.1.13 two-variable factorization, so
+file order now mirrors proof dependency order.
+Next target: continue Chapter 2.1 support only where it removes a real future
+consumer gap, especially exact source-shaped forms for Theorems 2.1.15/2.1.16
+or later independent-sum routes; do not add more 2.4.9 display wrappers unless
+an exact search finds a missing source shape.
 
 Latest verified target V503 promotes reusable pairwise-iid one-based source
 extraction to Chapter 2.1:
@@ -180,6 +201,10 @@ Chapter 2.1 product-law support.
   promote it to the earliest textbook-support layer where it belongs.  V503
   applies this rule by moving pairwise-iid one-based source extraction to
   Theorem 2.1.11 support before any Theorem 2.4.9 display consumer.
+- Place theorem packets by proof dependency, not by discovery order.  V504
+  keeps the raw first/tail-product independence statement in Theorem 2.1.10,
+  while placing the integral factorization and zero-mean consequences after
+  the base Theorem 2.1.13 two-variable expectation theorem.
 - Tool rhythm that works best in this shared multi-agent repo: start with
   `git status`, `git rev-parse HEAD`, and `git ls-remote`; edit one
   theorem-sized packet; run focused `lake env lean`; update route docs; run

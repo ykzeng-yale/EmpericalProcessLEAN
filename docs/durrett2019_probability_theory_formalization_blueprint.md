@@ -49,7 +49,7 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V503`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V504`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
@@ -106,7 +106,10 @@ from the final middle-partition construction for source, joint-law,
 shifted-joint-law, canonical iid, identical-distribution, and
 pairwise-identically-distributed source shapes.  V503 promotes pairwise-iid
 one-based source extraction to Chapter 2.1 and rewires the 2.4.9 pairwise
-one-based consumers to reuse that earlier theorem.
+one-based consumers to reuse that earlier theorem.  V504 adds the concrete
+Theorem 2.1.10 first-variable/tail-product independence wrappers and the
+matching Theorem 2.1.13 expectation-factorization and zero-mean corollaries in
+zero-based and one-based notation.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,

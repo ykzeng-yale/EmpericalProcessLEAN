@@ -453,6 +453,71 @@ theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator
       (measurable_const.indicator hA)
 
 /--
+Durrett 2019, Theorem 2.1.10, concrete first-variable/tail-product form.
+
+This packages the source sentence following Theorem 2.1.10: if a finite block
+of variables is independent, then the first variable is independent of the
+product of the later variables.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_first_tailProduct
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i)) (n : ℕ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (X 0) (fun ω => ∏ k ∈ Finset.Ico 1 n, X k ω) := by
+  have hdisj : Disjoint ({0} : Finset ℕ) (Finset.Ico 1 n) := by
+    rw [Finset.disjoint_left]
+    intro k hk_zero hk_tail
+    have hk : k = 0 := by simpa using hk_zero
+    have hk_one : 1 ≤ k := (Finset.mem_Ico.mp hk_tail).1
+    omega
+  have hfirst :
+      Measurable
+        (fun z : ((i : ({0} : Finset ℕ)) -> ℝ) =>
+          z ⟨0, by simp⟩) :=
+    measurable_pi_apply (⟨0, by simp⟩ : ({0} : Finset ℕ))
+  have htail :
+      Measurable
+        (fun z : ((i : Finset.Ico 1 n) -> ℝ) => ∏ i, z i) :=
+    Finset.measurable_fun_prod Finset.univ fun i _ =>
+      measurable_pi_apply i
+  have hblocks :=
+    durrett2019_theorem_2_1_10_indepFun_finset_block_functions
+      (P := P) (S := fun _ : ℕ => ℝ) (X := X)
+      hX_indep hX_meas ({0} : Finset ℕ) (Finset.Ico 1 n) hdisj
+      (φ := fun z : ((i : ({0} : Finset ℕ)) -> ℝ) => z ⟨0, by simp⟩)
+      (ψ := fun z : ((i : Finset.Ico 1 n) -> ℝ) => ∏ i, z i)
+      hfirst htail
+  convert hblocks using 1
+  · ext ω
+    simpa using
+      (Finset.prod_attach (Finset.Ico 1 n) (fun k : ℕ => X k ω)).symm
+
+/--
+Durrett 2019, Theorem 2.1.10, one-based first-variable/tail-product form.
+
+For Durrett's `X_1, ..., X_n` notation, `X_1` is independent of
+`X_2 * ... * X_n`.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_first_tailProduct_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i)) (n : ℕ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (X 1) (fun ω => ∏ k ∈ Finset.Ico 1 n, X (k + 1) ω) := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  exact
+    durrett2019_theorem_2_1_10_indepFun_first_tailProduct
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => hX_meas (i + 1)) n
+
+/--
 Durrett 2019, Theorem 2.1.10, two-variable measurable-function form.
 
 Measurable functions of two independent random variables are independent.
@@ -3464,6 +3529,83 @@ theorem durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral
     ∫ ω, X ω * Y ω ∂P = (∫ ω, X ω ∂P) * ∫ ω, Y ω ∂P := by
   exact StatInference.ProbabilityMeasure.indepFun_integral_mul_eq_mul_integral
     hXY hX hY
+
+/--
+Durrett 2019, Theorem 2.1.13 support: expectation factorization for the
+first variable times the later-block product.
+-/
+theorem durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i)) (n : ℕ) :
+    ∫ ω, X 0 ω * (∏ k ∈ Finset.Ico 1 n, X k ω) ∂P =
+      (∫ ω, X 0 ω ∂P) *
+        ∫ ω, ∏ k ∈ Finset.Ico 1 n, X k ω ∂P := by
+  have hindep :=
+    durrett2019_theorem_2_1_10_indepFun_first_tailProduct
+      (P := P) (X := X) hX_indep hX_meas n
+  have hfirst : AEStronglyMeasurable (X 0) P :=
+    (hX_meas 0).aestronglyMeasurable
+  have htail :
+      AEStronglyMeasurable (fun ω => ∏ k ∈ Finset.Ico 1 n, X k ω) P :=
+    (Finset.Ico 1 n).aestronglyMeasurable_fun_prod fun k _ =>
+      (hX_meas k).aestronglyMeasurable
+  exact
+    durrett2019_theorem_2_1_13_indepFun_integral_mul_eq_mul_integral
+      (P := P) (X := X 0)
+      (Y := fun ω => ∏ k ∈ Finset.Ico 1 n, X k ω)
+      hindep hfirst htail
+
+/--
+Durrett 2019, Theorem 2.1.13 support: a zero-mean first factor kills the
+first-variable/tail-product expectation.
+-/
+theorem durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_of_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i)) (n : ℕ)
+    (hzero : ∫ ω, X 0 ω ∂P = 0) :
+    ∫ ω, X 0 ω * (∏ k ∈ Finset.Ico 1 n, X k ω) ∂P = 0 := by
+  rw [durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral
+    (P := P) (X := X) hX_indep hX_meas n, hzero, zero_mul]
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based notation: expectation
+factorization for `X_1 * (X_2 * ... * X_n)`.
+-/
+theorem durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i)) (n : ℕ) :
+    ∫ ω, X 1 ω * (∏ k ∈ Finset.Ico 1 n, X (k + 1) ω) ∂P =
+      (∫ ω, X 1 ω ∂P) *
+        ∫ ω, ∏ k ∈ Finset.Ico 1 n, X (k + 1) ω ∂P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX_indep)
+  exact
+    durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => hX_meas (i + 1)) n
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based notation: a zero-mean
+`X_1` kills the expectation of `X_1 * (X_2 * ... * X_n)`.
+-/
+theorem durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_of_integral_eq_zero_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i)) (n : ℕ)
+    (hzero : ∫ ω, X 1 ω ∂P = 0) :
+    ∫ ω, X 1 ω * (∏ k ∈ Finset.Ico 1 n, X (k + 1) ω) ∂P = 0 := by
+  rw [durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral_oneBased
+    (P := P) (X := X) hX_indep hX_meas n, hzero, zero_mul]
 
 /--
 Durrett 2019, Theorem 2.1.13, finite-family expectation factorization.
