@@ -6616,6 +6616,145 @@ theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_oneBased_Icc_prod
         (P := P) (X := X) hX (fun i => (mX i).aestronglyMeasurable) hident n
 
 /--
+Durrett 2019, Theorem 2.1.13, iid finite zero-factor product with existence.
+
+For identically distributed independent variables, one integrable zero-mean
+base marginal supplies the product integrability hypotheses and the zero
+factor for every finite product that contains one variable from the family.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_prod_eq_zero_of_integrable_identDistrib_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ι -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    {s : Finset ι} {i0 i : ι}
+    (hident : ∀ j ∈ s,
+      _root_.ProbabilityTheory.IdentDistrib (X j) (X i0) P P)
+    (hbase_int : Integrable (X i0) P)
+    (hi : i ∈ s)
+    (hbase_zero : ∫ ω, X i0 ω ∂P = 0) :
+    Integrable (fun ω => ∏ j ∈ s, X j ω) P ∧
+      ∫ ω, ∏ j ∈ s, X j ω ∂P = 0 := by
+  have hzero_i : ∫ ω, X i ω ∂P = 0 :=
+    (hident i hi).integral_eq.trans hbase_zero
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_finset_prod_eq_zero_of_integrable_and_integral_eq_zero
+      (P := P) (X := X) hX mX hi
+      (fun j hj => ((hident j hj).integrable_iff).2 hbase_int) hzero_i
+
+/--
+Durrett 2019, Theorem 2.1.13, iid initial-range zero-factor product with
+existence.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_prod_eq_zero_of_integrable_identDistrib_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hbase_zero : ∫ ω, X 0 ω ∂P = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.range n, X j ω) P ∧
+      ∫ ω, ∏ j ∈ Finset.range n, X j ω ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_prod_eq_zero_of_integrable_identDistrib_and_integral_eq_zero
+    (P := P) (X := X) hX mX (s := Finset.range n) (i0 := 0)
+    (i := i) (fun j _hj => hident j) hbase_int hi hbase_zero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid interval-block zero-factor product with
+existence.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_prod_eq_zero_of_integrable_identDistrib_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hbase_zero : ∫ ω, X 0 ω ∂P = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.Ico m n, X j ω) P ∧
+      ∫ ω, ∏ j ∈ Finset.Ico m n, X j ω ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_prod_eq_zero_of_integrable_identDistrib_and_integral_eq_zero
+    (P := P) (X := X) hX mX (s := Finset.Ico m n) (i0 := 0)
+    (i := i) (fun j _hj => hident j) hbase_int hi hbase_zero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid zero-factor product with existence on the
+literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_oneBased_Icc_prod_eq_zero_of_integrable_identDistrib_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    {n i : ℕ} (hi : i ∈ Finset.Icc 1 n)
+    (hbase_zero : ∫ ω, X 0 ω ∂P = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.Icc 1 n, X j ω) P ∧
+      ∫ ω, ∏ j ∈ Finset.Icc 1 n, X j ω ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_prod_eq_zero_of_integrable_identDistrib_and_integral_eq_zero
+    (P := P) (X := X) hX mX (s := Finset.Icc 1 n) (i0 := 0)
+    (i := i) (fun j _hj => hident j) hbase_int hi hbase_zero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid one-based initial-range zero-factor product
+with existence.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_prod_eq_zero_oneBased_of_integrable_identDistrib_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hbase_zero : ∫ ω, X 0 ω ∂P = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.range n, X (j + 1) ω) P ∧
+      ∫ ω, ∏ j ∈ Finset.range n, X (j + 1) ω ∂P = 0 := by
+  have hzero_i : ∫ ω, X (i + 1) ω ∂P = 0 :=
+    (hident (i + 1)).integral_eq.trans hbase_zero
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero
+      (P := P) (X := X) hX mX hi
+      (fun j _hj => ((hident (j + 1)).integrable_iff).2 hbase_int) hzero_i
+
+/--
+Durrett 2019, Theorem 2.1.13, iid one-based interval-block zero-factor product
+with existence.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_prod_eq_zero_oneBased_of_integrable_identDistrib_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hbase_zero : ∫ ω, X 0 ω ∂P = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.Ico m n, X (j + 1) ω) P ∧
+      ∫ ω, ∏ j ∈ Finset.Ico m n, X (j + 1) ω ∂P = 0 := by
+  have hzero_i : ∫ ω, X (i + 1) ω ∂P = 0 :=
+    (hident (i + 1)).integral_eq.trans hbase_zero
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero
+      (P := P) (X := X) hX mX hi
+      (fun j _hj => ((hident (j + 1)).integrable_iff).2 hbase_int) hzero_i
+
+/--
 Durrett 2019, Theorem 2.1.13, law-side finite-subfamily
 expectation-exists-and-value formula.
 
