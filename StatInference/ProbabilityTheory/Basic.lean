@@ -8233,6 +8233,230 @@ theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_comp_prod_eq_
         exact hcomp.integral_eq
 
 /--
+Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform finite
+zero-factor product with existence.
+
+For an independent identically distributed source family, an index-dependent
+measurable product has zero expectation as soon as one base-coordinate
+transformed factor `f_i(X_i0)` has expectation zero.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_comp_prod_eq_zero_of_integrable_identDistrib_and_integral_base_eq_zero
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {f : ι -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    {s : Finset ι} {i0 i : ι}
+    (hident : ∀ j ∈ s,
+      _root_.ProbabilityTheory.IdentDistrib (X j) (X i0) P P)
+    (hf_int_base : ∀ j ∈ s, Integrable (fun ω => f j (X i0 ω)) P)
+    (hi : i ∈ s)
+    (hbase_zero : ∫ ω, f i (X i0 ω) ∂P = 0) :
+    Integrable (fun ω => ∏ j ∈ s, f j (X j ω)) P ∧
+      ∫ ω, ∏ j ∈ s, f j (X j ω) ∂P = 0 := by
+  have hf_int : ∀ j ∈ s, Integrable (fun ω => f j (X j ω)) P := by
+    intro j hj
+    have hcomp :
+        _root_.ProbabilityTheory.IdentDistrib
+          (fun ω : Ω => f j (X j ω)) (fun ω : Ω => f j (X i0 ω)) P P := by
+      simpa [Function.comp_def] using (hident j hj).comp (hf_meas j)
+    exact hcomp.integrable_iff.2 (hf_int_base j hj)
+  have hzero_i : ∫ ω, f i (X i ω) ∂P = 0 := by
+    have hcomp :
+        _root_.ProbabilityTheory.IdentDistrib
+          (fun ω : Ω => f i (X i ω)) (fun ω : Ω => f i (X i0 ω)) P P := by
+      simpa [Function.comp_def] using (hident i hi).comp (hf_meas i)
+    exact hcomp.integral_eq.trans hbase_zero
+  have hcomp_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun j : ι => fun ω : Ω => f j (X j ω)) := by
+    simpa [Function.comp_def] using
+      (durrett2019_theorem_2_1_10_iIndepFun_comp
+        (P := P) (S := fun _ : ι => S) (X := X) (f := f) hX hf_meas)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_finset_prod_eq_zero_of_integrable_and_integral_eq_zero
+      (P := P) (X := fun j : ι => fun ω : Ω => f j (X j ω))
+      hcomp_indep (fun j => (hf_meas j).comp (hX_meas j))
+      (s := s) hi hf_int hzero_i
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform initial-range
+zero-factor product with existence.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_comp_prod_eq_zero_of_integrable_identDistrib_and_integral_base_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hf_int_base : ∀ j ∈ Finset.range n, Integrable (fun ω => f j (X 0 ω)) P)
+    (hbase_zero : ∫ ω, f i (X 0 ω) ∂P = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.range n, f j (X j ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.range n, f j (X j ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_comp_prod_eq_zero_of_integrable_identDistrib_and_integral_base_eq_zero
+    (P := P) (X := X) (f := f)
+    hX hX_meas hf_meas (s := Finset.range n) (i0 := 0) (i := i)
+    (fun j _hj => hident j) hf_int_base hi hbase_zero
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform interval-block
+zero-factor product with existence.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_comp_prod_eq_zero_of_integrable_identDistrib_and_integral_base_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hf_int_base : ∀ j ∈ Finset.Ico m n, Integrable (fun ω => f j (X 0 ω)) P)
+    (hbase_zero : ∫ ω, f i (X 0 ω) ∂P = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.Ico m n, f j (X j ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.Ico m n, f j (X j ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_comp_prod_eq_zero_of_integrable_identDistrib_and_integral_base_eq_zero
+    (P := P) (X := X) (f := f)
+    hX hX_meas hf_meas (s := Finset.Ico m n) (i0 := 0) (i := i)
+    (fun j _hj => hident j) hf_int_base hi hbase_zero
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform
+zero-factor product with existence on the literal one-based index set
+`{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_oneBased_Icc_comp_prod_eq_zero_of_integrable_identDistrib_and_integral_base_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    {n i : ℕ} (hi : i ∈ Finset.Icc 1 n)
+    (hf_int_base : ∀ j ∈ Finset.Icc 1 n, Integrable (fun ω => f j (X 0 ω)) P)
+    (hbase_zero : ∫ ω, f i (X 0 ω) ∂P = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.Icc 1 n, f j (X j ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.Icc 1 n, f j (X j ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_comp_prod_eq_zero_of_integrable_identDistrib_and_integral_base_eq_zero
+    (P := P) (X := X) (f := f)
+    hX hX_meas hf_meas (s := Finset.Icc 1 n) (i0 := 0) (i := i)
+    (fun j _hj => hident j) hf_int_base hi hbase_zero
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform one-based
+initial-range zero-factor product with existence.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_comp_prod_eq_zero_oneBased_of_integrable_identDistrib_and_integral_base_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hf_int_base : ∀ j ∈ Finset.range n,
+      Integrable (fun ω => f (j + 1) (X 0 ω)) P)
+    (hbase_zero : ∫ ω, f (i + 1) (X 0 ω) ∂P = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.range n, f (j + 1) (X (j + 1) ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.range n, f (j + 1) (X (j + 1) ω) ∂P = 0 := by
+  have hf_int : ∀ j ∈ Finset.range n,
+      Integrable (fun ω => f (j + 1) (X (j + 1) ω)) P := by
+    intro j hj
+    have hcomp :
+        _root_.ProbabilityTheory.IdentDistrib
+          (fun ω : Ω => f (j + 1) (X (j + 1) ω))
+          (fun ω : Ω => f (j + 1) (X 0 ω)) P P := by
+      simpa [Function.comp_def] using (hident (j + 1)).comp (hf_meas (j + 1))
+    exact hcomp.integrable_iff.2 (hf_int_base j hj)
+  have hzero_i : ∫ ω, f (i + 1) (X (i + 1) ω) ∂P = 0 := by
+    have hcomp :
+        _root_.ProbabilityTheory.IdentDistrib
+          (fun ω : Ω => f (i + 1) (X (i + 1) ω))
+          (fun ω : Ω => f (i + 1) (X 0 ω)) P P := by
+      simpa [Function.comp_def] using (hident (i + 1)).comp (hf_meas (i + 1))
+    exact hcomp.integral_eq.trans hbase_zero
+  have hcomp_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun j : ℕ => fun ω : Ω => f j (X j ω)) := by
+    simpa [Function.comp_def] using
+      (durrett2019_theorem_2_1_10_iIndepFun_comp
+        (P := P) (S := fun _ : ℕ => S) (X := X) (f := f) hX hf_meas)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero
+      (P := P) (X := fun j : ℕ => fun ω : Ω => f j (X j ω))
+      hcomp_indep (fun j => (hf_meas j).comp (hX_meas j))
+      hi hf_int hzero_i
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform one-based
+interval-block zero-factor product with existence.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_comp_prod_eq_zero_oneBased_of_integrable_identDistrib_and_integral_base_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : ∀ i, Measurable (f i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hf_int_base : ∀ j ∈ Finset.Ico m n,
+      Integrable (fun ω => f (j + 1) (X 0 ω)) P)
+    (hbase_zero : ∫ ω, f (i + 1) (X 0 ω) ∂P = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.Ico m n, f (j + 1) (X (j + 1) ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.Ico m n, f (j + 1) (X (j + 1) ω) ∂P = 0 := by
+  have hf_int : ∀ j ∈ Finset.Ico m n,
+      Integrable (fun ω => f (j + 1) (X (j + 1) ω)) P := by
+    intro j hj
+    have hcomp :
+        _root_.ProbabilityTheory.IdentDistrib
+          (fun ω : Ω => f (j + 1) (X (j + 1) ω))
+          (fun ω : Ω => f (j + 1) (X 0 ω)) P P := by
+      simpa [Function.comp_def] using (hident (j + 1)).comp (hf_meas (j + 1))
+    exact hcomp.integrable_iff.2 (hf_int_base j hj)
+  have hzero_i : ∫ ω, f (i + 1) (X (i + 1) ω) ∂P = 0 := by
+    have hcomp :
+        _root_.ProbabilityTheory.IdentDistrib
+          (fun ω : Ω => f (i + 1) (X (i + 1) ω))
+          (fun ω : Ω => f (i + 1) (X 0 ω)) P P := by
+      simpa [Function.comp_def] using (hident (i + 1)).comp (hf_meas (i + 1))
+    exact hcomp.integral_eq.trans hbase_zero
+  have hcomp_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun j : ℕ => fun ω : Ω => f j (X j ω)) := by
+    simpa [Function.comp_def] using
+      (durrett2019_theorem_2_1_10_iIndepFun_comp
+        (P := P) (S := fun _ : ℕ => S) (X := X) (f := f) hX hf_meas)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero
+      (P := P) (X := fun j : ℕ => fun ω : Ω => f j (X j ω))
+      hcomp_indep (fun j => (hf_meas j).comp (hX_meas j))
+      hi hf_int hzero_i
+
+/--
 Durrett 2019, Theorem 2.1.13, source-side composed finite zero-factor
 product with existence.
 
