@@ -18,10 +18,13 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
 6. Use only the efficient live `/goal` prompt in the current blocker plan for
    the next proof packet; the solved-progress ledgers are evidence, not
    instructions to replay.
+7. Keep a methodology record with each frontier update: note which proof
+   pattern improved throughput, which blocker remains structural, and which
+   possible task would create redundant work.
 
 Current frontier: Theorem 5.41 now has a compiled positive-sample common-core
-continuous-linear-map square-matrix determinant affine theta0-offset
-offset source. It states the limit theorem for the explicit estimator
+continuous-linear-map square-matrix determinant affine theta0-offset-mean
+source. It states the limit theorem for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
 finite estimating-equation identity from a pointwise common-core affine display
 and a common core supplied by a square real matrix through
@@ -42,8 +45,8 @@ observation-law coordinate integrability, derives target convergence and
 consistency from that average convergence and local inverse stability derived
 from ordinary continuity at the limiting target, derives the inverse value at
 the limiting target from the inverse laws, derives the population common-core
-equation from the affine display and the coordinate mean-zero estimating
-equation, packages the finite equation as exact-root-set membership, prepends
+equation from the population offset-mean equation, packages the finite
+equation as exact-root-set membership, prepends
 `theta0` at sample size zero, feeds the
 existing exact-root-set source endpoint, and shifts the distributional
 conclusion back along `Nat.succ`. This keeps the live route focused on actual
@@ -55,21 +58,21 @@ finite-sum-zero hypotheses, and it no longer asks for inverse coordinate
 measurability, raw common-core injectivity-as-left-inverse, raw ker/range
 nonsingularity facts, raw function-space finrank equality, raw common-core
 injectivity, raw observation-offset coordinate measurability, raw
-observation-offset coordinate integrability, a raw population common-core
-equation, or a raw right-inverse value at the limiting target.
+observation-offset coordinate integrability, the direct coordinate mean-zero
+field, or a raw right-inverse value at the limiting target.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMeanSource`.
 
 The newest wrapper adds
-`vaart1998_observationOffset_coordinate_measurable_of_commonAffine_theta0`,
-`vaart1998_observationOffset_integrable_of_commonAffine_theta0_memLp`, and
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetSource`.
-The next proof layer should derive the coordinate mean-zero equation,
-theta0-coordinate `MemLp 2`, or theta0-coordinate measurability from a
-concrete score/estimating-map model, or instantiate the first source-shaped
-textbook Theorem 5.41 example that can use this theta0-offset square-matrix
-determinant route.
+`vaart1998_observationEstimatingMapTheta0_coordinate_mean_zero_of_commonAffine_offsetMean`
+and
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMeanSource`.
+The next proof layer should derive theta0-coordinate `MemLp 2`,
+theta0-coordinate measurability, or the population offset-mean equation from
+a concrete score/estimating-map model, or instantiate the first source-shaped
+textbook Theorem 5.41 example that can use this theta0-offset-mean
+square-matrix determinant route.
 
 The previous wrapper adds
 `vaart1998_squareMatrixCommonObservationCoreLinear_injective_of_isUnit_det`

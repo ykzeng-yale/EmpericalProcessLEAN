@@ -16,7 +16,7 @@ The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
 Latest verified packet: positive-sample common-core continuous-linear-map
-square-matrix determinant affine theta0-offset source for
+square-matrix determinant affine theta0-offset-mean source for
 Theorem 5.41.
 The live endpoint now states the asymptotic-normality handoff for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
@@ -33,6 +33,9 @@ derives coordinate measurability and continuity of that inverse from
 mathlib's continuous linear map API, derives observation-offset coordinate
 measurability and integrability from the affine display at `theta0` together
 with theta0-coordinate measurability and `MemLp 2` of the estimating map,
+derives the coordinate mean-zero estimating equation at `theta0` from the
+population common-core equation `commonObservationCoreMatrix.mulVecLin theta0
+= -E[offset]`,
 derives coordinate measurability of the explicit inverse estimator from these
 derived offset fields, derives the canonical
 product-space offset integrability, independence, identical distribution, and
@@ -40,9 +43,7 @@ positive-sample offset-average convergence from observation-law coordinate
 integrability, derives target convergence and consistency from that average
 convergence plus local inverse stability derived from ordinary continuity at
 the limiting target, derives the limiting inverse value from the inverse
-laws, and derives the
-population common-core equation from the affine display plus the coordinate
-mean-zero estimating equation, turns the finite equation into exact root-set
+laws, turns the finite equation into exact root-set
 membership,
 prepends `theta0` at sample size zero, reuses the existing exact-root-set
 Theorem 5.41 source endpoint, and shifts the distributional conclusion back by
@@ -51,24 +52,24 @@ obstruction plus the offset-average, product-space offset-iid, raw local
 inverse-stability, common-core-target, estimator-consistency,
 estimator-coordinate-measurability, direct root-set-membership, and
 finite-sum-zero hypotheses, the inverse coordinate-measurability hypothesis,
-the raw common-core injectivity hypotheses, the raw population
-common-core equation, the raw right-inverse-value hypothesis, and the raw
-ker/range nonsingularity hypotheses and the raw function-space finrank
-equality, raw observation-offset coordinate measurability, and raw
-observation-offset coordinate integrability from the current route.
+the raw common-core injectivity hypotheses, the raw right-inverse-value
+hypothesis, the direct coordinate mean-zero hypothesis, and the raw ker/range
+nonsingularity hypotheses and the raw function-space finrank equality, raw
+observation-offset coordinate measurability, and raw observation-offset
+coordinate integrability from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMeanSource`.
 
-The newest theta0 offset packet adds
-`vaart1998_observationOffset_coordinate_measurable_of_commonAffine_theta0`,
-`vaart1998_observationOffset_integrable_of_commonAffine_theta0_memLp`, and
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetSource`.
-The next blocker is to derive the coordinate mean-zero equation,
-theta0-coordinate `MemLp 2`, or theta0-coordinate measurability from a
-concrete score/estimating-map model, or instantiate the first source-shaped
-textbook Theorem 5.41 example that can use the theta0-offset square-matrix
-determinant route.
+The newest theta0 offset-mean packet adds
+`vaart1998_observationEstimatingMapTheta0_coordinate_mean_zero_of_commonAffine_offsetMean`
+and
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMeanSource`.
+The next blocker is to derive theta0-coordinate `MemLp 2`,
+theta0-coordinate measurability, or the population offset-mean equation from
+a concrete score/estimating-map model, or instantiate the first source-shaped
+textbook Theorem 5.41 example that can use the theta0-offset-mean
+square-matrix determinant route.
 
 The previous square-matrix determinant packet adds
 `vaart1998_squareMatrixCommonObservationCoreLinear_injective_of_isUnit_det`

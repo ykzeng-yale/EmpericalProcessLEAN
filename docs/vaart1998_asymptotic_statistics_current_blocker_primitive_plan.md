@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMeanSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -47,8 +47,12 @@ compiled common-core route. It derives observation-offset coordinate
 measurability from the affine display at `theta0` and coordinate
 measurability of the estimating map at `theta0`; it derives
 observation-offset coordinate integrability from the same affine display and
-the `MemLp 2` assumptions on the estimating map at `theta0`. From these
-derived offset fields it derives the product-space zero-coordinate
+the `MemLp 2` assumptions on the estimating map at `theta0`. It derives the
+coordinate mean-zero estimating equation at `theta0` from the population
+common-core equation
+`LinearMap.toContinuousLinearMap commonObservationCoreMatrix.mulVecLin theta0
+= -E[offset]`. From these derived offset fields it derives the product-space
+zero-coordinate
 integrability,
 pairwise independence, identical distribution, and positive-sample
 offset-average convergence from the canonical `Measure.infinitePi`
@@ -57,9 +61,7 @@ consistency, and coordinate measurability of the explicit inverse estimator.
 It derives the local `edist` inverse-stability field from ordinary
 continuity of the continuous linear inverse at the negative observation-law
 offset mean. The right-inverse value at that point is derived from
-the two inverse laws and the population common-core equation. That population
-equation is itself derived from the affine display and the coordinate
-mean-zero estimating equation at `theta0`.
+the two inverse laws and the population common-core equation.
 It proves the textbook finite estimating-equation identity internally,
 packages it as exact root-set membership, prepends `theta0` at sample size
 zero, applies the compiled exact-root-set Theorem 5.41 source endpoint, and
@@ -70,12 +72,19 @@ product-space offset integrability, offset independence, offset identical
 distribution, raw local inverse stability, common-core target convergence,
 estimator consistency, estimator coordinate measurability, root-set
 membership, finite-sum zero, inverse coordinate measurability, raw local
-inverse continuity, raw common-core injectivity, raw population common-core
-equation, raw right-inverse value, raw function-space finrank equality,
-observation-offset coordinate measurability, or observation-offset coordinate
-integrability directly for this square-matrix route.
+inverse continuity, raw common-core injectivity, raw right-inverse value, raw
+function-space finrank equality, observation-offset coordinate measurability,
+observation-offset coordinate integrability, or direct coordinate mean-zero
+for this square-matrix route.
 
-The newest theta0 offset packet adds
+The newest theta0 offset-mean packet adds
+`vaart1998_observationEstimatingMapTheta0_coordinate_mean_zero_of_commonAffine_offsetMean`
+and
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMeanSource`.
+It removes the direct coordinate mean-zero field by deriving it from the
+population offset-mean equation and the affine display.
+
+The previous theta0 offset packet adds
 `vaart1998_observationOffset_coordinate_measurable_of_commonAffine_theta0`,
 `vaart1998_observationOffset_integrable_of_commonAffine_theta0_memLp`, and
 `vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetSource`.
@@ -1808,6 +1817,31 @@ Operating rules:
 8. Stage only Vaart files, commit a theorem-specific message, push, and leave
    unrelated user or agent edits untouched.
 
+Methodology notes for future Vaart and statistical-theory formalization
+packets:
+
+- Treat the live endpoint signature as the source of truth. Before editing,
+  write down which remaining assumption is being discharged and which prior
+  wrapper will consume the new lemma.
+- Prefer forward source bridges over reverse bookkeeping. A useful packet
+  should replace a caller-facing statistical hypothesis by a more textbook
+  source condition, not repackage an already solved internal field.
+- Search local `StatInference` and mathlib before creating infrastructure.
+  Reuse matrix nonsingularity, finite-dimensional linear-map, continuous
+  linear map, product-measure, `MemLp`, and measurability APIs whenever they
+  already match the proof obligation.
+- Use read-only helper agents for API scouting and blocker diagnosis, and use
+  disjoint worktrees only when the write scope is independent. Do not use
+  agents to restate the historical ledger or to explore solved subgoals.
+- Keep route docs short at the top and long history below. The top prompt
+  should name only the current endpoint, what was just removed, and the next
+  unsolved source fields.
+- Avoid low-efficiency packets that add parallel wrappers with the same
+  assumptions, duplicate old source transforms, or generalize an API before a
+  concrete textbook example requires it.
+- After each packet, update this methodology if the work exposed a new
+  efficient pattern, a repeated blocker, or a source of redundant proof work.
+
 The ledger below is historical evidence, not a queue to replay.
 
 ## Current Blocker
@@ -3045,25 +3079,30 @@ compiling:
    feeds that display into the finite Taylor-zero action-bound endpoint.
 
 Latest verified Vaart frontier before the next packet:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMeanSource`.
 
-The latest theorem-sized packet removes the raw observation-offset coordinate
-measurability and integrability fields by deriving them from the pointwise
-affine display at `theta0`, theta0-coordinate measurability, and
-theta0-coordinate `MemLp 2`. The live route now assumes the pointwise affine
-estimating-equation display against `commonObservationCoreMatrix.mulVecLin`,
-the determinant nonsingularity source, theta0-coordinate measurability,
-theta0-coordinate `MemLp 2`, and the coordinate mean-zero equation at
-`theta0`.
+The latest theorem-sized packet adds
+`vaart1998_observationEstimatingMapTheta0_coordinate_mean_zero_of_commonAffine_offsetMean`
+and
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetMeanSource`.
+The live route now derives the coordinate mean-zero estimating equation at
+`theta0` from the population common-core equation
+`commonObservationCoreMatrix.mulVecLin theta0 = -E[offset]`. It therefore no
+longer asks for the coordinate mean-zero field directly. The remaining live
+source fields are the pointwise affine estimating-equation display against
+`commonObservationCoreMatrix.mulVecLin`, the determinant nonsingularity source,
+theta0-coordinate measurability, theta0-coordinate `MemLp 2`, and the
+population offset-mean equation.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint. Priority order:
 
-1. Derive the coordinate mean-zero equation, theta0-coordinate `MemLp 2`, or
-   theta0-coordinate measurability from a concrete score/estimating-map model.
+1. Derive theta0-coordinate `MemLp 2` or theta0-coordinate measurability from
+   a concrete score/estimating-map model, or package a concrete source for the
+   population offset-mean equation.
 2. Instantiate the endpoint for the first source-shaped textbook example of
    Theorem 5.41 that can reuse the compiled positive-sample injective
-   theta0-offset square-matrix determinant route.
+   theta0-offset-mean square-matrix determinant route.
 3. Generalize the determinant source from the square same-index case to
    reindexed equal-cardinality parameter and observation coordinate types
    only if that directly supports a concrete textbook example.
