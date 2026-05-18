@@ -7434,6 +7434,158 @@ theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_law_prod_eq_z
     hX hX_meas hLaw (fun _ => hf_meas) (fun _ => hf) hi hzero
 
 /--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform finite
+expectation-exists-and-value formula.
+
+This is the common-law `HasLaw` form for mixed powers/functions: independent
+variables with common law `μ` and index-dependent integrable transforms
+factor as the product of the law-side expectations.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_law_indexed_prod_eq_prod_integral
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {μ : Measure S}
+    {f : ι -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) μ)
+    (s : Finset ι) :
+    Integrable (fun ω => ∏ i ∈ s, f i (X i ω)) P ∧
+      ∫ ω, ∏ i ∈ s, f i (X i ω) ∂P =
+        ∏ i ∈ s, ∫ x, f i x ∂μ :=
+  durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_finset_law_prod_eq_prod_integral
+    (P := P) (S := fun _ : ι => S) (X := X)
+    (μ := fun _ : ι => μ) (f := f)
+    hX hX_meas hLaw hf_meas hf s
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform initial-range
+expectation-exists-and-value formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_law_indexed_prod_eq_prod_integral
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) μ)
+    (n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.range n, f i (X i ω)) P ∧
+      ∫ ω, ∏ i ∈ Finset.range n, f i (X i ω) ∂P =
+        ∏ i ∈ Finset.range n, ∫ x, f i x ∂μ :=
+  durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_law_indexed_prod_eq_prod_integral
+    (P := P) (X := X) (μ := μ) (f := f)
+    hX hX_meas hLaw hf_meas hf (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform interval-block
+expectation-exists-and-value formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_law_indexed_prod_eq_prod_integral
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) μ)
+    (m n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.Ico m n, f i (X i ω)) P ∧
+      ∫ ω, ∏ i ∈ Finset.Ico m n, f i (X i ω) ∂P =
+        ∏ i ∈ Finset.Ico m n, ∫ x, f i x ∂μ :=
+  durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_law_indexed_prod_eq_prod_integral
+    (P := P) (X := X) (μ := μ) (f := f)
+    hX hX_meas hLaw hf_meas hf (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform
+expectation-exists-and-value formula on the literal one-based index set
+`{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_oneBased_Icc_law_indexed_prod_eq_prod_integral
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) μ)
+    (n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.Icc 1 n, f i (X i ω)) P ∧
+      ∫ ω, ∏ i ∈ Finset.Icc 1 n, f i (X i ω) ∂P =
+        ∏ i ∈ Finset.Icc 1 n, ∫ x, f i x ∂μ :=
+  durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_law_indexed_prod_eq_prod_integral
+    (P := P) (X := X) (μ := μ) (f := f)
+    hX hX_meas hLaw hf_meas hf (Finset.Icc 1 n)
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform one-based
+initial-range expectation-exists-and-value formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_range_law_indexed_prod_eq_prod_integral_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) μ)
+    (n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.range n, f (i + 1) (X (i + 1) ω)) P ∧
+      ∫ ω, ∏ i ∈ Finset.range n, f (i + 1) (X (i + 1) ω) ∂P =
+        ∏ i ∈ Finset.range n, ∫ x, f (i + 1) x ∂μ :=
+  durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_law_prod_eq_prod_integral_oneBased
+    (P := P) (S := fun _ : ℕ => S) (X := X)
+    (μ := fun _ : ℕ => μ) (f := f)
+    hX hX_meas hLaw hf_meas hf n
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform one-based
+interval-block expectation-exists-and-value formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_law_indexed_prod_eq_prod_integral_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) μ)
+    (m n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.Ico m n, f (i + 1) (X (i + 1) ω)) P ∧
+      ∫ ω, ∏ i ∈ Finset.Ico m n, f (i + 1) (X (i + 1) ω) ∂P =
+        ∏ i ∈ Finset.Ico m n, ∫ x, f (i + 1) x ∂μ :=
+  durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_law_prod_eq_prod_integral_oneBased
+    (P := P) (S := fun _ : ℕ => S) (X := X)
+    (μ := fun _ : ℕ => μ) (f := f)
+    hX hX_meas hLaw hf_meas hf m n
+
+/--
 Durrett 2019, Theorem 2.1.13, source-side composed finite-subfamily
 expectation-exists-and-value formula.
 
