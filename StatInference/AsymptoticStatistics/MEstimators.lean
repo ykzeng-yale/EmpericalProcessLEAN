@@ -48305,6 +48305,102 @@ theorem
   exact eq_neg_of_add_eq_zero_left hsum_zero
 
 /--
+The observation-offset coordinate is measurable when the affine display is
+evaluated at `theta0` and the estimating-map coordinate at `theta0` is
+measurable.
+-/
+theorem
+    vaart1998_observationOffset_coordinate_measurable_of_commonAffine_theta0
+    {Observation Coord Param : Type*} [MeasurableSpace Observation]
+    {theta0 : Param -> ℝ}
+    (commonObservationCore : (Param -> ℝ) -> Coord -> ℝ)
+    (observationEstimatingMap : Observation -> (Param -> ℝ) -> Coord -> ℝ)
+    (observationOffset : Observation -> Coord -> ℝ)
+    (hObservationEstimatingMapTheta0_coordinate_meas : ∀ coordinate : Coord,
+      Measurable
+        (fun observation : Observation =>
+          observationEstimatingMap observation theta0 coordinate))
+    (hObservationEstimatingMap_commonAffine : ∀ observation : Observation,
+      ∀ theta : Param -> ℝ,
+        observationEstimatingMap observation theta =
+          commonObservationCore theta + observationOffset observation) :
+    ∀ coordinate : Coord,
+      Measurable
+        (fun observation : Observation =>
+          observationOffset observation coordinate) := by
+  intro coordinate
+  have hOffset_display :
+      (fun observation : Observation =>
+        observationOffset observation coordinate) =
+      (fun observation : Observation =>
+        observationEstimatingMap observation theta0 coordinate -
+          commonObservationCore theta0 coordinate) := by
+    funext observation
+    have hAffine_coordinate :=
+      congrFun (hObservationEstimatingMap_commonAffine observation theta0)
+        coordinate
+    have hAffine_coordinate' :
+        observationEstimatingMap observation theta0 coordinate =
+          commonObservationCore theta0 coordinate +
+            observationOffset observation coordinate := by
+      simpa [Pi.add_apply] using hAffine_coordinate
+    linarith
+  rw [hOffset_display]
+  exact
+    (hObservationEstimatingMapTheta0_coordinate_meas coordinate).sub
+      measurable_const
+
+/--
+The observation-offset coordinate is integrable when the affine display is
+evaluated at `theta0` and the estimating-map coordinate at `theta0` has a
+second moment.
+-/
+theorem
+    vaart1998_observationOffset_integrable_of_commonAffine_theta0_memLp
+    {Observation Coord Param : Type*} [MeasurableSpace Observation]
+    {observationLaw : Measure Observation} [IsProbabilityMeasure observationLaw]
+    {theta0 : Param -> ℝ}
+    (commonObservationCore : (Param -> ℝ) -> Coord -> ℝ)
+    (observationEstimatingMap : Observation -> (Param -> ℝ) -> Coord -> ℝ)
+    (observationOffset : Observation -> Coord -> ℝ)
+    (hObservationEstimatingMapTheta0_coordinate_memLp : ∀ coordinate : Coord,
+      MemLp
+        (fun observation : Observation =>
+          observationEstimatingMap observation theta0 coordinate)
+        2 observationLaw)
+    (hObservationEstimatingMap_commonAffine : ∀ observation : Observation,
+      ∀ theta : Param -> ℝ,
+        observationEstimatingMap observation theta =
+          commonObservationCore theta + observationOffset observation) :
+    ∀ coordinate : Coord,
+      Integrable
+        (fun observation : Observation =>
+          observationOffset observation coordinate)
+        observationLaw := by
+  intro coordinate
+  have hOffset_display :
+      (fun observation : Observation =>
+        observationOffset observation coordinate) =
+      (fun observation : Observation =>
+        observationEstimatingMap observation theta0 coordinate -
+          commonObservationCore theta0 coordinate) := by
+    funext observation
+    have hAffine_coordinate :=
+      congrFun (hObservationEstimatingMap_commonAffine observation theta0)
+        coordinate
+    have hAffine_coordinate' :
+        observationEstimatingMap observation theta0 coordinate =
+          commonObservationCore theta0 coordinate +
+            observationOffset observation coordinate := by
+      simpa [Pi.add_apply] using hAffine_coordinate
+    linarith
+  rw [hOffset_display]
+  exact
+    ((hObservationEstimatingMapTheta0_coordinate_memLp coordinate).integrable
+        (by norm_num)).sub
+      (integrable_const (commonObservationCore theta0 coordinate))
+
+/--
 A left inverse for the common observation core is a direct source of
 injectivity.  In the linear model route this left inverse is usually the same
 continuous linear inverse used to define the explicit estimator.
@@ -50328,6 +50424,187 @@ theorem
       (vaart1998_squareMatrixCommonObservationCoreLinear_injective_of_isUnit_det
         commonObservationCoreMatrix hCommonObservationCore_det)
       rfl
+      hObservationOffset_coordinate_meas hObservationOffset_integrable
+      hEnvelope_meas hAbsEnvelope_integrable
+      hObservationSecondDerivative_measurable hObservationSecondDerivative_bound
+      hContDiffObservationEstimatingMap_univ
+      hObservationDerivativeAt_eq_fderiv_observationEstimatingMap
+      hContDiffObservationDerivativeAt_univ
+      hObservationSecondDerivative_eq_fderiv_observationDerivativeAt
+
+/--
+van der Vaart 1998, Theorem 5.41, positive-sample square-matrix common-core
+determinant source endpoint with observation-offset fields derived at
+`theta0`.
+
+The affine display expresses the offset as the estimating map at `theta0`
+minus the constant common-core value.  Thus coordinate measurability and
+integrability of the offset follow from the existing coordinate measurability
+and `MemLp 2` assumptions on the estimating map at `theta0`.
+-/
+theorem
+    vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetSource
+    {Ω' Observation Idx : Type*} [Fintype Idx] [DecidableEq Idx]
+    [MeasurableSpace Ω'] {Q : Measure Ω'} [IsProbabilityMeasure Q]
+    [MeasurableSpace Observation]
+    [PseudoMetricSpace (Idx -> ℝ)]
+    [SecondCountableTopology (Idx -> ℝ)] [BorelSpace (Idx -> ℝ)]
+    [OpensMeasurableSpace (Idx -> ℝ)] [CompleteSpace (Idx -> ℝ)]
+    [MeasurableSub₂ (Idx -> ℝ)] [MeasurableSMul₂ ℝ (Idx -> ℝ)]
+    [PseudoMetricSpace (Idx × Idx -> ℝ)]
+    [SecondCountableTopology (Idx × Idx -> ℝ)]
+    [BorelSpace (Idx × Idx -> ℝ)]
+    [OpensMeasurableSpace (Idx × Idx -> ℝ)]
+    [CompleteSpace (Idx × Idx -> ℝ)]
+    [SecondCountableTopology ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [OpensMeasurableSpace ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [MeasurableAdd₂ ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [MeasurableConstSMul ℝ ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [MeasurableAdd₂ ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    [MeasurableConstSMul ℝ
+      ((Idx -> ℝ) →L[ℝ] (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))]
+    (V : (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))
+    (Vinv : (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))
+    (observationEstimatingMap : Observation -> (Idx -> ℝ) -> Idx -> ℝ)
+    (observationDerivativeAt :
+      Observation -> (Idx -> ℝ) ->
+        (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))
+    (observationSecondDerivative :
+      Observation -> (Idx -> ℝ) →L[ℝ] (Idx -> ℝ) →L[ℝ] (Idx -> ℝ))
+    (envelope : Observation -> ℝ)
+    {observationLaw : Measure Observation} [IsProbabilityMeasure observationLaw]
+    {theta0 : Idx -> ℝ}
+    (commonObservationCoreMatrix : Matrix Idx Idx ℝ)
+    (observationOffset : Observation -> Idx -> ℝ)
+    {Z : Ω' -> Idx -> ℝ}
+    (hLeftInverse : ∀ x : Idx -> ℝ, Vinv (V x) = x)
+    (hObservationEstimatingMapTheta0_coordinate_meas : ∀ coordinate : Idx,
+      Measurable
+        (fun observation : Observation =>
+          observationEstimatingMap observation theta0 coordinate))
+    (hObservationEstimatingMapTheta0_coordinate_memLp : ∀ coordinate : Idx,
+      MemLp
+        (fun observation : Observation =>
+          observationEstimatingMap observation theta0 coordinate)
+        2 observationLaw)
+    (hObservationEstimatingMapTheta0_coordinate_mean_zero :
+      ∀ coordinate : Idx,
+        (∫ observation,
+          observationEstimatingMap observation theta0 coordinate
+            ∂observationLaw) = 0)
+    (hObservationDerivativeAt_joint_measurable_source :
+      Measurable
+        (fun p : Observation × (Idx -> ℝ) =>
+          observationDerivativeAt p.1 p.2))
+    (hObservationDerivativeAtTheta0_operator_integrable :
+      Integrable
+        (fun observation : Observation =>
+          observationDerivativeAt observation theta0)
+        observationLaw)
+    (hV_observationDerivativeAtTheta0_operator_mean :
+      (∫ observation,
+        observationDerivativeAt observation theta0 ∂observationLaw) = V)
+    (hZ_gaussian : _root_.ProbabilityTheory.HasGaussianLaw Z Q)
+    (hZ_mean_zero : (∫ ω, Z ω ∂Q) = 0)
+    (Gamma : Idx -> Idx -> ℝ)
+    (hZ_centered_product : ∀ i j : Idx,
+      (∫ ω, Z ω i * Z ω j ∂Q) = Gamma i j)
+    (hObservationEstimatingMapTheta0_centered_product : ∀ i j : Idx,
+      (∫ observation,
+        observationEstimatingMap observation theta0 i *
+          observationEstimatingMap observation theta0 j ∂observationLaw) =
+        Gamma i j)
+    (hObservationEstimatingMap_commonAffine : ∀ observation : Observation,
+      ∀ theta : Idx -> ℝ,
+        observationEstimatingMap observation theta =
+          LinearMap.toContinuousLinearMap
+            commonObservationCoreMatrix.mulVecLin theta +
+            observationOffset observation)
+    (hCommonObservationCore_det :
+      IsUnit commonObservationCoreMatrix.det)
+    (hEnvelope_meas : Measurable envelope)
+    (hAbsEnvelope_integrable : Integrable (fun x => |envelope x|) observationLaw)
+    (hObservationSecondDerivative_measurable :
+      Measurable observationSecondDerivative)
+    (hObservationSecondDerivative_bound : ∀ x,
+      ‖observationSecondDerivative x‖ ≤ |envelope x|)
+    (hContDiffObservationEstimatingMap_univ : ∀ observation : Observation,
+      ContDiffOn ℝ 1 (observationEstimatingMap observation) Set.univ)
+    (hObservationDerivativeAt_eq_fderiv_observationEstimatingMap :
+      ∀ observation : Observation, ∀ theta : Idx -> ℝ,
+        fderiv ℝ (observationEstimatingMap observation) theta =
+          observationDerivativeAt observation theta)
+    (hContDiffObservationDerivativeAt_univ : ∀ observation : Observation,
+      ContDiffOn ℝ 1 (observationDerivativeAt observation) Set.univ)
+    (hObservationSecondDerivative_eq_fderiv_observationDerivativeAt :
+      ∀ observation : Observation, ∀ theta : Idx -> ℝ,
+        fderiv ℝ (observationDerivativeAt observation) theta =
+          observationSecondDerivative observation) :
+    TendstoInDistribution
+      (fun (n : ℕ) sample =>
+        √((n + 1 : ℕ) : ℝ) •
+          (vaart1998PositiveCommonObservationCoreInverseEstimator
+              (fun y : Idx -> ℝ =>
+                (vaart1998_commonObservationCoreContinuousLinearEquiv_of_injective_card_eq
+                    (LinearMap.toContinuousLinearMap
+                      commonObservationCoreMatrix.mulVecLin)
+                    (vaart1998_squareMatrixCommonObservationCoreLinear_injective_of_isUnit_det
+                      commonObservationCoreMatrix hCommonObservationCore_det)
+                    rfl).symm.toContinuousLinearMap y)
+              observationOffset n sample -
+            theta0))
+      atTop
+      (fun ω => (-Vinv : (Idx -> ℝ) →L[ℝ] (Idx -> ℝ)) (Z ω))
+      (fun _ => Measure.infinitePi (fun _ : ℕ => observationLaw)) Q := by
+  let commonObservationCore : (Idx -> ℝ) -> Idx -> ℝ :=
+    fun theta =>
+      LinearMap.toContinuousLinearMap commonObservationCoreMatrix.mulVecLin
+        theta
+  have hObservationEstimatingMap_commonAffine_core :
+      ∀ observation : Observation, ∀ theta : Idx -> ℝ,
+        observationEstimatingMap observation theta =
+          commonObservationCore theta + observationOffset observation := by
+    intro observation theta
+    simpa [commonObservationCore] using
+      hObservationEstimatingMap_commonAffine observation theta
+  have hObservationOffset_coordinate_meas :
+      ∀ coordinate : Idx,
+        Measurable
+          (fun observation : Observation =>
+            observationOffset observation coordinate) :=
+    vaart1998_observationOffset_coordinate_measurable_of_commonAffine_theta0
+      commonObservationCore observationEstimatingMap observationOffset
+      hObservationEstimatingMapTheta0_coordinate_meas
+      hObservationEstimatingMap_commonAffine_core
+  have hObservationOffset_integrable :
+      ∀ coordinate : Idx,
+        Integrable
+          (fun observation : Observation =>
+            observationOffset observation coordinate)
+          observationLaw :=
+    vaart1998_observationOffset_integrable_of_commonAffine_theta0_memLp
+      commonObservationCore observationEstimatingMap observationOffset
+      hObservationEstimatingMapTheta0_coordinate_memLp
+      hObservationEstimatingMap_commonAffine_core
+  exact
+    vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineMeanZeroOffsetSource
+      (Q := Q) (V := V) (Vinv := Vinv)
+      (observationEstimatingMap := observationEstimatingMap)
+      (observationDerivativeAt := observationDerivativeAt)
+      (observationSecondDerivative := observationSecondDerivative)
+      (envelope := envelope) (observationLaw := observationLaw)
+      (theta0 := theta0)
+      (commonObservationCoreMatrix := commonObservationCoreMatrix)
+      (observationOffset := observationOffset) (Z := Z)
+      hLeftInverse hObservationEstimatingMapTheta0_coordinate_meas
+      hObservationEstimatingMapTheta0_coordinate_memLp
+      hObservationEstimatingMapTheta0_coordinate_mean_zero
+      hObservationDerivativeAt_joint_measurable_source
+      hObservationDerivativeAtTheta0_operator_integrable
+      hV_observationDerivativeAtTheta0_operator_mean hZ_gaussian
+      hZ_mean_zero Gamma hZ_centered_product
+      hObservationEstimatingMapTheta0_centered_product
+      hObservationEstimatingMap_commonAffine hCommonObservationCore_det
       hObservationOffset_coordinate_meas hObservationOffset_integrable
       hEnvelope_meas hAbsEnvelope_integrable
       hObservationSecondDerivative_measurable hObservationSecondDerivative_bound

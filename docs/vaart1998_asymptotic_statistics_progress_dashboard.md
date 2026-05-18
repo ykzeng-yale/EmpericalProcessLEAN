@@ -16,7 +16,7 @@ The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
 Latest verified packet: positive-sample common-core continuous-linear-map
-square-matrix determinant affine mean-zero observation-law offset source for
+square-matrix determinant affine theta0-offset source for
 Theorem 5.41.
 The live endpoint now states the asymptotic-normality handoff for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator`, proves the textbook
@@ -30,9 +30,11 @@ derives equality of the function-space finranks from
 facts from mathlib's linear-map finite-dimensional API, builds
 the continuous linear equivalence used by the explicit inverse estimator,
 derives coordinate measurability and continuity of that inverse from
-mathlib's continuous linear map API, derives coordinate measurability of the
-explicit inverse estimator from primitive measurability of the observation
-offset, derives the canonical
+mathlib's continuous linear map API, derives observation-offset coordinate
+measurability and integrability from the affine display at `theta0` together
+with theta0-coordinate measurability and `MemLp 2` of the estimating map,
+derives coordinate measurability of the explicit inverse estimator from these
+derived offset fields, derives the canonical
 product-space offset integrability, independence, identical distribution, and
 positive-sample offset-average convergence from observation-law coordinate
 integrability, derives target convergence and consistency from that average
@@ -52,19 +54,26 @@ finite-sum-zero hypotheses, the inverse coordinate-measurability hypothesis,
 the raw common-core injectivity hypotheses, the raw population
 common-core equation, the raw right-inverse-value hypothesis, and the raw
 ker/range nonsingularity hypotheses and the raw function-space finrank
-equality from the current route.
+equality, raw observation-offset coordinate measurability, and raw
+observation-offset coordinate integrability from the current route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetSource`.
 
-The newest square-matrix determinant packet adds
+The newest theta0 offset packet adds
+`vaart1998_observationOffset_coordinate_measurable_of_commonAffine_theta0`,
+`vaart1998_observationOffset_integrable_of_commonAffine_theta0_memLp`, and
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetSource`.
+The next blocker is to derive the coordinate mean-zero equation,
+theta0-coordinate `MemLp 2`, or theta0-coordinate measurability from a
+concrete score/estimating-map model, or instantiate the first source-shaped
+textbook Theorem 5.41 example that can use the theta0-offset square-matrix
+determinant route.
+
+The previous square-matrix determinant packet adds
 `vaart1998_squareMatrixCommonObservationCoreLinear_injective_of_isUnit_det`
 and
 `vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineMeanZeroOffsetSource`.
-The next blocker is to discharge live observation-offset fields from a
-concrete score/estimating-map model, or instantiate the first source-shaped
-textbook Theorem 5.41 example that can use the square-matrix determinant
-route.
 
 The previous injective equal-cardinality packet adds
 `vaart1998_commonObservationCoreLinear_finrank_eq_of_card_eq`,
@@ -1198,9 +1207,9 @@ from the pointwise-Taylor Theorem 5.41 action endpoint.
 
 Superseded blocker note: the derivative-transform measurability
 fixed-`theta0` route has been replaced by the positive-sample common-core
-continuous-linear-map square-matrix determinant affine mean-zero observation-law offset
+continuous-linear-map square-matrix determinant affine theta0-offset
 source. The current live blocker is recorded at the top of this dashboard and
-in the current blocker plan: discharge observation-offset fields from a
+in the current blocker plan: derive theta0 estimating-map fields from a
 concrete model or instantiate a concrete textbook estimating equation.
 Do not replay the centered derivative-coordinate residual algebra,
 smooth/raw/scaled Taylor transfer, score-at-theta0 vector scaling transfer,

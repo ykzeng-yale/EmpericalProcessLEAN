@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -43,9 +43,13 @@ laws from
 `ContinuousLinearEquiv.symm_apply_apply`, derives the coordinate
 measurability and `ContinuousAt` fields for the inverse from the continuous
 linear map API, and feeds the determinant-derived injectivity into the
-compiled common-core route.
-It assumes only observation-law integrability of each offset coordinate,
-derives the product-space zero-coordinate integrability,
+compiled common-core route. It derives observation-offset coordinate
+measurability from the affine display at `theta0` and coordinate
+measurability of the estimating map at `theta0`; it derives
+observation-offset coordinate integrability from the same affine display and
+the `MemLp 2` assumptions on the estimating map at `theta0`. From these
+derived offset fields it derives the product-space zero-coordinate
+integrability,
 pairwise independence, identical distribution, and positive-sample
 offset-average convergence from the canonical `Measure.infinitePi`
 observation sequence, then derives common-core target convergence, estimator
@@ -67,10 +71,19 @@ distribution, raw local inverse stability, common-core target convergence,
 estimator consistency, estimator coordinate measurability, root-set
 membership, finite-sum zero, inverse coordinate measurability, raw local
 inverse continuity, raw common-core injectivity, raw population common-core
-equation, raw right-inverse value, or raw function-space finrank equality
-directly for this square-matrix route.
+equation, raw right-inverse value, raw function-space finrank equality,
+observation-offset coordinate measurability, or observation-offset coordinate
+integrability directly for this square-matrix route.
 
-The newest square-matrix determinant packet adds
+The newest theta0 offset packet adds
+`vaart1998_observationOffset_coordinate_measurable_of_commonAffine_theta0`,
+`vaart1998_observationOffset_integrable_of_commonAffine_theta0_memLp`, and
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetSource`.
+It removes the raw observation-offset coordinate measurability and
+integrability fields by deriving them from the affine display and the
+estimating-map assumptions at `theta0`.
+
+The previous square-matrix determinant packet adds
 `vaart1998_squareMatrixCommonObservationCoreLinear_injective_of_isUnit_det`
 and
 `vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineMeanZeroOffsetSource`.
@@ -221,11 +234,12 @@ the current positive-sample endpoint. It proves the Chapter 2 reindexing
 bridges and the nonzero-sample algebra for inverting
 `(n : ℝ) • commonObservationCore theta` by first dividing by `n`.
 
-Next aggressive target: derive offset coordinate measurability/integrability
-or the coordinate mean-zero equation from a more concrete score or
-estimating-map source when available; otherwise instantiate the square-matrix
-determinant endpoint on the first concrete textbook estimating equation whose
-affine display and determinant source are immediate.
+Next aggressive target: derive the coordinate mean-zero equation,
+theta0-coordinate `MemLp 2`, or theta0-coordinate measurability from a more
+concrete score or estimating-map source when available; otherwise instantiate
+the theta0-offset square-matrix determinant endpoint on the first concrete
+textbook estimating equation whose affine display and determinant source are
+immediate.
 Do not route back to
 sample-size zero
 inverses, arbitrary canonical-selector measurability, direct root uniqueness,
@@ -3031,25 +3045,25 @@ compiling:
    feeds that display into the finite Taylor-zero action-bound endpoint.
 
 Latest verified Vaart frontier before the next packet:
-`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineMeanZeroOffsetSource`.
+`vaart1998_theorem_5_41_positiveSample_squareMatrixCommonObservationCoreDetAffineTheta0OffsetSource`.
 
-The latest theorem-sized packet removes the raw common-core injectivity field
-in the square equal-coordinate case by deriving it from
-`IsUnit commonObservationCoreMatrix.det` through mathlib's matrix nonsingular
-inverse API. The live route now assumes the pointwise affine
+The latest theorem-sized packet removes the raw observation-offset coordinate
+measurability and integrability fields by deriving them from the pointwise
+affine display at `theta0`, theta0-coordinate measurability, and
+theta0-coordinate `MemLp 2`. The live route now assumes the pointwise affine
 estimating-equation display against `commonObservationCoreMatrix.mulVecLin`,
-the determinant nonsingularity source, coordinate measurability and coordinate
-integrability of the observation offset, and the coordinate mean-zero equation
-at `theta0`.
+the determinant nonsingularity source, theta0-coordinate measurability,
+theta0-coordinate `MemLp 2`, and the coordinate mean-zero equation at
+`theta0`.
 
 The next aggressive packet should prove exactly one live source field for the
 current endpoint. Priority order:
 
-1. Derive observation-offset coordinate measurability and integrability from a
-   concrete score/estimating-map model.
+1. Derive the coordinate mean-zero equation, theta0-coordinate `MemLp 2`, or
+   theta0-coordinate measurability from a concrete score/estimating-map model.
 2. Instantiate the endpoint for the first source-shaped textbook example of
    Theorem 5.41 that can reuse the compiled positive-sample injective
-   square-matrix determinant route.
+   theta0-offset square-matrix determinant route.
 3. Generalize the determinant source from the square same-index case to
    reindexed equal-cardinality parameter and observation coordinate types
    only if that directly supports a concrete textbook example.
