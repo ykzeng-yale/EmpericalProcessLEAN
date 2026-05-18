@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V502
+## Live In-Thread Goal Prompt V503
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -61,7 +61,9 @@ middle-partition endpoint wrappers for `iIndepFun`, joint
 matching route-named one-based empirical-CDF endpoints from the final
 middle-partition construction for source, joint-law, shifted-joint-law,
 canonical iid, identical-distribution, and pairwise-identically-distributed
-source shapes.
+source shapes.  V503 promotes the pairwise-identically-distributed one-based
+source extraction into Chapter 2.1 and rewires the 2.4.9 pairwise one-based
+consumers to reuse it instead of duplicating file-order workarounds.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -107,7 +109,22 @@ solved route-named one-based empirical-CDF endpoints from the final
 middle-partition construction for source, joint-law, shifted-joint-law,
 canonical iid, identical-distribution, and pairwise-identically-distributed
 source shapes,
+solved pairwise-identically-distributed one-based source extraction from
+Chapter 2.1 and its 2.4.9 pairwise one-based rewiring,
 or old app-level stale prompts.
+
+Latest verified target V503 promotes reusable pairwise-iid one-based source
+extraction to Chapter 2.1:
+`durrett2019_theorem_2_1_11_pairwise_identDistrib_oneBased_source`.
+It also rewires the pairwise-identically-distributed 2.4.9 one-based
+middle-partition endpoint and the 2.4.9 local source wrapper to call that
+earlier theorem.  This removes repeated marginal-law and pairwise-independence
+unpacking that previously existed only because the reusable helper was defined
+after its consumers.
+Next target: since the final 2.4.9 source/display layer is now saturated,
+prefer the next Chapter 2.1 support theorem that feeds 2.4.9 or the adjacent
+Kolmogorov-maximal route; add another 2.4.9 display wrapper only after an
+exact source-shape search proves a real missing endpoint.
 
 Latest verified target V502 adds route-named one-based empirical-CDF endpoints
 from the final middle-partition construction:
@@ -159,6 +176,10 @@ Chapter 2.1 product-law support.
   fetch/rebase.  Mitigations: route from this file, `rg` the exact source
   shape before editing, keep helper proofs before their consumers or inline
   tiny source extraction, and run focused Lean before module/root builds.
+- When an inline source-extraction proof appears in more than one consumer,
+  promote it to the earliest textbook-support layer where it belongs.  V503
+  applies this rule by moving pairwise-iid one-based source extraction to
+  Theorem 2.1.11 support before any Theorem 2.4.9 display consumer.
 - Tool rhythm that works best in this shared multi-agent repo: start with
   `git status`, `git rev-parse HEAD`, and `git ls-remote`; edit one
   theorem-sized packet; run focused `lake env lean`; update route docs; run

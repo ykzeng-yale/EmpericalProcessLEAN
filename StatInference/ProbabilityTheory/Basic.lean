@@ -1000,6 +1000,42 @@ theorem durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero
   exact (hident i).symm.hasLaw hBase
 
 /--
+Durrett 2019, Theorem 2.1.11 support: one-based pairwise-iid source
+extraction.
+
+If a zero-based sequence has a base marginal law, all coordinates are
+identically distributed with the zeroth coordinate, and the coordinates are
+pairwise independent, then the shifted Durrett-indexed sequence
+`X_1, X_2, ...`, represented by `X (i + 1)`, has the same marginal laws and is
+pairwise independent.  Keeping this before the Theorem 2.4.9 consumers avoids
+repeating the same source-unpacking proof in later display wrappers.
+-/
+theorem durrett2019_theorem_2_1_11_pairwise_identDistrib_oneBased_source
+    {Ω : Type u} [MeasurableSpace Ω]
+    {S : Type v} [MeasurableSpace S]
+    {μ : Measure Ω} {ν : Measure S}
+    {X : ℕ -> Ω -> S}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    (∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) ν μ) ∧
+      Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on
+        (fun i : ℕ => fun ω => X (i + 1) ω)) := by
+  have hLawAll :
+      ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν μ :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  refine ⟨?_, ?_⟩
+  · intro i
+    exact hLawAll (i + 1)
+  · intro i j hij
+    have hne : Nat.succ i ≠ Nat.succ j := by
+      intro h
+      exact hij (Nat.succ.inj h)
+    simpa [Function.onFun, Nat.succ_eq_add_one] using hindep hne
+
+/--
 Durrett 2019, Theorem 2.1.11, countable iid product-law form from the
 standard identical-distribution source shape.
 
@@ -25659,26 +25695,13 @@ theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_oute
       (fun ω sampleSize c =>
         (sampleSize : ℝ)⁻¹ *
           ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X (i + 1) ω)) := by
-  have hLawAll :
-      ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) P μ :=
-    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
-  have hLawShift :
-      ∀ i : ℕ,
-        _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) P μ := by
-    intro i
-    exact hLawAll (i + 1)
-  have hindepShift :
-      Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on
-        (fun i : ℕ => fun ω => X (i + 1) ω)) := by
-    intro i j hij
-    have hne : Nat.succ i ≠ Nat.succ j := by
-      intro h
-      exact hij (Nat.succ.inj h)
-    simpa [Function.onFun, Nat.succ_eq_add_one] using hindep hne
+  have hSource :=
+    durrett2019_theorem_2_1_11_pairwise_identDistrib_oneBased_source
+      (X := X) hBase hident hindep
   simpa [empiricalDistributionFunction_samplePath_eq_range_sum,
     div_eq_mul_inv, mul_comm] using
     durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
-      (fun i => fun ω => X (i + 1) ω) hLawShift hindepShift
+      (fun i => fun ω => X (i + 1) ω) hSource.1 hSource.2
 
 /--
 Durrett 2019, Theorem 2.4.9 proof-step endpoint in one-based empirical-CDF
@@ -25697,25 +25720,12 @@ theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUnifor
       (fun ω sampleSize c =>
         empiricalDistributionFunction
           (samplePath (fun i => fun ω => X (i + 1) ω) ω sampleSize) c) := by
-  have hLawAll :
-      ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) P μ :=
-    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
-  have hLawShift :
-      ∀ i : ℕ,
-        _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) P μ := by
-    intro i
-    exact hLawAll (i + 1)
-  have hindepShift :
-      Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on
-        (fun i : ℕ => fun ω => X (i + 1) ω)) := by
-    intro i j hij
-    have hne : Nat.succ i ≠ Nat.succ j := by
-      intro h
-      exact hij (Nat.succ.inj h)
-    simpa [Function.onFun, Nat.succ_eq_add_one] using hindep hne
+  have hSource :=
+    durrett2019_theorem_2_1_11_pairwise_identDistrib_oneBased_source
+      (X := X) hBase hident hindep
   exact
     durrett2019_theorem_2_4_9_middlePartitionWithTails_outerAlmostSureUniformDeviation
-      (fun i => fun ω => X (i + 1) ω) hLawShift hindepShift
+      (fun i => fun ω => X (i + 1) ω) hSource.1 hSource.2
 
 /--
 Durrett 2019, Theorem 2.4.9, half-line Glivenko-Cantelli theorem under the
@@ -26666,17 +26676,8 @@ theorem durrett2019_theorem_2_4_9_pairwise_identDistrib_oneBased_source
       _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) P μ) ∧
       Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on
         (fun i : ℕ => fun ω => X (i + 1) ω)) := by
-  have hLawAll :
-      ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) P μ :=
-    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
-  refine ⟨?_, ?_⟩
-  · intro i
-    exact hLawAll (i + 1)
-  · intro i j hij
-    have hne : Nat.succ i ≠ Nat.succ j := by
-      intro h
-      exact hij (Nat.succ.inj h)
-    simpa [Function.onFun, Nat.succ_eq_add_one] using hindep hne
+  exact durrett2019_theorem_2_1_11_pairwise_identDistrib_oneBased_source
+    (X := X) hBase hident hindep
 
 /--
 Durrett 2019, Theorem 2.4.9, one-based half-line Glivenko-Cantelli theorem
