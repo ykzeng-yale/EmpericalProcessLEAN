@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V511
+## Live In-Thread Goal Prompt V512
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -93,7 +93,10 @@ display forms.  V511 adds the matching one-based source-facing Durrett Theorem
 2.4.9 pointwise empirical-CDF and left empirical-CDF convergence wrappers for
 `iIndepFun`, joint infinite-product, shifted joint infinite-product,
 identical-distribution plus `iIndepFun`, and pairwise-identically-distributed
-source shapes, in raw empirical-function and range-sum display forms.
+source shapes, in raw empirical-function and range-sum display forms.  V512
+adds the matching one-based finite-cutpoint burn-in wrappers for the same
+source shapes plus canonical iid product samples, in raw shifted
+empirical-function and range-sum display forms.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -108,7 +111,8 @@ empirical-CDF or left empirical-CDF identDistrib/pairwise source proof-step
 wrappers unless an exact source-shape consumer is missing.  After V511, do
 not rebuild the one-based pointwise empirical-CDF or left empirical-CDF
 raw/range source proof-step wrappers unless an exact source-shape consumer is
-missing.
+missing.  After V512, do not rebuild the one-based finite-cutpoint raw/range
+burn-in wrappers unless an exact source-shape consumer is missing.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -171,9 +175,27 @@ solved Theorem 2.4.9 one-based pointwise empirical-CDF and left empirical-CDF
 raw/range convergence wrappers for source, joint-law, shifted-joint-law,
 identical-distribution, and pairwise-identically-distributed source
 hypotheses,
+solved Theorem 2.4.9 one-based finite-cutpoint closed/left empirical-CDF
+burn-in wrappers in raw shifted empirical-function and range-sum display
+forms for source, joint-law, shifted-joint-law, identical-distribution,
+pairwise-identically-distributed, and canonical iid source shapes,
 or old app-level stale prompts.
 
-Latest verified target V511 adds one-based source-shaped Durrett Theorem
+Latest verified target V512 adds one-based source-shaped Durrett Theorem
+2.4.9 finite-cutpoint burn-in wrappers:
+`durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_eventually_closed_left_errors_lt_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_finite_cutpoints_oneBased_range_sum_closed_left_errors_lt_of_iIndepFun`,
+and the matching joint infinite-product, shifted joint infinite-product,
+identical-distribution, pairwise-identically-distributed, and canonical iid
+families.  These wrappers expose the random burn-in for finitely many
+cutpoints in the same one-based raw empirical-function and range-sum displays
+now available at the pointwise layer, without forcing later middle-partition
+consumers to rewrite from the exact `n⁻¹ * sum` endpoint.  Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V511 adds one-based source-shaped Durrett Theorem
 2.4.9 pointwise convergence wrappers:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_tendsto_cdf_ae_of_iIndepFun`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_range_sum_tendsto_cdf_ae_of_iIndepFun`,

@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V511`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V512`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V511: stay on Durrett Theorem 2.4.9
+Current immediate target after V512: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -133,7 +133,10 @@ one-based Theorem 2.4.9 pointwise empirical-CDF and left empirical-CDF
 convergence source wrappers for `iIndepFun`, joint infinite-product, shifted
 joint infinite-product, identical-distribution plus `iIndepFun`, and
 pairwise-identically-distributed source hypotheses, in raw empirical-function
-and range-sum display forms.
+and range-sum display forms.  V512 adds the matching one-based
+finite-cutpoint burn-in wrappers for the same source shapes plus canonical iid
+product samples, in raw shifted empirical-function and range-sum display
+forms.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
@@ -168,6 +171,7 @@ or the zero-based Theorem 2.4.9 pointwise empirical-CDF/left empirical-CDF
 identDistrib and pairwise source wrappers,
 or the one-based Theorem 2.4.9 pointwise empirical-CDF/left empirical-CDF
 raw/range source wrappers,
+or the one-based Theorem 2.4.9 finite-cutpoint raw/range burn-in wrappers,
 unless a focused source check exposes a missing handoff.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.4.9
@@ -2078,6 +2082,10 @@ the V511 one-based source-shaped Theorem 2.4.9
 `empiricalLeftDistributionFunction_oneBased_*_leftLim_ae` raw/range pointwise
 convergence families for source, joint-law, shifted-joint-law,
 identical-distribution, and pairwise-identically-distributed hypotheses,
+the V512 one-based source-shaped Theorem 2.4.9
+`finite_cutpoints_oneBased_*_closed_left_errors_lt` raw/range burn-in families
+for source, joint-law, shifted-joint-law, identical-distribution,
+pairwise-identically-distributed, and canonical iid source shapes,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and
