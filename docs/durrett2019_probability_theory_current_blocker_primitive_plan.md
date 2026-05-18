@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V498
+## Live In-Thread Goal Prompt V499
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -50,12 +50,14 @@ missing joint-law, identical-distribution, and canonical range/shift-range
 CDF and CDF-left-limit finite-product displays.  V498 adds finite-cutpoint
 closed/left empirical-CDF burn-in wrappers for `iIndepFun`,
 identical-distribution source, and pairwise-identically-distributed source
-hypotheses.
+hypotheses.  V499 adds the matching middle-partition-with-tails source wrappers
+for identical-distribution and pairwise-identically-distributed hypotheses,
+including exact one-based textbook displays.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
 source-facing 2.4.9 proof-step wrapper only if search proves it is absent,
-with priority on middle-partition-with-tails and outer-a.s. partition source
+with priority now on countable middle-partition and outer-a.s. partition source
 forms; otherwise add the next Chapter 2.1 product-law/product-expectation
 wrapper that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 Do not return to
@@ -85,7 +87,26 @@ CDF and CDF-left-limit product display variants,
 solved finite-cutpoint closed/left empirical-CDF burn-in wrappers for
 `iIndepFun`, identical-distribution source, and pairwise-identically
 distributed source hypotheses,
+solved middle-partition-with-tails source wrappers for
+identical-distribution and pairwise-identically-distributed hypotheses,
 or old app-level stale prompts.
+
+Latest verified target V499 adds source-facing middle-partition-with-tails
+wrappers for Durrett Theorem 2.4.9:
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul_of_iIndepFun_identDistrib`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_of_iIndepFun_identDistrib`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_two_mul_of_iIndepFun_identDistrib`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_of_iIndepFun_identDistrib`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul_of_pairwise_identDistrib`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_of_pairwise_identDistrib`,
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_two_mul_of_pairwise_identDistrib`, and
+`durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_of_pairwise_identDistrib`.
+These wrappers let the bounded-middle-plus-tail squeeze consume the common iid
+and pairwise-iid source shapes directly, in both textbook `2 * epsilon` and
+arbitrary-tolerance forms.
+Next target: search the countable supplied-partition and final outer-a.s.
+uniform-deviation layers for the same source-shape gap before adding more
+Chapter 2.1 product display support.
 
 Latest verified target V498 closes the first missing source-facing
 finite-cutpoint burn-in layer inside the Durrett Theorem 2.4.9 proof:

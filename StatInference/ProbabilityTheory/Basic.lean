@@ -24600,6 +24600,268 @@ theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_unif
       hleftTail hrightTail hCoord.1 hCoord.2.1
 
 /--
+Durrett 2019, Theorem 2.4.9 proof step from the standard iid source shape:
+tail cells plus the bounded middle-partition squeeze give a global
+empirical-CDF bound.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction (samplePath X ω n) c -
+            ProbabilityTheory.cdf P c| < 2 * epsilon :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul
+    X hepsilon partition hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the standard iid source shape:
+the global middle-partition-with-tails squeeze normalized to an arbitrary
+requested tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction (samplePath X ω n) c -
+            ProbabilityTheory.cdf P c| < tolerance :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt
+    X htolerance partition hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    (fun _ _ hij => hindep.indepFun hij)
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the standard iid source shape, in
+exact one-based textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_two_mul_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+            ProbabilityTheory.cdf P c| < 2 * epsilon :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_two_mul_of_iIndepFun
+    X hepsilon partition hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the standard iid source shape, in
+exact one-based textbook notation and normalized to an arbitrary tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_of_iIndepFun_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := μ) X) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+            ProbabilityTheory.cdf P c| < tolerance :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_of_iIndepFun
+    X htolerance partition hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the pairwise-iid source shape:
+tail cells plus the bounded middle-partition squeeze give a global
+empirical-CDF bound.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction (samplePath X ω n) c -
+            ProbabilityTheory.cdf P c| < 2 * epsilon :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul
+    X hepsilon partition hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the pairwise-iid source shape:
+the global middle-partition-with-tails squeeze normalized to an arbitrary
+requested tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n in atTop,
+        ∀ c : ℝ,
+          |empiricalDistributionFunction (samplePath X ω n) c -
+            ProbabilityTheory.cdf P c| < tolerance :=
+  durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt
+    X htolerance partition hleftTail hrightTail
+    (durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident)
+    hindep
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the pairwise-iid source shape, in
+exact one-based textbook notation.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_two_mul_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {epsilon a b : ℝ} (hepsilon : 0 < epsilon)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P epsilon a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < epsilon)
+    (hrightTail : P.real (Set.Ioi b) < epsilon)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+            ProbabilityTheory.cdf P c| < 2 * epsilon := by
+  have hLawAll :
+      ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) P μ :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  have hLawShift :
+      ∀ i : ℕ,
+        _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) P μ := by
+    intro i
+    exact hLawAll (i + 1)
+  have hindepShift :
+      Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on
+        (fun i : ℕ => fun ω => X (i + 1) ω)) := by
+    intro i j hij
+    have hne : Nat.succ i ≠ Nat.succ j := by
+      intro h
+      exact hij (Nat.succ.inj h)
+    simpa [Function.onFun, Nat.succ_eq_add_one] using hindep hne
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt_two_mul
+      (fun i => fun ω => X (i + 1) ω) hepsilon partition hleftTail hrightTail
+      hLawShift hindepShift] with ω hω
+  filter_upwards [hω] with n hn c
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum,
+    div_eq_mul_inv, mul_comm] using hn c
+
+/--
+Durrett 2019, Theorem 2.4.9 proof step from the pairwise-iid source shape, in
+exact one-based textbook notation and normalized to an arbitrary tolerance.
+-/
+theorem durrett2019_theorem_2_4_9_middlePartitionWithTails_oneBased_inv_mul_uniform_error_lt_of_pairwise_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    (X : ℕ -> Ω -> ℝ)
+    {tolerance a b : ℝ} (htolerance : 0 < tolerance)
+    {middleCells : ℕ}
+    (partition : SuppliedRealMiddleCDFPartition P (tolerance / 2) a b middleCells)
+    (hleftTail : P.real (Set.Iio a) < tolerance / 2)
+    (hrightTail : P.real (Set.Ioi b) < tolerance / 2)
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) P μ)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) μ μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    ∀ᵐ ω ∂μ,
+      ∀ᶠ n : ℕ in atTop,
+        ∀ c : ℝ,
+          |(n : ℝ)⁻¹ *
+              ∑ i ∈ Finset.range n, realHalfLineIndicator c (X (i + 1) ω) -
+            ProbabilityTheory.cdf P c| < tolerance := by
+  have hLawAll :
+      ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) P μ :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  have hLawShift :
+      ∀ i : ℕ,
+        _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) P μ := by
+    intro i
+    exact hLawAll (i + 1)
+  have hindepShift :
+      Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on
+        (fun i : ℕ => fun ω => X (i + 1) ω)) := by
+    intro i j hij
+    have hne : Nat.succ i ≠ Nat.succ j := by
+      intro h
+      exact hij (Nat.succ.inj h)
+    simpa [Function.onFun, Nat.succ_eq_add_one] using hindep hne
+  filter_upwards
+    [durrett2019_theorem_2_4_9_middlePartitionWithTails_eventually_uniform_error_lt
+      (fun i => fun ω => X (i + 1) ω) htolerance partition hleftTail hrightTail
+      hLawShift hindepShift] with ω hω
+  filter_upwards [hω] with n hn c
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum,
+    div_eq_mul_inv, mul_comm] using hn c
+
+/--
 Durrett 2019, Theorem 2.4.9 proof step: a countable sequence of supplied
 middle partitions with tail mass tending to zero gives the pathwise
 uniform-deviation conclusion on one a.s. event.
