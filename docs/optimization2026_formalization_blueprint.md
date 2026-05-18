@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V57` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V58` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,7 +30,7 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V57 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V58 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -114,11 +114,20 @@ Loewner upper gate `H^{-1} <= (2 / alpha) I`; positive-definiteness and
 nonnegativity of the inverse are discharged from the half-radius Hessian lower
 bound.  Search-first result: direct attempts using mathlib
 `CStarAlgebra.inv_le_inv` and `CStarAlgebra.rpow_neg_one_le_rpow_neg_one`
-timed out in `AppendixA.lean` even with a local 1M heartbeat budget.  Next
-source-shaped work should discharge the inverse Loewner upper gate in a
-smaller dedicated module/API surface or via a lower-level eigenvalue/spectrum
-inverse theorem, then assemble Theorem 13.1's Newton local quadratic
-recurrence under a supplied Taylor/integral identity.
+timed out in `AppendixA.lean` even with a local 1M heartbeat budget.  The V58
+layer adds `continuousLinearMap_opNorm_right_inverse_le_of_inner_lower`,
+`chewi131_inverse_l2_opNorm_le_two_div_alpha_of_hessian_lower_half`, and
+`chewi131_inverse_loewner_upper_of_hessian_lower_half`, discharging the
+inverse-norm display and exact inverse Loewner upper gate from
+`(alpha / 2) I <= H` by a direct vector-coercivity argument.  Search-first
+reuse came from `ContinuousLinearMap.opNorm_le_bound`,
+`abs_real_inner_le_norm`, `Matrix.mul_nonsing_inv`, `Matrix.toEuclideanLin`,
+`Matrix.toLpLin_apply`, the local quadratic-form/Loewner bridge, and the V51
+symmetric norm/order bridge.  Methodology note: when an elegant high-level API
+route times out, test it in a minimal scratch file; if it still times out,
+switch proof geometry instead of repeating the same route.  Next source-shaped
+work is to assemble Theorem 13.1's Newton local quadratic recurrence under a
+supplied or newly proved Taylor/integral identity.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source

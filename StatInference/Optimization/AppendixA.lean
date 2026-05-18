@@ -872,6 +872,41 @@ theorem chewiA5_symmetric_l2_opNorm_le_of_nonneg_le_scalar_one
       hA hC).mpr
       ⟨hlower, hupper⟩
 
+section ContinuousLinearMap
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+
+/--
+A reusable coercivity-to-inverse-norm bridge.  If `T` has a left inverse `S`
+and `T` is bounded below in quadratic form by `c > 0`, then the operator norm
+of `S` is at most `c^{-1}`.
+-/
+theorem continuousLinearMap_opNorm_right_inverse_le_of_inner_lower
+    {T S : E →L[ℝ] E} {c : ℝ} (hc : 0 < c)
+    (hlower : ∀ x : E, c * ‖x‖ ^ (2 : ℕ) ≤ inner ℝ (T x) x)
+    (hleft : ∀ x : E, T (S x) = x) :
+    ‖S‖ ≤ c⁻¹ := by
+  refine S.opNorm_le_bound (le_of_lt (inv_pos.mpr hc)) ?_
+  intro x
+  by_cases hy : S x = 0
+  · have hnonneg : 0 ≤ c⁻¹ * ‖x‖ :=
+      mul_nonneg (inv_nonneg.mpr (le_of_lt hc)) (norm_nonneg x)
+    simpa [hy] using hnonneg
+  · have hypos : 0 < ‖S x‖ := norm_pos_iff.mpr hy
+    have hquad : c * ‖S x‖ ^ (2 : ℕ) ≤ inner ℝ x (S x) := by
+      simpa [hleft x] using hlower (S x)
+    have hinner_le : inner ℝ x (S x) ≤ ‖x‖ * ‖S x‖ :=
+      (le_abs_self _).trans (abs_real_inner_le_norm x (S x))
+    have hmain : c * ‖S x‖ ^ (2 : ℕ) ≤ ‖x‖ * ‖S x‖ :=
+      hquad.trans hinner_le
+    have hmul : c * ‖S x‖ ≤ ‖x‖ := by
+      nlinarith [hypos]
+    have hdiv : ‖S x‖ ≤ ‖x‖ / c :=
+      (le_div_iff₀ hc).mpr (by simpa [mul_comm] using hmul)
+    simpa [div_eq_mul_inv, mul_comm] using hdiv
+
+end ContinuousLinearMap
+
 /--
 Chewi Theorem 13.1, supplied inverse-Loewner gate for the reciprocal
 operator-norm bound.
@@ -905,6 +940,85 @@ theorem chewi131_inverse_l2_opNorm_le_two_div_alpha_of_hessian_lower_half_and_in
   exact
     chewi131_inverse_l2_opNorm_le_two_div_alpha_of_inverse_loewner_upper
       hH halpha hH_posDef.inv.posSemidef.nonneg hinv_upper
+
+/--
+Chewi Theorem 13.1, inverse-operator-norm bound from the half-radius Hessian
+lower estimate.  This discharges the previously supplied inverse-Loewner gate
+by applying coercivity to the Euclidean linear map induced by `H`.
+-/
+theorem chewi131_inverse_l2_opNorm_le_two_div_alpha_of_hessian_lower_half
+    [DecidableEq n] {H : Matrix n n ℝ} (hH : H.IsHermitian) {alpha : ℝ}
+    (halpha : 0 < alpha)
+    (hlower : (alpha / 2) • (1 : Matrix n n ℝ) ≤ H) :
+    ‖H⁻¹‖ ≤ 2 / alpha := by
+  rw [Matrix.l2_opNorm_def]
+  let T : EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ n :=
+    (Matrix.toEuclideanLin (𝕜 := ℝ) (m := n) (n := n)).trans
+      LinearMap.toContinuousLinearMap H
+  let S : EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ n :=
+    (Matrix.toEuclideanLin (𝕜 := ℝ) (m := n) (n := n)).trans
+      LinearMap.toContinuousLinearMap H⁻¹
+  change ‖S‖ ≤ 2 / alpha
+  have hhalf_pos : 0 < alpha / 2 := by
+    positivity
+  have hH_posDef : H.PosDef :=
+    chewiA5_posDef_of_pos_scalar_one_le hH hhalf_pos hlower
+  have hscalarHerm :
+      ((alpha / 2) • (1 : Matrix n n ℝ)).IsHermitian := by
+    exact Matrix.isHermitian_one.smul
+      (show IsSelfAdjoint (alpha / 2 : ℝ) by
+        simp [isSelfAdjoint_iff])
+  have hcoercive :
+      ∀ x : EuclideanSpace ℝ n,
+        (alpha / 2) * ‖x‖ ^ (2 : ℕ) ≤ inner ℝ (T x) x := by
+    intro x
+    have hquad :=
+      (chewiA4_loewnerOrder_iff_quadraticForm_le hH hscalarHerm).mp
+        hlower x.ofLp
+    have hscalar :
+        dotProduct x.ofLp (((alpha / 2) • (1 : Matrix n n ℝ)) *ᵥ x.ofLp) =
+          (alpha / 2) * dotProduct x.ofLp x.ofLp := by
+      simp only [Matrix.smul_mulVec, Matrix.one_mulVec, dotProduct_smul,
+        smul_eq_mul]
+    have hx_sq : ‖x‖ ^ (2 : ℕ) = dotProduct x.ofLp x.ofLp := by
+      rw [EuclideanSpace.real_norm_sq_eq]
+      simp [dotProduct, pow_two]
+    have hinner :
+        inner ℝ (T x) x = dotProduct x.ofLp (H *ᵥ x.ofLp) := by
+      simp [T, Matrix.toLpLin_apply, EuclideanSpace.inner_eq_star_dotProduct]
+    simpa [hscalar, hx_sq, hinner] using hquad
+  have hleft : ∀ x : EuclideanSpace ℝ n, T (S x) = x := by
+    intro x
+    have hdet : IsUnit H.det :=
+      (Matrix.isUnit_iff_isUnit_det H).mp hH_posDef.isUnit
+    have hmul : H * H⁻¹ = 1 := Matrix.mul_nonsing_inv H hdet
+    simp [T, S, Matrix.toLpLin_apply, Matrix.mulVec_mulVec, hmul]
+  have hbound :
+      ‖S‖ ≤ (alpha / 2)⁻¹ :=
+    continuousLinearMap_opNorm_right_inverse_le_of_inner_lower hhalf_pos
+      hcoercive hleft
+  have hinv : (alpha / 2)⁻¹ = 2 / alpha := by
+    field_simp [halpha.ne']
+  simpa [hinv] using hbound
+
+/--
+Chewi Theorem 13.1, inverse Loewner upper bound from the half-radius Hessian
+lower estimate.  This is the exact gate previously left supplied.
+-/
+theorem chewi131_inverse_loewner_upper_of_hessian_lower_half
+    [DecidableEq n] {H : Matrix n n ℝ} (hH : H.IsHermitian) {alpha : ℝ}
+    (halpha : 0 < alpha)
+    (hlower : (alpha / 2) • (1 : Matrix n n ℝ) ≤ H) :
+    H⁻¹ ≤ (2 / alpha) • (1 : Matrix n n ℝ) := by
+  have hC : 0 ≤ 2 / alpha := by
+    positivity
+  have hnorm :
+      ‖H⁻¹‖ ≤ 2 / alpha :=
+    chewi131_inverse_l2_opNorm_le_two_div_alpha_of_hessian_lower_half hH
+      halpha hlower
+  exact
+    ((chewiA5_symmetric_l2_opNorm_le_iff_neg_scalar_one_le_and_le_scalar_one
+      hH.inv hC).mp hnorm).2
 
 /--
 Chewi Definition A.5, symmetric eigenvalue form.  For a symmetric real matrix,

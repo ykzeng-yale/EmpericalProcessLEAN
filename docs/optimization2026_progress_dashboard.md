@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V57` near the top of
+  `Live Goal Prompt V58` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -135,10 +135,21 @@ This dashboard tracks the Chewi optimization formalization lane for
   `H^{-1} <= (2 / alpha) I`.  Search-first result: direct attempts with
   mathlib `CStarAlgebra.inv_le_inv` and
   `CStarAlgebra.rpow_neg_one_le_rpow_neg_one` timed out in this module even
-  with a local 1M heartbeat budget.  Next high-impact step is to discharge
-  that inverse Loewner upper gate in a smaller API surface or via an
-  eigenvalue/spectrum inverse theorem, then assemble Theorem 13.1's local
-  Newton quadratic recurrence under a supplied Taylor/integral identity.
+  with a local 1M heartbeat budget.  The V58 layer adds
+  `continuousLinearMap_opNorm_right_inverse_le_of_inner_lower`,
+  `chewi131_inverse_l2_opNorm_le_two_div_alpha_of_hessian_lower_half`, and
+  `chewi131_inverse_loewner_upper_of_hessian_lower_half`, discharging the
+  inverse-norm display and the exact inverse Loewner upper gate directly from
+  `(alpha / 2) I <= H`.  Search-first reuse came from a read-only mathlib/local
+  scout plus `ContinuousLinearMap.opNorm_le_bound`,
+  `abs_real_inner_le_norm`, `Matrix.mul_nonsing_inv`,
+  `Matrix.toEuclideanLin`, `Matrix.toLpLin_apply`, the local
+  quadratic-form/Loewner bridge, and the V51 symmetric norm/order bridge.
+  Methodology note: prototype heavy candidate routes in a minimal scratch file;
+  if a route times out there too, switch mathematical proof geometry instead
+  of replaying the same API attempt in the heavy module.  Next high-impact step
+  is to assemble Theorem 13.1's local Newton quadratic recurrence under a
+  supplied or newly proved Taylor/integral identity.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations
