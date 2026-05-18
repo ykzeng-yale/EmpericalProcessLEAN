@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V546`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V547`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V546: stay on Durrett Theorem 2.4.9
+Current immediate target after V547: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -287,6 +287,13 @@ V546 adds source-side iid/indexed-transform Chapter 2.1.13 nonnegative
 cancellations under `IdentDistrib` to source independence, measurability for
 each indexed transform, and one zero base-coordinate `lintegral`, without
 `HasLaw` or ordinary integrability assumptions.
+V547 adds source-side iid/indexed-transform Chapter 2.1.13 real nonnegative
+`ENNReal.ofReal` product formulas for finite/range/Ico and one-based
+range/Ico/`Finset.Icc 1 n` products, reducing mixed real-valued nonnegative
+transformed-product factorizations under `IdentDistrib` to source
+independence, measurability and nonnegativity for each indexed transform, and
+products of base-coordinate `ENNReal.ofReal` `lintegral`s, without `HasLaw`
+or ordinary integrability assumptions.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
@@ -2369,6 +2376,9 @@ products,
 the V546 source-side iid/indexed-transform Chapter 2.1.13 nonnegative
 `ℝ≥0∞` zero-factor formulas for finite/range/Ico and one-based range/Ico/
 `Icc` products,
+the V547 source-side iid/indexed-transform Chapter 2.1.13 real nonnegative
+`ENNReal.ofReal` product formulas for finite/range/Ico and one-based
+range/Ico/`Icc` products,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and

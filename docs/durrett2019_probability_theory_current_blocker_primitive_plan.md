@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V546
+## Live In-Thread Goal Prompt V547
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -252,6 +252,12 @@ index-dependent measurable transforms have source-space product `lintegral`
 zero whenever one selected base-coordinate factor `lintegral`
 `∫⁻ f_i(X_0) dP` is zero, for finite/range/Ico and one-based products,
 without requiring `HasLaw` or ordinary integrability hypotheses.
+V547 adds source-side iid/indexed-transform Chapter 2.1.13 real nonnegative
+`ENNReal.ofReal` product formulas: under `IdentDistrib`, index-dependent
+nonnegative measurable real transforms `f_i(X_i)` have source-space
+`lintegral` formulas as products of base-coordinate `lintegral`s over
+`∫⁻ ENNReal.ofReal (f_i(X_0)) dP`, for finite/range/Ico and one-based
+products, without requiring `HasLaw` or ordinary integrability hypotheses.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -394,6 +400,10 @@ After V546, do not rebuild the source-side iid/indexed-transform Theorem
 2.1.13 nonnegative `ℝ≥0∞` zero-factor formulas for finite/range/Ico or
 one-based range/Ico/`Icc` products unless an exact later consumer needs a
 different source shape.
+After V547, do not rebuild the source-side iid/indexed-transform Theorem
+2.1.13 real nonnegative `ENNReal.ofReal` product formulas for finite/range/
+Ico or one-based range/Ico/`Icc` products unless an exact later consumer
+needs a different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -564,9 +574,33 @@ product formulas for finite/range/Ico and one-based range/Ico/`Icc` products,
 solved source-side iid/indexed-transform Theorem 2.1.13 nonnegative `ℝ≥0∞`
 zero-factor formulas for finite/range/Ico and one-based range/Ico/`Icc`
 products,
+solved source-side iid/indexed-transform Theorem 2.1.13 real nonnegative
+`ENNReal.ofReal` product formulas for finite/range/Ico and one-based
+range/Ico/`Icc` products,
 or old app-level stale prompts.
 
-Latest verified target V546 adds source-side iid/indexed-transform Chapter
+Latest verified target V547 adds source-side iid/indexed-transform Chapter
+2.1.13 real nonnegative `ENNReal.ofReal` product formulas:
+`durrett2019_theorem_2_1_13_iid_lintegral_finset_ofReal_comp_prod_eq_prod_lintegral_ofReal_base_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_ofReal_comp_prod_eq_prod_lintegral_ofReal_base_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_ofReal_comp_prod_eq_prod_lintegral_ofReal_base_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_ofReal_comp_prod_eq_prod_lintegral_ofReal_base_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_ofReal_comp_prod_eq_prod_lintegral_ofReal_base_oneBased_of_identDistrib`,
+and
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_ofReal_comp_prod_eq_prod_lintegral_ofReal_base_oneBased_of_identDistrib`.
+These specialize the generic source-side `ENNReal.ofReal` nonnegative product
+factorization to iid source families under `IdentDistrib`, with
+index-dependent nonnegative measurable real transforms `f_i : S -> ℝ`.  They
+package `∫⁻ ENNReal.ofReal (∏ f_i(X_i)) dP =
+∏ ∫⁻ ENNReal.ofReal (f_i(X_0)) dP` directly on the source space, giving
+mixed real-valued nonnegative moment and indicator-product support without
+`HasLaw` hypotheses or ordinary integrability assumptions.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V546 adds source-side iid/indexed-transform Chapter
 2.1.13 nonnegative `ℝ≥0∞` zero-factor formulas:
 `durrett2019_theorem_2_1_13_iid_lintegral_finset_comp_prod_eq_zero_of_identDistrib_and_lintegral_base_eq_zero`,
 `durrett2019_theorem_2_1_13_iid_lintegral_range_comp_prod_eq_zero_of_identDistrib_and_lintegral_base_eq_zero`,
@@ -582,10 +616,6 @@ transforms `f_i : S -> ℝ≥0∞`.  They package
 `∫⁻ f_i(X_0) dP` vanishes, giving source-only mixed nonnegative moment and
 indicator-product cancellations without `HasLaw` hypotheses or ordinary
 integrability assumptions.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V545 adds source-side iid/indexed-transform Chapter
 2.1.13 nonnegative `ℝ≥0∞` product formulas:
