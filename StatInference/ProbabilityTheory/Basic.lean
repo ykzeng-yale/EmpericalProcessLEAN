@@ -5571,6 +5571,124 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_Ico_prod_oneBased_of_int
       hShift_indep (fun i => mX (i + 1)) m n hX_int
 
 /--
+Durrett 2019, Theorem 2.1.13 support: iid finite-product integrability from
+one integrable marginal.
+
+For identically distributed independent variables, integrability of one base
+factor supplies the one-factor integrability hypotheses needed for the finite
+product integrability theorem.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_finset_prod_of_integrable_identDistrib
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ι -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    {s : Finset ι} {i0 : ι}
+    (hident : ∀ i ∈ s,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X i0) P P)
+    (hbase_int : Integrable (X i0) P) :
+    Integrable (fun ω => ∏ i ∈ s, X i ω) P :=
+  durrett2019_theorem_2_1_13_iIndepFun_integrable_finset_prod_of_integrable
+    (P := P) (X := X) hX mX
+    (s := s) fun i hi => ((hident i hi).integrable_iff).2 hbase_int
+
+/--
+Durrett 2019, Theorem 2.1.13 support: iid initial-range product integrability
+from one integrable marginal.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_range_prod_of_integrable_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.range n, X i ω) P :=
+  durrett2019_theorem_2_1_13_iid_integrable_finset_prod_of_integrable_identDistrib
+    (P := P) (X := X) hX mX
+    (s := Finset.range n) (i0 := 0) (fun i _hi => hident i) hbase_int
+
+/--
+Durrett 2019, Theorem 2.1.13 support: iid interval-block product
+integrability from one integrable marginal.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_Ico_prod_of_integrable_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (m n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.Ico m n, X i ω) P :=
+  durrett2019_theorem_2_1_13_iid_integrable_finset_prod_of_integrable_identDistrib
+    (P := P) (X := X) hX mX
+    (s := Finset.Ico m n) (i0 := 0) (fun i _hi => hident i) hbase_int
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based notation: iid initial-range
+product integrability from one integrable marginal.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_range_prod_oneBased_of_integrable_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.range n, X (i + 1) ω) P :=
+  durrett2019_theorem_2_1_13_iIndepFun_integrable_range_prod_oneBased_of_integrable
+    (P := P) (X := X) hX mX n
+    fun i _hi => ((hident (i + 1)).integrable_iff).2 hbase_int
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based notation: iid interval-block
+product integrability from one integrable marginal.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_Ico_prod_oneBased_of_integrable_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (m n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.Ico m n, X (i + 1) ω) P :=
+  durrett2019_theorem_2_1_13_iIndepFun_integrable_Ico_prod_oneBased_of_integrable
+    (P := P) (X := X) hX mX m n
+    fun i _hi => ((hident (i + 1)).integrable_iff).2 hbase_int
+
+/--
+Durrett 2019, Theorem 2.1.13 support: iid product integrability over the
+literal one-based index set `{1, ..., n}` from one integrable marginal.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integrable_oneBased_Icc_prod_of_integrable_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.Icc 1 n, X i ω) P :=
+  durrett2019_theorem_2_1_13_iid_integrable_finset_prod_of_integrable_identDistrib
+    (P := P) (X := X) hX mX
+    (s := Finset.Icc 1 n) (i0 := 0) (fun i _hi => hident i) hbase_int
+
+/--
 Durrett 2019, Theorem 2.1.13 proof support: iid absolute-value product
 factorization for a finite subfamily.
 -/
