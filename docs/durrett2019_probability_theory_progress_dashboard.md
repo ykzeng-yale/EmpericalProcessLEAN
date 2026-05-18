@@ -36,7 +36,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V510` in
+Route from `Live In-Thread Goal Prompt V511` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -113,7 +113,12 @@ convolution-density identity, for the same source shapes.  V510 adds
 zero-based Theorem 2.4.9 pointwise empirical-CDF and left empirical-CDF
 convergence source wrappers for identical-distribution plus `iIndepFun` and
 pairwise-identically-distributed source hypotheses, in raw empirical-function,
-range-sum, and exact `n⁻¹ * sum` display forms.  The
+range-sum, and exact `n⁻¹ * sum` display forms.  V511 adds the matching
+one-based Theorem 2.4.9 pointwise empirical-CDF and left empirical-CDF
+convergence source wrappers for `iIndepFun`, joint infinite-product, shifted
+joint infinite-product, identical-distribution plus `iIndepFun`, and
+pairwise-identically-distributed source hypotheses, in raw empirical-function
+and range-sum display forms.  The
 historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
 V443 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.
@@ -2061,6 +2066,11 @@ V510 adds the zero-based source-shaped Theorem 2.4.9
 `empiricalLeftDistributionFunction_*_leftLim_ae` pointwise convergence
 families for identical-distribution plus `iIndepFun` and
 pairwise-identically-distributed hypotheses.
+V511 adds the one-based source-shaped Theorem 2.4.9
+`empiricalDistributionFunction_oneBased_*_cdf_ae` and
+`empiricalLeftDistributionFunction_oneBased_*_leftLim_ae` raw/range pointwise
+convergence families for source, joint-law, shifted-joint-law,
+identical-distribution, and pairwise-identically-distributed hypotheses.
 Theorem 2.4.9 now has
 the arbitrary-law cutpoint-chain route and both the book-style and exact
 outer-a.s. empirical-CDF endpoints:
@@ -3247,7 +3257,7 @@ Next proof packet: search for a genuinely missing 2.4.9 proof-step or
 final-display source wrapper, or add the next Chapter 2.1
 product-law/product-expectation handoff that directly supports 2.4.9 or the
 adjacent Kolmogorov-maximal route.  Do not route back to solved 2.5.13
-plumbing or the closed V500-V510 2.4.9/2.1 source-wrapper surfaces unless an
+plumbing or the closed V500-V511 2.4.9/2.1 source-wrapper surfaces unless an
 exact source-shape consumer is missing.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement

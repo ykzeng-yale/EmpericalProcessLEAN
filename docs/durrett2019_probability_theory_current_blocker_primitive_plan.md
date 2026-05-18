@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V510
+## Live In-Thread Goal Prompt V511
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -89,7 +89,11 @@ pairwise source shapes immediately produce the supplied density law for
 pointwise empirical-CDF and left empirical-CDF convergence wrappers for the
 identical-distribution plus `iIndepFun` and pairwise-identically-distributed
 source shapes, in raw empirical-function, range-sum, and exact `n⁻¹ * sum`
-display forms.
+display forms.  V511 adds the matching one-based source-facing Durrett Theorem
+2.4.9 pointwise empirical-CDF and left empirical-CDF convergence wrappers for
+`iIndepFun`, joint infinite-product, shifted joint infinite-product,
+identical-distribution plus `iIndepFun`, and pairwise-identically-distributed
+source shapes, in raw empirical-function and range-sum display forms.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -101,7 +105,10 @@ a genuinely missing consumer handoff; do not duplicate the compiled
 convolution-law, density-formula, density-existence, or supplied-density
 source surfaces.  After V510, do not rebuild the zero-based pointwise
 empirical-CDF or left empirical-CDF identDistrib/pairwise source proof-step
-wrappers unless an exact source-shape consumer is missing.
+wrappers unless an exact source-shape consumer is missing.  After V511, do
+not rebuild the one-based pointwise empirical-CDF or left empirical-CDF
+raw/range source proof-step wrappers unless an exact source-shape consumer is
+missing.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -160,9 +167,29 @@ supplied-density source wrappers from a supplied convolution-density identity,
 solved Theorem 2.4.9 zero-based pointwise empirical-CDF and left
 empirical-CDF convergence wrappers for identical-distribution plus
 `iIndepFun` and pairwise-identically-distributed source hypotheses,
+solved Theorem 2.4.9 one-based pointwise empirical-CDF and left empirical-CDF
+raw/range convergence wrappers for source, joint-law, shifted-joint-law,
+identical-distribution, and pairwise-identically-distributed source
+hypotheses,
 or old app-level stale prompts.
 
-Latest verified target V510 adds zero-based source-shaped Durrett Theorem
+Latest verified target V511 adds one-based source-shaped Durrett Theorem
+2.4.9 pointwise convergence wrappers:
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_tendsto_cdf_ae_of_iIndepFun`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_oneBased_range_sum_tendsto_cdf_ae_of_iIndepFun`,
+and the matching joint infinite-product, shifted joint infinite-product,
+identical-distribution, and pairwise-identically-distributed families; plus
+the analogous
+`empiricalLeftDistributionFunction_oneBased_*_leftLim_ae` families.  These
+wrappers expose Durrett's one-based pointwise closed- and open-half-line
+proof steps before the exact `n⁻¹ * sum` display, so later consumers can use
+the raw empirical-function or range-sum form without rebuilding shifted iid
+source extraction.  Next target: search for another genuinely missing 2.4.9
+proof-step/final-display source wrapper, or add the next Chapter 2.1
+product-law/product-expectation handoff that directly supports 2.4.9 or the
+adjacent Kolmogorov-maximal route.
+
+Previous verified target V510 adds zero-based source-shaped Durrett Theorem
 2.4.9 pointwise convergence wrappers:
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_tendsto_cdf_ae_of_iIndepFun_identDistrib`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_range_sum_tendsto_cdf_ae_of_iIndepFun_identDistrib`,
