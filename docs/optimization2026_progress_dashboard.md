@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V59` near the top of
+  `Live Goal Prompt V60` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -157,7 +157,21 @@ This dashboard tracks the Chewi optimization formalization lane for
   facts become dependencies, keep source-main theorem assembly in a small
   theorem module so the real next blocker is visible.  Next high-impact step is
   to discharge that Taylor/integral Newton remainder estimate with
-  mathlib/local FTC and finite-dimensional Hessian-gradient APIs.
+  mathlib/local FTC and finite-dimensional Hessian-gradient APIs.  The V60
+  layer adds `chewi131_taylor_norm_bound_of_integral_remainder`,
+  `chewi131_local_quadratic_step_of_integral_remainder`, and
+  `chewi131_local_quadratic_recurrence_of_integral_remainder`, proving that a
+  source-shaped integral representation plus the pointwise
+  `gamma * (1 - t) * ||x - x_star||^2` bound implies the V59 Taylor norm gate
+  and hence the local quadratic recurrence.  Search-first reuse came from
+  mathlib `intervalIntegral.norm_integral_le_of_norm_le`,
+  `intervalIntegral.integral_eq_sub_of_hasDerivAt`,
+  `Continuous.intervalIntegrable`, `ContinuousLinearMap.le_opNorm`,
+  `Matrix.l2_opNorm_def`, and `intervalIntegral.integral_const_mul`.
+  Methodology note: `intervalIntegral.integral_id` appeared in mathlib source
+  but was not available as a public imported declaration in this environment,
+  so proving `∫_0^1 (1 - t) dt = 1 / 2` by public FTC was faster and should be
+  reused for this lane.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

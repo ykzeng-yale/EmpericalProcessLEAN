@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V59` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V60` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,7 +30,7 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V59 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V60 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -135,7 +135,19 @@ Newton remainder estimate plus V56/V58.  Methodology note: keep source-main
 theorem assembly in a small theorem module once Appendix A facts become
 dependencies.  Next source-shaped work is to discharge the Taylor/integral
 Newton remainder estimate with mathlib/local FTC and finite-dimensional
-Hessian-gradient APIs.
+Hessian-gradient APIs.  The V60 layer adds
+`chewi131_taylor_norm_bound_of_integral_remainder`,
+`chewi131_local_quadratic_step_of_integral_remainder`, and
+`chewi131_local_quadratic_recurrence_of_integral_remainder`, replacing the
+supplied Taylor norm gate by the source-shaped assumptions
+`x_{n+1} - x_star = H_n^{-1} ∫_0^1 r_n(t) dt` and
+`||r_n(t)|| <= gamma (1 - t) ||x_n - x_star||^2`.  It reuses mathlib interval
+integral norm bounds, public FTC, continuous interval integrability, and
+matrix l2 operator-norm coercions.  Methodology note: when a plausible
+mathlib shortcut is visible in source but unavailable as a public imported
+declaration, record that immediately and use a public theorem route; here the
+public FTC proof of `∫_0^1 (1 - t) dt = 1 / 2` avoided spending another
+packet on `intervalIntegral.integral_id`.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source
