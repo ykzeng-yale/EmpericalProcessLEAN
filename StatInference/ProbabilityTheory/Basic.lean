@@ -5319,6 +5319,292 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_ofReal_prod_eq_prod_l
       (fun i ω => hX_nonneg (i + 1) ω) m n
 
 /--
+Durrett 2019, Theorem 2.1.13 proof support: absolute-value product
+factorization for a finite independent subfamily.
+
+For real variables this is the displayed `E|X_m ... X_n|` step in norm form.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_prod_eq_prod_lintegral_norm
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ι -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (s : Finset ι) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ s, X i ω‖ ∂P =
+      ∏ i ∈ s, ∫⁻ ω, ENNReal.ofReal ‖X i ω‖ ∂P := by
+  have hNorm_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i => fun ω => ‖X i ω‖) := by
+    simpa [Function.comp_def] using
+      durrett2019_theorem_2_1_10_iIndepFun_comp
+        (P := P) (X := X) hX
+        (f := fun _ : ι => fun x : 𝕜 => ‖x‖)
+        (fun _ => continuous_norm.measurable)
+  calc
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ s, X i ω‖ ∂P =
+        ∫⁻ ω, ENNReal.ofReal (∏ i ∈ s, ‖X i ω‖) ∂P := by
+      refine lintegral_congr_ae ?_
+      exact ae_of_all P fun ω =>
+        congrArg ENNReal.ofReal (norm_prod s fun i => X i ω)
+    _ = ∏ i ∈ s, ∫⁻ ω, ENNReal.ofReal ‖X i ω‖ ∂P :=
+      durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_ofReal_prod_eq_prod_lintegral_ofReal
+        (P := P) (X := fun i => fun ω => ‖X i ω‖)
+        hNorm_indep (fun i => (mX i).norm)
+        (fun _ _ => norm_nonneg _) s
+
+/--
+Durrett 2019, Theorem 2.1.13 proof support: absolute-value product
+factorization for an initial range.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_prod_eq_prod_lintegral_norm
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.range n, X i ω‖ ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ ω, ENNReal.ofReal ‖X i ω‖ ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_prod_eq_prod_lintegral_norm
+    (P := P) (X := X) hX mX (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13 proof support: absolute-value product
+factorization for an interval block.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_prod_eq_prod_lintegral_norm
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.Ico m n, X i ω‖ ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ ω, ENNReal.ofReal ‖X i ω‖ ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_prod_eq_prod_lintegral_norm
+    (P := P) (X := X) hX mX (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13 proof support: absolute-value product
+factorization on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_norm_prod_eq_prod_lintegral_norm
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.Icc 1 n, X i ω‖ ∂P =
+      ∏ i ∈ Finset.Icc 1 n, ∫⁻ ω, ENNReal.ofReal ‖X i ω‖ ∂P :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_prod_eq_prod_lintegral_norm
+    (P := P) (X := X) hX mX (Finset.Icc 1 n)
+
+/--
+Durrett 2019, Theorem 2.1.13 proof support in one-based notation:
+absolute-value product factorization for an initial range.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_prod_eq_prod_lintegral_norm_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.range n, X (i + 1) ω‖ ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ ω, ENNReal.ofReal ‖X (i + 1) ω‖ ∂P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_prod_eq_prod_lintegral_norm
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => mX (i + 1)) n
+
+/--
+Durrett 2019, Theorem 2.1.13 proof support in one-based notation:
+absolute-value product factorization for an interval block.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_prod_eq_prod_lintegral_norm_oneBased
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.Ico m n, X (i + 1) ω‖ ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ ω, ENNReal.ofReal ‖X (i + 1) ω‖ ∂P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_prod_eq_prod_lintegral_norm
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => mX (i + 1)) m n
+
+/--
+Durrett 2019, Theorem 2.1.13 proof support: iid absolute-value product
+factorization for a finite subfamily.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_finset_norm_prod_eq_pow_lintegral_norm_of_identDistrib
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ι -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    {s : Finset ι} {i0 : ι}
+    (hident : ∀ i ∈ s,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X i0) P P) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ s, X i ω‖ ∂P =
+      (∫⁻ ω, ENNReal.ofReal ‖X i0 ω‖ ∂P) ^ s.card := by
+  calc
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ s, X i ω‖ ∂P =
+        ∏ i ∈ s, ∫⁻ ω, ENNReal.ofReal ‖X i ω‖ ∂P :=
+      durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_prod_eq_prod_lintegral_norm
+        (P := P) (X := X) hX mX s
+    _ = ∏ i ∈ s, ∫⁻ ω, ENNReal.ofReal ‖X i0 ω‖ ∂P := by
+      refine Finset.prod_congr rfl ?_
+      intro i hi
+      exact
+        ((hident i hi).comp
+          (ENNReal.measurable_ofReal.comp continuous_norm.measurable)).lintegral_eq
+    _ = (∫⁻ ω, ENNReal.ofReal ‖X i0 ω‖ ∂P) ^ s.card := by
+      rw [Finset.prod_const]
+
+/--
+Durrett 2019, Theorem 2.1.13 proof support: iid absolute-value product
+factorization for an initial range.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_norm_prod_eq_pow_lintegral_norm_of_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.range n, X i ω‖ ∂P =
+      (∫⁻ ω, ENNReal.ofReal ‖X 0 ω‖ ∂P) ^ n := by
+  simpa using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_norm_prod_eq_pow_lintegral_norm_of_identDistrib
+      (P := P) (X := X) hX mX
+      (s := Finset.range n) (i0 := 0) (fun i _hi => hident i)
+
+/--
+Durrett 2019, Theorem 2.1.13 proof support: iid absolute-value product
+factorization for an interval block.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_norm_prod_eq_pow_lintegral_norm_of_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.Ico m n, X i ω‖ ∂P =
+      (∫⁻ ω, ENNReal.ofReal ‖X 0 ω‖ ∂P) ^ (n - m) := by
+  simpa [Nat.card_Ico] using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_norm_prod_eq_pow_lintegral_norm_of_identDistrib
+      (P := P) (X := X) hX mX
+      (s := Finset.Ico m n) (i0 := 0) (fun i _hi => hident i)
+
+/--
+Durrett 2019, Theorem 2.1.13 proof support in one-based notation: iid
+absolute-value product factorization for an initial range.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_norm_prod_eq_pow_lintegral_norm_oneBased_of_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.range n, X (i + 1) ω‖ ∂P =
+      (∫⁻ ω, ENNReal.ofReal ‖X 0 ω‖ ∂P) ^ n := by
+  calc
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.range n, X (i + 1) ω‖ ∂P =
+        ∏ i ∈ Finset.range n, ∫⁻ ω, ENNReal.ofReal ‖X (i + 1) ω‖ ∂P :=
+      durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_prod_eq_prod_lintegral_norm_oneBased
+        (P := P) (X := X) hX mX n
+    _ = ∏ i ∈ Finset.range n, ∫⁻ ω, ENNReal.ofReal ‖X 0 ω‖ ∂P := by
+      refine Finset.prod_congr rfl ?_
+      intro i _hi
+      exact
+        ((hident (i + 1)).comp
+          (ENNReal.measurable_ofReal.comp continuous_norm.measurable)).lintegral_eq
+    _ = (∫⁻ ω, ENNReal.ofReal ‖X 0 ω‖ ∂P) ^ n := by
+      rw [Finset.prod_const, Finset.card_range]
+
+/--
+Durrett 2019, Theorem 2.1.13 proof support in one-based notation: iid
+absolute-value product factorization for an interval block.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_norm_prod_eq_pow_lintegral_norm_oneBased_of_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.Ico m n, X (i + 1) ω‖ ∂P =
+      (∫⁻ ω, ENNReal.ofReal ‖X 0 ω‖ ∂P) ^ (n - m) := by
+  calc
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.Ico m n, X (i + 1) ω‖ ∂P =
+        ∏ i ∈ Finset.Ico m n, ∫⁻ ω, ENNReal.ofReal ‖X (i + 1) ω‖ ∂P :=
+      durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_prod_eq_prod_lintegral_norm_oneBased
+        (P := P) (X := X) hX mX m n
+    _ = ∏ i ∈ Finset.Ico m n, ∫⁻ ω, ENNReal.ofReal ‖X 0 ω‖ ∂P := by
+      refine Finset.prod_congr rfl ?_
+      intro i _hi
+      exact
+        ((hident (i + 1)).comp
+          (ENNReal.measurable_ofReal.comp continuous_norm.measurable)).lintegral_eq
+    _ = (∫⁻ ω, ENNReal.ofReal ‖X 0 ω‖ ∂P) ^ (n - m) := by
+      rw [Finset.prod_const, Nat.card_Ico]
+
+/--
+Durrett 2019, Theorem 2.1.13 proof support: iid absolute-value product
+factorization on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_norm_prod_eq_pow_lintegral_norm_of_identDistrib
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.Icc 1 n, X i ω‖ ∂P =
+      (∫⁻ ω, ENNReal.ofReal ‖X 0 ω‖ ∂P) ^ n := by
+  calc
+    ∫⁻ ω, ENNReal.ofReal ‖∏ i ∈ Finset.Icc 1 n, X i ω‖ ∂P =
+        ∏ i ∈ Finset.Icc 1 n, ∫⁻ ω, ENNReal.ofReal ‖X i ω‖ ∂P :=
+      durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_norm_prod_eq_prod_lintegral_norm
+        (P := P) (X := X) hX mX n
+    _ = ∏ i ∈ Finset.Icc 1 n, ∫⁻ ω, ENNReal.ofReal ‖X 0 ω‖ ∂P := by
+      refine Finset.prod_congr rfl ?_
+      intro i _hi
+      exact
+        ((hident i).comp
+          (ENNReal.measurable_ofReal.comp continuous_norm.measurable)).lintegral_eq
+    _ = (∫⁻ ω, ENNReal.ofReal ‖X 0 ω‖ ∂P) ^ n := by
+      rw [Finset.prod_const, Nat.card_Icc]
+      congr 1
+
+/--
 Durrett 2019, Theorem 2.1.13, zero-mean finite-product corollary.
 
 If one factor in a finite independent product has expectation zero, then the

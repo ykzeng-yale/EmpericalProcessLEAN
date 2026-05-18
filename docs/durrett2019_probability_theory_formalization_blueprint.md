@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V523`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V524`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V523: stay on Durrett Theorem 2.4.9
+Current immediate target after V524: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -174,6 +174,9 @@ ordinary, nonnegative, and real nonnegative product expectations.
 V523 adds law-side Chapter 2.1.13 zero-factor corollaries for ordinary,
 nonnegative, and real nonnegative finite/range/Ico and one-based
 range/Ico/`Finset.Icc 1 n` product expectations.
+V524 adds source-side Chapter 2.1.13 absolute-value/norm product displays for
+finite/range/Ico and one-based range/Ico/`Finset.Icc 1 n` products, plus iid
+`IdentDistrib` power collapses for the same shapes.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
@@ -2191,6 +2194,9 @@ real nonnegative product expectations,
 the V523 law-side Chapter 2.1.13 zero-factor corollaries for ordinary,
 nonnegative, and real nonnegative finite/range/Ico and one-based range/Ico/
 `Icc` product expectations,
+the V524 source-side Chapter 2.1.13 absolute-value/norm product displays and
+iid `IdentDistrib` power collapses for finite/range/Ico and one-based
+range/Ico/`Icc` products,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and

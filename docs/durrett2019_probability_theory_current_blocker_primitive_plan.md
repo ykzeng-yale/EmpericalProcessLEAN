@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V523
+## Live In-Thread Goal Prompt V524
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -141,6 +141,9 @@ V523 adds law-side Chapter 2.1.13 zero-factor corollaries: ordinary Bochner,
 nonnegative `lintegral`, and real nonnegative `ENNReal.ofReal`
 finite/range/Ico and one-based range/Ico/`Finset.Icc 1 n` product
 expectations vanish when one corresponding law-side factor integral vanishes.
+V524 adds source-side Chapter 2.1.13 absolute-value/norm product displays:
+finite/range/Ico and one-based range/Ico/`Finset.Icc 1 n` `lintegral`
+factorizations for `E‖prod X_i‖`, plus iid `IdentDistrib` power collapses.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -194,6 +197,10 @@ After V523, do not rebuild the law-side Theorem 2.1.13 zero-factor
 corollaries for ordinary, nonnegative, or real nonnegative finite/range/Ico
 and one-based range/Ico/`Icc` product expectations unless an exact later
 consumer needs a different source shape.
+After V524, do not rebuild the source-side Theorem 2.1.13 absolute-value/norm
+product displays or their iid `IdentDistrib` power collapses for finite/range/
+Ico and one-based range/Ico/`Icc` products unless an exact later consumer
+needs a different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -300,36 +307,37 @@ nonnegative product expectations,
 solved law-side Theorem 2.1.13 zero-factor corollaries for ordinary,
 nonnegative, and real nonnegative finite/range/Ico and one-based range/Ico/
 `Icc` product expectations,
+solved source-side Theorem 2.1.13 absolute-value/norm product displays and
+iid `IdentDistrib` power collapses for finite/range/Ico and one-based
+range/Ico/`Icc` products,
 or old app-level stale prompts.
 
-Latest verified target V523 adds law-side Chapter 2.1.13 zero-factor
-corollaries:
-`durrett2019_theorem_2_1_13_iIndepFun_integral_finset_law_prod_eq_zero_of_integral_eq_zero`,
-`durrett2019_theorem_2_1_13_iIndepFun_integral_range_law_prod_eq_zero_of_integral_eq_zero`,
-`durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_law_prod_eq_zero_of_integral_eq_zero`,
-`durrett2019_theorem_2_1_13_iIndepFun_integral_range_law_prod_eq_zero_of_integral_eq_zero_oneBased`,
-`durrett2019_theorem_2_1_13_iIndepFun_integral_Ico_law_prod_eq_zero_of_integral_eq_zero_oneBased`,
-`durrett2019_theorem_2_1_13_iIndepFun_integral_oneBased_Icc_law_prod_eq_zero_of_integral_eq_zero`,
-`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_prod_eq_zero_of_lintegral_eq_zero`,
-`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_prod_eq_zero_of_lintegral_eq_zero`,
-`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_prod_eq_zero_of_lintegral_eq_zero`,
-`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_prod_eq_zero_of_lintegral_eq_zero_oneBased`,
-`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_prod_eq_zero_of_lintegral_eq_zero_oneBased`,
-`durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_law_prod_eq_zero_of_lintegral_eq_zero`,
-`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero`,
-`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero`,
-`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero`,
-`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero_oneBased`,
-`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero_oneBased`,
+Latest verified target V524 adds source-side Chapter 2.1.13 absolute-value/
+norm product displays:
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_prod_eq_prod_lintegral_norm`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_prod_eq_prod_lintegral_norm`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_prod_eq_prod_lintegral_norm`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_norm_prod_eq_prod_lintegral_norm`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_prod_eq_prod_lintegral_norm_oneBased`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_prod_eq_prod_lintegral_norm_oneBased`,
+`durrett2019_theorem_2_1_13_iid_lintegral_finset_norm_prod_eq_pow_lintegral_norm_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_norm_prod_eq_pow_lintegral_norm_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_norm_prod_eq_pow_lintegral_norm_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_norm_prod_eq_pow_lintegral_norm_oneBased_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_norm_prod_eq_pow_lintegral_norm_oneBased_of_identDistrib`,
 and
-`durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_law_ofReal_prod_eq_zero_of_lintegral_ofReal_eq_zero`.
-These close the law-side zero-factor handoff for ordinary Bochner,
-nonnegative `lintegral`, and real nonnegative `ENNReal.ofReal` products over
-finite sets, initial ranges, interval blocks, shifted one-based
-ranges/intervals, and literal one-based `{1, ..., n}` products.  Next target:
+`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_norm_prod_eq_pow_lintegral_norm_of_identDistrib`.
+These formalize the proof-text `E|X_m ... X_n|` factorization in generalized
+norm form, over finite sets, initial ranges, interval blocks, shifted
+one-based ranges/intervals, and literal one-based `{1, ..., n}` products.
+Next target:
 search for another genuinely missing 2.4.9 proof-step/final-display source
 wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
 that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V523 adds law-side Chapter 2.1.13 zero-factor
+corollaries for ordinary, nonnegative, and real nonnegative finite/range/Ico
+and one-based range/Ico/`Icc` product expectations.
 
 Previous verified target V522 adds source-side iid Chapter 2.1.13 power displays
 under `IdentDistrib`:
