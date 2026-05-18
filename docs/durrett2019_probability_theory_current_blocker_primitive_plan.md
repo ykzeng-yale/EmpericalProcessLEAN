@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V505
+## Live In-Thread Goal Prompt V506
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -69,6 +69,9 @@ wrappers and the matching Theorem 2.1.13 expectation-factorization and
 zero-mean corollaries, including one-based textbook notation.  V505 adds
 Theorem 2.1.15 CDF-convolution source wrappers for iid, identical-distribution,
 joint infinite-product, canonical product-coordinate, one-based, and pairwise
+identically-distributed source shapes.  V506 adds the matching Theorem 2.1.16
+additive-convolution law source wrappers for iid, identical-distribution,
+joint infinite-product, canonical product-coordinate, one-based, and pairwise
 identically-distributed source shapes.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
@@ -121,7 +124,29 @@ solved Theorem 2.1.10 first-variable/tail-product independence and
 Theorem 2.1.13 first-times-tail-product expectation/zero-mean wrappers,
 solved Theorem 2.1.15 iid/source/joint/canonical/one-based/pairwise
 CDF-convolution wrappers,
+solved Theorem 2.1.16 iid/source/joint/canonical/one-based/pairwise
+additive-convolution law wrappers,
 or old app-level stale prompts.
+
+Latest verified target V506 adds source-shaped Durrett Theorem 2.1.16
+additive-convolution law wrappers:
+`durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_of_iIndepFun`,
+`durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_of_identDistrib`,
+`durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_conv`,
+`durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_oneBased_of_iIndepFun`,
+`durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_oneBased_of_identDistrib`,
+`durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_oneBased_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_conv_oneBased`,
+`durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_conv`, and
+`durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_conv_oneBased`.
+The generic `IndepFun` additive-convolution law was already compiled; V506
+exposes the same source-entry surface as V505 for the law-level handoff.
+Next target: search the Theorem 2.1.16 density formulas for missing
+source-shaped iid/joint/canonical/one-based/pairwise wrappers.  Add only
+wrappers that consume the existing density/Fubini core; do not reopen the
+measure-level convolution proof unless a source check proves a genuine
+formula gap.
 
 Latest verified target V505 adds source-shaped Durrett Theorem 2.1.15
 CDF-convolution wrappers:
@@ -235,6 +260,11 @@ Chapter 2.1 product-law support.
   already present, so the efficient packet was to expose iid, joint-law,
   canonical, one-based, and pairwise source shapes that future consumers can
   call directly.
+- Separate law-level handoffs from density/Fubini handoffs.  V506 first
+  packages Theorem 2.1.16's additive-convolution law for all common source
+  shapes; the next density packet can then be strictly a wrapper layer over the
+  existing density formulas, instead of mixing source extraction with measure
+  calculation.
 - Tool rhythm that works best in this shared multi-agent repo: start with
   `git status`, `git rev-parse HEAD`, and `git ls-remote`; edit one
   theorem-sized packet; run focused `lake env lean`; update route docs; run

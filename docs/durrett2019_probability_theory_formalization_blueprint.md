@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V505`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V506`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V505: stay on Durrett Theorem 2.4.9
+Current immediate target after V506: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -112,7 +112,11 @@ matching Theorem 2.1.13 expectation-factorization and zero-mean corollaries in
 zero-based and one-based notation.  V505 adds source-shaped Durrett Theorem
 2.1.15 CDF-convolution wrappers for iid, identical-distribution, joint
 infinite-product, canonical product-coordinate, one-based, and pairwise
-identically-distributed source hypotheses.
+identically-distributed source hypotheses.  V506 adds the matching
+source-shaped Durrett Theorem 2.1.16 additive-convolution law wrappers for
+iid, identical-distribution, joint infinite-product, canonical
+product-coordinate, one-based, and pairwise identically-distributed source
+hypotheses.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
@@ -139,6 +143,7 @@ or the direct zero-based final middle-partition endpoint source wrappers,
 or the route-named one-based empirical-CDF endpoints from the final
 middle-partition construction,
 or the Theorem 2.1.15 CDF-convolution source wrappers,
+or the Theorem 2.1.16 additive-convolution law source wrappers,
 unless a focused source check exposes a missing handoff.
 
 Current active frontier for this goal cycle: Durrett Theorem 2.4.9

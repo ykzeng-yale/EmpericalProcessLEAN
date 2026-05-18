@@ -6478,6 +6478,204 @@ theorem durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv
     _root_.ProbabilityTheory.IndepFun.hasLaw_fun_add hX hY hXY
 
 /--
+Durrett 2019, Theorem 2.1.16, iid pair convolution-law source form.
+
+For an iid real sequence, the law of the sum of the first two Lean-indexed
+coordinates is the additive convolution of their common law.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (MeasureTheory.Measure.conv ν ν) P := by
+  exact
+    durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv
+      (P := P) (μ := ν) (ν := ν) (X := X 0) (Y := X 1)
+      (hindep.indepFun (by decide : (0 : ℕ) ≠ 1)) (hLaw 0) (hLaw 1)
+
+/--
+Durrett 2019, Theorem 2.1.16, identical-distribution iid source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (MeasureTheory.Measure.conv ν ν) P := by
+  have hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν P :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_of_iIndepFun
+      (P := P) (ν := ν) (X := X) hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, joint infinite-product source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (MeasureTheory.Measure.conv ν ν) P := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi
+      (ν := ν) (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_of_iIndepFun
+      (P := P) (ν := ν) (X := X) hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.1.16, canonical iid product-coordinate form.
+-/
+theorem durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_conv
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> ℝ => sample 0 + sample 1)
+      (MeasureTheory.Measure.conv (ν : Measure ℝ) (ν : Measure ℝ))
+      (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_of_iIndepFun
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (ν := (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hCoord.1 hCoord.2.1
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based iid pair convolution-law source form.
+
+This is the textbook-indexed `X_1 + X_2` version, represented in Lean as
+`X 1 + X 2`.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_oneBased_of_iIndepFun
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (MeasureTheory.Measure.conv ν ν) P := by
+  have hShift :=
+    durrett2019_theorem_2_1_11_iid_shift_oneBased_of_iIndepFun
+      (X := X) hLaw hindep
+  simpa using
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_of_iIndepFun
+      (P := P) (ν := ν) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift.1 hShift.2
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based identical-distribution source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_oneBased_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : _root_.ProbabilityTheory.iIndepFun (μ := P) X) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (MeasureTheory.Measure.conv ν ν) P := by
+  have hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν P :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_oneBased_of_iIndepFun
+      (P := P) (ν := ν) (X := X) hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based joint infinite-product source form.
+-/
+theorem durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_oneBased_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (MeasureTheory.Measure.conv ν ν) P := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi
+      (ν := ν) (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_oneBased_of_iIndepFun
+      (P := P) (ν := ν) (X := X) hSource.1 hSource.2
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based canonical product-coordinate form.
+-/
+theorem durrett2019_theorem_2_1_16_canonical_iid_pair_sum_hasLaw_conv_oneBased
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) :
+    _root_.ProbabilityTheory.HasLaw
+      (fun sample : ℕ -> ℝ => sample 1 + sample 2)
+      (MeasureTheory.Measure.conv (ν : Measure ℝ) (ν : Measure ℝ))
+      (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_16_iid_pair_sum_hasLaw_conv_oneBased_of_iIndepFun
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (ν := (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hCoord.1 hCoord.2.1
+
+/--
+Durrett 2019, Theorem 2.1.16, pairwise-identically-distributed source form.
+
+The convolution law for one selected pair only needs pairwise independence.
+-/
+theorem durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_conv
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := P)) on X)) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 0 ω + X 1 ω)
+      (MeasureTheory.Measure.conv ν ν) P := by
+  have hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν P :=
+    durrett2019_theorem_2_1_11_hasLaw_of_identDistrib_zero hBase hident
+  exact
+    durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv
+      (P := P) (μ := ν) (ν := ν) (X := X 0) (Y := X 1)
+      (hindep (by decide : (0 : ℕ) ≠ 1)) (hLaw 0) (hLaw 1)
+
+/--
+Durrett 2019, Theorem 2.1.16, one-based pairwise-identically-distributed
+source form.
+-/
+theorem durrett2019_theorem_2_1_16_pairwise_identDistrib_pair_sum_hasLaw_conv_oneBased
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {X : ℕ -> Ω -> ℝ}
+    (hBase : _root_.ProbabilityTheory.HasLaw (X 0) ν P)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := P)) on X)) :
+    _root_.ProbabilityTheory.HasLaw (fun ω => X 1 ω + X 2 ω)
+      (MeasureTheory.Measure.conv ν ν) P := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_pairwise_identDistrib_oneBased_source
+      (X := X) hBase hident hindep
+  exact
+    durrett2019_theorem_2_1_16_indepFun_sum_hasLaw_conv
+      (P := P) (μ := ν) (ν := ν)
+      (X := fun ω => X 1 ω) (Y := fun ω => X 2 ω)
+      (hSource.2 (by decide : (0 : ℕ) ≠ 1)) (hSource.1 0) (hSource.1 1)
+
+/--
 Durrett 2019, Theorem 2.1.16, absolute-continuity consequence of the
 convolution law.
 
