@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V521
+## Live In-Thread Goal Prompt V522
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -132,6 +132,11 @@ product-expectation displays: law-side and source-side ordinary Bochner
 products, nonnegative `lintegral` products, real nonnegative
 `ENNReal.ofReal` products, iid law-side power displays, and the source-side
 zero-factor corollary.
+V522 adds source-side iid Chapter 2.1.13 power displays under
+`IdentDistrib`: finite/range/Ico and one-based range/Ico/`Finset.Icc 1 n`
+ordinary Bochner products, nonnegative `lintegral` products, and real
+nonnegative `ENNReal.ofReal` products all collapse to powers of the base
+expectation.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -176,6 +181,10 @@ different source shape.
 After V521, do not rebuild the literal one-based `Finset.Icc 1 n` Theorem
 2.1.13 product-expectation displays, including law-side/source-side ordinary,
 nonnegative, real nonnegative, iid power, and zero-factor branches, unless an
+exact later consumer needs a different source shape.
+After V522, do not rebuild the source-side iid Theorem 2.1.13 power displays
+under `IdentDistrib` for finite/range/Ico and one-based range/Ico/`Icc`
+ordinary, nonnegative, or real nonnegative product expectations unless an
 exact later consumer needs a different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
@@ -277,9 +286,41 @@ branches, and the remaining iid law-side nonnegative power displays,
 solved literal one-based `Finset.Icc 1 n` Theorem 2.1.13
 product-expectation displays for law-side/source-side ordinary,
 nonnegative, real nonnegative, iid power, and zero-factor branches,
+solved source-side iid Theorem 2.1.13 power displays under `IdentDistrib` for
+finite/range/Ico and one-based range/Ico/`Icc` ordinary, nonnegative, and real
+nonnegative product expectations,
 or old app-level stale prompts.
 
-Latest verified target V521 adds literal one-based `Finset.Icc 1 n`
+Latest verified target V522 adds source-side iid Chapter 2.1.13 power displays
+under `IdentDistrib`:
+`durrett2019_theorem_2_1_13_iid_integral_finset_prod_eq_pow_integral_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_integral_range_prod_eq_pow_integral_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_integral_Ico_prod_eq_pow_integral_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_integral_range_prod_eq_pow_integral_oneBased_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_integral_Ico_prod_eq_pow_integral_oneBased_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_integral_oneBased_Icc_prod_eq_pow_integral_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_finset_prod_eq_pow_lintegral_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_prod_eq_pow_lintegral_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_prod_eq_pow_lintegral_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_prod_eq_pow_lintegral_oneBased_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_prod_eq_pow_lintegral_oneBased_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_prod_eq_pow_lintegral_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_finset_ofReal_prod_eq_pow_lintegral_ofReal_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_ofReal_prod_eq_pow_lintegral_ofReal_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_ofReal_prod_eq_pow_lintegral_ofReal_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_ofReal_prod_eq_pow_lintegral_ofReal_oneBased_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_ofReal_prod_eq_pow_lintegral_ofReal_oneBased_of_identDistrib`,
+and
+`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_ofReal_prod_eq_pow_lintegral_ofReal_of_identDistrib`.
+These close the direct source-side iid power notation for ordinary,
+nonnegative, and real nonnegative product expectations over finite sets,
+initial ranges, interval blocks, shifted one-based ranges/intervals, and
+literal one-based `{1, ..., n}` products.  Next target: search for another
+genuinely missing 2.4.9 proof-step/final-display source wrapper, or add the
+next Chapter 2.1 product-law/product-expectation handoff that directly
+supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V521 adds literal one-based `Finset.Icc 1 n`
 Chapter 2.1.13 product-expectation displays:
 `durrett2019_theorem_2_1_13_iIndepFun_integral_oneBased_Icc_law_prod_eq_prod_integral`,
 `durrett2019_theorem_2_1_13_iid_integral_oneBased_Icc_law_prod_eq_pow_integral`,
