@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V533
+## Live In-Thread Goal Prompt V534
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -183,6 +183,11 @@ expectation-exists wrappers: for an independent measurable source family
 `X_i` and measurable functions `f_i`, integrable composed factors
 `f_i (X_i)` have product integrability and zero expectation whenever the
 finite product contains one composed factor with zero expectation.
+V534 adds source-side composed-function Chapter 2.1.13
+expectation-exists-and-value wrappers: for an independent measurable source
+family `X_i` and measurable functions `f_i`, integrable composed factors
+`f_i (X_i)` have product integrability and product-of-expectations formulas
+without requiring `HasLaw` hypotheses.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -271,6 +276,10 @@ common-law composed products unless an exact later consumer needs a different
 source shape.
 After V533, do not rebuild the source-side composed-function Theorem 2.1.13
 zero-factor expectation-exists wrappers for finite/range/Ico or one-based
+range/Ico/`Icc` composed products unless an exact later consumer needs a
+different source shape.
+After V534, do not rebuild the source-side composed-function Theorem 2.1.13
+expectation-exists-and-value wrappers for finite/range/Ico or one-based
 range/Ico/`Icc` composed products unless an exact later consumer needs a
 different source shape.
 Do not return to
@@ -406,10 +415,31 @@ products,
 solved source-side composed-function Theorem 2.1.13 zero-factor
 expectation-exists wrappers for finite/range/Ico and one-based
 range/Ico/`Icc` composed products,
+solved source-side composed-function Theorem 2.1.13
+expectation-exists-and-value wrappers for finite/range/Ico and one-based
+range/Ico/`Icc` composed products,
 or old app-level stale prompts.
 
-Latest verified target V533 adds source-side composed-function Chapter 2.1.13
-zero-factor expectation-exists wrappers:
+Latest verified target V534 adds source-side composed-function Chapter 2.1.13
+expectation-exists-and-value wrappers:
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_finset_comp_prod_eq_prod_integral_of_integrable`,
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_comp_prod_eq_prod_integral_of_integrable`,
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_comp_prod_eq_prod_integral_of_integrable`,
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_oneBased_Icc_comp_prod_eq_prod_integral_of_integrable`,
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_comp_prod_eq_prod_integral_oneBased_of_integrable`,
+and
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_comp_prod_eq_prod_integral_oneBased_of_integrable`.
+These apply the Chapter 2.1.10 composition theorem to `f_i ∘ X_i` and then
+reuse the source-side V527 product formula, matching Durrett mixed-moment
+steps where powers/functions of distinct independent variables factor without
+first passing through law-side integrals.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V533 adds source-side composed-function Chapter
+2.1.13 zero-factor expectation-exists wrappers:
 `durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_finset_comp_prod_eq_zero_of_integrable_and_integral_eq_zero`,
 `durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_comp_prod_eq_zero_of_integrable_and_integral_eq_zero`,
 `durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_comp_prod_eq_zero_of_integrable_and_integral_eq_zero`,
@@ -421,10 +451,6 @@ These apply the Chapter 2.1.10 composition theorem to `f_i ∘ X_i` and then
 reuse the source-side V529 zero-factor product package, avoiding a law
 hypothesis when Durrett-style mixed products vanish because one composed factor
 has mean zero.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V532 adds law-side iid Chapter 2.1.13 zero-factor
 expectation-exists wrappers for common-law `HasLaw` products:
