@@ -7737,6 +7737,136 @@ theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_Ico_law_indexed_p
     hX hX_meas hLaw hf_meas hf hi hzero
 
 /--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform nonnegative
+finite product formula.
+
+This common-law `HasLaw` form keeps the transform indexed by the same finite
+subfamily as the independent variables.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_finset_law_indexed_prod_eq_prod_lintegral
+    {Ω : Type u} {ι : Type w}
+    [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {μ : Measure S}
+    {f : ι -> S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (s : Finset ι) :
+    ∫⁻ ω, ∏ i ∈ s, f i (X i ω) ∂P =
+      ∏ i ∈ s, ∫⁻ x, f i x ∂μ :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_prod_eq_prod_lintegral
+    (P := P) (S := fun _ : ι => S) (X := X)
+    (μ := fun _ : ι => μ) (f := f) hX hLaw hX_meas hf s
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform nonnegative
+initial-range product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_law_indexed_prod_eq_prod_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.range n, f i (X i ω) ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ x, f i x ∂μ :=
+  durrett2019_theorem_2_1_13_iid_lintegral_finset_law_indexed_prod_eq_prod_lintegral
+    (P := P) (X := X) (μ := μ) (f := f)
+    hX hLaw hX_meas hf (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform nonnegative
+interval-block product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_indexed_prod_eq_prod_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (m n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Ico m n, f i (X i ω) ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ x, f i x ∂μ :=
+  durrett2019_theorem_2_1_13_iid_lintegral_finset_law_indexed_prod_eq_prod_lintegral
+    (P := P) (X := X) (μ := μ) (f := f)
+    hX hLaw hX_meas hf (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform nonnegative
+product formula on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_law_indexed_prod_eq_prod_lintegral
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Icc 1 n, f i (X i ω) ∂P =
+      ∏ i ∈ Finset.Icc 1 n, ∫⁻ x, f i x ∂μ :=
+  durrett2019_theorem_2_1_13_iid_lintegral_finset_law_indexed_prod_eq_prod_lintegral
+    (P := P) (X := X) (μ := μ) (f := f)
+    hX hLaw hX_meas hf (Finset.Icc 1 n)
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform nonnegative
+one-based initial-range product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_law_indexed_prod_eq_prod_lintegral_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.range n, f (i + 1) (X (i + 1) ω) ∂P =
+      ∏ i ∈ Finset.range n, ∫⁻ x, f (i + 1) x ∂μ :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_prod_eq_prod_lintegral_oneBased
+    (P := P) (S := fun _ : ℕ => S) (X := X)
+    (μ := fun _ : ℕ => μ) (f := f) hX hLaw hX_meas hf n
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side indexed-transform nonnegative
+one-based interval-block product formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_indexed_prod_eq_prod_lintegral_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : ℕ -> S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : ∀ i, Measurable (f i))
+    (m n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Ico m n, f (i + 1) (X (i + 1) ω) ∂P =
+      ∏ i ∈ Finset.Ico m n, ∫⁻ x, f (i + 1) x ∂μ :=
+  durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_prod_eq_prod_lintegral_oneBased
+    (P := P) (S := fun _ : ℕ => S) (X := X)
+    (μ := fun _ : ℕ => μ) (f := f) hX hLaw hX_meas hf m n
+
+/--
 Durrett 2019, Theorem 2.1.13, source-side composed finite-subfamily
 expectation-exists-and-value formula.
 
