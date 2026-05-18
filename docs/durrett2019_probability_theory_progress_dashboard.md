@@ -36,7 +36,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V524` in
+Route from `Live In-Thread Goal Prompt V525` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -162,6 +162,10 @@ range/Ico/`Finset.Icc 1 n` product expectations.
 V524 adds source-side Chapter 2.1.13 absolute-value/norm product displays for
 finite/range/Ico and one-based range/Ico/`Finset.Icc 1 n` products, plus iid
 `IdentDistrib` power collapses for the same shapes.
+V525 adds source-side Chapter 2.1.13 finite-product integrability wrappers for
+finite/range/Ico and one-based range/Ico/`Finset.Icc 1 n` products of
+independent integrable variables, packaging the expectation-exists step after
+the norm-product display.
 The
 historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
@@ -2162,6 +2166,8 @@ nonnegative, and real nonnegative finite/range/Ico and one-based range/Ico/
 V524 adds source-side Chapter 2.1.13 absolute-value/norm product displays and
 iid `IdentDistrib` power collapses for finite/range/Ico and one-based
 range/Ico/`Icc` products.
+V525 adds source-side Chapter 2.1.13 finite-product integrability wrappers for
+finite/range/Ico and one-based range/Ico/`Icc` products.
 Theorem 2.4.9 now has
 the arbitrary-law cutpoint-chain route and both the book-style and exact
 outer-a.s. empirical-CDF endpoints:
@@ -3348,7 +3354,7 @@ Next proof packet: search for a genuinely missing 2.4.9 proof-step or
 final-display source wrapper, or add the next Chapter 2.1
 product-law/product-expectation handoff that directly supports 2.4.9 or the
 adjacent Kolmogorov-maximal route.  Do not route back to solved 2.5.13
-plumbing or the closed V500-V524 2.4.9/2.1 source-wrapper surfaces unless an
+plumbing or the closed V500-V525 2.4.9/2.1 source-wrapper surfaces unless an
 exact source-shape consumer is missing.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement

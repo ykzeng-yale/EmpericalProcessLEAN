@@ -5448,6 +5448,129 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_norm_prod_eq_prod_lin
       hShift_indep (fun i => mX (i + 1)) m n
 
 /--
+Durrett 2019, Theorem 2.1.13 support: existence of the expectation of a
+finite independent product.
+
+If the factors in a finite independent subfamily are integrable, then their
+product is integrable.  This packages the `E|X_m ... X_n|` finiteness step
+used before applying the product-expectation identity.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_finset_prod_of_integrable
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ι -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    {s : Finset ι}
+    (hX_int : ∀ i ∈ s, Integrable (X i) P) :
+    Integrable (fun ω => ∏ i ∈ s, X i ω) P := by
+  refine ⟨?_, ?_⟩
+  · exact s.aestronglyMeasurable_fun_prod fun i _hi =>
+      (mX i).aestronglyMeasurable
+  · rw [hasFiniteIntegral_iff_norm (μ := P)
+      (fun ω => ∏ i ∈ s, X i ω)]
+    rw [
+      durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_prod_eq_prod_lintegral_norm
+        (P := P) (X := X) hX mX s]
+    exact ENNReal.prod_lt_top fun i hi =>
+      (hasFiniteIntegral_iff_norm (μ := P) (X i)).1
+        (hX_int i hi).hasFiniteIntegral
+
+/--
+Durrett 2019, Theorem 2.1.13 support: integrability of an independent initial
+range product.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_range_prod_of_integrable
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (n : ℕ)
+    (hX_int : ∀ i ∈ Finset.range n, Integrable (X i) P) :
+    Integrable (fun ω => ∏ i ∈ Finset.range n, X i ω) P :=
+  durrett2019_theorem_2_1_13_iIndepFun_integrable_finset_prod_of_integrable
+    (P := P) (X := X) hX mX (s := Finset.range n) hX_int
+
+/--
+Durrett 2019, Theorem 2.1.13 support: integrability of an independent interval
+block product.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_Ico_prod_of_integrable
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (m n : ℕ)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X i) P) :
+    Integrable (fun ω => ∏ i ∈ Finset.Ico m n, X i ω) P :=
+  durrett2019_theorem_2_1_13_iIndepFun_integrable_finset_prod_of_integrable
+    (P := P) (X := X) hX mX (s := Finset.Ico m n) hX_int
+
+/--
+Durrett 2019, Theorem 2.1.13 support: integrability of the independent product
+over the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_oneBased_Icc_prod_of_integrable
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (n : ℕ)
+    (hX_int : ∀ i ∈ Finset.Icc 1 n, Integrable (X i) P) :
+    Integrable (fun ω => ∏ i ∈ Finset.Icc 1 n, X i ω) P :=
+  durrett2019_theorem_2_1_13_iIndepFun_integrable_finset_prod_of_integrable
+    (P := P) (X := X) hX mX (s := Finset.Icc 1 n) hX_int
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based notation: integrability of
+an independent initial range product.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_range_prod_oneBased_of_integrable
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (n : ℕ)
+    (hX_int : ∀ i ∈ Finset.range n, Integrable (X (i + 1)) P) :
+    Integrable (fun ω => ∏ i ∈ Finset.range n, X (i + 1) ω) P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_range_prod_of_integrable
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => mX (i + 1)) n hX_int
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based notation: integrability of
+an independent interval block product.
+-/
+theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_Ico_prod_oneBased_of_integrable
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (mX : ∀ i, Measurable (X i))
+    (m n : ℕ)
+    (hX_int : ∀ i ∈ Finset.Ico m n, Integrable (X (i + 1)) P) :
+    Integrable (fun ω => ∏ i ∈ Finset.Ico m n, X (i + 1) ω) P := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_Ico_prod_of_integrable
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hShift_indep (fun i => mX (i + 1)) m n hX_int
+
+/--
 Durrett 2019, Theorem 2.1.13 proof support: iid absolute-value product
 factorization for a finite subfamily.
 -/

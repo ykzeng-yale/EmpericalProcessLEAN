@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V524
+## Live In-Thread Goal Prompt V525
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -144,6 +144,10 @@ expectations vanish when one corresponding law-side factor integral vanishes.
 V524 adds source-side Chapter 2.1.13 absolute-value/norm product displays:
 finite/range/Ico and one-based range/Ico/`Finset.Icc 1 n` `lintegral`
 factorizations for `E‖prod X_i‖`, plus iid `IdentDistrib` power collapses.
+V525 adds source-side Chapter 2.1.13 finite-product integrability wrappers:
+finite/range/Ico and one-based range/Ico/`Finset.Icc 1 n` products of
+independent integrable variables are integrable, packaging the proof-text
+expectation-exists step after the norm-product display.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -201,6 +205,9 @@ After V524, do not rebuild the source-side Theorem 2.1.13 absolute-value/norm
 product displays or their iid `IdentDistrib` power collapses for finite/range/
 Ico and one-based range/Ico/`Icc` products unless an exact later consumer
 needs a different source shape.
+After V525, do not rebuild the source-side Theorem 2.1.13 finite-product
+integrability wrappers for finite/range/Ico or one-based range/Ico/`Icc`
+products unless an exact later consumer needs a different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -310,9 +317,29 @@ nonnegative, and real nonnegative finite/range/Ico and one-based range/Ico/
 solved source-side Theorem 2.1.13 absolute-value/norm product displays and
 iid `IdentDistrib` power collapses for finite/range/Ico and one-based
 range/Ico/`Icc` products,
+solved source-side Theorem 2.1.13 finite-product integrability wrappers for
+finite/range/Ico and one-based range/Ico/`Icc` products,
 or old app-level stale prompts.
 
-Latest verified target V524 adds source-side Chapter 2.1.13 absolute-value/
+Latest verified target V525 adds source-side Chapter 2.1.13 finite-product
+integrability wrappers:
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_finset_prod_of_integrable`,
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_range_prod_of_integrable`,
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_Ico_prod_of_integrable`,
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_oneBased_Icc_prod_of_integrable`,
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_range_prod_oneBased_of_integrable`,
+and
+`durrett2019_theorem_2_1_13_iIndepFun_integrable_Ico_prod_oneBased_of_integrable`.
+These formalize the proof-text expectation-exists step: after independence
+factorizes `E‖prod X_i‖`, finite one-factor integrability makes the product
+integrable over finite sets, initial ranges, interval blocks, shifted
+one-based ranges/intervals, and literal one-based `{1, ..., n}` products.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V524 adds source-side Chapter 2.1.13 absolute-value/
 norm product displays:
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_norm_prod_eq_prod_lintegral_norm`,
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_norm_prod_eq_prod_lintegral_norm`,
@@ -327,13 +354,6 @@ norm product displays:
 `durrett2019_theorem_2_1_13_iid_lintegral_Ico_norm_prod_eq_pow_lintegral_norm_oneBased_of_identDistrib`,
 and
 `durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_norm_prod_eq_pow_lintegral_norm_of_identDistrib`.
-These formalize the proof-text `E|X_m ... X_n|` factorization in generalized
-norm form, over finite sets, initial ranges, interval blocks, shifted
-one-based ranges/intervals, and literal one-based `{1, ..., n}` products.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V523 adds law-side Chapter 2.1.13 zero-factor
 corollaries for ordinary, nonnegative, and real nonnegative finite/range/Ico
