@@ -5057,6 +5057,260 @@ theorem durrett2019_theorem_2_1_13_integral_Ico_law_prod_eq_zero_oneBased_of_shi
       hSource.2 hSource.1 (fun i => hf (i + 1)) hi hzero
 
 /--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+a common law-side zero mean makes the product expectation vanish over any
+nonempty finite set of coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_of_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℝ -> 𝕜}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf : Integrable f ν) {s : Finset ℕ} (hs : s.Nonempty)
+    (hzero : ∫ x, f x ∂ν = 0) :
+    ∫ ω, ∏ i ∈ s, f (X i ω) ∂P = 0 := by
+  rcases hs with ⟨i, hi⟩
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integral_finset_law_prod_eq_zero_of_integral_eq_zero
+      (P := P) (S := fun _ : ℕ => ℝ) (X := X)
+      (μ := fun _ : ℕ => ν) (f := fun _ : ℕ => f)
+      hSource.2 hSource.1 (fun _ => hf) (s := s) (i := i) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+a common law-side zero mean kills a positive initial-range product
+expectation.
+-/
+theorem durrett2019_theorem_2_1_13_integral_range_law_prod_eq_zero_of_hasLaw_infinitePi_and_pos_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℝ -> 𝕜}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf : Integrable f ν) {n : ℕ} (hn : 0 < n)
+    (hzero : ∫ x, f x ∂ν = 0) :
+    ∫ ω, ∏ i ∈ Finset.range n, f (X i ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_of_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (ν := ν) (f := f) hJoint hf
+    (s := Finset.range n) ⟨0, Finset.mem_range.mpr hn⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+a common law-side zero mean kills a nonempty interval-block product
+expectation.
+-/
+theorem durrett2019_theorem_2_1_13_integral_Ico_law_prod_eq_zero_of_hasLaw_infinitePi_and_lt_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℝ -> 𝕜}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf : Integrable f ν) {m n : ℕ} (hmn : m < n)
+    (hzero : ∫ x, f x ∂ν = 0) :
+    ∫ ω, ∏ i ∈ Finset.Ico m n, f (X i ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_of_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (ν := ν) (f := f) hJoint hf
+    (s := Finset.Ico m n) ⟨m, Finset.mem_Ico.mpr ⟨le_rfl, hmn⟩⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+a common law-side zero mean kills the product over the literal one-based index
+set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_integral_oneBased_Icc_law_prod_eq_zero_of_hasLaw_infinitePi_and_one_le_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℝ -> 𝕜}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf : Integrable f ν) {n : ℕ} (hn : 1 ≤ n)
+    (hzero : ∫ x, f x ∂ν = 0) :
+    ∫ ω, ∏ i ∈ Finset.Icc 1 n, f (X i ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_of_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (ν := ν) (f := f) hJoint hf
+    (s := Finset.Icc 1 n) ⟨1, Finset.mem_Icc.mpr ⟨le_rfl, hn⟩⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+a common law-side zero mean kills products over nonempty finite sets of
+shifted one-based coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_oneBased_of_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℝ -> 𝕜}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf : Integrable f ν) {s : Finset ℕ} (hs : s.Nonempty)
+    (hzero : ∫ x, f x ∂ν = 0) :
+    ∫ ω, ∏ i ∈ s, f (X (i + 1) ω) ∂P = 0 := by
+  rcases hs with ⟨i, hi⟩
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hSource.2)
+  have hShift_law : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) ν P := by
+    intro i
+    simpa [Nat.succ_eq_add_one] using hSource.1 (Nat.succ i)
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integral_finset_law_prod_eq_zero_of_integral_eq_zero
+      (P := P) (S := fun _ : ℕ => ℝ)
+      (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      (μ := fun _ : ℕ => ν) (f := fun _ : ℕ => f)
+      hShift_indep hShift_law (fun _ => hf) (s := s) (i := i) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+a common law-side zero mean kills a positive one-based initial-range product
+expectation.
+-/
+theorem durrett2019_theorem_2_1_13_integral_range_law_prod_eq_zero_oneBased_of_hasLaw_infinitePi_and_pos_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℝ -> 𝕜}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf : Integrable f ν) {n : ℕ} (hn : 0 < n)
+    (hzero : ∫ x, f x ∂ν = 0) :
+    ∫ ω, ∏ i ∈ Finset.range n, f (X (i + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_oneBased_of_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (ν := ν) (f := f) hJoint hf
+    (s := Finset.range n) ⟨0, Finset.mem_range.mpr hn⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+a common law-side zero mean kills a nonempty one-based interval-block product
+expectation.
+-/
+theorem durrett2019_theorem_2_1_13_integral_Ico_law_prod_eq_zero_oneBased_of_hasLaw_infinitePi_and_lt_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℝ -> 𝕜}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf : Integrable f ν) {m n : ℕ} (hmn : m < n)
+    (hzero : ∫ x, f x ∂ν = 0) :
+    ∫ ω, ∏ i ∈ Finset.Ico m n, f (X (i + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_oneBased_of_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (ν := ν) (f := f) hJoint hf
+    (s := Finset.Ico m n) ⟨m, Finset.mem_Ico.mpr ⟨le_rfl, hmn⟩⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+a common law-side zero mean kills the literal one-based shifted-coordinate
+product.
+-/
+theorem durrett2019_theorem_2_1_13_shift_integral_oneBased_Icc_law_prod_eq_zero_of_hasLaw_infinitePi_and_one_le_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℝ -> 𝕜}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf : Integrable f ν) {n : ℕ} (hn : 1 ≤ n)
+    (hzero : ∫ x, f x ∂ν = 0) :
+    ∫ ω, ∏ i ∈ Finset.Icc 1 n, f (X (i + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_oneBased_of_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (ν := ν) (f := f) hJoint hf
+    (s := Finset.Icc 1 n) ⟨1, Finset.mem_Icc.mpr ⟨le_rfl, hn⟩⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a shifted infinite-product joint law:
+a common law-side zero mean kills products over nonempty finite sets of shifted
+one-based coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℝ -> 𝕜}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf : Integrable f ν) {s : Finset ℕ} (hs : s.Nonempty)
+    (hzero : ∫ x, f x ∂ν = 0) :
+    ∫ ω, ∏ i ∈ s, f (X (i + 1) ω) ∂P = 0 := by
+  rcases hs with ⟨i, hi⟩
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integral_finset_law_prod_eq_zero_of_integral_eq_zero
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      (μ := fun _ : ℕ => ν) (f := fun _ : ℕ => f)
+      hSource.2 hSource.1 (fun _ => hf) (s := s) (i := i) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a shifted infinite-product joint law:
+a common law-side zero mean kills a positive one-based initial-range product
+expectation.
+-/
+theorem durrett2019_theorem_2_1_13_integral_range_law_prod_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_pos_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℝ -> 𝕜}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf : Integrable f ν) {n : ℕ} (hn : 0 < n)
+    (hzero : ∫ x, f x ∂ν = 0) :
+    ∫ ω, ∏ i ∈ Finset.range n, f (X (i + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (ν := ν) (f := f) hJoint hf
+    (s := Finset.range n) ⟨0, Finset.mem_range.mpr hn⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a shifted infinite-product joint law:
+a common law-side zero mean kills a nonempty one-based interval-block product
+expectation.
+-/
+theorem durrett2019_theorem_2_1_13_integral_Ico_law_prod_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_lt_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℝ -> 𝕜}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf : Integrable f ν) {m n : ℕ} (hmn : m < n)
+    (hzero : ∫ x, f x ∂ν = 0) :
+    ∫ ω, ∏ i ∈ Finset.Ico m n, f (X (i + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (ν := ν) (f := f) hJoint hf
+    (s := Finset.Ico m n) ⟨m, Finset.mem_Ico.mpr ⟨le_rfl, hmn⟩⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a shifted infinite-product joint law:
+a common law-side zero mean kills the literal one-based shifted-coordinate
+product.
+-/
+theorem durrett2019_theorem_2_1_13_integral_oneBased_Icc_law_prod_eq_zero_of_shift_hasLaw_infinitePi_and_one_le_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℝ -> 𝕜}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf : Integrable f ν) {n : ℕ} (hn : 1 ≤ n)
+    (hzero : ∫ x, f x ∂ν = 0) :
+    ∫ ω, ∏ i ∈ Finset.Icc 1 n, f (X (i + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (ν := ν) (f := f) hJoint hf
+    (s := Finset.Icc 1 n) ⟨1, Finset.mem_Icc.mpr ⟨le_rfl, hn⟩⟩ hzero
+
+/--
 Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
 law-side expectation factorization over an initial range.
 -/

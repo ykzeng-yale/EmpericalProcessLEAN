@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V591
+## Live In-Thread Goal Prompt V592
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -462,6 +462,10 @@ V591 adds the matching source-side iid common-law Chapter 2.1.13 value-only
 ordinary zero-product displays over nonempty finite subfamilies, positive
 range/Ico intervals, literal one-based `Icc`, and shifted one-based
 coordinate forms.
+V592 adds the matching joint infinite-product common-law Chapter 2.1.13
+value-only ordinary zero-product handoffs over nonempty finite subfamilies,
+positive range/Ico intervals, literal one-based `Icc`, full-law shifted
+one-based coordinate forms, and shifted-joint-law one-based coordinate forms.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -792,6 +796,11 @@ After V591, do not rebuild the source-side iid common-law Theorem 2.1.13
 value-only ordinary zero-product displays for nonempty finite, positive
 range/Ico, literal one-based `Icc`, or shifted one-based coordinate products
 unless an exact later consumer needs a different display shape.
+After V592, do not rebuild the joint infinite-product common-law Theorem
+2.1.13 value-only ordinary zero-product handoffs for finite, range/Ico,
+literal one-based `Icc`, full-law shifted one-based, or shifted-joint-law
+one-based products unless an exact later consumer needs a different display
+shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -1033,7 +1042,32 @@ range-sum, and textbook inverse-multiple displays in zero-based and one-based
 forms,
 or old app-level stale prompts.
 
-Latest verified target V591 adds source-side iid common-law Chapter 2.1.13
+Latest verified target V592 adds joint infinite-product common-law Chapter
+2.1.13 value-only ordinary zero-product handoffs over nonempty finite
+subfamilies, positive range/Ico intervals, literal one-based `Icc`, full-law
+shifted one-based coordinate forms, and shifted-joint-law one-based
+coordinate forms:
+`durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_of_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_integral_range_law_prod_eq_zero_of_hasLaw_infinitePi_and_pos_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_integral_Ico_law_prod_eq_zero_of_hasLaw_infinitePi_and_lt_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_integral_oneBased_Icc_law_prod_eq_zero_of_hasLaw_infinitePi_and_one_le_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_oneBased_of_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_integral_range_law_prod_eq_zero_oneBased_of_hasLaw_infinitePi_and_pos_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_integral_Ico_law_prod_eq_zero_oneBased_of_hasLaw_infinitePi_and_lt_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_shift_integral_oneBased_Icc_law_prod_eq_zero_of_hasLaw_infinitePi_and_one_le_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_nonempty_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_integral_range_law_prod_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_pos_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_integral_Ico_law_prod_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_lt_and_integral_eq_zero`, and
+`durrett2019_theorem_2_1_13_integral_oneBased_Icc_law_prod_eq_zero_of_shift_hasLaw_infinitePi_and_one_le_and_integral_eq_zero`.
+These wrappers let joint-law consumers use a common law-side zero mean and a
+nonempty/positive index condition directly, without first extracting iid data
+or naming a selected zero factor.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V591 adds source-side iid common-law Chapter 2.1.13
 value-only ordinary zero-product displays over nonempty finite subfamilies,
 positive range/Ico intervals, literal one-based `Icc`, and shifted one-based
 coordinate forms:
@@ -1049,11 +1083,6 @@ These wrappers let source iid consumers get the vanishing expectation directly
 from a common law-side zero mean and a nonempty/positive index condition,
 without naming a selected zero factor or unpacking product-integrability
 packages.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
-
 Previous verified target V590 adds canonical iid common-law Chapter 2.1.13
 value-only ordinary zero-product displays over nonempty finite subfamilies,
 positive range/Ico intervals, literal one-based `Icc`, and shifted one-based
@@ -7099,6 +7128,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V591` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V592` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
