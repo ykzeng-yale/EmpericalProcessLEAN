@@ -11470,6 +11470,159 @@ theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_ofReal_comp_prod_eq_zero_on
       exact Finset.prod_eq_zero hi hbase_zero
 
 /--
+Durrett 2019, Theorem 2.1.13, source-side iid common-transform real
+nonnegative finite power formula.
+
+For identically distributed independent source variables and one common
+nonnegative real measurable transform, the source-space `ENNReal.ofReal`
+product `lintegral` collapses to a power of the base-coordinate transformed
+`lintegral`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_finset_ofReal_comp_prod_eq_pow_lintegral_ofReal_of_identDistrib
+    {Ω : Type u} {ι : Type w}
+    [MeasurableSpace Ω] {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {f : S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : Measurable f)
+    (hf_nonneg : ∀ x, 0 ≤ f x)
+    {s : Finset ι} {i0 : ι}
+    (hident : ∀ i ∈ s,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X i0) P P) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ s, f (X i ω)) ∂P =
+      (∫⁻ ω, ENNReal.ofReal (f (X i0 ω)) ∂P) ^ s.card := by
+  calc
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ s, f (X i ω)) ∂P =
+        ∏ i ∈ s, ∫⁻ ω, ENNReal.ofReal (f (X i0 ω)) ∂P := by
+      exact
+        durrett2019_theorem_2_1_13_iid_lintegral_finset_ofReal_comp_prod_eq_prod_lintegral_ofReal_base_of_identDistrib
+          (P := P) (X := X) (f := fun _ : ι => f)
+          hX hX_meas (fun _ => hf_meas) (fun _ x => hf_nonneg x) hident
+    _ = (∫⁻ ω, ENNReal.ofReal (f (X i0 ω)) ∂P) ^ s.card := by
+      rw [Finset.prod_const]
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid common-transform real
+nonnegative initial-range power formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_ofReal_comp_prod_eq_pow_lintegral_ofReal_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : Measurable f)
+    (hf_nonneg : ∀ x, 0 ≤ f x)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.range n, f (X i ω)) ∂P =
+      (∫⁻ ω, ENNReal.ofReal (f (X 0 ω)) ∂P) ^ n := by
+  simpa using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_ofReal_comp_prod_eq_pow_lintegral_ofReal_of_identDistrib
+      (P := P) (X := X) (f := f) hX hX_meas hf_meas hf_nonneg
+      (s := Finset.range n) (i0 := 0) (fun i _hi => hident i)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid common-transform real
+nonnegative interval-block power formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_ofReal_comp_prod_eq_pow_lintegral_ofReal_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : Measurable f)
+    (hf_nonneg : ∀ x, 0 ≤ f x)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.Ico m n, f (X i ω)) ∂P =
+      (∫⁻ ω, ENNReal.ofReal (f (X 0 ω)) ∂P) ^ (n - m) := by
+  simpa [Nat.card_Ico] using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_ofReal_comp_prod_eq_pow_lintegral_ofReal_of_identDistrib
+      (P := P) (X := X) (f := f) hX hX_meas hf_meas hf_nonneg
+      (s := Finset.Ico m n) (i0 := 0) (fun i _hi => hident i)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid common-transform real
+nonnegative power formula on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_ofReal_comp_prod_eq_pow_lintegral_ofReal_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : Measurable f)
+    (hf_nonneg : ∀ x, 0 ≤ f x)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.Icc 1 n, f (X i ω)) ∂P =
+      (∫⁻ ω, ENNReal.ofReal (f (X 0 ω)) ∂P) ^ n := by
+  simpa [Nat.card_Icc] using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_ofReal_comp_prod_eq_pow_lintegral_ofReal_of_identDistrib
+      (P := P) (X := X) (f := f) hX hX_meas hf_meas hf_nonneg
+      (s := Finset.Icc 1 n) (i0 := 0) (fun i _hi => hident i)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid common-transform real
+nonnegative one-based initial-range power formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_ofReal_comp_prod_eq_pow_lintegral_ofReal_oneBased_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : Measurable f)
+    (hf_nonneg : ∀ x, 0 ≤ f x)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.range n, f (X (i + 1) ω)) ∂P =
+      (∫⁻ ω, ENNReal.ofReal (f (X 0 ω)) ∂P) ^ n := by
+  calc
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.range n, f (X (i + 1) ω)) ∂P =
+        ∏ i ∈ Finset.range n, ∫⁻ ω, ENNReal.ofReal (f (X 0 ω)) ∂P := by
+      exact
+        durrett2019_theorem_2_1_13_iid_lintegral_range_ofReal_comp_prod_eq_prod_lintegral_ofReal_base_oneBased_of_identDistrib
+          (P := P) (X := X) (f := fun _ : ℕ => f)
+          hX hX_meas (fun _ => hf_meas) (fun _ x => hf_nonneg x) hident n
+    _ = (∫⁻ ω, ENNReal.ofReal (f (X 0 ω)) ∂P) ^ n := by
+      rw [Finset.prod_const, Finset.card_range]
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid common-transform real
+nonnegative one-based interval-block power formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_ofReal_comp_prod_eq_pow_lintegral_ofReal_oneBased_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : S -> ℝ}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : Measurable f)
+    (hf_nonneg : ∀ x, 0 ≤ f x)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (m n : ℕ) :
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.Ico m n, f (X (i + 1) ω)) ∂P =
+      (∫⁻ ω, ENNReal.ofReal (f (X 0 ω)) ∂P) ^ (n - m) := by
+  calc
+    ∫⁻ ω, ENNReal.ofReal (∏ i ∈ Finset.Ico m n, f (X (i + 1) ω)) ∂P =
+        ∏ i ∈ Finset.Ico m n, ∫⁻ ω, ENNReal.ofReal (f (X 0 ω)) ∂P := by
+      exact
+        durrett2019_theorem_2_1_13_iid_lintegral_Ico_ofReal_comp_prod_eq_prod_lintegral_ofReal_base_oneBased_of_identDistrib
+          (P := P) (X := X) (f := fun _ : ℕ => f)
+          hX hX_meas (fun _ => hf_meas) (fun _ x => hf_nonneg x) hident m n
+    _ = (∫⁻ ω, ENNReal.ofReal (f (X 0 ω)) ∂P) ^ (n - m) := by
+      rw [Finset.prod_const, Nat.card_Ico]
+
+/--
 Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform finite
 zero-factor product with existence.
 
