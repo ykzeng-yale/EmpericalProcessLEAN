@@ -5348,6 +5348,90 @@ theorem durrett2019_theorem_2_1_13_canonical_iid_integral_Ico_law_prod_eq_zero_o
 
 /--
 Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+law-side expectation factorization over an arbitrary finite set of coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_prod_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℕ -> ℝ -> 𝕜}
+    (hf : ∀ i, Integrable (f i) (ν : Measure ℝ)) (s : Finset ℕ) :
+    ∫ sample, ∏ i ∈ s, f i (sample i)
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+      ∏ i ∈ s, ∫ x, f i x ∂(ν : Measure ℝ) := by
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  have hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> ℝ => sample i) (ν : Measure ℝ)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    intro i
+    exact
+      (measurePreserving_eval_infinitePi
+        (μ := fun _ : ℕ => (ν : Measure ℝ)) i).hasLaw
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integral_finset_law_prod_eq_prod_integral
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (S := fun _ : ℕ => ℝ)
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      (μ := fun _ : ℕ => (ν : Measure ℝ)) (f := f) hindep hLaw hf s
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+law-side expectation factorization over the literal one-based index set.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_oneBased_Icc_law_prod_eq_prod_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℕ -> ℝ -> 𝕜}
+    (hf : ∀ i, Integrable (f i) (ν : Measure ℝ)) (n : ℕ) :
+    ∫ sample, ∏ i ∈ Finset.Icc 1 n, f i (sample i)
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+      ∏ i ∈ Finset.Icc 1 n, ∫ x, f i x ∂(ν : Measure ℝ) := by
+  exact
+    durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_prod_integral
+      ν (f := f) hf (Finset.Icc 1 n)
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+a zero law-side factor kills the product expectation over an arbitrary finite
+set of coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_zero_of_integral_eq_zero
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℕ -> ℝ -> 𝕜}
+    (hf : ∀ i, Integrable (f i) (ν : Measure ℝ))
+    {s : Finset ℕ} {i : ℕ} (hi : i ∈ s)
+    (hzero : ∫ x, f i x ∂(ν : Measure ℝ) = 0) :
+    ∫ sample, ∏ j ∈ s, f j (sample j)
+      ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  rw [durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_prod_integral
+    ν (f := f) hf s]
+  exact Finset.prod_eq_zero hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+a zero law-side factor kills the product expectation over the literal
+one-based index set.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_oneBased_Icc_law_prod_eq_zero_of_integral_eq_zero
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℕ -> ℝ -> 𝕜}
+    (hf : ∀ i, Integrable (f i) (ν : Measure ℝ))
+    {n i : ℕ} (hi : i ∈ Finset.Icc 1 n)
+    (hzero : ∫ x, f i x ∂(ν : Measure ℝ) = 0) :
+    ∫ sample, ∏ j ∈ Finset.Icc 1 n, f j (sample j)
+      ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  exact
+    durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_zero_of_integral_eq_zero
+      ν (f := f) hf (s := Finset.Icc 1 n) (i := i) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
 law-side expectation factorization over an arbitrary finite set of shifted
 one-based coordinates.
 -/
