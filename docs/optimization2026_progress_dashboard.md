@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V63` near the top of
+  `Live Goal Prompt V64` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -40,6 +40,12 @@ This dashboard tracks the Chewi optimization formalization lane for
   `lake build StatInference.Optimization.<Module>`; root-build only after
   root-import or broad cross-module changes; batch final docs, scans, rebase,
   commit, and push once per verified packet.
+- Meta-methodology protocol: every theorem packet must update the live docs
+  with workflow learning, not just theorem names.  Record what accelerated the
+  proof, what caused friction or redundant work, which searches should not be
+  repeated, and how the next goal prompt should be shorter and more accurate.
+  This Optimization lane is also the live playbook for future statistical
+  theory formalization in Lean.
 - Current proof worktree: use `/private/tmp/chewi-dual-seminorm` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
@@ -218,6 +224,31 @@ This dashboard tracks the Chewi optimization formalization lane for
   / `HasGradientAt` bridges, and CLM-valued Hessian continuity.  Next blocker:
   specialize the V63 continuous matrix-Hessian wrappers to `grad := gradient f`
   or a source-named gradient oracle.
+  The V64 layer adds the root-imported module
+  `StatInference/Optimization/Theorem131Gradient.lean`, keeping the heavier
+  mathlib `gradient` import out of `Theorem131Taylor.lean`.  It compiles
+  `chewi131_taylor_norm_bound_of_continuous_matrix_gradient_fderiv`,
+  `chewi131_local_quadratic_step_of_continuous_matrix_gradient_fderiv_of_radius`,
+  and
+  `chewi131_local_quadratic_recurrence_of_continuous_matrix_gradient_fderiv_of_radius`,
+  specializing the V63 continuous matrix-Hessian recurrence to `gradient f`
+  with hypotheses `DifferentiableAt ℝ (gradient f) z` and
+  `fderiv ℝ (gradient f) z = chewi131MatrixCLM (Hfun z)`.  Methodology note:
+  expensive imports should be isolated in small downstream wrapper modules;
+  putting `Mathlib.Analysis.Calculus.Gradient.Basic` directly in
+  `Theorem131Taylor.lean` made the focused build take 222s, while the split
+  restored the Taylor module to about 40s and the gradient wrapper to about
+  7s.  Next blocker: derive the V64 differentiability/Frechet-derivative
+  hypotheses from a clean source-level second-derivative interface, or derive
+  CLM-valued Hessian continuity from source matrix continuity.
+  Build-methodology note: this run confirmed that fresh temp worktrees are too
+  expensive when disk is nearly full.  A package-cache symlink to another
+  worktree let the focused Optimization builds pass without rebuilding
+  mathlib, but the full root build still hit `no space left on device` at
+  `8435/8461` after reaching unrelated empirical-process modules.  Future
+  proof packets should keep a persistent Chewi worktree, share package
+  dependencies rather than copying them, and root-build only with adequate free
+  disk or a warm local root cache.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

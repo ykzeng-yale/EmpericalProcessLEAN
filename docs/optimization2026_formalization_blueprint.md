@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V63` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V64` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -28,9 +28,12 @@ interior-point/matrix-order route.  If a run starts with a dirty Lean diff,
 compile or record the precise blocker for that diff before changing strategy
 docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
-active blocker.
+active blocker.  Each packet must also update the meta-methodology log:
+record proof accelerators, friction sources, repeated searches to avoid, and
+the shortest accurate next prompt.  This is part of building a reusable
+formalization workflow for future statistical theory development in Lean.
 
-Current V63 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V64 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -190,6 +193,33 @@ route should use explicit `HasFDerivAt grad (chewi131MatrixCLM (Hfun z)) z`
 or `gradient`/`HasGradientAt` bridges plus CLM-valued continuity.  Next source
 step: specialize these wrappers to `grad := gradient f` or a source-named
 gradient oracle and package the clean differentiability hypothesis.
+The V64 layer adds the root-imported module
+`StatInference/Optimization/Theorem131Gradient.lean`, keeping
+`Mathlib.Analysis.Calculus.Gradient.Basic` out of the hot Taylor bridge and
+specializing the V63 continuous matrix-Hessian recurrence to mathlib
+`gradient f`.  Compiled declarations are
+`chewi131_taylor_norm_bound_of_continuous_matrix_gradient_fderiv`,
+`chewi131_local_quadratic_step_of_continuous_matrix_gradient_fderiv_of_radius`,
+and
+`chewi131_local_quadratic_recurrence_of_continuous_matrix_gradient_fderiv_of_radius`.
+The new hypotheses are exactly the remaining source-instantiation surface:
+`DifferentiableAt ℝ (gradient f) z` and
+`fderiv ℝ (gradient f) z = chewi131MatrixCLM (Hfun z)` along the source
+segments, plus CLM-valued Hessian continuity.  Methodology note: isolate
+expensive imports in downstream wrapper modules; adding `Gradient.Basic`
+directly to `Theorem131Taylor.lean` made the focused build take 222s, while
+the split restored the Taylor build to about 40s and the gradient wrapper to
+about 7s.  Next source step: derive the V64 differentiability/Frechet-
+derivative hypotheses from a clean second-derivative interface, or derive
+CLM-valued Hessian continuity from source matrix continuity.
+Build-methodology note: root verification in a fresh temp worktree can be
+blocked by disk even after the active Optimization modules compile.  In this
+run, sharing another worktree's `.lake/packages` cache avoided package
+rebuilds and verified the focused Theorem 13.1 modules, but
+`lake build StatInference` filled the disk at `8435/8461` on unrelated
+empirical-process modules.  Future broad verification should use a persistent
+Chewi worktree with a warm local `.lake/build`, or clear enough disk before a
+root build.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source
