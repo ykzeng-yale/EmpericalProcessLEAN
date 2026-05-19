@@ -1650,6 +1650,119 @@ theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator_o
       hSource.2 (fun i => hX_meas (i + 1)) hmn hA
 
 /--
+Durrett 2019, Theorem 2.1.10 support from a full infinite-product joint law:
+the first variable is independent of the later-block product.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_first_tailProduct_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (n : ℕ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (X 0) (fun ω => ∏ k ∈ Finset.Ico 1 n, X k ω) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_10_indepFun_first_tailProduct
+      (P := P) (X := X) hSource.2 hX_meas n
+
+/--
+Durrett 2019, Theorem 2.1.10 support from a full infinite-product joint law in
+one-based notation: `X_1` is independent of `X_2 * ... * X_n`.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_first_tailProduct_oneBased_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (n : ℕ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (X 1) (fun ω => ∏ k ∈ Finset.Ico 1 n, X (k + 1) ω) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_10_indepFun_first_tailProduct_oneBased
+      (P := P) (X := X) hSource.2 hX_meas n
+
+/--
+Durrett 2019, Theorem 2.1.10 support from a shifted infinite-product joint
+law: `X_1` is independent of the later shifted tail product.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_first_tailProduct_oneBased_of_shift_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (n : ℕ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (X 1) (fun ω => ∏ k ∈ Finset.Ico 1 n, X (k + 1) ω) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_10_indepFun_first_tailProduct
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hSource.2 (fun i => hX_meas (i + 1)) n
+
+/--
+Durrett 2019, Theorem 2.1.10 support on the canonical iid product space:
+the first coordinate is independent of the later-coordinate product.
+-/
+theorem durrett2019_theorem_2_1_10_canonical_iid_first_tailProduct
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ) :
+    _root_.ProbabilityTheory.IndepFun
+      (μ := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (fun sample : ℕ -> ℝ => sample 0)
+      (fun sample : ℕ -> ℝ => ∏ k ∈ Finset.Ico 1 n, sample k) := by
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  exact
+    durrett2019_theorem_2_1_10_indepFun_first_tailProduct
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hindep (fun i => measurable_pi_apply i) n
+
+/--
+Durrett 2019, Theorem 2.1.10 support on the canonical iid product space in
+one-based notation: the first shifted coordinate is independent of the later
+shifted-coordinate product.
+-/
+theorem durrett2019_theorem_2_1_10_canonical_iid_first_tailProduct_oneBased
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ) :
+    _root_.ProbabilityTheory.IndepFun
+      (μ := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (fun sample : ℕ -> ℝ => sample 1)
+      (fun sample : ℕ -> ℝ => ∏ k ∈ Finset.Ico 1 n, sample (k + 1)) := by
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  exact
+    durrett2019_theorem_2_1_10_indepFun_first_tailProduct_oneBased
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hindep (fun i => measurable_pi_apply i) n
+
+/--
 Durrett 2019, Theorem 2.1.11, one-based iid product-law criterion.
 
 For the shifted Durrett-indexed process `X (i + 1)`, independence together
