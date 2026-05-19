@@ -14626,6 +14626,236 @@ theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_int
     (fun i _hi => (hLaw (i + 1)).integral_eq.trans hν_zero) hA
 
 /--
+Durrett 2019, Theorem 2.1.13 support: a full infinite-product joint law and a
+common law-side zero mean supply the future-increment zero-mean hypothesis.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ)) :
+    ∫ ω, ((∑ k ∈ Finset.range n, X k ω) -
+      ∑ k ∈ Finset.range m, X k ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_hasLaw_and_integral_eq_zero
+      (P := P) (X := X) (ν := ν) hmn hSource.1 hν_int hν_zero
+
+/--
+Durrett 2019, Theorem 2.1.13 support: joint-law source-shaped zero mixed term
+when the common law-side mean is zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ))
+    {ψ : ((i : Finset.range m) -> ℝ) -> ℝ} (hψ : Measurable ψ) :
+    ∫ ω, ψ (fun i : Finset.range m => X i ω) *
+      ((∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_hasLaw_and_integral_eq_zero
+      (P := P) (X := X) (ν := ν) hSource.2 hX_meas hmn
+      hSource.1 hν_int hν_zero hψ
+
+/--
+Durrett 2019, Theorem 2.1.13 support: the Kolmogorov-maximal mixed term
+`2 S_m 1_A (S_n - S_m)` vanishes from a full infinite-product joint law when
+the common law-side mean is zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_of_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ))
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    ∫ ω, ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X i ω)) *
+      ((∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_of_hasLaw_and_integral_eq_zero
+      (P := P) (X := X) (ν := ν) hSource.2 hX_meas hmn
+      hSource.1 hν_int hν_zero hA
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation: a full
+infinite-product joint law and a common law-side zero mean supply the shifted
+future-increment zero-mean hypothesis.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_oneBased_of_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ)) :
+    ∫ ω, ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+      ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_oneBased_of_hasLaw_and_integral_eq_zero
+      (P := P) (X := X) (ν := ν) hmn hSource.1 hν_int hν_zero
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation:
+joint-law source-shaped zero mixed term when the common law-side mean is zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_oneBased_of_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ))
+    {ψ : ((i : Finset.range m) -> ℝ) -> ℝ} (hψ : Measurable ψ) :
+    ∫ ω, ψ (fun i : Finset.range m => X (i + 1) ω) *
+      ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_oneBased_of_hasLaw_and_integral_eq_zero
+      (P := P) (X := X) (ν := ν) hSource.2 hX_meas hmn
+      hSource.1 hν_int hν_zero hψ
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation: the
+Kolmogorov-maximal mixed term `2 S_m 1_A (S_n - S_m)` vanishes from a full
+infinite-product joint law when the common law-side mean is zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_oneBased_of_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ))
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    ∫ ω, ((2 : ℝ) * (∑ i : Finset.range m, X (i + 1) ω) *
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X (i + 1) ω)) *
+      ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_oneBased_of_hasLaw_and_integral_eq_zero
+      (P := P) (X := X) (ν := ν) hSource.2 hX_meas hmn
+      hSource.1 hν_int hν_zero hA
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation from a
+shifted infinite-product joint law.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ)) :
+    ∫ ω, ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+      ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_hasLaw_and_integral_eq_zero
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω) (ν := ν)
+      hmn hSource.1 hν_int hν_zero
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation:
+shifted-joint-law source-shaped zero mixed term when the common law-side mean
+is zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ))
+    {ψ : ((i : Finset.range m) -> ℝ) -> ℝ} (hψ : Measurable ψ) :
+    ∫ ω, ψ (fun i : Finset.range m => X (i + 1) ω) *
+      ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_hasLaw_and_integral_eq_zero
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω) (ν := ν)
+      hSource.2 (fun i => hX_meas (i + 1)) hmn hSource.1 hν_int
+      hν_zero hψ
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation: the
+Kolmogorov-maximal mixed term `2 S_m 1_A (S_n - S_m)` vanishes from a shifted
+infinite-product joint law when the common law-side mean is zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ))
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    ∫ ω, ((2 : ℝ) * (∑ i : Finset.range m, X (i + 1) ω) *
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X (i + 1) ω)) *
+      ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_of_hasLaw_and_integral_eq_zero
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω) (ν := ν)
+      hSource.2 (fun i => hX_meas (i + 1)) hmn hSource.1 hν_int
+      hν_zero hA
+
+/--
 Durrett 2019, Theorem 2.5.5 first-crossing block set.  On this set, the
 partial sum at time `m` has crossed the threshold `x`, while every earlier
 partial sum has stayed below `x` in absolute value.

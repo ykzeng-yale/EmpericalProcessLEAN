@@ -36,7 +36,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V571` in
+Route from `Live In-Thread Goal Prompt V572` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -418,6 +418,9 @@ V571 adds the matching common-law `HasLaw` Chapter 2.1.13 wrappers: a
 law-side integrable zero mean now supplies zero-based and one-based future
 partial-sum-difference zero-mean hypotheses, early-block statistic mixed-term
 zero wrappers, and Kolmogorov-maximal indicator mixed-term zero wrappers.
+V572 adds the corresponding full infinite-product and shifted infinite-product
+joint-law Chapter 2.1.13 wrappers for the same partial-sum-difference
+zero-mean and mixed-term-zero surfaces.
 The historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
 V443 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.
@@ -3731,7 +3734,7 @@ Next proof packet: search for a genuinely missing 2.4.9 proof-step or
 final-display source wrapper, or add the next Chapter 2.1
 product-law/product-expectation handoff that directly supports 2.4.9 or the
 adjacent Kolmogorov-maximal route.  Do not route back to solved 2.5.13
-plumbing or the closed V500-V571 2.4.9/2.1 source-wrapper surfaces unless an
+plumbing or the closed V500-V572 2.4.9/2.1 source-wrapper surfaces unless an
 exact source-shape consumer is missing.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement
