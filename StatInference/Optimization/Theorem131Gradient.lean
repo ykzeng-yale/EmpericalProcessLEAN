@@ -1125,6 +1125,246 @@ theorem chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_trajectory_
     (fun k _hradius => htraj k) hlower hlip hinit
 
 /--
+Finite-row central-path source-radius preservation for a Newton trajectory.
+If the current Newton decrements are dominated by a budget whose doubled
+prefix sums stay below `1/2`, every successor iterate stays in the source
+local half-radius around the initial point.
+-/
+theorem chewi1316RangeCentralPathValue_sourceRadiusHalf_of_trajectory_decrementBudget
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {t : ℝ} (aObj : (polytopeSlackCLM aRow).range)
+    {x : ℕ -> (polytopeSlackCLM aRow).range} {stepBudget : ℕ -> ℝ}
+    (htraj : IsChewi1316RangeCentralPathNewtonTrajectory aRow bSlack t aObj x)
+    (hx0_mem :
+      x 0 ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hdecr_lt : ∀ k,
+      x k ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) ->
+      newtonDecrement
+          (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack) (x k) < 1)
+    (hdecr_budget : ∀ k,
+      newtonDecrement
+          (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack) (x k) ≤
+        stepBudget k)
+    (hbudget : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), 2 * stepBudget n) ≤ 1 / 2) :
+    ∀ N : ℕ,
+      localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          (x 0) (x (N + 1) - x 0) ≤ 1 / 2 := by
+  let sRange : Set (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+      (positiveOrthant (d := m))
+  let rangeHess :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range →L[ℝ]
+          (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogHessCLM
+  let rangeInvHess :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range →L[ℝ]
+          (polytopeSlackCLM aRow).range :=
+    chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack
+  let rangeHessDeriv :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range →L[ℝ]
+          ((polytopeSlackCLM aRow).range →L[ℝ]
+            (polytopeSlackCLM aRow).range) :=
+    chewi1314_polytopeSlackNegLog_rangeHessDeriv aRow bSlack
+  let rangeThird :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range ->
+          (polytopeSlackCLM aRow).range -> ℝ :=
+    barrierAffineRangeThirdMixed (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogThirdMixed
+  have hx_mem_all : ∀ k : ℕ, x k ∈ sRange := by
+    intro k
+    simpa [sRange] using
+      chewi1316RangeCentralPathValue_iterates_mem_of_decrement_lt_one
+        aRow bSlack aObj htraj hx0_mem hdecr_lt k
+  have hsRange : Convex ℝ sRange := by
+    simpa [sRange] using
+      convex_barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        convex_positiveOrthant
+  have hcurrent : ∀ n : ℕ,
+      localNorm rangeHess (x n)
+        (newtonStep
+            (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+            rangeInvHess (x n) - x n) ≤ stepBudget n := by
+    intro n
+    have hnorm :
+        localNorm rangeHess (x n)
+          (newtonStep
+              (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+              rangeInvHess (x n) -
+            x n) =
+          newtonDecrement
+            (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+            rangeInvHess (x n) := by
+      exact
+        localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse
+          (hess := rangeHess)
+          (grad := gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+          (invHess := rangeInvHess) (x := x n)
+          (by
+            intro v
+            simpa [sRange, rangeHess, rangeInvHess] using
+              chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse
+                aRow bSlack (by simpa [sRange] using hx_mem_all n) v)
+    simpa [rangeInvHess, hnorm] using hdecr_budget n
+  exact
+    sourceRadius_successor_half_of_newtonSteps_currentLocalNorm_budget_hessian_pos
+      (s := sRange) (hess := rangeHess) (hessDeriv := rangeHessDeriv)
+      (thirdMixed := rangeThird) (xbar0 := x 0) (xseq := x)
+      (gradSeq := fun _ =>
+        gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+      (invHess := rangeInvHess) (lambdaSeq := stepBudget)
+      (by
+        intro u v
+        simpa [rangeHess, sRange] using
+          chewi1314_polytopeSlackNegLog_rangeHess_symmetric
+            aRow bSlack hx0_mem u v)
+      (by
+        intro v hv
+        simpa [rangeHess, sRange] using
+          chewi1314_polytopeSlackNegLog_rangeHess_quadratic_pos
+            aRow bSlack hx0_mem hv)
+      hsRange (by simpa [sRange] using hx0_mem) rfl
+      (by
+        intro N
+        exact hx_mem_all (N + 1))
+      (by
+        simpa [sRange, rangeHess, rangeThird, barrierAffineRangeSet,
+          barrierAffineRangeHess, barrierAffineRangeThirdMixed,
+          barrierAffinePreimageSet, barrierAffinePreimageThirdMixed] using
+          ((positiveOrthantNegLog_selfConcordantBarrierOn
+            (d := m)).self_concordant.affinePreimage
+              (A := (polytopeSlackCLM aRow).range.subtypeL) (b := bSlack)))
+      (by
+        intro z hz v hv
+        simpa [sRange, rangeHess] using
+          chewi1314_polytopeSlackNegLog_rangeHess_quadratic_pos
+            aRow bSlack (by simpa [sRange] using hz) hv)
+      (by
+        simpa [sRange, rangeHess] using
+          chewi1314_polytopeSlackNegLog_rangeHess_continuousOn aRow bSlack)
+      (by
+        intro z hz
+        simpa [sRange, rangeHess, rangeHessDeriv] using
+          chewi1314_polytopeSlackNegLog_rangeHess_hasFDerivAt
+            aRow bSlack (by simpa [sRange] using hz))
+      (by
+        intro z hz aDir v
+        simpa [sRange, rangeHessDeriv, rangeThird] using
+          chewi1314_polytopeSlackNegLog_rangeHessDeriv_mixed_inner
+            aRow bSlack z aDir v)
+      (by
+        intro n
+        simpa [rangeInvHess] using htraj n)
+      hcurrent hbudget
+
+/--
+Finite-row central-path Hessian lower bridge from source local half-radius.
+This packages Chewi Lemma 13.6's local-norm stability for the translated
+slack range in the exact lower-bound shape consumed by the local quadratic
+recurrence.
+-/
+theorem chewi1316RangeCentralPathValue_hessian_lower_half_of_sourceRadiusHalf
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {alpha : ℝ} {xStar x : (polytopeSlackCLM aRow).range}
+    (hxStar_mem :
+      xStar ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hx_mem :
+      x ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hradius :
+      localNorm
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM)
+          xStar (x - xStar) ≤ 1 / 2)
+    (hsourceLower : ∀ v : (polytopeSlackCLM aRow).range,
+      (2 * alpha) * ‖v‖ ^ (2 : ℕ) ≤
+        inner ℝ v
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM xStar v)) :
+    ∀ v : (polytopeSlackCLM aRow).range,
+      (alpha / 2) * ‖v‖ ^ (2 : ℕ) ≤
+        inner ℝ v
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM x v) := by
+  let sRange : Set (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+      (positiveOrthant (d := m))
+  let rangeHess :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range →L[ℝ]
+          (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogHessCLM
+  let rangeHessDeriv :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range →L[ℝ]
+          ((polytopeSlackCLM aRow).range →L[ℝ]
+            (polytopeSlackCLM aRow).range) :=
+    chewi1314_polytopeSlackNegLog_rangeHessDeriv aRow bSlack
+  let rangeThird :
+      (polytopeSlackCLM aRow).range ->
+        (polytopeSlackCLM aRow).range ->
+          (polytopeSlackCLM aRow).range -> ℝ :=
+    barrierAffineRangeThirdMixed (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogThirdMixed
+  exact
+    hessian_lower_half_of_sourceRadius_half_and_source_lower_two
+      (s := sRange) (hess := rangeHess) (hessDeriv := rangeHessDeriv)
+      (thirdMixed := rangeThird) (xbar0 := xStar) (x := x)
+      (alpha := alpha)
+      (by
+        simpa [sRange] using
+          convex_barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+            convex_positiveOrthant)
+      (by simpa [sRange] using hxStar_mem)
+      (by simpa [sRange] using hx_mem)
+      (by
+        simpa [sRange, rangeHess, rangeThird, barrierAffineRangeSet,
+          barrierAffineRangeHess, barrierAffineRangeThirdMixed,
+          barrierAffinePreimageSet, barrierAffinePreimageThirdMixed] using
+          ((positiveOrthantNegLog_selfConcordantBarrierOn
+            (d := m)).self_concordant.affinePreimage
+              (A := (polytopeSlackCLM aRow).range.subtypeL) (b := bSlack)))
+      (by
+        intro z hz v hv
+        simpa [sRange, rangeHess] using
+          chewi1314_polytopeSlackNegLog_rangeHess_quadratic_pos
+            aRow bSlack (by simpa [sRange] using hz) hv)
+      (by
+        simpa [sRange, rangeHess] using
+          chewi1314_polytopeSlackNegLog_rangeHess_continuousOn aRow bSlack)
+      (by
+        intro z hz
+        simpa [sRange, rangeHess, rangeHessDeriv] using
+          chewi1314_polytopeSlackNegLog_rangeHess_hasFDerivAt
+            aRow bSlack (by simpa [sRange] using hz))
+      (by
+        intro z hz aDir v
+        simpa [sRange, rangeHessDeriv, rangeThird] using
+          chewi1314_polytopeSlackNegLog_rangeHessDeriv_mixed_inner
+            aRow bSlack z aDir v)
+      (by simpa [rangeHess] using hradius)
+      (by
+        intro v
+        simpa [rangeHess] using hsourceLower v)
+
+/--
 Chewi Theorem 13.1 Taylor norm estimate with mathlib's `gradient f`.  The
 second-derivative data is expressed as the equality between
 `fderiv ℝ (gradient f)` and the matrix-induced Hessian CLM along the segment.

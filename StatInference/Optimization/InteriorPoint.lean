@@ -14031,7 +14031,7 @@ theorem localNorm_source_le_two_current_of_sourceRadius_half
     localNorm hess xbar0 v ≤ 2 * localNorm hess x v := by
   by_cases hdiff : x - xbar0 = 0
   · have hx_eq : x = xbar0 := sub_eq_zero.mp hdiff
-    rw [hx_eq]
+    subst x
     have hnonneg : 0 ≤ localNorm hess xbar0 v :=
       localNorm_nonneg hess xbar0 v
     nlinarith
@@ -14066,6 +14066,66 @@ theorem localNorm_source_le_two_current_of_sourceRadius_half
             (localNorm_nonneg hess xbar0 v)).trans hsand.1
     have hmul := mul_le_mul_of_nonneg_left hhalf_le (by norm_num : (0 : ℝ) ≤ 2)
     nlinarith
+
+/--
+Source-radius half plus a source Euclidean quadratic lower bound gives the
+current Euclidean quadratic lower bound with half the displayed constant.
+-/
+theorem hessian_lower_half_of_sourceRadius_half_and_source_lower_two
+    {s : Set E} {hess : E -> E →L[ℝ] E}
+    {hessDeriv : E -> E →L[ℝ] (E →L[ℝ] E)}
+    {thirdMixed : E -> E -> E -> ℝ} {xbar0 x : E} {alpha : ℝ}
+    (hs : Convex ℝ s) (hxbar0 : xbar0 ∈ s) (hx : x ∈ s)
+    (hsc : MixedThirdSelfConcordantOn s hess thirdMixed (1 : ℝ))
+    (hess_pos : ∀ ⦃z : E⦄, z ∈ s -> ∀ v : E, v ≠ 0 ->
+      0 < inner ℝ v (hess z v))
+    (hhess_cont : ContinuousOn hess s)
+    (hhess_global : ∀ z, z ∈ s -> HasFDerivAt hess (hessDeriv z) z)
+    (hmixed_global : ∀ z, z ∈ s -> ∀ a v : E,
+      inner ℝ v ((hessDeriv z a) v) = thirdMixed z a v)
+    (hradius : localNorm hess xbar0 (x - xbar0) ≤ 1 / 2)
+    (hsourceLower : ∀ v : E,
+      (2 * alpha) * ‖v‖ ^ (2 : ℕ) ≤ inner ℝ v (hess xbar0 v)) :
+    ∀ v : E, (alpha / 2) * ‖v‖ ^ (2 : ℕ) ≤ inner ℝ v (hess x v) := by
+  intro v
+  have hxbar0_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess xbar0 w) := by
+    intro w
+    by_cases hw : w = 0
+    · simp [hw]
+    · exact (hess_pos (z := xbar0) hxbar0 w hw).le
+  have hx_nonneg : ∀ w : E, 0 ≤ inner ℝ w (hess x w) := by
+    intro w
+    by_cases hw : w = 0
+    · simp [hw]
+    · exact (hess_pos (z := x) hx w hw).le
+  have hnorm : ∀ w : E,
+      (1 / 2 : ℝ) * localNorm hess xbar0 w ≤ localNorm hess x w := by
+    intro w
+    have hsource_current :
+        localNorm hess xbar0 w ≤ 2 * localNorm hess x w :=
+      localNorm_source_le_two_current_of_sourceRadius_half
+        (s := s) (hess := hess) (hessDeriv := hessDeriv)
+        (thirdMixed := thirdMixed) (xbar0 := xbar0) (x := x) (v := w)
+        hs hxbar0 hx hsc hess_pos hhess_cont hhess_global hmixed_global
+        hradius
+    nlinarith
+  have hquad :=
+    hessianQuadraticLower_of_mul_le_localNorm
+      (hess := hess) (x := xbar0) (y := x) (den := (1 / 2 : ℝ))
+      (by norm_num) hxbar0_nonneg hx_nonneg hnorm v
+  have hsource_scaled :
+      ((1 / 2 : ℝ) ^ (2 : ℕ)) * ((2 * alpha) * ‖v‖ ^ (2 : ℕ)) ≤
+        ((1 / 2 : ℝ) ^ (2 : ℕ)) * inner ℝ v (hess xbar0 v) :=
+    mul_le_mul_of_nonneg_left (hsourceLower v) (by norm_num)
+  have hcombined :
+      ((1 / 2 : ℝ) ^ (2 : ℕ)) * ((2 * alpha) * ‖v‖ ^ (2 : ℕ)) ≤
+        inner ℝ v (hess x v) :=
+    hsource_scaled.trans hquad
+  have hleft :
+      (2 ^ (2 : ℕ) : ℝ)⁻¹ * (2 * alpha * ‖v‖ ^ (2 : ℕ)) =
+        alpha / 2 * ‖v‖ ^ (2 : ℕ) := by
+    ring
+  simpa [hleft] using hcombined
 
 /--
 Inductive source-metric budget for a Newton trajectory.  If each Newton

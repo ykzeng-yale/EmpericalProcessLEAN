@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V79` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V80` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -33,20 +33,21 @@ record proof accelerators, friction sources, repeated searches to avoid, and
 the shortest accurate next prompt.  This is part of building a reusable
 formalization workflow for future statistical theory development in Lean.
 
-Current V79 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V80 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, while active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
-range-space local Newton-convergence recurrence.  V79 packages the finite-row
-central-path Newton trajectory and feasible-iterate invariant using
-`chewi1314_polytopeSlackNegLog_range_newtonStep_mem_of_decrement_lt_one`,
-then feeds V78's convex feasible-segment recurrence through that trajectory.
-The next live target is to discharge a genuinely quantitative source estimate
-required by
-`chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_trajectory_decrement`:
-local-radius preservation, Hessian lower bound, or Hessian Lipschitz/close
-control.  Feasible segments, feasible iterates, and Newton update packaging
-are no longer live blockers.  Do not repeat the inverse-norm,
-recurrence-induction, feasible-segment, Newton-feasibility, or
+range-space local Newton-convergence recurrence.  V80 adds the first
+quantitative local-norm bridge for that recurrence: source local half-radius
+plus a source Euclidean Hessian lower bound yields the current Hessian lower
+premise, and a central-path trajectory with summable Newton decrement budget
+stays inside the source local half-radius.  The next live target is to combine
+these into a trajectory-level `hlower` supplier for
+`chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_trajectory_decrement`,
+then continue with local-norm/Newton-decrement control rather than forcing an
+additive Euclidean op-norm Hessian Lipschitz theorem first.  Feasible segments,
+feasible iterates, Newton update packaging, and the basic source-radius/lower
+bridges are no longer live blockers.  Do not repeat the inverse-norm,
+recurrence-induction, feasible-segment, Newton-feasibility, source-radius, or
 range-coordinate search unless a specific self-concordance/local-norm blocker
 requires it.
 
