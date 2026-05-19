@@ -14468,6 +14468,164 @@ theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_int
     (fun i _hi => (hident (i + 1)).integral_eq.trans hbase_zero) hA
 
 /--
+Durrett 2019, Theorem 2.1.13 support: transport integrability of the identity
+function from a law-side measure to a real-valued source variable.
+-/
+theorem durrett2019_theorem_2_1_13_integrable_of_hasLaw_integrable_id
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : Ω -> ℝ} {ν : Measure ℝ}
+    (hLaw : _root_.ProbabilityTheory.HasLaw X ν P)
+    (hν_int : Integrable (fun x : ℝ => x) ν) :
+    Integrable X P := by
+  have hmap : Integrable (fun x : ℝ => x) (Measure.map X P) := by
+    simpa [hLaw.map_eq] using hν_int
+  simpa [Function.comp_def] using hmap.comp_aemeasurable hLaw.aemeasurable
+
+/--
+Durrett 2019, Theorem 2.1.13 support: a common law-side integrable zero mean
+supplies the future-increment zero-mean hypothesis.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_hasLaw_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    {m n : ℕ} (hmn : m ≤ n)
+    (hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ)) :
+    ∫ ω, ((∑ k ∈ Finset.range n, X k ω) -
+      ∑ k ∈ Finset.range m, X k ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integral_Ico_eq_zero
+    (P := P) (X := X) hmn
+    (fun i _hi =>
+      durrett2019_theorem_2_1_13_integrable_of_hasLaw_integrable_id
+        (hLaw i) hν_int)
+    (fun i _hi => (hLaw i).integral_eq.trans hν_zero)
+
+/--
+Durrett 2019, Theorem 2.1.13 support: common-law iid/source-shaped zero mixed
+term when the law-side common mean is zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_hasLaw_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ))
+    {ψ : ((i : Finset.range m) -> ℝ) -> ℝ} (hψ : Measurable ψ) :
+    ∫ ω, ψ (fun i : Finset.range m => X i ω) *
+      ((∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_integral_Ico_eq_zero
+    (P := P) (X := X) hX_indep hX_meas hmn
+    (fun i _hi =>
+      durrett2019_theorem_2_1_13_integrable_of_hasLaw_integrable_id
+        (hLaw i) hν_int)
+    (fun i _hi => (hLaw i).integral_eq.trans hν_zero) hψ
+
+/--
+Durrett 2019, Theorem 2.1.13 support: the Kolmogorov-maximal mixed term
+`2 S_m 1_A (S_n - S_m)` vanishes from common-law iid/source-shaped hypotheses
+when the common law-side mean is zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_of_hasLaw_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ))
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    ∫ ω, ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X i ω)) *
+      ((∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero
+    (P := P) (X := X) hX_indep hX_meas hmn
+    (fun i _hi =>
+      durrett2019_theorem_2_1_13_integrable_of_hasLaw_integrable_id
+        (hLaw i) hν_int)
+    (fun i _hi => (hLaw i).integral_eq.trans hν_zero) hA
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation: a common
+law-side integrable zero mean supplies the shifted future-increment zero-mean
+hypothesis.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_oneBased_of_hasLaw_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    {m n : ℕ} (hmn : m ≤ n)
+    (hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ)) :
+    ∫ ω, ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+      ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integral_Ico_eq_zero_oneBased
+    (P := P) (X := X) hmn
+    (fun i _hi =>
+      durrett2019_theorem_2_1_13_integrable_of_hasLaw_integrable_id
+        (hLaw (i + 1)) hν_int)
+    (fun i _hi => (hLaw (i + 1)).integral_eq.trans hν_zero)
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation:
+common-law iid/source-shaped zero mixed term when the law-side common mean is
+zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_oneBased_of_hasLaw_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ))
+    {ψ : ((i : Finset.range m) -> ℝ) -> ℝ} (hψ : Measurable ψ) :
+    ∫ ω, ψ (fun i : Finset.range m => X (i + 1) ω) *
+      ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_integral_Ico_eq_zero_oneBased
+    (P := P) (X := X) hX_indep hX_meas hmn
+    (fun i _hi =>
+      durrett2019_theorem_2_1_13_integrable_of_hasLaw_integrable_id
+        (hLaw (i + 1)) hν_int)
+    (fun i _hi => (hLaw (i + 1)).integral_eq.trans hν_zero) hψ
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation: the
+Kolmogorov-maximal mixed term `2 S_m 1_A (S_n - S_m)` vanishes from
+common-law iid/source-shaped hypotheses when the common law-side mean is zero.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_oneBased_of_hasLaw_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hLaw : ∀ i : ℕ, _root_.ProbabilityTheory.HasLaw (X i) ν P)
+    (hν_int : Integrable (fun x : ℝ => x) ν)
+    (hν_zero : ∫ x, x ∂ν = (0 : ℝ))
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    ∫ ω, ((2 : ℝ) * (∑ i : Finset.range m, X (i + 1) ω) *
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X (i + 1) ω)) *
+      ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_oneBased
+    (P := P) (X := X) hX_indep hX_meas hmn
+    (fun i _hi =>
+      durrett2019_theorem_2_1_13_integrable_of_hasLaw_integrable_id
+        (hLaw (i + 1)) hν_int)
+    (fun i _hi => (hLaw (i + 1)).integral_eq.trans hν_zero) hA
+
+/--
 Durrett 2019, Theorem 2.5.5 first-crossing block set.  On this set, the
 partial sum at time `m` has crossed the threshold `x`, while every earlier
 partial sum has stayed below `x` in absolute value.

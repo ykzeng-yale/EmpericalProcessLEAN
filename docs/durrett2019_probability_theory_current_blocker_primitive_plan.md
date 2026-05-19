@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V570
+## Live In-Thread Goal Prompt V571
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -393,6 +393,10 @@ wrappers under `IdentDistrib`: one integrable zero-mean base marginal now
 supplies the future interval mean-zero hypotheses for zero-based and
 one-based partial-sum differences, including the early-block statistic and
 Kolmogorov-maximal indicator mixed-term surfaces.
+V571 adds the matching common-law `HasLaw` Chapter 2.1.13 bridge: a law-side
+integrable zero mean now supplies zero-based and one-based future
+partial-sum-difference zero-mean hypotheses, early-block statistic mixed-term
+zero wrappers, and Kolmogorov-maximal indicator mixed-term zero wrappers.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -633,6 +637,10 @@ After V570, do not rebuild the Theorem 2.1.13 `IdentDistrib`
 partial-sum-difference zero-mean or mixed-term-zero wrappers for zero-based or
 one-based future intervals unless an exact later consumer needs a different
 base-law source shape.
+After V571, do not rebuild the common-law `HasLaw` Theorem 2.1.13
+partial-sum-difference zero-mean or mixed-term-zero wrappers for zero-based or
+one-based future intervals unless an exact later consumer needs a joint-law or
+canonical source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -874,7 +882,25 @@ range-sum, and textbook inverse-multiple displays in zero-based and one-based
 forms,
 or old app-level stale prompts.
 
-Latest verified target V570 adds Chapter 2.1.13 partial-sum-difference
+Latest verified target V571 adds common-law `HasLaw` Chapter 2.1.13
+partial-sum-difference source wrappers:
+`durrett2019_theorem_2_1_13_integrable_of_hasLaw_integrable_id`,
+`durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_hasLaw_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_hasLaw_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_of_hasLaw_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_oneBased_of_hasLaw_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_oneBased_of_hasLaw_and_integral_eq_zero`,
+and
+`durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_oneBased_of_hasLaw_and_integral_eq_zero`.
+These wrappers let Kolmogorov-maximal and adjacent independent-sum consumers
+start from a common law with `∫ x, x dν = 0`, rather than restating per-index
+source integrability and zero means over every future interval.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V570 adds Chapter 2.1.13 partial-sum-difference
 source wrappers under `IdentDistrib`:
 `durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integrable_identDistrib_and_integral_eq_zero`,
 `durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_integrable_identDistrib_and_integral_eq_zero`,
@@ -887,10 +913,6 @@ These wrappers let Kolmogorov-maximal and adjacent independent-sum consumers
 start from one integrable zero-mean base marginal plus common distribution,
 rather than restating per-index integrability and zero means over every future
 interval.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V569 adds non-atomic Durrett Theorem 2.4.9
 final-display wrappers:
@@ -6626,6 +6648,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V570` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V571` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
