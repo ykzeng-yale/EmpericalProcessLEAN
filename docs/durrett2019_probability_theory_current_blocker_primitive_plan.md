@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V594
+## Live In-Thread Goal Prompt V595
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -474,6 +474,10 @@ V594 adds the matching joint infinite-product common-law Chapter 2.1.13
 product-integrability-plus-zero handoffs over nonempty finite subfamilies,
 positive range/Ico intervals, literal one-based `Icc`, full-law shifted
 one-based coordinate forms, and shifted-joint-law one-based coordinate forms.
+V595 adds the matching joint infinite-product common-law Chapter 2.1.13
+expectation-exists-and-power-value handoffs over finite subfamilies,
+range/Ico intervals, literal one-based `Icc`, full-law shifted one-based
+coordinate forms, and shifted-joint-law one-based coordinate forms.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -818,6 +822,11 @@ After V594, do not rebuild the joint infinite-product common-law Theorem
 literal one-based `Icc`, full-law shifted one-based, or shifted-joint-law
 one-based products unless an exact later consumer needs a different display
 shape.
+After V595, do not rebuild the joint infinite-product common-law Theorem
+2.1.13 expectation-exists-and-power-value handoffs for finite, range/Ico,
+literal one-based `Icc`, full-law shifted one-based, or shifted-joint-law
+one-based products unless an exact later consumer needs a different display
+shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -1059,7 +1068,31 @@ range-sum, and textbook inverse-multiple displays in zero-based and one-based
 forms,
 or old app-level stale prompts.
 
-Latest verified target V594 adds joint infinite-product common-law Chapter
+Latest verified target V595 adds joint infinite-product common-law Chapter
+2.1.13 expectation-exists-and-power-value handoffs over finite subfamilies,
+range/Ico intervals, literal one-based `Icc`, full-law shifted one-based
+coordinate forms, and shifted-joint-law one-based coordinate forms:
+`durrett2019_theorem_2_1_13_integrable_and_integral_finset_law_prod_eq_pow_integral_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integrable_and_integral_range_law_prod_eq_pow_integral_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integrable_and_integral_Ico_law_prod_eq_pow_integral_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integrable_and_integral_oneBased_Icc_law_prod_eq_pow_integral_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integrable_and_integral_finset_law_prod_eq_pow_integral_oneBased_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integrable_and_integral_range_law_prod_eq_pow_integral_oneBased_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integrable_and_integral_Ico_law_prod_eq_pow_integral_oneBased_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integrable_and_integral_shift_oneBased_Icc_law_prod_eq_pow_integral_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integrable_and_integral_finset_law_prod_eq_pow_integral_oneBased_of_shift_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integrable_and_integral_range_law_prod_eq_pow_integral_oneBased_of_shift_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integrable_and_integral_Ico_law_prod_eq_pow_integral_oneBased_of_shift_hasLaw_infinitePi`, and
+`durrett2019_theorem_2_1_13_integrable_and_integral_oneBased_Icc_law_prod_eq_pow_integral_of_shift_hasLaw_infinitePi`.
+These wrappers let joint infinite-product law consumers carry both product
+integrability and the iid common-law power expectation value directly from a
+single integrable law-side factor.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V594 adds joint infinite-product common-law Chapter
 2.1.13 product-integrability-plus-zero handoffs over nonempty finite
 subfamilies, positive range/Ico intervals, literal one-based `Icc`, full-law
 shifted one-based coordinate forms, and shifted-joint-law one-based coordinate
@@ -7185,6 +7218,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V594` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V595` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
