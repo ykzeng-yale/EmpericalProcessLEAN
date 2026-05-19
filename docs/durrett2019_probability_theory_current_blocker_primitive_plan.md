@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V573
+## Live In-Thread Goal Prompt V574
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -403,6 +403,9 @@ zero-mean and mixed-term-zero surfaces.
 V573 adds the canonical iid product-coordinate Chapter 2.1.13 wrappers for
 the same zero-based and one-based partial-sum-difference zero-mean and
 mixed-term-zero surfaces.
+V574 adds the canonical iid product-coordinate Theorem 2.1.10 wrappers for
+late-increment and partial-sum-difference independence from early-block
+statistics and early-block indicators, in zero-based and one-based notation.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -655,6 +658,10 @@ After V573, do not rebuild the canonical iid product-coordinate Theorem
 2.1.13 partial-sum-difference zero-mean or mixed-term-zero wrappers in
 zero-based or one-based notation unless an exact later consumer needs a
 different display shape.
+After V574, do not rebuild the canonical iid product-coordinate Theorem
+2.1.10 late-increment/partial-sum-difference independence wrappers for
+early-block statistics or early-block indicators in zero-based or one-based
+notation unless an exact later consumer needs a different display shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -896,7 +903,24 @@ range-sum, and textbook inverse-multiple displays in zero-based and one-based
 forms,
 or old app-level stale prompts.
 
-Latest verified target V573 adds canonical iid product-coordinate Chapter
+Latest verified target V574 adds canonical iid product-coordinate Theorem
+2.1.10 early/future-block independence wrappers:
+`durrett2019_theorem_2_1_10_canonical_iid_lateIncrementSum_earlyBlockFunction`,
+`durrett2019_theorem_2_1_10_canonical_iid_partialSumDiff_earlyBlockFunction`,
+`durrett2019_theorem_2_1_10_canonical_iid_partialSumDiff_earlyBlockIndicator`,
+`durrett2019_theorem_2_1_10_canonical_iid_lateIncrementSum_earlyBlockFunction_oneBased`,
+`durrett2019_theorem_2_1_10_canonical_iid_partialSumDiff_earlyBlockFunction_oneBased`,
+and
+`durrett2019_theorem_2_1_10_canonical_iid_partialSumDiff_earlyBlockIndicator_oneBased`.
+These wrappers let Kolmogorov-maximal and adjacent independent-sum consumers
+start directly from the coordinate process on `ν^ℕ` when applying Theorem
+2.1.10 to the source line `S_k 1_{A_k}` versus `S_n - S_k`.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V573 adds canonical iid product-coordinate Chapter
 2.1.13 partial-sum-difference source wrappers:
 `durrett2019_theorem_2_1_13_canonical_iid_partialSumDiff_integral_eq_zero`,
 `durrett2019_theorem_2_1_13_canonical_iid_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero`,
@@ -909,10 +933,6 @@ These wrappers let Kolmogorov-maximal and adjacent independent-sum consumers
 start directly from the coordinate process on `ν^ℕ`, rather than reopening the
 canonical Theorem 2.1.11 package before applying the mean-zero partial-sum
 difference bridge.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V572 adds full infinite-product and shifted
 infinite-product joint-law Chapter 2.1.13 partial-sum-difference source
@@ -6694,6 +6714,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V573` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V574` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

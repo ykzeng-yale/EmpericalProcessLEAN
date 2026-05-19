@@ -531,6 +531,191 @@ theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator_o
       hShift_indep (fun i => hX_meas (i + 1)) hmn hA
 
 /--
+Durrett 2019, Theorem 2.1.10 support on the canonical iid product space:
+a future coordinate increment is independent of every measurable statistic of
+the earlier coordinate block.
+-/
+theorem durrett2019_theorem_2_1_10_canonical_iid_lateIncrementSum_earlyBlockFunction
+    (ν : MeasureTheory.ProbabilityMeasure ℝ)
+    {T : Type v} [MeasurableSpace T]
+    {m n : ℕ}
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun
+      (μ := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (fun sample : ℕ -> ℝ => ∑ k ∈ Finset.Ico m n, sample k)
+      (fun sample : ℕ -> ℝ => ψ (fun i : Finset.range m => sample i)) := by
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  exact
+    durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hindep (fun i => measurable_pi_apply i) hψ
+
+/--
+Durrett 2019, Theorem 2.1.10 support on the canonical iid product space:
+the coordinate partial-sum difference `S_n - S_m` is independent of every
+measurable statistic of the earlier coordinate block.
+-/
+theorem durrett2019_theorem_2_1_10_canonical_iid_partialSumDiff_earlyBlockFunction
+    (ν : MeasureTheory.ProbabilityMeasure ℝ)
+    {T : Type v} [MeasurableSpace T]
+    {m n : ℕ} (hmn : m ≤ n)
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun
+      (μ := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (fun sample : ℕ -> ℝ =>
+        (∑ k ∈ Finset.range n, sample k) -
+          ∑ k ∈ Finset.range m, sample k)
+      (fun sample : ℕ -> ℝ => ψ (fun i : Finset.range m => sample i)) := by
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  exact
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hindep (fun i => measurable_pi_apply i) hmn hψ
+
+/--
+Durrett 2019, Theorem 2.1.10 support on the canonical iid product space:
+the coordinate partial-sum difference is independent of early-block event
+indicators such as the first-crossing event in Kolmogorov's maximal inequality.
+-/
+theorem durrett2019_theorem_2_1_10_canonical_iid_partialSumDiff_earlyBlockIndicator
+    (ν : MeasureTheory.ProbabilityMeasure ℝ)
+    {m n : ℕ} (hmn : m ≤ n)
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    _root_.ProbabilityTheory.IndepFun
+      (μ := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (fun sample : ℕ -> ℝ =>
+        (∑ k ∈ Finset.range n, sample k) -
+          ∑ k ∈ Finset.range m, sample k)
+      (fun sample : ℕ -> ℝ =>
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => sample i)) := by
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  exact
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hindep (fun i => measurable_pi_apply i) hmn hA
+
+/--
+Durrett 2019, Theorem 2.1.10 support on the canonical iid product space in
+one-based textbook notation: a future shifted-coordinate increment is
+independent of every measurable statistic of the earlier shifted-coordinate
+block.
+-/
+theorem durrett2019_theorem_2_1_10_canonical_iid_lateIncrementSum_earlyBlockFunction_oneBased
+    (ν : MeasureTheory.ProbabilityMeasure ℝ)
+    {T : Type v} [MeasurableSpace T]
+    {m n : ℕ}
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun
+      (μ := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (fun sample : ℕ -> ℝ => ∑ k ∈ Finset.Ico m n, sample (k + 1))
+      (fun sample : ℕ -> ℝ => ψ (fun i : Finset.range m => sample (i + 1))) := by
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  exact
+    durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction_oneBased
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hindep (fun i => measurable_pi_apply i) hψ
+
+/--
+Durrett 2019, Theorem 2.1.10 support on the canonical iid product space in
+one-based textbook notation: the shifted-coordinate partial-sum difference
+`S_n - S_m` is independent of every measurable statistic of the earlier block.
+-/
+theorem durrett2019_theorem_2_1_10_canonical_iid_partialSumDiff_earlyBlockFunction_oneBased
+    (ν : MeasureTheory.ProbabilityMeasure ℝ)
+    {T : Type v} [MeasurableSpace T]
+    {m n : ℕ} (hmn : m ≤ n)
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun
+      (μ := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (fun sample : ℕ -> ℝ =>
+        (∑ k ∈ Finset.range n, sample (k + 1)) -
+          ∑ k ∈ Finset.range m, sample (k + 1))
+      (fun sample : ℕ -> ℝ => ψ (fun i : Finset.range m => sample (i + 1))) := by
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  exact
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction_oneBased
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hindep (fun i => measurable_pi_apply i) hmn hψ
+
+/--
+Durrett 2019, Theorem 2.1.10 support on the canonical iid product space in
+one-based textbook notation: the shifted-coordinate partial-sum difference is
+independent of early-block event indicators.
+-/
+theorem durrett2019_theorem_2_1_10_canonical_iid_partialSumDiff_earlyBlockIndicator_oneBased
+    (ν : MeasureTheory.ProbabilityMeasure ℝ)
+    {m n : ℕ} (hmn : m ≤ n)
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    _root_.ProbabilityTheory.IndepFun
+      (μ := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (fun sample : ℕ -> ℝ =>
+        (∑ k ∈ Finset.range n, sample (k + 1)) -
+          ∑ k ∈ Finset.range m, sample (k + 1))
+      (fun sample : ℕ -> ℝ =>
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => sample (i + 1))) := by
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  exact
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator_oneBased
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hindep (fun i => measurable_pi_apply i) hmn hA
+
+/--
 Durrett 2019, Theorem 2.1.10, concrete first-variable/tail-product form.
 
 This packages the source sentence following Theorem 2.1.10: if a finite block
