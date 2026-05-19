@@ -5937,6 +5937,184 @@ theorem durrett2019_theorem_2_1_13_iid_integral_oneBased_Icc_law_prod_eq_pow_int
       (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf (Finset.Icc 1 n)
 
 /--
+Durrett 2019, Theorem 2.1.13, iid law-side zero-product display over a
+nonempty finite subfamily.
+
+For iid variables with common law `μ`, a common zero law-side mean makes every
+nonempty finite product expectation vanish.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} {ι : Type w}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf : Integrable f μ)
+    {s : Finset ι} (hs : s.Nonempty)
+    (hzero : ∫ x, f x ∂μ = 0) :
+    ∫ ω, ∏ i ∈ s, f (X i ω) ∂P = 0 := by
+  rcases hs with ⟨i, hi⟩
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integral_finset_law_prod_eq_zero_of_integral_eq_zero
+      (P := P) (S := fun _ : ι => S) (X := X)
+      (μ := fun _ : ι => μ) (f := fun _ : ι => f)
+      hX hLaw (fun _ => hf) (s := s) (i := i) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side zero-product display over a
+positive initial range.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integral_range_law_prod_eq_zero_of_pos_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf : Integrable f μ) {n : ℕ} (hn : 0 < n)
+    (hzero : ∫ x, f x ∂μ = 0) :
+    ∫ ω, ∏ i ∈ Finset.range n, f (X i ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf
+    (s := Finset.range n) ⟨0, Finset.mem_range.mpr hn⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side zero-product display over a
+nonempty coordinate interval.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integral_Ico_law_prod_eq_zero_of_lt_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf : Integrable f μ) {m n : ℕ} (hmn : m < n)
+    (hzero : ∫ x, f x ∂μ = 0) :
+    ∫ ω, ∏ i ∈ Finset.Ico m n, f (X i ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf
+    (s := Finset.Ico m n) ⟨m, Finset.mem_Ico.mpr ⟨le_rfl, hmn⟩⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side zero-product display over the
+literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integral_oneBased_Icc_law_prod_eq_zero_of_one_le_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf : Integrable f μ) {n : ℕ} (hn : 1 ≤ n)
+    (hzero : ∫ x, f x ∂μ = 0) :
+    ∫ ω, ∏ i ∈ Finset.Icc 1 n, f (X i ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf
+    (s := Finset.Icc 1 n) ⟨1, Finset.mem_Icc.mpr ⟨le_rfl, hn⟩⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side zero-product display over a
+nonempty finite subfamily of shifted one-based coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_iid_shift_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf : Integrable f μ)
+    {s : Finset ℕ} (hs : s.Nonempty)
+    (hzero : ∫ x, f x ∂μ = 0) :
+    ∫ ω, ∏ i ∈ s, f (X (i + 1) ω) ∂P = 0 := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  have hShift_law : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) μ P := by
+    intro i
+    simpa [Nat.succ_eq_add_one] using hLaw (Nat.succ i)
+  exact
+    durrett2019_theorem_2_1_13_iid_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      (μ := μ) (f := f) hShift_indep hShift_law hf (s := s) hs hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side zero-product display over a
+positive initial range of shifted one-based coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integral_range_law_prod_eq_zero_oneBased_of_pos_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf : Integrable f μ) {n : ℕ} (hn : 0 < n)
+    (hzero : ∫ x, f x ∂μ = 0) :
+    ∫ ω, ∏ i ∈ Finset.range n, f (X (i + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_shift_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf
+    (s := Finset.range n) ⟨0, Finset.mem_range.mpr hn⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side zero-product display over a
+nonempty interval of shifted one-based coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_iid_integral_Ico_law_prod_eq_zero_oneBased_of_lt_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf : Integrable f μ) {m n : ℕ} (hmn : m < n)
+    (hzero : ∫ x, f x ∂μ = 0) :
+    ∫ ω, ∏ i ∈ Finset.Ico m n, f (X (i + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_shift_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf
+    (s := Finset.Ico m n) ⟨m, Finset.mem_Ico.mpr ⟨le_rfl, hmn⟩⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side zero-product display over the
+literal one-based index set for shifted coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_iid_shift_integral_oneBased_Icc_law_prod_eq_zero_of_one_le_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf : Integrable f μ) {n : ℕ} (hn : 1 ≤ n)
+    (hzero : ∫ x, f x ∂μ = 0) :
+    ∫ ω, ∏ i ∈ Finset.Icc 1 n, f (X (i + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_iid_shift_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf
+    (s := Finset.Icc 1 n) ⟨1, Finset.mem_Icc.mpr ⟨le_rfl, hn⟩⟩ hzero
+
+/--
 Durrett 2019, Theorem 2.1.13, law-side nonnegative finite-subfamily
 expectation factorization.
 
