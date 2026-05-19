@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V66` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V67` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -33,7 +33,7 @@ record proof accelerators, friction sources, repeated searches to avoid, and
 the shortest accurate next prompt.  This is part of building a reusable
 formalization workflow for future statistical theory development in Lean.
 
-Current V66 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V67 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -247,6 +247,19 @@ direct lower-level consumer API when it is already compiled and source-shaped;
 the next useful packet should derive this direct `HasFDerivAt` fact from
 `HasStrictFDerivAt`, concrete Hessian derivative lemmas, or a clean
 ContDiff/iteratedFDeriv interface.
+The V67 layer adds
+`chewi131_taylor_norm_bound_of_matrix_continuous_gradient_hasStrictFDeriv`,
+`chewi131_local_quadratic_step_of_matrix_continuous_gradient_hasStrictFDeriv_of_radius`,
+and
+`chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_hasStrictFDeriv_of_radius`,
+so the active Theorem 13.1 surface can consume the Hessian matrix family as
+`HasStrictFDerivAt (gradient f) (chewi131MatrixCLM (Hfun z)) z` along source
+segments.  Search-first reuse came from mathlib
+`HasStrictFDerivAt.hasFDerivAt` and the existing V66 direct Frechet consumer.
+Methodology note: exact mathlib strengthening/coercion APIs should be used to
+avoid maintaining multiple awkward theorem surfaces; the next useful packet is
+to derive the strict hypothesis from concrete Hessian derivative proofs or a
+clean `ContDiff`/`iteratedFDeriv` source interface.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source
