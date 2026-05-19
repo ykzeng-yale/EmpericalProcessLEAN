@@ -41443,6 +41443,250 @@ theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms
     (fun hepsilon hab =>
       durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms hepsilon hab)
 
+/--
+Durrett 2019, Theorem 2.4.9, non-atomic outer-a.s. half-line
+Glivenko-Cantelli package.
+
+This is the exact outer-a.s. endpoint of the non-atomic compact-cover route,
+before translating the half-line class into empirical-distribution notation.
+-/
+theorem durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_noAtoms
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSurePGlivenkoCantelliClass μ P Set.univ
+      realHalfLineIndicator X := by
+  exact
+    StatInference.vdVW_realHalfLine_outerAlmostSureGlivenkoCantelli_of_suppliedERealHalfLineEndpointGrids
+      X hLaw hindep
+      (SuppliedERealHalfLineEndpointGrid.exists_forall_of_forall_realMiddleCDFPartition
+        P
+        (fun hepsilon hab =>
+          exists_realMiddleCDFPartition_of_cutpoint_chain
+            (durrett2019_theorem_2_4_9_cutpointChain_of_noAtoms hepsilon hab)))
+
+/--
+Durrett 2019, Theorem 2.4.9, non-atomic empirical-CDF
+Glivenko-Cantelli predicate.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_noAtoms
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    _root_.StatInference.RealEmpiricalCDFGlivenkoCantelliClass μ P X :=
+  _root_.StatInference.realEmpiricalCDFGlivenkoCantelliClass_of_realHalfLine
+    (durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms
+      X hLaw hindep)
+
+/--
+Durrett 2019, Theorem 2.4.9, non-atomic exact outer-a.s.
+empirical-CDF display.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_noAtoms
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction (samplePath X ω sampleSize) c) := by
+  have hhalf :
+      VdVWOuterAlmostSurePGlivenkoCantelliClass μ P Set.univ
+        realHalfLineIndicator X :=
+    durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_noAtoms
+      X hLaw hindep
+  simpa [VdVWOuterAlmostSurePGlivenkoCantelliClass,
+    empiricalDistributionFunction, populationRiskOfFunction,
+    realHalfLineIndicator_integral_eq_cdf] using hhalf
+
+/--
+Durrett 2019, Theorem 2.4.9, non-atomic exact outer-a.s.
+empirical-CDF range-sum display.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_noAtoms
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) /
+          (sampleSize : ℝ)) := by
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_noAtoms
+      X hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.4.9, non-atomic exact outer-a.s.
+empirical-CDF display in textbook inverse-multiple notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_noAtoms
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize, realHalfLineIndicator c (X i ω)) := by
+  simpa [div_eq_mul_inv, mul_comm] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_noAtoms
+      X hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based non-atomic half-line
+Glivenko-Cantelli package.
+-/
+theorem durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWPGlivenkoCantelliClass μ P Set.univ realHalfLineIndicator
+      (fun i => fun ω => X (i + 1) ω) := by
+  have hLawShift : ∀ i,
+      _root_.ProbabilityTheory.HasLaw
+        ((fun i => fun ω : Ω => X (i + 1) ω) i) P μ := fun i => hLaw (i + 1)
+  have hindepShift :
+      Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on
+        (fun i => fun ω : Ω => X (i + 1) ω)) := by
+    intro i j hij
+    have hne : Nat.succ i ≠ Nat.succ j := by
+      intro h
+      exact hij (Nat.succ.inj h)
+    simpa [Function.onFun, Nat.succ_eq_add_one] using hindep hne
+  exact
+    durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms
+      (fun i => fun ω => X (i + 1) ω) hLawShift hindepShift
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based non-atomic outer-a.s. half-line
+Glivenko-Cantelli package.
+-/
+theorem durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_noAtoms_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSurePGlivenkoCantelliClass μ P Set.univ
+      realHalfLineIndicator (fun i => fun ω => X (i + 1) ω) := by
+  have hLawShift : ∀ i,
+      _root_.ProbabilityTheory.HasLaw
+        ((fun i => fun ω : Ω => X (i + 1) ω) i) P μ := fun i => hLaw (i + 1)
+  have hindepShift :
+      Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on
+        (fun i => fun ω : Ω => X (i + 1) ω)) := by
+    intro i j hij
+    have hne : Nat.succ i ≠ Nat.succ j := by
+      intro h
+      exact hij (Nat.succ.inj h)
+    simpa [Function.onFun, Nat.succ_eq_add_one] using hindep hne
+  exact
+    durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_noAtoms
+      (fun i => fun ω => X (i + 1) ω) hLawShift hindepShift
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based non-atomic empirical-CDF
+Glivenko-Cantelli predicate.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_noAtoms_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    _root_.StatInference.RealEmpiricalCDFGlivenkoCantelliClass μ P
+      (fun i => fun ω => X (i + 1) ω) :=
+  _root_.StatInference.realEmpiricalCDFGlivenkoCantelliClass_of_realHalfLine
+    (durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms_oneBased
+      X hLaw hindep)
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based non-atomic exact outer-a.s.
+empirical-CDF display.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_noAtoms_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        empiricalDistributionFunction
+          (samplePath (fun i => fun ω => X (i + 1) ω) ω sampleSize) c) := by
+  have hhalf :
+      VdVWOuterAlmostSurePGlivenkoCantelliClass μ P Set.univ
+        realHalfLineIndicator (fun i => fun ω => X (i + 1) ω) :=
+    durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_noAtoms_oneBased
+      X hLaw hindep
+  simpa [VdVWOuterAlmostSurePGlivenkoCantelliClass,
+    empiricalDistributionFunction, populationRiskOfFunction,
+    realHalfLineIndicator_integral_eq_cdf] using hhalf
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based non-atomic exact outer-a.s.
+empirical-CDF range-sum display.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_noAtoms_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (∑ i ∈ Finset.range sampleSize,
+          realHalfLineIndicator c (X (i + 1) ω)) / (sampleSize : ℝ)) := by
+  simpa [empiricalDistributionFunction_samplePath_eq_range_sum] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_noAtoms_oneBased
+      X hLaw hindep
+
+/--
+Durrett 2019, Theorem 2.4.9, one-based non-atomic exact outer-a.s.
+empirical-CDF display in textbook inverse-multiple notation.
+-/
+theorem durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_noAtoms_oneBased
+    {Ω : Type u} [MeasurableSpace Ω]
+    {μ : Measure Ω} {P : Measure ℝ} [IsProbabilityMeasure P]
+    [IsFiniteMeasureOnCompacts P] [NoAtoms P]
+    (X : ℕ -> Ω -> ℝ)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) P μ)
+    (hindep : Pairwise ((_root_.ProbabilityTheory.IndepFun (μ := μ)) on X)) :
+    VdVWOuterAlmostSureUniformDeviationTendstoZeroOn μ Set.univ
+      (fun c => ProbabilityTheory.cdf P c)
+      (fun ω sampleSize c =>
+        (sampleSize : ℝ)⁻¹ *
+          ∑ i ∈ Finset.range sampleSize,
+            realHalfLineIndicator c (X (i + 1) ω)) := by
+  simpa [div_eq_mul_inv, mul_comm] using
+    durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_noAtoms_oneBased
+      X hLaw hindep
+
 /-! ## Durrett, Section 3.2 -/
 
 /--

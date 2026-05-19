@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V568
+## Live In-Thread Goal Prompt V569
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -383,6 +383,11 @@ norm `lintegral` annihilates the source-space `lintegral` of
 `ENNReal.ofReal ‖∏ f_i(X_i)‖`; common-law indexed transforms and
 common-transform nonempty/positive variants cover finite/range/Ico and
 one-based products.
+V569 adds non-atomic Durrett Theorem 2.4.9 final-display wrappers: the
+no-atoms cutpoint-chain route now exposes outer-a.s. half-line
+Glivenko-Cantelli, empirical-CDF Glivenko-Cantelli, exact outer-a.s.
+empirical-CDF, range-sum, and textbook inverse-multiple displays, both
+zero-based and one-based.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -615,6 +620,10 @@ absolute-value/norm zero-factor formulas, common-law indexed-transform norm
 zero-factor formulas, or common-transform norm zero-factor formulas for
 finite, range/Ico, or one-based range/Ico/`Icc` products unless an exact later
 consumer needs a different source shape.
+After V569, do not rebuild the non-atomic Theorem 2.4.9 final-display
+wrappers for outer-a.s. half-line GC, empirical-CDF GC, exact outer-a.s.
+empirical-CDF, range-sum, or inverse-multiple displays in zero-based or
+one-based form unless an exact later consumer needs a different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -850,9 +859,35 @@ solved law-side composed-function Theorem 2.1.13 absolute-value/norm
 zero-factor formulas, common-law indexed-transform norm zero-factor formulas,
 and common-transform norm zero-factor formulas for finite, range/Ico, and
 one-based range/Ico/`Icc` products,
+solved non-atomic Durrett Theorem 2.4.9 final-display wrappers for
+outer-a.s. half-line GC, empirical-CDF GC, exact outer-a.s. empirical-CDF,
+range-sum, and textbook inverse-multiple displays in zero-based and one-based
+forms,
 or old app-level stale prompts.
 
-Latest verified target V568 adds law-side composed-function Chapter 2.1.13
+Latest verified target V569 adds non-atomic Durrett Theorem 2.4.9
+final-display wrappers:
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_noAtoms`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_noAtoms`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_noAtoms`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_noAtoms`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_noAtoms`,
+`durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine_of_noAtoms_oneBased`,
+`durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine_of_noAtoms_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli_of_noAtoms_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_of_noAtoms_oneBased`,
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_range_sum_of_noAtoms_oneBased`,
+and
+`durrett2019_theorem_2_4_9_empiricalDistributionFunction_outerAlmostSure_inv_mul_range_sum_of_noAtoms_oneBased`.
+These expose the non-atomic compact-cover/cutpoint-chain proof route at the
+same final empirical-CDF surfaces already available for broader source
+shapes, including one-based textbook notation.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V568 adds law-side composed-function Chapter 2.1.13
 absolute-value/norm zero-factor formulas:
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero`,
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero`,
@@ -6568,6 +6603,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V568` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V569` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
