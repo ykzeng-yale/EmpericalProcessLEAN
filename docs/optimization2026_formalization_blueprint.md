@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V81` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V82` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -33,21 +33,22 @@ record proof accelerators, friction sources, repeated searches to avoid, and
 the shortest accurate next prompt.  This is part of building a reusable
 formalization workflow for future statistical theory development in Lean.
 
-Current V81 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V82 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, while active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
-range-space local Newton-convergence recurrence.  V81 feeds the V80
-source-radius and source-Hessian-lower bridges into the recurrence endpoint:
-`hlower` is now supplied from a source lower bound at `x 0` plus a summable
-Newton-decrement budget.  The next live target is the remaining
-Hessian close/control gate.  Prefer a local-norm/Newton-decrement recurrence
-using Chewi 13.6/13.8 multiplicative stability; only use the additive
-Euclidean op-norm `hlip` route if an existing bounded bridge is found.  Feasible
-segments, feasible iterates, Newton update packaging, source-radius
-preservation, and the recurrence `hlower` premise are no longer live blockers.
-Do not repeat the inverse-norm, recurrence-induction, feasible-segment,
-Newton-feasibility, source-radius, lower-Hessian, or range-coordinate search
-unless a specific self-concordance/local-norm blocker requires it.
+range-space local Newton-convergence recurrence.  V82 adds the finite-row
+central-path Newton-decrement recurrence and its trajectory wrapper:
+`λ_{k+1} ≤ λ_k^2/(1-λ_k)^2` now follows from feasibility and
+`λ_k < 1`, using Chewi 13.8 and the compiled range square-root model.  The
+next live target is to turn this recurrence into stable trajectory control
+and summable decrement budgets, then feed those budgets back into the
+source-radius/lower-bound recurrence wrappers when needed.  The active route
+is now local-norm/Newton-decrement shaped; the additive Euclidean op-norm
+`hlip` route is no longer the preferred blocker.  Do not repeat the
+inverse-norm, recurrence-induction, feasible-segment, Newton-feasibility,
+source-radius, lower-Hessian, square-root-coordinate, gradient
+differentiability, Newton-linearization, or range-coordinate searches unless a
+specific self-concordance/local-norm blocker requires it.
 
 Historical route cache: the module
 `StatInference/Optimization/AppendixA.lean` compiles and is root-imported,

@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V81`, this file's top
+   the full book is complete, route from `Live Goal Prompt V82`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -140,39 +140,48 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V81
+## Live Goal Prompt V82
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V81 feeds V80 into the finite-row central-path local
-quadratic recurrence.  Newly compiled declarations are
+Current active frontier: V82 packages the finite-row central-path Newton
+decrement recurrence, bypassing the additive Euclidean `hlip` route.  Newly
+compiled declarations are
+`chewi1316RangeCentralPathValue_newtonDecrement_step_le_of_decrement_lt_one`
+and `chewi1316RangeCentralPathValue_newtonDecrement_succ_le_of_trajectory` in
+`StatInference/Optimization/Theorem131Gradient.lean`.  The proof reuses
+`chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`,
+`chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel`,
+`chewi1316RangeCentralPathValue_gradient_hasFDerivAt`,
+`newton_linear_of_hessian_right_inverse`, and the finite-row
+feasibility/right-inverse/Hessian derivative APIs.  Focused verification
+command: `lake build StatInference.Optimization.Theorem131Gradient`.
+
+Next active proof target: assemble this Newton-decrement recurrence into a
+stable trajectory-level control theorem.  A good packet is either a scalar
+invariant that turns `λ_{k+1} ≤ λ_k^2/(1-λ_k)^2` and `λ_0 ≤ c` into
+`λ_k ≤ c`/summable budgets, or a direct central-path recurrence wrapper that
+uses V82 plus the existing `chewi1316_mainStage_*` scalar lemmas.  Do not
+reopen the Euclidean Hessian `hlip` route unless it is needed only as a thin
+consumer; the active analytic surface should now be Newton decrement/local
+norm.  Do not repeat the square-root-coordinate, gradient differentiability,
+Newton linearization, feasible step, source-radius, or `hlower` searches.
+
+Methodology note: V82 validates the high-throughput path: search for the
+strong source theorem, specialize it once to the finite-row range model, then
+add a trajectory wrapper.  This avoided manufacturing a bespoke Hessian
+Lipschitz proof and should be preferred for the remaining Chewi 13.1/13.16
+Newton convergence route.
+
+V81 dependency cache: V81 feeds V80 into the finite-row central-path local
+quadratic recurrence.  Compiled declarations are
 `chewi1316RangeCentralPathValue_hlower_of_trajectory_decrementBudget` and
 `chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_trajectory_decrementBudget_lower`
 in `StatInference/Optimization/Theorem131Gradient.lean`.  The first theorem
 supplies the recurrence `hlower` premise from a source Hessian lower bound at
 `x 0` and the V80 decrement-budget source-radius certificate; the second
-theorem removes the `hlower` argument from the recurrence endpoint.  Focused
-verification command: `lake build StatInference.Optimization.Theorem131Gradient`.
-
-Next active proof target: discharge or route around the remaining Hessian
-close/Lipschitz gate.  Do not return to the already-solved feasible segment,
-feasible iterates, Newton update, source-radius, or `hlower` blockers.  Search
-first for local-norm/Newton-decrement APIs in `InteriorPoint.lean`:
-`chewi138_newtonSegment_localNorm_sandwich_sourceRadius`,
-`chewi138_newtonDecrement_step_le_*`, `HessianSegment*`,
-`localNorm_sandwich_*`, and finite-row range certificates
-`chewi1314_polytopeSlackNegLog_rangeHess_*` /
-`chewi1314_polytopeSlackNegLog_rangeInvHess_*`.  Preferred route is a
-source-facing Newton-decrement recurrence for the central-path trajectory,
-reusing Chewi 13.6/13.8 multiplicative local-norm stability.  Only pursue the
-additive Euclidean op-norm `hlip` premise if a bounded existing bridge is
-found; otherwise keep theorem endpoints local-norm/decrement shaped.
-
-Methodology note: V81 confirms that theorem-facing wrappers should normalize
-inner-product orientation explicitly (`inner v (H v)` versus
-`inner (H v) v`) when feeding older recurrence interfaces.  This avoids noisy
-type mismatches while preserving the stronger local-norm proof route.
+theorem removes the `hlower` argument from the recurrence endpoint.
 
 V80 dependency cache: V80 adds the first quantitative local-norm bridge for
 the V79 recurrence.  Compiled declarations are
