@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V587
+## Live In-Thread Goal Prompt V588
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -446,6 +446,10 @@ factorization and zero-factor wrappers.
 V587 adds canonical iid common-law Chapter 2.1.13 law-side power displays
 over finite subfamilies, range/Ico intervals, literal one-based `Icc`, and
 shifted one-based coordinate forms.
+V588 adds canonical iid common-law Chapter 2.1.13
+expectation-exists-and-power-value wrappers over finite subfamilies,
+range/Ico intervals, literal one-based `Icc`, and shifted one-based
+coordinate forms.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -759,6 +763,10 @@ After V587, do not rebuild the canonical iid common-law Theorem 2.1.13
 law-side power displays for finite, range/Ico, literal one-based `Icc`, or
 shifted one-based coordinate products unless an exact later consumer needs a
 different display shape.
+After V588, do not rebuild the canonical iid common-law Theorem 2.1.13
+expectation-exists-and-power-value wrappers for finite, range/Ico, literal
+one-based `Icc`, or shifted one-based coordinate products unless an exact
+later consumer needs a different display shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -1000,7 +1008,28 @@ range-sum, and textbook inverse-multiple displays in zero-based and one-based
 forms,
 or old app-level stale prompts.
 
-Latest verified target V587 adds canonical iid common-law Chapter 2.1.13
+Latest verified target V588 adds canonical iid common-law Chapter 2.1.13
+expectation-exists-and-power-value wrappers over finite subfamilies,
+range/Ico intervals, literal one-based `Icc`, and shifted one-based
+coordinate forms:
+`durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_finset_law_prod_eq_pow_integral`,
+`durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_range_law_prod_eq_pow_integral`,
+`durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_Ico_law_prod_eq_pow_integral`,
+`durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_oneBased_Icc_law_prod_eq_pow_integral`,
+`durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_finset_law_prod_eq_pow_integral`,
+`durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_range_law_prod_eq_pow_integral_oneBased`,
+`durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_Ico_law_prod_eq_pow_integral_oneBased`, and
+`durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_oneBased_Icc_law_prod_eq_pow_integral`.
+These wrappers let canonical product-coordinate consumers obtain product
+integrability and the common-law power value from one theorem, without
+separately pairing a product-integrability wrapper with the V587 value-only
+display.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V587 adds canonical iid common-law Chapter 2.1.13
 law-side power displays over finite subfamilies, range/Ico intervals, literal
 one-based `Icc`, and shifted one-based coordinate forms:
 `durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_pow_integral`,
@@ -6987,6 +7016,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V587` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V588` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.

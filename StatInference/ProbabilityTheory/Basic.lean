@@ -10755,6 +10755,194 @@ theorem durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_o
       (fun i => hf_meas (i + 1)) (fun i => hf (i + 1)) hi hzero
 
 /--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law product integrability and power-value formula over an arbitrary
+finite set of coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_finset_law_prod_eq_pow_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    (s : Finset ℕ) :
+    Integrable (fun sample : ℕ -> ℝ => ∏ i ∈ s, f (sample i))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ s, f (sample i)
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+        (∫ x, f x ∂(ν : Measure ℝ)) ^ s.card := by
+  constructor
+  · exact
+      (durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_finset_law_prod_eq_prod_integral
+        ν (f := fun _ : ℕ => f) (fun _ => hf_meas) (fun _ => hf) s).1
+  · exact
+      durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_pow_integral
+        ν (f := f) hf s
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law product integrability and power-value formula over an initial
+coordinate range.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_range_law_prod_eq_pow_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    (n : ℕ) :
+    Integrable (fun sample : ℕ -> ℝ => ∏ i ∈ Finset.range n, f (sample i))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ Finset.range n, f (sample i)
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+        (∫ x, f x ∂(ν : Measure ℝ)) ^ n := by
+  constructor
+  · exact
+      (durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_range_law_prod_eq_prod_integral
+        ν (f := fun _ : ℕ => f) (fun _ => hf_meas) (fun _ => hf) n).1
+  · exact
+      durrett2019_theorem_2_1_13_canonical_iid_integral_range_law_prod_eq_pow_integral
+        ν (f := f) hf n
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law product integrability and power-value formula over a coordinate
+interval.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_Ico_law_prod_eq_pow_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    (m n : ℕ) :
+    Integrable (fun sample : ℕ -> ℝ => ∏ i ∈ Finset.Ico m n, f (sample i))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ Finset.Ico m n, f (sample i)
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+        (∫ x, f x ∂(ν : Measure ℝ)) ^ (n - m) := by
+  constructor
+  · exact
+      (durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_Ico_law_prod_eq_prod_integral
+        ν (f := fun _ : ℕ => f) (fun _ => hf_meas) (fun _ => hf) m n).1
+  · exact
+      durrett2019_theorem_2_1_13_canonical_iid_integral_Ico_law_prod_eq_pow_integral
+        ν (f := f) hf m n
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law product integrability and power-value formula over the literal
+one-based index set.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_oneBased_Icc_law_prod_eq_pow_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    (n : ℕ) :
+    Integrable
+        (fun sample : ℕ -> ℝ => ∏ i ∈ Finset.Icc 1 n, f (sample i))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ Finset.Icc 1 n, f (sample i)
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+        (∫ x, f x ∂(ν : Measure ℝ)) ^ n := by
+  constructor
+  · exact
+      (durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_oneBased_Icc_law_prod_eq_prod_integral
+        ν (f := fun _ : ℕ => f) (fun _ => hf_meas) (fun _ => hf) n).1
+  · exact
+      durrett2019_theorem_2_1_13_canonical_iid_integral_oneBased_Icc_law_prod_eq_pow_integral
+        ν (f := f) hf n
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law product integrability and power-value formula over an arbitrary
+finite set of shifted one-based coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_finset_law_prod_eq_pow_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    (s : Finset ℕ) :
+    Integrable (fun sample : ℕ -> ℝ => ∏ i ∈ s, f (sample (i + 1)))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ s, f (sample (i + 1))
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+        (∫ x, f x ∂(ν : Measure ℝ)) ^ s.card := by
+  constructor
+  · exact
+      (durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_finset_law_prod_eq_prod_integral
+        ν (f := fun _ : ℕ => f) (fun _ => hf_meas) (fun _ => hf) s).1
+  · exact
+      durrett2019_theorem_2_1_13_canonical_iid_shift_integral_finset_law_prod_eq_pow_integral
+        ν (f := f) hf s
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law product integrability and power-value formula over an initial range
+of shifted one-based coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_range_law_prod_eq_pow_integral_oneBased
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    (n : ℕ) :
+    Integrable
+        (fun sample : ℕ -> ℝ => ∏ i ∈ Finset.range n, f (sample (i + 1)))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ Finset.range n, f (sample (i + 1))
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+        (∫ x, f x ∂(ν : Measure ℝ)) ^ n := by
+  constructor
+  · exact
+      (durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_range_law_prod_eq_prod_integral_oneBased
+        ν (f := fun _ : ℕ => f) (fun _ => hf_meas) (fun _ => hf) n).1
+  · exact
+      durrett2019_theorem_2_1_13_canonical_iid_integral_range_law_prod_eq_pow_integral_oneBased
+        ν (f := f) hf n
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law product integrability and power-value formula over a shifted
+one-based coordinate interval.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_Ico_law_prod_eq_pow_integral_oneBased
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    (m n : ℕ) :
+    Integrable
+        (fun sample : ℕ -> ℝ => ∏ i ∈ Finset.Ico m n, f (sample (i + 1)))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ Finset.Ico m n, f (sample (i + 1))
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+        (∫ x, f x ∂(ν : Measure ℝ)) ^ (n - m) := by
+  constructor
+  · exact
+      (durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_Ico_law_prod_eq_prod_integral_oneBased
+        ν (f := fun _ : ℕ => f) (fun _ => hf_meas) (fun _ => hf) m n).1
+  · exact
+      durrett2019_theorem_2_1_13_canonical_iid_integral_Ico_law_prod_eq_pow_integral_oneBased
+        ν (f := f) hf m n
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law product integrability and power-value formula over the literal
+one-based index set for shifted coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_oneBased_Icc_law_prod_eq_pow_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    (n : ℕ) :
+    Integrable
+        (fun sample : ℕ -> ℝ => ∏ i ∈ Finset.Icc 1 n, f (sample (i + 1)))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ Finset.Icc 1 n, f (sample (i + 1))
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+        (∫ x, f x ∂(ν : Measure ℝ)) ^ n := by
+  constructor
+  · exact
+      (durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_oneBased_Icc_law_prod_eq_prod_integral
+        ν (f := fun _ : ℕ => f) (fun _ => hf_meas) (fun _ => hf) n).1
+  · exact
+      durrett2019_theorem_2_1_13_canonical_iid_shift_integral_oneBased_Icc_law_prod_eq_pow_integral
+        ν (f := f) hf n
+
+/--
 Durrett 2019, Theorem 2.1.13, iid law-side finite-subfamily
 expectation-exists-and-power-value formula.
 -/
