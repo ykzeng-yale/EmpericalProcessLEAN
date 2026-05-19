@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V60` near the top of
+  `Live Goal Prompt V61` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -43,6 +43,9 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Current proof worktree: use `/private/tmp/chewi-dual-seminorm` for the
   active Optimization packet so unrelated textbook agents can keep their own
   local state without `.lake` or working-tree interference.
+  If that temp worktree disappears, recreate it and run `lake exe cache get`
+  before focused builds; otherwise the first build can waste time rebuilding
+  mathlib locally.
 - Latest Appendix A frontier: `StatInference/Optimization/AppendixA.lean` now
   starts the source-facing matrix-order layer and is imported by
   `StatInference.lean`.  Compiled declarations
@@ -171,7 +174,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   Methodology note: `intervalIntegral.integral_id` appeared in mathlib source
   but was not available as a public imported declaration in this environment,
   so proving `∫_0^1 (1 - t) dt = 1 / 2` by public FTC was faster and should be
-  reused for this lane.
+  reused for this lane.  The V61 layer adds the root-imported module
+  `StatInference/Optimization/Theorem131Taylor.lean` with
+  `chewi131_integral_remainder_identity_of_gradient_ftc`,
+  `chewi131_integral_remainder_pointwise_bound_of_hessian_lipschitz`,
+  `chewi131_taylor_norm_bound_of_gradient_ftc`,
+  `chewi131_local_quadratic_step_of_gradient_ftc`, and
+  `chewi131_local_quadratic_recurrence_of_gradient_ftc`.  It reuses local
+  `InteriorPoint.lean` segment-gradient FTC plus mathlib interval-integral
+  subtraction and continuous-linear-map norm/action lemmas to construct the
+  V60 integral-remainder data.  The next blocker is the matrix/Hessian-oracle
+  bridge connecting `hess (x_n)` with the matrix `H_n`, inverse action, and
+  matrix-notation Hessian Lipschitz assumptions.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

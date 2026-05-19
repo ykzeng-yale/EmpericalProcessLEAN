@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V60`, this file's top
+   the full book is complete, route from `Live Goal Prompt V61`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -81,7 +81,9 @@ micro-packet overhead.
 4. Worktree discipline.  Broad Optimization proof packets should run in an
    isolated Optimization worktree such as `/tmp/chewi-dual-seminorm`.  Fetch/rebase at
    the start and once immediately before push; avoid repeated fetch/rebase
-   loops while a focused proof packet is still being developed.
+   loops while a focused proof packet is still being developed.  If a temp
+   worktree expires, recreate it, run `lake exe cache get`, and only then run
+   focused builds; do not brute-force rebuild mathlib locally.
 5. Verification tiers.  During development, use focused
    `lake env lean StatInference/Optimization/<module>.lean` checks.  Promote
    with `lake build StatInference.Optimization.<Module>` after a public theorem
@@ -138,14 +140,36 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V60
+## Live Goal Prompt V61
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V60 strengthens the source-facing Chewi Theorem 13.1
+Current active frontier: V61 adds the root-imported module
+`StatInference/Optimization/Theorem131Taylor.lean`, discharging another
+source-proof layer of Chewi Theorem 13.1 by constructing the V60
+integral-remainder data from gradient FTC and Hessian-Lipschitz assumptions.
+Newly compiled declarations are
+`chewi131_integral_remainder_identity_of_gradient_ftc`,
+`chewi131_integral_remainder_pointwise_bound_of_hessian_lipschitz`,
+`chewi131_taylor_norm_bound_of_gradient_ftc`,
+`chewi131_local_quadratic_step_of_gradient_ftc`, and
+`chewi131_local_quadratic_recurrence_of_gradient_ftc`.  The module reuses
+local `InteriorPoint.lean` APIs, especially
+`hessianSegmentGradient_integral_eq_sub_of_hasFDerivAt`, and then feeds the
+result into V60's `chewi131_taylor_norm_bound_of_integral_remainder`.  The
+remaining Theorem 13.1 blocker is now the matrix/Hessian-oracle bridge:
+showing the supplied Hessian oracle at `x_n` is the matrix `H_n`, proving the
+inverse action `H_n^{-1} Hess(x_n)(x_n-x_star)=x_n-x_star`, and supplying the
+operator-norm Hessian Lipschitz estimate along the `x_star -> x_n` segment.
+The active verification command is
+`lake build StatInference.Optimization.Theorem131Taylor`; root verification
+requires `lake build StatInference` because `StatInference.lean` imports the
+new module.
+
+V60 dependency cache: V60 strengthens the source-facing Chewi Theorem 13.1
 module by discharging the norm-of-integral algebra in the Taylor/Newton
-remainder gate.  Newly compiled declarations in
+remainder gate.  Compiled declarations in
 `StatInference/Optimization/Theorem131.lean` are
 `chewi131_taylor_norm_bound_of_integral_remainder`,
 `chewi131_local_quadratic_step_of_integral_remainder`, and
@@ -819,6 +843,9 @@ with `chewi131_local_quadratic_step_of_taylor_bound`,
 `chewi131_local_quadratic_recurrence_of_taylor_bound`, assembling the source
 local quadratic and half-contraction recurrence from the supplied
 Taylor/integral Newton remainder estimate plus V56/V58.
+V60 adds the integral-remainder norm layer in `Theorem131.lean`, and V61 adds
+the root-imported module `StatInference/Optimization/Theorem131Taylor.lean`
+with the gradient-FTC/Hessian-Lipschitz bridge feeding that V60 layer.
 
 Search-first reuse for V53-V59: source Definition A.5 and Theorem 13.1;
 mathlib singular values
@@ -849,7 +876,13 @@ search result: `intervalIntegral.integral_id` exists in mathlib source but is
 not available as a public imported declaration in this environment, so the
 efficient route is the public FTC primitive with
 `primitive t = t - t^2 / 2`; do not spend another packet on that private
-shortcut.  Timed-out attempted APIs for the exact inverse-order
+shortcut.  V61 reuses local `InteriorPoint.lean`
+`hessianSegmentGradient_integral_eq_sub_of_hasFDerivAt`,
+mathlib `intervalIntegral.integral_sub`, `intervalIntegrable_const`,
+`ContinuousLinearMap.map_sub`, and `ContinuousLinearMap.le_opNorm` to derive
+the Newton remainder identity and pointwise bound from gradient FTC plus a
+Hessian-Lipschitz operator-norm hypothesis.  Timed-out attempted APIs for the
+exact inverse-order
 discharge:
 `CStarAlgebra.inv_le_inv` on Units and
 `CStarAlgebra.rpow_neg_one_le_rpow_neg_one` after
@@ -877,17 +910,25 @@ plus pointwise bound implies the recurrence", not a tiny scalar integral
 lemma and not a full Hessian Taylor theorem in one jump.  Also record
 non-public or unavailable mathlib shortcuts immediately so future agents do
 not repeat the same probe.
+Methodology note from V61: isolated `/private/tmp` worktrees are good for
+multi-agent safety, but if the OS removes them the first build can waste time
+rebuilding mathlib.  After recreating a temp worktree, run `lake exe cache get`
+before any `lake build`.  Also, importing the huge `InteriorPoint.lean` module
+is justified only when consuming its exact APIs; here it was justified by
+`hessianSegmentGradient_integral_eq_sub_of_hasFDerivAt`, but future packets
+should consider moving small reusable segment-FTC lemmas into a lighter module.
 
 Next theorem-sized target: stay in Chewi Theorem 13.1 and discharge the
-actual Taylor/integral Newton remainder identity and pointwise Hessian
-remainder bound consumed by the V60 integral-remainder recurrence module.
-Search first in local `InteriorPoint.lean` for `hessianSegmentGradient_*`,
-`hessianSegmentHessian_*`, `hessianSegmentDelta_*`, and finite-dimensional
-Hessian segment lemmas, then in mathlib FTC/Taylor APIs.  The preferred next
-packet is a small Euclidean Hessian-gradient bridge producing
-`x_{+} - x_star = H^{-1} ∫_0^1 r(t) dt` and the
-`gamma (1 - t) ||x - x_star||^2` pointwise bound from Lipschitz Hessian
-assumptions.
+matrix/Hessian-oracle bridge consumed by the V61 gradient-FTC recurrence
+module.  Search first for local matrix-to-CLM Hessian wrappers and mathlib
+`Matrix.toEuclideanLin`/`toLpLin_apply`/`Matrix.l2_opNorm_def` APIs.  The
+preferred next packet should prove that when
+`hess (x_n)` is the Euclidean linear map induced by `H_n`, the assumptions
+`x_{n+1}=x_n-H_n^{-1} grad(x_n)` and nonsingularity/inverse action imply the
+V61 `hnewton` and `hleft` hypotheses, and should package the operator-norm
+Hessian Lipschitz hypothesis in matrix notation.
+If that bridge balloons, split out only the reusable matrix-to-CLM action
+lemmas in `Theorem131Taylor.lean` or a lighter helper module.
 Create
 the Chewi Lemma 13.16 report only after the PDF screenshot
 and report compilation tools are available.  Do not reopen the completed
@@ -904,9 +945,9 @@ consumers.  The old §13.16 search surface near `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers is only relevant if a later run
-returns to the report/tooling gate; the active V60 Lean proof target is
-Theorem 13.1 Taylor/integral Newton remainder discharge.
-Older paragraphs below are cached route history and must not override this V60
+returns to the report/tooling gate; the active V61 Lean proof target is
+Theorem 13.1 matrix/Hessian-oracle bridge for the Taylor remainder discharge.
+Older paragraphs below are cached route history and must not override this V61
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
