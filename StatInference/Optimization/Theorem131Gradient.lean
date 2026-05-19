@@ -549,6 +549,99 @@ theorem chewi1316RangeCentralPathValue_hessian_segment_intervalIntegrable
     hseg
 
 /--
+Chewi Theorem 13.1 Taylor norm estimate specialized to the finite-row
+central-path value on the translated slack range.  The calculus, stationarity,
+integrability, and inverse-Hessian left-inverse hypotheses are discharged from
+the local range-barrier APIs; the remaining assumptions are the feasible
+segment, Newton update, and Hessian Lipschitz bound.
+-/
+theorem chewi1316RangeCentralPathValue_taylor_norm_bound_of_gradient_ftc
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {t gamma : ℝ} (aObj : (polytopeSlackCLM aRow).range)
+    {x xNext xStar : (polytopeSlackCLM aRow).range}
+    (hx_mem :
+      x ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hxStar_mem :
+      xStar ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hseg : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar x τ ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hcentral :
+      t • aObj +
+          barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad xStar = 0)
+    (hnewton :
+      xNext = newtonStep
+        (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+        (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack) x)
+    (hlip : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM x -
+        barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM (hessianSegmentPoint xStar x τ)‖ ≤
+        gamma * (1 - τ) * ‖x - xStar‖) :
+    ‖xNext - xStar‖ ≤
+      (gamma / 2) *
+        ‖chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack x‖ *
+        ‖x - xStar‖ ^ (2 : ℕ) := by
+  let f : (polytopeSlackCLM aRow).range -> ℝ :=
+    chewi1316RangeCentralPathValue aRow bSlack t aObj
+  let grad : (polytopeSlackCLM aRow).range -> (polytopeSlackCLM aRow).range :=
+    gradient f
+  let hess : (polytopeSlackCLM aRow).range ->
+      (polytopeSlackCLM aRow).range →L[ℝ] (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogHessCLM
+  let invHess : (polytopeSlackCLM aRow).range ->
+      (polytopeSlackCLM aRow).range →L[ℝ] (polytopeSlackCLM aRow).range :=
+    chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack
+  have hgrad : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad (hess (hessianSegmentPoint xStar x τ))
+        (hessianSegmentPoint xStar x τ) := by
+    intro τ hτ
+    have hτIcc : τ ∈ Set.Icc (0 : ℝ) 1 := by
+      simpa [Set.uIcc_of_le zero_le_one] using hτ
+    simpa [grad, hess, f] using
+      chewi1316RangeCentralPathValue_gradient_hasFDerivAt
+        aRow bSlack t aObj (hseg τ hτIcc)
+  have hint : IntervalIntegrable
+      (fun τ : ℝ => hess (hessianSegmentPoint xStar x τ) (x - xStar))
+      MeasureTheory.volume (0 : ℝ) 1 := by
+    simpa [hess] using
+      chewi1316RangeCentralPathValue_hessian_segment_intervalIntegrable
+        aRow bSlack hseg
+  have hgrad_star : grad xStar = 0 := by
+    simpa [grad, f] using
+      chewi1316RangeCentralPathValue_gradient_eq_zero_of_centrality
+        aRow bSlack t aObj hxStar_mem hcentral
+  have hleft : invHess x (hess x (x - xStar)) = x - xStar := by
+    exact continuousLinearMap_left_inverse_of_right_inverse_finiteDim
+      (hess x) (invHess x)
+      (by
+        intro v
+        simpa [hess, invHess] using
+          chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse
+            aRow bSlack hx_mem v)
+      (x - xStar)
+  have hnewton' : xNext = x - invHess x (grad x) := by
+    simpa [newtonStep, grad, invHess, f] using hnewton
+  have hlip' : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖hess x - hess (hessianSegmentPoint xStar x τ)‖ ≤
+        gamma * (1 - τ) * ‖x - xStar‖ := by
+    intro τ hτ
+    simpa [hess] using hlip τ hτ
+  simpa [grad, hess, invHess, f] using
+    chewi131_taylor_norm_bound_of_gradient_ftc_clm
+      (grad := grad) (hess := hess) (Hinv := invHess x)
+      (gamma := gamma) (x := x) (xNext := xNext) (xStar := xStar)
+      hgrad hint hgrad_star hnewton' hleft hlip'
+
+/--
 Chewi Theorem 13.1 Taylor norm estimate with mathlib's `gradient f`.  The
 second-derivative data is expressed as the equality between
 `fderiv ℝ (gradient f)` and the matrix-induced Hessian CLM along the segment.

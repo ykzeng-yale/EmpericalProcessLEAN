@@ -112,6 +112,115 @@ theorem chewi131_integral_remainder_pointwise_bound_of_hessian_lipschitz
         simp [d]
         ring
 
+/--
+Chewi Theorem 13.1 Taylor norm estimate from gradient FTC in a Hilbert-space
+continuous-linear-map form.  This is the range-space analogue of the matrix
+bound below: the inverse Hessian is supplied as a CLM `Hinv`, and the bound
+keeps its operator norm explicit.
+-/
+theorem chewi131_taylor_norm_bound_of_gradient_ftc_clm
+    [CompleteSpace E]
+    {grad : E -> E} {hess : E -> E →L[ℝ] E}
+    {Hinv : E →L[ℝ] E} {gamma : ℝ}
+    {x xNext xStar : E}
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint xStar x t))
+        (hessianSegmentPoint xStar x t))
+    (hint : IntervalIntegrable
+      (fun t : ℝ => hess (hessianSegmentPoint xStar x t) (x - xStar))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hgrad_star : grad xStar = 0)
+    (hnewton : xNext = x - Hinv (grad x))
+    (hleft : Hinv (hess x (x - xStar)) = x - xStar)
+    (hlip : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖hess x - hess (hessianSegmentPoint xStar x t)‖ ≤
+        gamma * (1 - t) * ‖x - xStar‖) :
+    ‖xNext - xStar‖ ≤
+      (gamma / 2) * ‖Hinv‖ * ‖x - xStar‖ ^ (2 : ℕ) := by
+  let remainder : ℝ -> E := fun t =>
+    hess x (x - xStar) -
+      hess (hessianSegmentPoint xStar x t) (x - xStar)
+  have hrem_int : IntervalIntegrable remainder MeasureTheory.volume (0 : ℝ) 1 := by
+    have hconst_int : IntervalIntegrable
+        (fun _ : ℝ => hess x (x - xStar))
+        MeasureTheory.volume (0 : ℝ) 1 :=
+      intervalIntegrable_const
+    exact hconst_int.sub hint
+  have hidentity :
+      xNext - xStar = Hinv (∫ t in (0 : ℝ)..1, remainder t) := by
+    simpa [remainder] using
+      chewi131_integral_remainder_identity_of_gradient_ftc
+        (grad := grad) (hess := hess) (Hinv := Hinv)
+        (x := x) (xNext := xNext) (xStar := xStar)
+        hgrad hint hgrad_star hnewton hleft
+  have hbound : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖remainder t‖ ≤ gamma * (1 - t) * ‖x - xStar‖ ^ (2 : ℕ) := by
+    simpa [remainder] using
+      chewi131_integral_remainder_pointwise_bound_of_hessian_lipschitz
+        (hess := hess) (gamma := gamma) (x := x) (xStar := xStar)
+        hlip
+  let e2 : ℝ := ‖x - xStar‖ ^ (2 : ℕ)
+  have hscalar_int :
+      IntervalIntegrable (fun t : ℝ => gamma * (1 - t) * e2)
+        MeasureTheory.volume (0 : ℝ) 1 := by
+    have hcont : Continuous (fun t : ℝ => gamma * (1 - t) * e2) := by
+      continuity
+    exact hcont.intervalIntegrable (0 : ℝ) 1
+  have hbound_ae :
+      ∀ᵐ t ∂MeasureTheory.volume,
+        t ∈ Set.Ioc (0 : ℝ) 1 ->
+          ‖remainder t‖ ≤ gamma * (1 - t) * e2 := by
+    exact Filter.Eventually.of_forall fun t ht => by
+      have htIcc : t ∈ Set.Icc (0 : ℝ) 1 := ⟨le_of_lt ht.1, ht.2⟩
+      simpa [e2] using hbound t htIcc
+  have hintegral_bound :
+      ‖∫ t in (0 : ℝ)..1, remainder t‖ ≤
+        ∫ t in (0 : ℝ)..1, gamma * (1 - t) * e2 :=
+    intervalIntegral.norm_integral_le_of_norm_le zero_le_one hbound_ae
+      hscalar_int
+  have hone_sub :
+      (∫ t in (0 : ℝ)..1, (1 - t)) = (1 / 2 : ℝ) := by
+    have hint_one_sub : IntervalIntegrable (fun t : ℝ => 1 - t)
+        MeasureTheory.volume (0 : ℝ) 1 :=
+      (continuous_const.sub continuous_id).intervalIntegrable (0 : ℝ) 1
+    let primitive : ℝ -> ℝ := fun s => s - s ^ (2 : ℕ) / 2
+    have hderiv : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+        HasDerivAt primitive (1 - t) t := by
+      intro t _ht
+      have hraw :=
+        (hasDerivAt_id t).sub
+          (((hasDerivAt_id t).pow (2 : ℕ)).div_const 2)
+      convert hraw using 1
+      simp
+    have hFTC :=
+      intervalIntegral.integral_eq_sub_of_hasDerivAt hderiv hint_one_sub
+    norm_num [primitive] at hFTC
+    simpa using hFTC
+  have hscalar_eval :
+      (∫ t in (0 : ℝ)..1, gamma * (1 - t) * e2) =
+        (gamma / 2) * e2 := by
+    have hfun :
+        (fun t : ℝ => gamma * (1 - t) * e2) =
+          fun t : ℝ => (gamma * e2) * (1 - t) := by
+      ext t
+      ring
+    rw [hfun, intervalIntegral.integral_const_mul, hone_sub]
+    ring
+  have hintegral_bound' :
+      ‖∫ t in (0 : ℝ)..1, remainder t‖ ≤ (gamma / 2) * e2 := by
+    simpa [hscalar_eval] using hintegral_bound
+  calc
+    ‖xNext - xStar‖ = ‖Hinv (∫ t in (0 : ℝ)..1, remainder t)‖ := by
+      rw [hidentity]
+    _ ≤ ‖Hinv‖ * ‖∫ t in (0 : ℝ)..1, remainder t‖ :=
+        Hinv.le_opNorm _
+    _ ≤ ‖Hinv‖ * ((gamma / 2) * e2) :=
+        mul_le_mul_of_nonneg_left hintegral_bound' (norm_nonneg Hinv)
+    _ = (gamma / 2) * ‖Hinv‖ * ‖x - xStar‖ ^ (2 : ℕ) := by
+        simp [e2]
+        ring
+
 end Hilbert
 
 variable {n : Type*} [Fintype n] [DecidableEq n]

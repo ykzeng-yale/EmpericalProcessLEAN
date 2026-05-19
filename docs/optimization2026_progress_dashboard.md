@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V74` near the top of
+  `Live Goal Prompt V75` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -52,7 +52,24 @@ This dashboard tracks the Chewi optimization formalization lane for
   If that temp worktree disappears, recreate it and run `lake exe cache get`
   before focused builds; otherwise the first build can waste time rebuilding
   mathlib locally.
-- Latest Theorem 13.1 frontier: V74 compiles the finite-row central-path
+- Latest Theorem 13.1 frontier: V75 compiles the CLM/range-space Taylor norm
+  layer for the finite-row central-path objective in
+  `StatInference/Optimization/Theorem131Taylor.lean` and
+  `StatInference/Optimization/Theorem131Gradient.lean`.  New declarations are
+  `chewi131_taylor_norm_bound_of_gradient_ftc_clm` and
+  `chewi1316RangeCentralPathValue_taylor_norm_bound_of_gradient_ftc`.  The
+  generic theorem is the Hilbert-space CLM analogue of the matrix FTC Taylor
+  bound, keeping `‖Hinv‖` explicit.  The central-path specialization discharges
+  stationarity, segment derivative, Hessian-action integrability, and
+  inverse-Hessian left-inverse obligations using V74 plus
+  `continuousLinearMap_left_inverse_of_right_inverse_finiteDim` and
+  `chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse`.  Next blocker:
+  turn this Taylor norm bound into a local quadratic step/recurrent bound by
+  finding or proving the range-space inverse-norm/local-metric estimate and
+  the concrete Hessian Lipschitz/close hypotheses.  Methodology note: generalize
+  existing matrix proofs at the CLM/Hilbert boundary before reaching for basis
+  coordinates on a finite-dimensional range.
+- V74 frontier cache: V74 compiles the finite-row central-path
   stationarity and segment-FTC bridge in
   `StatInference/Optimization/Theorem131Gradient.lean`.  New declarations are
   `chewi1316RangeCentralPathValue_gradient_eq_zero_iff`,
@@ -469,6 +486,13 @@ This dashboard tracks the Chewi optimization formalization lane for
   note: after compiling a domain-to-`gradient` bridge, immediately add the
   source-facing stationarity and segment wrappers so later recurrence proofs
   can focus on quantitative assumptions rather than rebuilding calculus glue.
+  The V75 layer adds `chewi131_taylor_norm_bound_of_gradient_ftc_clm` and
+  `chewi1316RangeCentralPathValue_taylor_norm_bound_of_gradient_ftc`.  It
+  generalizes the matrix FTC Taylor-bound proof to Hilbert-space CLMs and then
+  specializes it to the finite-row central-path value on the translated slack
+  range.  Methodology note: this is the preferred path for range-valued
+  objectives; use CLM/local-metric estimates before introducing coordinate
+  matrices for finite-dimensional subspaces.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations
