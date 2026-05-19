@@ -4619,6 +4619,149 @@ theorem durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_law_prod_eq_pow_li
       (Finset.Icc 1 n)
 
 /--
+Durrett 2019, Theorem 2.1.13, iid law-side common-transform nonnegative
+finite zero-factor formula.
+
+For independent variables with common law `μ`, one zero law-side
+`lintegral` for a common nonnegative measurable transform annihilates every
+nonempty source-space product `lintegral`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_finset_law_prod_eq_zero_of_nonempty_and_lintegral_eq_zero
+    {Ω : Type u} {ι : Type w} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    {s : Finset ι}
+    (hs : s.Nonempty)
+    (hzero : ∫⁻ x, f x ∂μ = 0) :
+    ∫⁻ ω, ∏ i ∈ s, f (X i ω) ∂P = 0 := by
+  rcases hs with ⟨i, hi⟩
+  simpa using
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_prod_eq_zero_of_lintegral_eq_zero
+      (P := P) (S := fun _ : ι => S) (X := X)
+      (μ := fun _ : ι => μ) (f := fun _ : ι => f)
+      hX hLaw hX_meas (fun _ => hf) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side common-transform nonnegative
+initial-range zero-factor formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_law_prod_eq_zero_of_pos_and_lintegral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    {n : ℕ} (hn : 0 < n)
+    (hzero : ∫⁻ x, f x ∂μ = 0) :
+    ∫⁻ ω, ∏ i ∈ Finset.range n, f (X i ω) ∂P = 0 := by
+  exact
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_law_prod_eq_zero_of_nonempty_and_lintegral_eq_zero
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf
+      ⟨0, Finset.mem_range.mpr hn⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side common-transform nonnegative
+interval-block zero-factor formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_prod_eq_zero_of_lt_and_lintegral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    {m n : ℕ} (hmn : m < n)
+    (hzero : ∫⁻ x, f x ∂μ = 0) :
+    ∫⁻ ω, ∏ i ∈ Finset.Ico m n, f (X i ω) ∂P = 0 := by
+  exact
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_law_prod_eq_zero_of_nonempty_and_lintegral_eq_zero
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf
+      ⟨m, Finset.mem_Ico.mpr ⟨le_rfl, hmn⟩⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, iid law-side common-transform nonnegative
+zero-factor formula on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_law_prod_eq_zero_of_one_le_and_lintegral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    {n : ℕ} (hn : 1 ≤ n)
+    (hzero : ∫⁻ x, f x ∂μ = 0) :
+    ∫⁻ ω, ∏ i ∈ Finset.Icc 1 n, f (X i ω) ∂P = 0 := by
+  exact
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_law_prod_eq_zero_of_nonempty_and_lintegral_eq_zero
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hX_meas hf
+      ⟨1, Finset.mem_Icc.mpr ⟨le_rfl, hn⟩⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, one-based iid law-side common-transform
+nonnegative initial-range zero-factor formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_law_prod_eq_zero_oneBased_of_pos_and_lintegral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    {n : ℕ} (hn : 0 < n)
+    (hzero : ∫⁻ x, f x ∂μ = 0) :
+    ∫⁻ ω, ∏ i ∈ Finset.range n, f (X (i + 1) ω) ∂P = 0 := by
+  simpa using
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_prod_eq_zero_of_lintegral_eq_zero_oneBased
+      (P := P) (S := fun _ : ℕ => S) (X := X)
+      (μ := fun _ : ℕ => μ) (f := fun _ : ℕ => f)
+      hX hLaw hX_meas (fun _ => hf) (i := 0)
+      (Finset.mem_range.mpr hn) hzero
+
+/--
+Durrett 2019, Theorem 2.1.13, one-based iid law-side common-transform
+nonnegative interval-block zero-factor formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_prod_eq_zero_oneBased_of_lt_and_lintegral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf : Measurable f)
+    {m n : ℕ} (hmn : m < n)
+    (hzero : ∫⁻ x, f x ∂μ = 0) :
+    ∫⁻ ω, ∏ i ∈ Finset.Ico m n, f (X (i + 1) ω) ∂P = 0 := by
+  simpa using
+    durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_prod_eq_zero_of_lintegral_eq_zero_oneBased
+      (P := P) (S := fun _ : ℕ => S) (X := X)
+      (μ := fun _ : ℕ => μ) (f := fun _ : ℕ => f)
+      hX hLaw hX_meas (fun _ => hf) (i := m)
+      (Finset.mem_Ico.mpr ⟨le_rfl, hmn⟩) hzero
+
+/--
 Durrett 2019, Theorem 2.1.13, law-side real nonnegative finite-subfamily
 expectation factorization.
 

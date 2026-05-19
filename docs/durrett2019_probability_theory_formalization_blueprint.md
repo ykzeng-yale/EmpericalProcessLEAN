@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V562`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V563`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V562: stay on Durrett Theorem 2.4.9
+Current immediate target after V563: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -387,6 +387,12 @@ reducing common transformed `ENNReal.ofReal` product cancellations under
 `IdentDistrib` to source independence, measurability and nonnegativity of
 `f`, and one zero base-coordinate `ENNReal.ofReal` `lintegral` over `X_0`,
 without `HasLaw` or ordinary integrability assumptions.
+V563 adds law-side iid/common-law Chapter 2.1.13 nonnegative `ℝ≥0∞`
+zero-factor formulas for nonempty finite products and positive range/Ico and
+one-based range/Ico/`Finset.Icc 1 n` products, reducing common-law
+nonnegative product cancellations under `HasLaw` hypotheses to source
+independence, measurability of `X_i` and `f`, and one zero common law-side
+`lintegral` over `μ`.
 The
 next packet should close only a proved-missing
 2.4.9 proof-step or final-display source wrapper not already covered by V500,
@@ -2515,6 +2521,9 @@ range/Ico/`Icc` products,
 the V562 source-side iid/common-transform Chapter 2.1.13 real nonnegative
 `ENNReal.ofReal` zero-factor formulas for nonempty finite, positive range/Ico,
 and one-based range/Ico/`Icc` products,
+the V563 law-side iid/common-law Chapter 2.1.13 nonnegative `ℝ≥0∞`
+zero-factor formulas for nonempty finite, positive range/Ico, and one-based
+range/Ico/`Icc` products,
 `durrett2019_theorem_2_4_9_glivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_outerAlmostSureGlivenkoCantelli_halfLine`,
 `durrett2019_theorem_2_4_9_empiricalDistributionFunction_glivenkoCantelli`, and
