@@ -36,7 +36,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V588` in
+Route from `Live In-Thread Goal Prompt V589` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -470,6 +470,10 @@ shifted one-based coordinate forms.
 V588 adds canonical iid common-law Chapter 2.1.13
 expectation-exists-and-power-value wrappers over finite subfamilies,
 range/Ico intervals, literal one-based `Icc`, and shifted one-based
+coordinate forms.
+V589 adds canonical iid common-law Chapter 2.1.13 ordinary zero-product
+wrappers with product integrability over nonempty finite subfamilies,
+positive range/Ico intervals, literal one-based `Icc`, and shifted one-based
 coordinate forms.
 The historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
@@ -3784,7 +3788,7 @@ Next proof packet: search for a genuinely missing 2.4.9 proof-step or
 final-display source wrapper, or add the next Chapter 2.1
 product-law/product-expectation handoff that directly supports 2.4.9 or the
 adjacent Kolmogorov-maximal route.  Do not route back to solved 2.5.13
-plumbing or the closed V500-V588 2.4.9/2.1 source-wrapper surfaces unless an
+plumbing or the closed V500-V589 2.4.9/2.1 source-wrapper surfaces unless an
 exact source-shape consumer is missing.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement

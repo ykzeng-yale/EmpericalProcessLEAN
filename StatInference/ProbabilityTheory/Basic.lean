@@ -10943,6 +10943,166 @@ theorem durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_o
         ν (f := f) hf n
 
 /--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+a common law-side zero mean gives product integrability and zero expectation
+over any nonempty finite set of coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    {s : Finset ℕ} (hs : s.Nonempty)
+    (hzero : ∫ x, f x ∂(ν : Measure ℝ) = 0) :
+    Integrable (fun sample : ℕ -> ℝ => ∏ i ∈ s, f (sample i))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ s, f (sample i)
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  rcases hs with ⟨i, hi⟩
+  exact
+    durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_finset_law_prod_eq_zero_of_integral_eq_zero
+      ν (f := fun _ : ℕ => f) (fun _ => hf_meas) (fun _ => hf)
+      (s := s) (i := i) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+a common law-side zero mean gives product integrability and zero expectation
+over a nonempty initial coordinate range.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_range_law_prod_eq_zero_of_pos_and_integral_eq_zero
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    {n : ℕ} (hn : 0 < n)
+    (hzero : ∫ x, f x ∂(ν : Measure ℝ) = 0) :
+    Integrable (fun sample : ℕ -> ℝ => ∏ i ∈ Finset.range n, f (sample i))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ Finset.range n, f (sample i)
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 :=
+  durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    ν (f := f) hf_meas hf (s := Finset.range n)
+    ⟨0, Finset.mem_range.mpr hn⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+a common law-side zero mean gives product integrability and zero expectation
+over a nonempty coordinate interval.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_Ico_law_prod_eq_zero_of_lt_and_integral_eq_zero
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    {m n : ℕ} (hmn : m < n)
+    (hzero : ∫ x, f x ∂(ν : Measure ℝ) = 0) :
+    Integrable (fun sample : ℕ -> ℝ => ∏ i ∈ Finset.Ico m n, f (sample i))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ Finset.Ico m n, f (sample i)
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 :=
+  durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    ν (f := f) hf_meas hf (s := Finset.Ico m n)
+    ⟨m, Finset.mem_Ico.mpr ⟨le_rfl, hmn⟩⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+a common law-side zero mean gives product integrability and zero expectation
+over the literal one-based index set.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_oneBased_Icc_law_prod_eq_zero_of_one_le_and_integral_eq_zero
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    {n : ℕ} (hn : 1 ≤ n)
+    (hzero : ∫ x, f x ∂(ν : Measure ℝ) = 0) :
+    Integrable
+        (fun sample : ℕ -> ℝ => ∏ i ∈ Finset.Icc 1 n, f (sample i))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ Finset.Icc 1 n, f (sample i)
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 :=
+  durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    ν (f := f) hf_meas hf (s := Finset.Icc 1 n)
+    ⟨1, Finset.mem_Icc.mpr ⟨le_rfl, hn⟩⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+a common law-side zero mean gives product integrability and zero expectation
+over any nonempty finite set of shifted one-based coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    {s : Finset ℕ} (hs : s.Nonempty)
+    (hzero : ∫ x, f x ∂(ν : Measure ℝ) = 0) :
+    Integrable (fun sample : ℕ -> ℝ => ∏ i ∈ s, f (sample (i + 1)))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ s, f (sample (i + 1))
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  rcases hs with ⟨i, hi⟩
+  exact
+    durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_finset_law_prod_eq_zero_of_integral_eq_zero
+      ν (f := fun _ : ℕ => f) (fun _ => hf_meas) (fun _ => hf)
+      (s := s) (i := i) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+a common law-side zero mean gives product integrability and zero expectation
+over a nonempty initial range of shifted one-based coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_range_law_prod_eq_zero_oneBased_of_pos_and_integral_eq_zero
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    {n : ℕ} (hn : 0 < n)
+    (hzero : ∫ x, f x ∂(ν : Measure ℝ) = 0) :
+    Integrable
+        (fun sample : ℕ -> ℝ => ∏ i ∈ Finset.range n, f (sample (i + 1)))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ Finset.range n, f (sample (i + 1))
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 :=
+  durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    ν (f := f) hf_meas hf (s := Finset.range n)
+    ⟨0, Finset.mem_range.mpr hn⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+a common law-side zero mean gives product integrability and zero expectation
+over a nonempty shifted one-based coordinate interval.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_Ico_law_prod_eq_zero_oneBased_of_lt_and_integral_eq_zero
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    {m n : ℕ} (hmn : m < n)
+    (hzero : ∫ x, f x ∂(ν : Measure ℝ) = 0) :
+    Integrable
+        (fun sample : ℕ -> ℝ => ∏ i ∈ Finset.Ico m n, f (sample (i + 1)))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ Finset.Ico m n, f (sample (i + 1))
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 :=
+  durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    ν (f := f) hf_meas hf (s := Finset.Ico m n)
+    ⟨m, Finset.mem_Ico.mpr ⟨le_rfl, hmn⟩⟩ hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+a common law-side zero mean gives product integrability and zero expectation
+over the literal one-based index set for shifted coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_oneBased_Icc_law_prod_eq_zero_of_one_le_and_integral_eq_zero
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf_meas : Measurable f) (hf : Integrable f (ν : Measure ℝ))
+    {n : ℕ} (hn : 1 ≤ n)
+    (hzero : ∫ x, f x ∂(ν : Measure ℝ) = 0) :
+    Integrable
+        (fun sample : ℕ -> ℝ => ∏ i ∈ Finset.Icc 1 n, f (sample (i + 1)))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ Finset.Icc 1 n, f (sample (i + 1))
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 :=
+  durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_finset_law_prod_eq_zero_of_nonempty_and_integral_eq_zero
+    ν (f := f) hf_meas hf (s := Finset.Icc 1 n)
+    ⟨1, Finset.mem_Icc.mpr ⟨le_rfl, hn⟩⟩ hzero
+
+/--
 Durrett 2019, Theorem 2.1.13, iid law-side finite-subfamily
 expectation-exists-and-power-value formula.
 -/
