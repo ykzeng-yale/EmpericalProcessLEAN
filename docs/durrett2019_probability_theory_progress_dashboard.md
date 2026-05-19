@@ -36,7 +36,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V567` in
+Route from `Live In-Thread Goal Prompt V568` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -400,6 +400,11 @@ product formulas for finite products and range/Ico and one-based
 range/Ico/`Finset.Icc 1 n` products, transferring measurable-transform norm
 factorizations through `HasLaw` hypotheses, with common-law indexed-transform
 products and common-transform powers over the law-side norm `lintegral`.
+V568 adds law-side composed-function Chapter 2.1.13 absolute-value/norm
+zero-factor formulas for finite products and range/Ico and one-based
+range/Ico/`Finset.Icc 1 n` products, reducing a zero law-side transformed norm
+`lintegral` to source-space zero for `ENNReal.ofReal ‖∏ f_i(X_i)‖`, including
+common-law indexed-transform and common-transform variants.
 The
 historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
@@ -2524,6 +2529,10 @@ V567 adds law-side composed-function Chapter 2.1.13 absolute-value/norm
 product formulas, common-law indexed-transform norm product formulas, and
 common-transform norm-power formulas for finite, range/Ico, and one-based
 range/Ico/`Icc` products.
+V568 adds law-side composed-function Chapter 2.1.13 absolute-value/norm
+zero-factor formulas, common-law indexed-transform norm zero-factor formulas,
+and common-transform norm zero-factor formulas for finite, range/Ico, and
+one-based range/Ico/`Icc` products.
 Theorem 2.4.9 now has
 the arbitrary-law cutpoint-chain route and both the book-style and exact
 outer-a.s. empirical-CDF endpoints:
@@ -3710,7 +3719,7 @@ Next proof packet: search for a genuinely missing 2.4.9 proof-step or
 final-display source wrapper, or add the next Chapter 2.1
 product-law/product-expectation handoff that directly supports 2.4.9 or the
 adjacent Kolmogorov-maximal route.  Do not route back to solved 2.5.13
-plumbing or the closed V500-V567 2.4.9/2.1 source-wrapper surfaces unless an
+plumbing or the closed V500-V568 2.4.9/2.1 source-wrapper surfaces unless an
 exact source-shape consumer is missing.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement

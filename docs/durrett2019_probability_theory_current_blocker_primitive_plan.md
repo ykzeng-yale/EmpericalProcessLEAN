@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V567
+## Live In-Thread Goal Prompt V568
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -377,6 +377,12 @@ product formulas: after measurable transforms `f_i`, the source-space
 `lintegral` of `ENNReal.ofReal ‖∏ f_i(X_i)‖` factors into law-side norm
 `lintegral`s; common-law indexed transforms and common-transform powers are
 available for finite/range/Ico and one-based products.
+V568 adds law-side composed-function Chapter 2.1.13 absolute-value/norm
+zero-factor formulas: after measurable transforms `f_i`, one zero law-side
+norm `lintegral` annihilates the source-space `lintegral` of
+`ENNReal.ofReal ‖∏ f_i(X_i)‖`; common-law indexed transforms and
+common-transform nonempty/positive variants cover finite/range/Ico and
+one-based products.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -603,6 +609,11 @@ After V567, do not rebuild the law-side composed-function Theorem 2.1.13
 absolute-value/norm product formulas, common-law indexed-transform norm
 product formulas, or common-transform norm-power formulas for finite,
 range/Ico, or one-based range/Ico/`Icc` products unless an exact later
+consumer needs a different source shape.
+After V568, do not rebuild the law-side composed-function Theorem 2.1.13
+absolute-value/norm zero-factor formulas, common-law indexed-transform norm
+zero-factor formulas, or common-transform norm zero-factor formulas for
+finite, range/Ico, or one-based range/Ico/`Icc` products unless an exact later
 consumer needs a different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
@@ -835,9 +846,43 @@ solved law-side composed-function Theorem 2.1.13 absolute-value/norm product
 formulas, common-law indexed-transform norm product formulas, and
 common-transform norm-power formulas for finite, range/Ico, and one-based
 range/Ico/`Icc` products,
+solved law-side composed-function Theorem 2.1.13 absolute-value/norm
+zero-factor formulas, common-law indexed-transform norm zero-factor formulas,
+and common-transform norm zero-factor formulas for finite, range/Ico, and
+one-based range/Ico/`Icc` products,
 or old app-level stale prompts.
 
-Latest verified target V567 adds law-side composed-function Chapter 2.1.13
+Latest verified target V568 adds law-side composed-function Chapter 2.1.13
+absolute-value/norm zero-factor formulas:
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_law_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero_oneBased`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero_oneBased`,
+`durrett2019_theorem_2_1_13_iid_lintegral_finset_law_indexed_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_law_indexed_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_indexed_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_law_indexed_norm_comp_prod_eq_zero_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_law_indexed_norm_comp_prod_eq_zero_oneBased_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_indexed_norm_comp_prod_eq_zero_oneBased_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_finset_law_norm_comp_prod_eq_zero_of_nonempty_and_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_law_norm_comp_prod_eq_zero_of_pos_and_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_norm_comp_prod_eq_zero_of_lt_and_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_law_norm_comp_prod_eq_zero_of_one_le_and_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_law_norm_comp_prod_eq_zero_oneBased_of_pos_and_lintegral_norm_eq_zero`,
+and
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_norm_comp_prod_eq_zero_oneBased_of_lt_and_lintegral_norm_eq_zero`.
+These reuse the V567 law-side composed norm product formulas: a selected zero
+law-side norm `lintegral` kills the source-space norm-product `lintegral`;
+the common-law indexed-transform and common-transform versions cover finite,
+range/Ico, shifted one-based range/Ico, and literal `{1, ..., n}` products.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V567 adds law-side composed-function Chapter 2.1.13
 absolute-value/norm product formulas:
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_norm_comp_prod_eq_prod_lintegral_norm`,
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_norm_comp_prod_eq_prod_lintegral_norm`,
@@ -864,12 +909,8 @@ These transfer the source-side composed norm product factorization through
 indexed-transform wrappers and common-transform power displays now cover
 finite, range/Ico, shifted one-based range/Ico, and literal `{1, ..., n}`
 products.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
-Previous verified target V566 adds law-side Chapter 2.1.13
+Earlier verified target V566 adds law-side Chapter 2.1.13
 absolute-value/norm zero-factor formulas:
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_norm_prod_eq_zero_of_lintegral_norm_eq_zero`,
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_norm_prod_eq_zero_of_lintegral_norm_eq_zero`,
@@ -6527,6 +6568,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V567` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V568` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
