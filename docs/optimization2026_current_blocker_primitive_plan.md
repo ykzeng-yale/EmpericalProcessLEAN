@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V69`, this file's top
+   the full book is complete, route from `Live Goal Prompt V70`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -140,15 +140,38 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V69
+## Live Goal Prompt V70
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V69 extends the root-imported module
+Current active frontier: V70 extends the root-imported module
 `StatInference/Optimization/Theorem131Gradient.lean`, keeping mathlib's
 `gradient`/Frechet-derivative surface separate from the heavier V61-V63
-Taylor bridge.  Newly compiled V69 declarations are
+Taylor bridge and discharging the Hessian-identification gate from a source
+second derivative of the dual-valued derivative `fderiv ℝ f`.  Newly compiled
+V70 declarations are
+`chewi131_gradient_hasFDerivAt_of_hasFDerivAt_fderiv_bilin`,
+`chewi131_fderiv_gradient_eq_of_hasFDerivAt_fderiv_bilin`,
+`chewi131_taylor_norm_bound_of_matrix_continuous_gradient_secondFDerivBilin`,
+`chewi131_local_quadratic_step_of_matrix_continuous_gradient_secondFDerivBilin_of_radius`,
+and
+`chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_secondFDerivBilin_of_radius`.
+They use the Riesz bridge
+`InnerProductSpace.continuousLinearMapOfBilin` to turn
+`HasFDerivAt (fun y => fderiv ℝ f y) B.toContinuousLinearMap z` into
+`HasFDerivAt (gradient f) (InnerProductSpace.continuousLinearMapOfBilin B) z`.
+The source-facing recurrence now consumes a bilinear Hessian family `Bfun`,
+the second derivative of `fderiv ℝ f`, and the matrix equality
+`InnerProductSpace.continuousLinearMapOfBilin (Bfun z) =
+  chewi131MatrixCLM (Hfun z)`.  The focused verification command is
+`lake build StatInference.Optimization.Theorem131Gradient`; root verification
+remains `lake build StatInference` when enough disk and a warm local build
+cache are available.
+
+V69 dependency cache: V69 extended
+`StatInference/Optimization/Theorem131Gradient.lean`.  Compiled V69
+declarations are
 `chewi131_gradient_contDiffAt_one_of_contDiffAt_two`,
 `chewi131_taylor_norm_bound_of_matrix_continuous_gradient_contDiffAt_two_fderiv`,
 `chewi131_local_quadratic_step_of_matrix_continuous_gradient_contDiffAt_two_fderiv_of_radius`,
@@ -161,10 +184,7 @@ composing `fderiv ℝ f` with the Riesz isometry
 surface can now consume pointwise `C^2` regularity of `f` plus only the
 matrix Hessian identification
 `fderiv ℝ (gradient f) z = chewi131MatrixCLM (Hfun z)`.  The focused
-verification command is `lake build
-StatInference.Optimization.Theorem131Gradient`; root verification remains
-`lake build StatInference` when enough disk and a warm local build cache are
-available.
+verification command is the same theorem-module build.
 
 V68 dependency cache: V68 extended
 `StatInference/Optimization/Theorem131Gradient.lean`.  Compiled V68
@@ -242,17 +262,16 @@ and how the next task definition can be sharper.  This is part of the
 Optimization lane deliverable and the reusable process memory for later Lean
 formalization of statistical theory.
 
-The remaining Theorem 13.1 blocker is now the precise Hessian-identification
-equality:
-`fderiv ℝ (gradient f) z = chewi131MatrixCLM (Hfun z)` along the source
-segments.  Next packet should either prove a reusable Riesz/toDual derivative
-bridge from a theorem about `fderiv ℝ (fun y => fderiv ℝ f y) z`, or discharge
-the equality directly for a concrete barrier/Hessian model.  Search-first gate:
-inspect the V69 `Theorem131Gradient.lean` surface, mathlib
-`ContDiffAt.fderiv_right_succ`, `ContDiffAt.differentiableAt_iteratedFDeriv`,
+The remaining Theorem 13.1 blocker is now concrete source instantiation:
+provide the bilinear Hessian family `Bfun`, prove
+`HasFDerivAt (fun y => fderiv ℝ f y) (Bfun z).toContinuousLinearMap z`, and
+identify its Riesz-dualized operator with the matrix Hessian CLM.  Next packet
+should either specialize this to an existing concrete barrier/Hessian model or
+derive the `Bfun` statement from `iteratedFDeriv` APIs.  Search-first gate:
+inspect the V70 `Theorem131Gradient.lean` surface, mathlib
 `fderiv_iteratedFDeriv`, `iteratedFDeriv_succ_apply_right`,
-`LinearIsometryEquiv.hasStrictFDerivAt`/`contDiff`, gradient/toDual APIs, and
-local concrete derivative examples in `InteriorPoint.lean`.
+`ContDiffAt.differentiableAt_iteratedFDeriv`, `InnerProductSpace.continuousLinearMapOfBilin`,
+and local concrete derivative examples in `InteriorPoint.lean`.
 
 V63 dependency cache: V63 extends the root-imported modules
 `StatInference/Optimization/Theorem131.lean` and
@@ -1168,6 +1187,14 @@ with `(InnerProductSpace.toDual ℝ _).symm.contDiff`; this avoided wrestling
 with explicit semilinear-map coercions inside the main proof.  The productive
 next task is now a single equality bridge for `fderiv ℝ (gradient f)`, not
 another regularity wrapper.
+Methodology note from V70: use the mathlib Hilbert-space API
+`InnerProductSpace.continuousLinearMapOfBilin` instead of hand-coercing the
+Riesz semilinear map into a linear map.  A small stdin probe showed that
+composing `(InnerProductSpace.toDual ℝ _).symm.hasFDerivAt` with the derivative
+of `fderiv ℝ f` compiles directly, and the `continuousLinearMapOfBilin`
+definition gives exactly the source Hessian operator.  This avoids custom
+semilinear coercion lemmas and turns the remaining task into concrete Hessian
+data, not gradient infrastructure.
 Meta-methodology note: every future theorem packet should update this section
 with both accelerators and friction sources.  Useful accelerators include exact
 API names, minimal scratch probes for timeout-prone routes, theorem-sized
@@ -1176,8 +1203,9 @@ avoid include replaying stale prompt text, broad searches after a cached search
 already found the right API, tiny wrapper-only commits, and trying high-level
 algebraic order APIs repeatedly after deterministic heartbeat timeouts.
 
-Next theorem-sized target: stay in Chewi Theorem 13.1 and discharge the V69
-Hessian-identification equality from a concrete source condition.  Search first in
+Next theorem-sized target: stay in Chewi Theorem 13.1 and instantiate the V70
+second-derivative bilinear Hessian interface from a concrete source condition.
+Search first in
 `Mathlib.Analysis.Calculus.Gradient.Basic`,
 `Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries`,
 `Mathlib.Analysis.Calculus.ContDiff.FiniteDimension`, and local
@@ -1187,12 +1215,12 @@ Hessian-identification equality from a concrete source condition.  Search first 
 `ContDiffAt.hasStrictFDerivAt`, `hasStrictFDerivAt_of_hasFDerivAt_of_continuousAt`,
 `ContDiffAt.fderiv_right_succ`, `fderiv_iteratedFDeriv`,
 `iteratedFDeriv_succ_apply_right`, `ContinuousLinearEquiv.hasStrictFDerivAt`,
-and concrete local Hessian derivative lemmas.  Preferred packet A: prove a
-gradient/toDual bridge that turns a Hessian equality for
-`fderiv ℝ (fun y => fderiv ℝ f y)` into the V69 `hhess_eq` hypothesis.
-Preferred packet B:
-split/export the positive-orthant style strict derivative theorem if the
-barrier-instance proof route is faster than a general ContDiff route.  Avoid
+`InnerProductSpace.continuousLinearMapOfBilin`, and concrete local Hessian
+derivative lemmas.  Preferred packet A: derive the V70 `hsecond` hypothesis
+from `ContDiffAt ℝ 2 f`/`iteratedFDeriv` when a clean source-level bilinear
+Hessian is available.  Preferred packet B: specialize V70 to the existing
+positive-orthant or polytope slack barrier Hessian derivative data if that
+concrete route is faster.  Avoid
 putting new heavy imports back into
 `Theorem131Taylor.lean`; keep gradient-facing and differentiability-facing
 wrappers downstream.
@@ -1212,10 +1240,10 @@ consumers.  The old §13.16 search surface near `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers is only relevant if a later run
-returns to the report/tooling gate; the active V69 Lean proof target is the
-Theorem 13.1 Hessian-identification equality from source Hessian data or
-concrete barrier derivative data into the compiled Newton recurrence.
-Older paragraphs below are cached route history and must not override this V69
+returns to the report/tooling gate; the active V70 Lean proof target is the
+Theorem 13.1 concrete bilinear Hessian instantiation into the compiled Newton
+recurrence.
+Older paragraphs below are cached route history and must not override this V70
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

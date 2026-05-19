@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V69` near the top of
+  `Live Goal Prompt V70` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -315,6 +315,19 @@ This dashboard tracks the Chewi optimization formalization lane for
   the remaining Theorem 13.1 blocker is now only the Hessian matrix equality
   `fderiv ℝ (gradient f) z = chewi131MatrixCLM (Hfun z)` or a concrete
   barrier instance of that equality.
+  The V70 layer adds
+  `chewi131_gradient_hasFDerivAt_of_hasFDerivAt_fderiv_bilin`,
+  `chewi131_fderiv_gradient_eq_of_hasFDerivAt_fderiv_bilin`,
+  `chewi131_taylor_norm_bound_of_matrix_continuous_gradient_secondFDerivBilin`,
+  `chewi131_local_quadratic_step_of_matrix_continuous_gradient_secondFDerivBilin_of_radius`,
+  and
+  `chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_secondFDerivBilin_of_radius`.
+  These use mathlib's `InnerProductSpace.continuousLinearMapOfBilin` to
+  convert a source derivative of the dual-valued map `fderiv ℝ f` into the
+  derivative of `gradient f`, then feed the existing Theorem 13.1 Taylor,
+  one-step, and recurrence wrappers.  Methodology note: this removes the
+  abstract Hessian-identification blocker; next work should instantiate the
+  bilinear Hessian family from `iteratedFDeriv` or a concrete barrier model.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

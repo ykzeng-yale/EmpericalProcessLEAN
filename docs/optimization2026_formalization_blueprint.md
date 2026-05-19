@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V69` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V70` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -33,7 +33,7 @@ record proof accelerators, friction sources, repeated searches to avoid, and
 the shortest accurate next prompt.  This is part of building a reusable
 formalization workflow for future statistical theory development in Lean.
 
-Current V69 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V70 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -291,6 +291,20 @@ the gradient definition as `(toDual ℝ _).symm (fderiv ℝ f x)`.  Methodology
 note: stdin Lean probes are the right tool for semilinear/coercion questions;
 the remaining proof work is the Hessian matrix equality, not gradient
 regularity.
+The V70 layer adds
+`chewi131_gradient_hasFDerivAt_of_hasFDerivAt_fderiv_bilin`,
+`chewi131_fderiv_gradient_eq_of_hasFDerivAt_fderiv_bilin`,
+`chewi131_taylor_norm_bound_of_matrix_continuous_gradient_secondFDerivBilin`,
+`chewi131_local_quadratic_step_of_matrix_continuous_gradient_secondFDerivBilin_of_radius`,
+and
+`chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_secondFDerivBilin_of_radius`.
+It uses `InnerProductSpace.continuousLinearMapOfBilin` to Riesz-dualize a
+source derivative of the dual-valued map `fderiv ℝ f`, proving the derivative
+of `gradient f` in exactly the form consumed by the Theorem 13.1 Taylor,
+one-step, and recurrence wrappers.  Methodology note: prefer this existing
+Hilbert-space API over custom semilinear coercion lemmas; the next proof
+packet should instantiate the bilinear Hessian from `iteratedFDeriv` or a
+concrete barrier Hessian model.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source
