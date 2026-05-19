@@ -4204,6 +4204,245 @@ theorem durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_of_int
     (P := P) (X := X) hX_indep hX_meas n, hzero, zero_mul]
 
 /--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+expectation factorization for the first variable times the later-block product.
+-/
+theorem durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (n : ℕ) :
+    ∫ ω, X 0 ω * (∏ k ∈ Finset.Ico 1 n, X k ω) ∂P =
+      (∫ ω, X 0 ω ∂P) *
+        ∫ ω, ∏ k ∈ Finset.Ico 1 n, X k ω ∂P := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral
+      (P := P) (X := X) hSource.2 hX_meas n
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+a zero-mean first factor kills the first-variable/tail-product expectation.
+-/
+theorem durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_of_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (n : ℕ) (hzero : ∫ ω, X 0 ω ∂P = 0) :
+    ∫ ω, X 0 ω * (∏ k ∈ Finset.Ico 1 n, X k ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_of_integral_eq_zero
+      (P := P) (X := X) hSource.2 hX_meas n hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law in
+one-based notation: expectation factorization for `X_1 * (X_2 * ... * X_n)`.
+-/
+theorem durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral_oneBased_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (n : ℕ) :
+    ∫ ω, X 1 ω * (∏ k ∈ Finset.Ico 1 n, X (k + 1) ω) ∂P =
+      (∫ ω, X 1 ω ∂P) *
+        ∫ ω, ∏ k ∈ Finset.Ico 1 n, X (k + 1) ω ∂P := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral_oneBased
+      (P := P) (X := X) hSource.2 hX_meas n
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law in
+one-based notation: zero mean of `X_1` kills the shifted tail-product
+expectation.
+-/
+theorem durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_oneBased_of_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (n : ℕ) (hzero : ∫ ω, X 1 ω ∂P = 0) :
+    ∫ ω, X 1 ω * (∏ k ∈ Finset.Ico 1 n, X (k + 1) ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_of_integral_eq_zero_oneBased
+      (P := P) (X := X) hSource.2 hX_meas n hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a shifted infinite-product joint
+law: expectation factorization for `X_1` times the later shifted tail product.
+-/
+theorem durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral_oneBased_of_shift_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (n : ℕ) :
+    ∫ ω, X 1 ω * (∏ k ∈ Finset.Ico 1 n, X (k + 1) ω) ∂P =
+      (∫ ω, X 1 ω ∂P) *
+        ∫ ω, ∏ k ∈ Finset.Ico 1 n, X (k + 1) ω ∂P := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hSource.2 (fun i => hX_meas (i + 1)) n
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a shifted infinite-product joint
+law: zero mean of `X_1` kills the shifted tail-product expectation.
+-/
+theorem durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (n : ℕ) (hzero : ∫ ω, X 1 ω ∂P = 0) :
+    ∫ ω, X 1 ω * (∏ k ∈ Finset.Ico 1 n, X (k + 1) ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_of_integral_eq_zero
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hSource.2 (fun i => hX_meas (i + 1)) n hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+expectation factorization for the first coordinate times the later-coordinate
+product.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_first_mul_tailProduct_eq_mul_integral
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ) :
+    ∫ sample, sample 0 *
+        (∏ k ∈ Finset.Ico 1 n, sample k)
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+      (∫ sample, sample 0
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))) *
+        ∫ sample, ∏ k ∈ Finset.Ico 1 n, sample k
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  exact
+    durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hindep (fun i => measurable_pi_apply i) n
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space: zero
+mean of the first coordinate kills the first-coordinate/tail-product
+expectation.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_first_mul_tailProduct_eq_zero_of_integral_eq_zero
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ)
+    (hzero :
+      ∫ sample, sample 0
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0) :
+    ∫ sample, sample 0 *
+        (∏ k ∈ Finset.Ico 1 n, sample k)
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  exact
+    durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_of_integral_eq_zero
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hindep (fun i => measurable_pi_apply i) n hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space in
+one-based notation: expectation factorization for the first shifted coordinate
+times the later shifted-coordinate product.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_first_mul_tailProduct_eq_mul_integral_oneBased
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ) :
+    ∫ sample, sample 1 *
+        (∏ k ∈ Finset.Ico 1 n, sample (k + 1))
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+      (∫ sample, sample 1
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))) *
+        ∫ sample, ∏ k ∈ Finset.Ico 1 n, sample (k + 1)
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  exact
+    durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral_oneBased
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hindep (fun i => measurable_pi_apply i) n
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space in
+one-based notation: zero mean of the first shifted coordinate kills the shifted
+tail-product expectation.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_first_mul_tailProduct_eq_zero_of_integral_eq_zero_oneBased
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) (n : ℕ)
+    (hzero :
+      ∫ sample, sample 1
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0) :
+    ∫ sample, sample 1 *
+        (∏ k ∈ Finset.Ico 1 n, sample (k + 1))
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  exact
+    durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_of_integral_eq_zero_oneBased
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      hindep (fun i => measurable_pi_apply i) n hzero
+
+/--
 Durrett 2019, Theorem 2.1.13, finite-family expectation factorization.
 -/
 theorem durrett2019_theorem_2_1_13_iIndepFun_integral_prod_eq_prod_integral

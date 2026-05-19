@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V576
+## Live In-Thread Goal Prompt V577
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -412,6 +412,10 @@ independence surfaces.
 V576 adds the matching full infinite-product, shifted infinite-product
 joint-law, and canonical iid product-coordinate Theorem 2.1.10 wrappers for
 the first-variable/tail-product independence surface.
+V577 adds the matching full infinite-product, shifted infinite-product
+joint-law, and canonical iid product-coordinate Chapter 2.1.13
+expectation-factorization and zero-mean wrappers for the first-variable/
+tail-product surface.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -678,6 +682,11 @@ infinite-product joint-law, or canonical iid product-coordinate Theorem
 2.1.10 first-variable/tail-product independence wrappers in zero-based or
 one-based notation unless an exact later consumer needs a different display
 shape.
+After V577, do not rebuild the full infinite-product, shifted
+infinite-product joint-law, or canonical iid product-coordinate Theorem
+2.1.13 first-variable/tail-product expectation-factorization or zero-mean
+wrappers in zero-based or one-based notation unless an exact later consumer
+needs a different display shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -919,14 +928,20 @@ range-sum, and textbook inverse-multiple displays in zero-based and one-based
 forms,
 or old app-level stale prompts.
 
-Latest verified target V576 adds full infinite-product, shifted
-infinite-product joint-law, and canonical iid product-coordinate Theorem
-2.1.10 first-variable/tail-product independence wrappers:
-`durrett2019_theorem_2_1_10_indepFun_first_tailProduct_of_hasLaw_infinitePi`,
-`durrett2019_theorem_2_1_10_indepFun_first_tailProduct_oneBased_of_hasLaw_infinitePi`,
-`durrett2019_theorem_2_1_10_indepFun_first_tailProduct_oneBased_of_shift_hasLaw_infinitePi`,
-`durrett2019_theorem_2_1_10_canonical_iid_first_tailProduct`, and
-`durrett2019_theorem_2_1_10_canonical_iid_first_tailProduct_oneBased`.
+Latest verified target V577 adds full infinite-product, shifted
+infinite-product joint-law, and canonical iid product-coordinate Chapter
+2.1.13 expectation-factorization and zero-mean wrappers for the
+first-variable/tail-product surface:
+`durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_of_hasLaw_infinitePi_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral_oneBased_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_oneBased_of_hasLaw_infinitePi_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_mul_integral_oneBased_of_shift_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integral_first_mul_tailProduct_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_canonical_iid_integral_first_mul_tailProduct_eq_mul_integral`,
+`durrett2019_theorem_2_1_13_canonical_iid_integral_first_mul_tailProduct_eq_zero_of_integral_eq_zero`,
+`durrett2019_theorem_2_1_13_canonical_iid_integral_first_mul_tailProduct_eq_mul_integral_oneBased`, and
+`durrett2019_theorem_2_1_13_canonical_iid_integral_first_mul_tailProduct_eq_zero_of_integral_eq_zero_oneBased`.
 These wrappers let product-expectation and adjacent independent-product
 consumers start from the same joint-law/canonical source shapes already used
 by Theorem 2.4.9 without reopening the iid extraction package.
@@ -934,6 +949,15 @@ Next target:
 search for another genuinely missing 2.4.9 proof-step/final-display source
 wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
 that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V576 adds full infinite-product, shifted
+infinite-product joint-law, and canonical iid product-coordinate Theorem
+2.1.10 first-variable/tail-product independence wrappers:
+`durrett2019_theorem_2_1_10_indepFun_first_tailProduct_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_10_indepFun_first_tailProduct_oneBased_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_10_indepFun_first_tailProduct_oneBased_of_shift_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_10_canonical_iid_first_tailProduct`, and
+`durrett2019_theorem_2_1_10_canonical_iid_first_tailProduct_oneBased`.
 
 Previous verified target V575 adds full infinite-product and shifted
 infinite-product joint-law Theorem 2.1.10 early/future-block independence
@@ -6759,6 +6783,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V576` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V577` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
