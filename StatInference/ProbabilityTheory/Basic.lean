@@ -6191,6 +6191,57 @@ theorem durrett2019_theorem_2_1_13_iid_integral_oneBased_Icc_law_prod_eq_pow_int
       (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf (Finset.Icc 1 n)
 
 /--
+Durrett 2019, Theorem 2.1.13, iid shifted law-side finite-subfamily power form.
+-/
+theorem durrett2019_theorem_2_1_13_iid_shift_integral_finset_law_prod_eq_pow_integral
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf : Integrable f μ)
+    (s : Finset ℕ) :
+    ∫ ω, ∏ i ∈ s, f (X (i + 1) ω) ∂P =
+      (∫ x, f x ∂μ) ^ s.card := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  have hShift_law : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) μ P := by
+    intro i
+    simpa [Nat.succ_eq_add_one] using hLaw (Nat.succ i)
+  exact
+    durrett2019_theorem_2_1_13_iid_integral_finset_law_prod_eq_pow_integral
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      (μ := μ) (f := f) hShift_indep hShift_law hf s
+
+/--
+Durrett 2019, Theorem 2.1.13, iid shifted law-side product power form on the
+literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_shift_integral_oneBased_Icc_law_prod_eq_pow_integral
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf : Integrable f μ)
+    (n : ℕ) :
+    ∫ ω, ∏ i ∈ Finset.Icc 1 n, f (X (i + 1) ω) ∂P =
+      (∫ x, f x ∂μ) ^ n := by
+  simpa [Nat.card_Icc] using
+    durrett2019_theorem_2_1_13_iid_shift_integral_finset_law_prod_eq_pow_integral
+      (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf (Finset.Icc 1 n)
+
+/--
 Durrett 2019, Theorem 2.1.13, iid law-side zero-product display over a
 nonempty finite subfamily.
 
@@ -12135,6 +12186,66 @@ theorem durrett2019_theorem_2_1_13_iid_integrable_and_integral_oneBased_Icc_law_
   · exact
       durrett2019_theorem_2_1_13_iid_integral_oneBased_Icc_law_prod_eq_pow_integral
         (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf n
+
+/--
+Durrett 2019, Theorem 2.1.13, iid shifted law-side finite-subfamily
+expectation-exists-and-power-value formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_shift_integrable_and_integral_finset_law_prod_eq_pow_integral
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : Measurable f)
+    (hf : Integrable f μ)
+    (s : Finset ℕ) :
+    Integrable (fun ω => ∏ i ∈ s, f (X (i + 1) ω)) P ∧
+      ∫ ω, ∏ i ∈ s, f (X (i + 1) ω) ∂P =
+        (∫ x, f x ∂μ) ^ s.card := by
+  have hShift_indep :
+      _root_.ProbabilityTheory.iIndepFun (μ := P)
+        (fun i : ℕ => fun ω => X (i + 1) ω) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hX)
+  have hShift_law : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw (fun ω => X (i + 1) ω) μ P := by
+    intro i
+    simpa [Nat.succ_eq_add_one] using hLaw (Nat.succ i)
+  exact
+    durrett2019_theorem_2_1_13_iid_integrable_and_integral_finset_law_prod_eq_pow_integral
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      (μ := μ) (f := f) hShift_indep (fun i => hX_meas (i + 1))
+      hShift_law hf_meas hf s
+
+/--
+Durrett 2019, Theorem 2.1.13, iid shifted law-side literal one-based
+expectation-exists-and-power-value formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_shift_integrable_and_integral_oneBased_Icc_law_prod_eq_pow_integral
+    {Ω : Type u} {𝕜 : Type v}
+    [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {μ : Measure S}
+    {f : S -> 𝕜}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hLaw : ∀ i, _root_.ProbabilityTheory.HasLaw (X i) μ P)
+    (hf_meas : Measurable f)
+    (hf : Integrable f μ)
+    (n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.Icc 1 n, f (X (i + 1) ω)) P ∧
+      ∫ ω, ∏ i ∈ Finset.Icc 1 n, f (X (i + 1) ω) ∂P =
+        (∫ x, f x ∂μ) ^ n := by
+  simpa [Nat.card_Icc] using
+    durrett2019_theorem_2_1_13_iid_shift_integrable_and_integral_finset_law_prod_eq_pow_integral
+      (P := P) (X := X) (μ := μ) (f := f)
+      hX hX_meas hLaw hf_meas hf (Finset.Icc 1 n)
 
 /--
 Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:

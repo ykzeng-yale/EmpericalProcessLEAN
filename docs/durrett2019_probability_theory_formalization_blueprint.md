@@ -49,12 +49,12 @@ last fetch before commit and push.
 
 ## In-Thread Goal Maintenance
 
-The current blocker plan contains `Live In-Thread Goal Prompt V595`, the live
+The current blocker plan contains `Live In-Thread Goal Prompt V596`, the live
 `/goal` replacement prompt.  Use it when the app-level objective is older than
 the verified route docs; do not create a duplicate goal or recurring
 automation.
 
-Current immediate target after V595: stay on Durrett Theorem 2.4.9
+Current immediate target after V596: stay on Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence/product-law/product-
 expectation support.  Theorem 2.4.9 source-entry plumbing through V390 is
 compiled; V477 added the nonnegative `lintegral` branch of Theorem 2.1.13; and
@@ -514,8 +514,11 @@ V595 adds the matching joint infinite-product common-law Chapter 2.1.13
 expectation-exists-and-power-value handoffs over finite subfamilies,
 range/Ico intervals, literal one-based `Icc`, full-law shifted one-based
 coordinate forms, and shifted-joint-law one-based coordinate forms.
+V596 adds the direct source-side iid shifted common-law Chapter 2.1.13
+power-value and expectation-exists-and-power-value wrappers over arbitrary
+finite subfamilies and the shifted literal one-based `Icc`.
 The next packet should close only a proved-missing 2.4.9 proof-step or
-final-display source wrapper not already covered by V500-V595,
+final-display source wrapper not already covered by V500-V596,
 or add the next Chapter 2.1 product-law/product-expectation/sum-law wrapper
 that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 Do not return to scalar-kernel estimates, annulus mass summability, concrete
