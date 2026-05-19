@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V67` near the top of
+  `Live Goal Prompt V68` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -284,6 +284,25 @@ This dashboard tracks the Chewi optimization formalization lane for
   the V66 Frechet-derivative interface.  Methodology note: when mathlib has
   the exact strengthening-to-consumer bridge, add that bridge once and move
   immediately to proving the stronger source hypothesis.
+  The V68 layer adds
+  `chewi131_gradient_hasStrictFDerivAt_of_eventually_hasFDerivAt_matrix`,
+  `chewi131_taylor_norm_bound_of_matrix_continuous_gradient_contDiffAt_fderiv`,
+  `chewi131_taylor_norm_bound_of_continuous_matrix_gradient_eventually_hasFDeriv`,
+  `chewi131_local_quadratic_step_of_matrix_continuous_gradient_contDiffAt_fderiv_of_radius`,
+  `chewi131_local_quadratic_step_of_continuous_matrix_gradient_eventually_hasFDeriv_of_radius`,
+  `chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_contDiffAt_fderiv_of_radius`,
+  and
+  `chewi131_local_quadratic_recurrence_of_continuous_matrix_gradient_eventually_hasFDeriv_of_radius`.
+  These wrappers discharge the V67 strict derivative hypothesis either from
+  `ContDiffAt ℝ 1 (gradient f)` plus the Hessian matrix `fderiv` equality, or
+  from an eventual local Frechet derivative model plus `Continuous Hfun`.
+  Search-first reuse came from mathlib `ContDiffAt.hasStrictFDerivAt`,
+  `hasStrictFDerivAt_of_hasFDerivAt_of_continuousAt`, the gradient/toDual
+  bridge APIs, and local positive-orthant derivative construction patterns.
+  Methodology note: this is the last useful wrapper layer for Theorem 13.1;
+  next work should prove the Hessian identification from `ContDiffAt ℝ 2 f`,
+  `iteratedFDeriv`, or concrete barrier derivative data rather than adding
+  another theorem surface.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

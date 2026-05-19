@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V67` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V68` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -33,7 +33,7 @@ record proof accelerators, friction sources, repeated searches to avoid, and
 the shortest accurate next prompt.  This is part of building a reusable
 formalization workflow for future statistical theory development in Lean.
 
-Current V67 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V68 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -260,6 +260,24 @@ Methodology note: exact mathlib strengthening/coercion APIs should be used to
 avoid maintaining multiple awkward theorem surfaces; the next useful packet is
 to derive the strict hypothesis from concrete Hessian derivative proofs or a
 clean `ContDiff`/`iteratedFDeriv` source interface.
+The V68 layer adds
+`chewi131_gradient_hasStrictFDerivAt_of_eventually_hasFDerivAt_matrix`,
+`chewi131_taylor_norm_bound_of_matrix_continuous_gradient_contDiffAt_fderiv`,
+`chewi131_taylor_norm_bound_of_continuous_matrix_gradient_eventually_hasFDeriv`,
+`chewi131_local_quadratic_step_of_matrix_continuous_gradient_contDiffAt_fderiv_of_radius`,
+`chewi131_local_quadratic_step_of_continuous_matrix_gradient_eventually_hasFDeriv_of_radius`,
+`chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_contDiffAt_fderiv_of_radius`,
+and
+`chewi131_local_quadratic_recurrence_of_continuous_matrix_gradient_eventually_hasFDeriv_of_radius`.
+These two surfaces discharge the V67 strict derivative hypothesis from either
+`ContDiffAt ℝ 1 (gradient f)` plus the Hessian matrix `fderiv` equality, or
+an eventual Frechet-derivative model plus `Continuous Hfun`.  Search-first
+reuse came from mathlib `ContDiffAt.hasStrictFDerivAt`,
+`hasStrictFDerivAt_of_hasFDerivAt_of_continuousAt`,
+`HasStrictFDerivAt.hasFDerivAt`, and local positive-orthant coordinate
+derivative patterns.  Methodology note: the next useful packet should not add
+another wrapper layer; it should prove the Hessian identification from
+`ContDiffAt ℝ 2 f`/`iteratedFDeriv` or concrete barrier derivative data.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source
