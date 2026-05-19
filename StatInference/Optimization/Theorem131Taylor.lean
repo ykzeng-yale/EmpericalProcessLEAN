@@ -221,6 +221,101 @@ theorem chewi131_taylor_norm_bound_of_gradient_ftc_clm
         simp [e2]
         ring
 
+/--
+Chewi Theorem 13.1 inverse-Hessian norm bridge in continuous-linear-map form.
+If the Hessian at the current point has quadratic lower bound `alpha / 2`
+and `Hinv` is its right inverse, then `‖Hinv‖ <= 2 / alpha`.
+-/
+theorem chewi131_inverse_clm_opNorm_le_two_div_alpha_of_hessian_lower_half
+    {H Hinv : E →L[ℝ] E} {alpha : ℝ} (halpha : 0 < alpha)
+    (hlower : ∀ v : E, (alpha / 2) * ‖v‖ ^ (2 : ℕ) ≤ inner ℝ (H v) v)
+    (hright : ∀ v : E, H (Hinv v) = v) :
+    ‖Hinv‖ ≤ 2 / alpha := by
+  have hhalf_pos : 0 < alpha / 2 := by positivity
+  have hbound : ‖Hinv‖ ≤ (alpha / 2)⁻¹ :=
+    continuousLinearMap_opNorm_right_inverse_le_of_inner_lower hhalf_pos
+      hlower hright
+  have hinv : (alpha / 2)⁻¹ = 2 / alpha := by
+    field_simp [halpha.ne']
+  simpa [hinv] using hbound
+
+/--
+Chewi Theorem 13.1 local quadratic Newton step in CLM form, after the Taylor
+bound and an explicit inverse-Hessian norm estimate have been supplied.
+-/
+theorem chewi131_local_quadratic_step_of_taylor_bound_clm
+    {Hinv : E →L[ℝ] E} {alpha gamma : ℝ}
+    (halpha : 0 < alpha) (hgamma : 0 ≤ gamma)
+    {x xNext xStar : E}
+    (hinv : ‖Hinv‖ ≤ 2 / alpha)
+    (htaylor :
+      ‖xNext - xStar‖ ≤
+        (gamma / 2) * ‖Hinv‖ * ‖x - xStar‖ ^ (2 : ℕ)) :
+    ‖xNext - xStar‖ ≤
+      (gamma / alpha) * ‖x - xStar‖ ^ (2 : ℕ) := by
+  have hcoef : (gamma / 2) * ‖Hinv‖ ≤ gamma / alpha := by
+    calc
+      (gamma / 2) * ‖Hinv‖ ≤ (gamma / 2) * (2 / alpha) := by
+        exact mul_le_mul_of_nonneg_left hinv (by positivity)
+      _ = gamma / alpha := by
+        field_simp [halpha.ne']
+  exact htaylor.trans (mul_le_mul_of_nonneg_right hcoef (sq_nonneg _))
+
+/--
+Chewi Theorem 13.1 local quadratic Newton step in CLM form, with the
+inverse-Hessian norm estimate discharged from the Hessian lower bound and the
+right-inverse property.
+-/
+theorem chewi131_local_quadratic_step_of_taylor_bound_clm_of_hessian_lower_half
+    {H Hinv : E →L[ℝ] E} {alpha gamma : ℝ}
+    (halpha : 0 < alpha) (hgamma : 0 ≤ gamma)
+    {x xNext xStar : E}
+    (hlower : ∀ v : E, (alpha / 2) * ‖v‖ ^ (2 : ℕ) ≤ inner ℝ (H v) v)
+    (hright : ∀ v : E, H (Hinv v) = v)
+    (htaylor :
+      ‖xNext - xStar‖ ≤
+        (gamma / 2) * ‖Hinv‖ * ‖x - xStar‖ ^ (2 : ℕ)) :
+    ‖xNext - xStar‖ ≤
+      (gamma / alpha) * ‖x - xStar‖ ^ (2 : ℕ) := by
+  exact chewi131_local_quadratic_step_of_taylor_bound_clm halpha hgamma
+    (chewi131_inverse_clm_opNorm_le_two_div_alpha_of_hessian_lower_half
+      halpha hlower hright)
+    htaylor
+
+/--
+Chewi Theorem 13.1 local quadratic Newton step plus the source `1/2`
+contraction consequence under the usual small-radius condition.
+-/
+theorem chewi131_local_quadratic_step_and_half_of_taylor_bound_clm_of_hessian_lower_half
+    {H Hinv : E →L[ℝ] E} {alpha gamma : ℝ}
+    (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    {x xNext xStar : E}
+    (hradius : ‖x - xStar‖ ≤ alpha / (2 * gamma))
+    (hlower : ∀ v : E, (alpha / 2) * ‖v‖ ^ (2 : ℕ) ≤ inner ℝ (H v) v)
+    (hright : ∀ v : E, H (Hinv v) = v)
+    (htaylor :
+      ‖xNext - xStar‖ ≤
+        (gamma / 2) * ‖Hinv‖ * ‖x - xStar‖ ^ (2 : ℕ)) :
+    ‖xNext - xStar‖ ≤
+        (gamma / alpha) * ‖x - xStar‖ ^ (2 : ℕ) ∧
+      ‖xNext - xStar‖ ≤ (1 / 2) * ‖x - xStar‖ := by
+  have hquad :=
+    chewi131_local_quadratic_step_of_taylor_bound_clm_of_hessian_lower_half
+      halpha hgamma.le hlower hright htaylor
+  have hcoeff : (gamma / alpha) * ‖x - xStar‖ ≤ 1 / 2 := by
+    have hcoef_nonneg : 0 ≤ gamma / alpha := div_nonneg hgamma.le halpha.le
+    have hmul := mul_le_mul_of_nonneg_left hradius hcoef_nonneg
+    have hscalar : (gamma / alpha) * (alpha / (gamma * 2)) = 1 / 2 := by
+      field_simp [halpha.ne', hgamma.ne']
+    simpa [hscalar, mul_assoc, mul_comm, mul_left_comm] using hmul
+  have hhalf_quad :
+      (gamma / alpha) * ‖x - xStar‖ ^ (2 : ℕ) ≤
+        (1 / 2) * ‖x - xStar‖ := by
+    have hmul :=
+      mul_le_mul_of_nonneg_right hcoeff (norm_nonneg (x - xStar))
+    simpa [pow_two, mul_assoc, mul_comm, mul_left_comm] using hmul
+  exact ⟨hquad, hquad.trans hhalf_quad⟩
+
 end Hilbert
 
 variable {n : Type*} [Fintype n] [DecidableEq n]

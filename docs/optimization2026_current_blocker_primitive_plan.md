@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V75`, this file's top
+   the full book is complete, route from `Live Goal Prompt V76`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -140,12 +140,52 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V75
+## Live Goal Prompt V76
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V75 extends
+Current active frontier: V76 extends
+`StatInference/Optimization/Theorem131Taylor.lean` and
+`StatInference/Optimization/Theorem131Gradient.lean` with the CLM/range-space
+inverse-norm and local quadratic Newton layer for the finite-row central-path
+objective.  Newly compiled V76 declarations are
+`chewi131_inverse_clm_opNorm_le_two_div_alpha_of_hessian_lower_half`,
+`chewi131_local_quadratic_step_of_taylor_bound_clm`,
+`chewi131_local_quadratic_step_of_taylor_bound_clm_of_hessian_lower_half`,
+`chewi131_local_quadratic_step_and_half_of_taylor_bound_clm_of_hessian_lower_half`,
+`chewi1316RangeCentralPathValue_local_quadratic_step_of_gradient_ftc`, and
+`chewi1316RangeCentralPathValue_local_quadratic_step_and_half_of_gradient_ftc`.
+The generic CLM inverse-norm theorem reuses Appendix A's
+`continuousLinearMap_opNorm_right_inverse_le_of_inner_lower`, so the finite-row
+range theorem no longer needs a supplied `‖Hinv‖` bound.  The central-path
+specializations consume V75's Taylor estimate, the existing
+`chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse`, a pointwise Hessian
+lower bound, a Hessian Lipschitz-on-segment bound, and the small-radius
+condition to prove the quadratic step and `1/2` contraction.  Focused
+verification command: `lake build StatInference.Optimization.Theorem131Gradient`.
+
+Next active proof target: turn the V76 pointwise central-path step into a
+sequence recurrence for Chewi Theorem 13.1, or discharge the concrete source
+quantitative assumptions that V76 still exposes.  Search first for existing
+`newtonStep`, sequence/recurrence wrappers, `chewi131_local_quadratic_recurrence*`,
+`chewi1316RangeCentralPathValue_local_quadratic*`, feasible-segment lemmas,
+`chewi1314_polytopeSlackNegLog_rangeHess*`,
+`chewi1314_polytopeSlackNegLog_rangeInvHess*`, local/dual norm APIs, and
+self-concordance/Hessian-comparison lemmas.  The real remaining blockers are
+now mathematical, not interface plumbing: prove or package the Hessian lower
+bound, Hessian Lipschitz/close bound along the feasible segment, feasible
+segment preservation, and the recurrence induction over iterates.  Keep the
+CLM/range route; do not coordinateize `(polytopeSlackCLM a).range` unless a
+specific missing local-norm/self-concordance API forces it.
+
+Methodology note: V76 confirms that the fastest route is to reuse coercivity
+bridges and existing right-inverse facts, then package source-facing wrappers
+that remove supplied assumptions.  Avoid repeating the inverse-norm search;
+the reusable route is `hlower + hright -> AppendixA CLM inverse norm ->
+Taylor bound -> quadratic/half step`.
+
+V75 dependency cache: V75 extends
 `StatInference/Optimization/Theorem131Taylor.lean` and
 `StatInference/Optimization/Theorem131Gradient.lean` with the CLM/range-space
 Taylor norm layer for the finite-row central-path objective.  Newly compiled
@@ -157,25 +197,9 @@ specializes it to `chewi1316RangeCentralPathValue`, discharging mathlib
 stationarity from Chewi centrality, segment `HasFDerivAt`, Hessian-action
 integrability, and the inverse-Hessian left-inverse via
 `continuousLinearMap_left_inverse_of_right_inverse_finiteDim` plus
-`chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse`.  Focused
-verification command: `lake build StatInference.Optimization.Theorem131Gradient`.
-
-Next active proof target: turn the V75 central-path Taylor norm bound into a
-local quadratic step or recurrence for the finite-row slack range.  Search
-first for CLM/range-space inverse norm estimates, self-concordant Dikin
-ellipsoid bounds, `chewi1314_polytopeSlackNegLog_rangeInvHess*`,
-`chewi1314_polytopeSlackNegLog_rangeHess*`, `localNorm`, `dualLocalNorm`,
-`newtonStep`, and existing Lemma 13.6/13.8 decrement-control APIs.  The
-remaining real mathematical assumptions should be Hessian Lipschitz/close
-bounds, feasible segments, and an inverse-norm or local metric bound strong
-enough to replace `(gamma / 2) * ‖Hinv‖` by `gamma / alpha` or the appropriate
-self-concordant quantity.  Do not introduce a matrix representation of
-`(polytopeSlackCLM a).range` unless the CLM/local-norm route is blocked.
-
-Methodology note: the efficient route was to generalize the existing matrix
-Taylor-bound proof at exactly the Hilbert/CLM seam instead of forcing the range
-type into coordinates.  This avoids premature basis machinery and lets future
-range-space source objectives reuse the same theorem.
+`chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse`.  Methodology note:
+generalize matrix proofs at the Hilbert/CLM boundary before reaching for basis
+coordinates on a finite-dimensional range.
 
 V74 dependency cache: V74 extends
 `StatInference/Optimization/Theorem131Gradient.lean` with the affine-range and

@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V72` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V76` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -33,10 +33,24 @@ record proof accelerators, friction sources, repeated searches to avoid, and
 the shortest accurate next prompt.  This is part of building a reusable
 formalization workflow for future statistical theory development in Lean.
 
-Current V72 live route: the §13.16 Lean endpoint surface is source-facing and
-report-blocked only by missing local PDF/screenshot tooling, so active proof
+Current V76 live route: the §13.16 Lean endpoint surface is source-facing and
+report-blocked only by missing local PDF/screenshot tooling, while active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
-local Newton-convergence matrix step.  The module
+range-space local Newton-convergence step.  V76 adds the reusable CLM
+inverse-norm and local quadratic step wrappers
+`chewi131_inverse_clm_opNorm_le_two_div_alpha_of_hessian_lower_half`,
+`chewi131_local_quadratic_step_of_taylor_bound_clm`,
+`chewi131_local_quadratic_step_of_taylor_bound_clm_of_hessian_lower_half`,
+`chewi131_local_quadratic_step_and_half_of_taylor_bound_clm_of_hessian_lower_half`,
+`chewi1316RangeCentralPathValue_local_quadratic_step_of_gradient_ftc`, and
+`chewi1316RangeCentralPathValue_local_quadratic_step_and_half_of_gradient_ftc`.
+The next live target is a sequence recurrence for the finite-row central-path
+Newton iterates or a discharge of the concrete Hessian lower/Lipschitz and
+feasible-segment assumptions exposed by those pointwise step theorems.  Do not
+repeat the inverse-norm or range-coordinate search unless a specific
+self-concordance/local-norm blocker requires it.
+
+Historical route cache: the module
 `StatInference/Optimization/AppendixA.lean` compiles and is root-imported,
 with `chewiA4_loewnerOrder_iff_quadraticForm_le` and
 `chewiA4_quadraticForm_lt_of_posDef_sub` formalizing Definition A.4's

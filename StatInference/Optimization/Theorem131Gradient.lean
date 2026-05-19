@@ -642,6 +642,140 @@ theorem chewi1316RangeCentralPathValue_taylor_norm_bound_of_gradient_ftc
       hgrad hint hgrad_star hnewton' hleft hlip'
 
 /--
+Chewi Theorem 13.1 local quadratic Newton step specialized to the finite-row
+central-path value.  This removes the explicit inverse-Hessian norm from the
+Taylor estimate by reusing the range inverse-Hessian right inverse and a
+source-shaped Hessian lower bound at the current point.
+-/
+theorem chewi1316RangeCentralPathValue_local_quadratic_step_of_gradient_ftc
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {alpha gamma t : ℝ} (halpha : 0 < alpha) (hgamma : 0 ≤ gamma)
+    (aObj : (polytopeSlackCLM aRow).range)
+    {x xNext xStar : (polytopeSlackCLM aRow).range}
+    (hx_mem :
+      x ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hxStar_mem :
+      xStar ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hseg : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar x τ ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hcentral :
+      t • aObj +
+          barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad xStar = 0)
+    (hnewton :
+      xNext = newtonStep
+        (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+        (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack) x)
+    (hlower : ∀ v : (polytopeSlackCLM aRow).range,
+      (alpha / 2) * ‖v‖ ^ (2 : ℕ) ≤
+        inner ℝ
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM x v) v)
+    (hlip : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM x -
+        barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM (hessianSegmentPoint xStar x τ)‖ ≤
+        gamma * (1 - τ) * ‖x - xStar‖) :
+    ‖xNext - xStar‖ ≤
+      (gamma / alpha) * ‖x - xStar‖ ^ (2 : ℕ) := by
+  let H : (polytopeSlackCLM aRow).range →L[ℝ]
+      (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogHessCLM x
+  let Hinv : (polytopeSlackCLM aRow).range →L[ℝ]
+      (polytopeSlackCLM aRow).range :=
+    chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack x
+  have hright : ∀ v : (polytopeSlackCLM aRow).range, H (Hinv v) = v := by
+    intro v
+    simpa [H, Hinv] using
+      chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse
+        aRow bSlack hx_mem v
+  have htaylor :=
+    chewi1316RangeCentralPathValue_taylor_norm_bound_of_gradient_ftc
+      (aRow := aRow) (bSlack := bSlack) (t := t) (gamma := gamma)
+      (aObj := aObj) (x := x) (xNext := xNext) (xStar := xStar)
+      hx_mem hxStar_mem hseg hcentral hnewton hlip
+  exact chewi131_local_quadratic_step_of_taylor_bound_clm_of_hessian_lower_half
+    (H := H) (Hinv := Hinv) (alpha := alpha) (gamma := gamma)
+    (x := x) (xNext := xNext) (xStar := xStar)
+    halpha hgamma (by simpa [H] using hlower) hright
+    (by simpa [Hinv] using htaylor)
+
+/--
+Chewi Theorem 13.1 local quadratic Newton step plus the half-contraction
+consequence for the finite-row central-path value.
+-/
+theorem chewi1316RangeCentralPathValue_local_quadratic_step_and_half_of_gradient_ftc
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {alpha gamma t : ℝ} (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    (aObj : (polytopeSlackCLM aRow).range)
+    {x xNext xStar : (polytopeSlackCLM aRow).range}
+    (hx_mem :
+      x ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hxStar_mem :
+      xStar ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hseg : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar x τ ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)))
+    (hcentral :
+      t • aObj +
+          barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad xStar = 0)
+    (hnewton :
+      xNext = newtonStep
+        (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+        (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack) x)
+    (hradius : ‖x - xStar‖ ≤ alpha / (2 * gamma))
+    (hlower : ∀ v : (polytopeSlackCLM aRow).range,
+      (alpha / 2) * ‖v‖ ^ (2 : ℕ) ≤
+        inner ℝ
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM x v) v)
+    (hlip : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM x -
+        barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM (hessianSegmentPoint xStar x τ)‖ ≤
+        gamma * (1 - τ) * ‖x - xStar‖) :
+    ‖xNext - xStar‖ ≤
+        (gamma / alpha) * ‖x - xStar‖ ^ (2 : ℕ) ∧
+      ‖xNext - xStar‖ ≤ (1 / 2) * ‖x - xStar‖ := by
+  let H : (polytopeSlackCLM aRow).range →L[ℝ]
+      (polytopeSlackCLM aRow).range :=
+    barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogHessCLM x
+  let Hinv : (polytopeSlackCLM aRow).range →L[ℝ]
+      (polytopeSlackCLM aRow).range :=
+    chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack x
+  have hright : ∀ v : (polytopeSlackCLM aRow).range, H (Hinv v) = v := by
+    intro v
+    simpa [H, Hinv] using
+      chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse
+        aRow bSlack hx_mem v
+  have htaylor :=
+    chewi1316RangeCentralPathValue_taylor_norm_bound_of_gradient_ftc
+      (aRow := aRow) (bSlack := bSlack) (t := t) (gamma := gamma)
+      (aObj := aObj) (x := x) (xNext := xNext) (xStar := xStar)
+      hx_mem hxStar_mem hseg hcentral hnewton hlip
+  exact chewi131_local_quadratic_step_and_half_of_taylor_bound_clm_of_hessian_lower_half
+    (H := H) (Hinv := Hinv) (alpha := alpha) (gamma := gamma)
+    (x := x) (xNext := xNext) (xStar := xStar)
+    halpha hgamma hradius (by simpa [H] using hlower) hright
+    (by simpa [Hinv] using htaylor)
+
+/--
 Chewi Theorem 13.1 Taylor norm estimate with mathlib's `gradient f`.  The
 second-derivative data is expressed as the equality between
 `fderiv ℝ (gradient f)` and the matrix-induced Hessian CLM along the segment.
