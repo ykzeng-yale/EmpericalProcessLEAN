@@ -1430,6 +1430,226 @@ theorem durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
     (X := fun i : ℕ => fun ω => X (i + 1) ω) hJoint
 
 /--
+Durrett 2019, Theorem 2.1.10 support from a full infinite-product joint law:
+a future increment sum is independent of every measurable early-block
+statistic.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {T : Type v} [MeasurableSpace T] {m n : ℕ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => ∑ k ∈ Finset.Ico m n, X k ω)
+      (fun ω => ψ (fun i : Finset.range m => X i ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction
+      (P := P) (X := X) hSource.2 hX_meas hψ
+
+/--
+Durrett 2019, Theorem 2.1.10 support from a full infinite-product joint law:
+`S_n - S_m` is independent of every measurable early-block statistic.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {T : Type v} [MeasurableSpace T] {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => (∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω)
+      (fun ω => ψ (fun i : Finset.range m => X i ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction
+      (P := P) (X := X) hSource.2 hX_meas hmn hψ
+
+/--
+Durrett 2019, Theorem 2.1.10 support from a full infinite-product joint law:
+`S_n - S_m` is independent of early-block event indicators.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => (∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω)
+      (fun ω =>
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X i ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator
+      (P := P) (X := X) hSource.2 hX_meas hmn hA
+
+/--
+Durrett 2019, Theorem 2.1.10 support from a full infinite-product joint law
+in one-based textbook notation: future shifted increments are independent of
+measurable early-block statistics.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction_oneBased_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {T : Type v} [MeasurableSpace T] {m n : ℕ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => ∑ k ∈ Finset.Ico m n, X (k + 1) ω)
+      (fun ω => ψ (fun i : Finset.range m => X (i + 1) ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction_oneBased
+      (P := P) (X := X) hSource.2 hX_meas hψ
+
+/--
+Durrett 2019, Theorem 2.1.10 support from a full infinite-product joint law
+in one-based textbook notation: shifted `S_n - S_m` is independent of every
+measurable early-block statistic.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction_oneBased_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {T : Type v} [MeasurableSpace T] {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => (∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω)
+      (fun ω => ψ (fun i : Finset.range m => X (i + 1) ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction_oneBased
+      (P := P) (X := X) hSource.2 hX_meas hmn hψ
+
+/--
+Durrett 2019, Theorem 2.1.10 support from a full infinite-product joint law
+in one-based textbook notation: shifted `S_n - S_m` is independent of
+early-block event indicators.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator_oneBased_of_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => (∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω)
+      (fun ω =>
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X (i + 1) ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator_oneBased
+      (P := P) (X := X) hSource.2 hX_meas hmn hA
+
+/--
+Durrett 2019, Theorem 2.1.10 support from a shifted infinite-product joint law:
+future shifted increments are independent of measurable early-block statistics.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction_oneBased_of_shift_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {T : Type v} [MeasurableSpace T] {m n : ℕ}
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => ∑ k ∈ Finset.Ico m n, X (k + 1) ω)
+      (fun ω => ψ (fun i : Finset.range m => X (i + 1) ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_10_indepFun_lateIncrementSum_earlyBlockFunction
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hSource.2 (fun i => hX_meas (i + 1)) hψ
+
+/--
+Durrett 2019, Theorem 2.1.10 support from a shifted infinite-product joint law:
+shifted `S_n - S_m` is independent of every measurable early-block statistic.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction_oneBased_of_shift_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {T : Type v} [MeasurableSpace T] {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    {ψ : ((i : Finset.range m) -> ℝ) -> T} (hψ : Measurable ψ) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => (∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω)
+      (fun ω => ψ (fun i : Finset.range m => X (i + 1) ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockFunction
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hSource.2 (fun i => hX_meas (i + 1)) hmn hψ
+
+/--
+Durrett 2019, Theorem 2.1.10 support from a shifted infinite-product joint law:
+shifted `S_n - S_m` is independent of early-block event indicators.
+-/
+theorem durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator_oneBased_of_shift_hasLaw_infinitePi
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    _root_.ProbabilityTheory.IndepFun (μ := P)
+      (fun ω => (∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω)
+      (fun ω =>
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X (i + 1) ω)) := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_10_indepFun_partialSumDiff_earlyBlockIndicator
+      (P := P) (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      hSource.2 (fun i => hX_meas (i + 1)) hmn hA
+
+/--
 Durrett 2019, Theorem 2.1.11, one-based iid product-law criterion.
 
 For the shifted Durrett-indexed process `X (i + 1)`, independence together
