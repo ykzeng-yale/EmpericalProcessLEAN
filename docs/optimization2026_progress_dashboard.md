@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V68` near the top of
+  `Live Goal Prompt V69` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -299,10 +299,22 @@ This dashboard tracks the Chewi optimization formalization lane for
   Search-first reuse came from mathlib `ContDiffAt.hasStrictFDerivAt`,
   `hasStrictFDerivAt_of_hasFDerivAt_of_continuousAt`, the gradient/toDual
   bridge APIs, and local positive-orthant derivative construction patterns.
-  Methodology note: this is the last useful wrapper layer for Theorem 13.1;
-  next work should prove the Hessian identification from `ContDiffAt ℝ 2 f`,
+  Methodology note: this closes the strict-derivative wrapper layer for
+  Theorem 13.1; next work should prove the Hessian identification from `ContDiffAt ℝ 2 f`,
   `iteratedFDeriv`, or concrete barrier derivative data rather than adding
   another theorem surface.
+  The V69 layer adds `chewi131_gradient_contDiffAt_one_of_contDiffAt_two`,
+  `chewi131_taylor_norm_bound_of_matrix_continuous_gradient_contDiffAt_two_fderiv`,
+  `chewi131_local_quadratic_step_of_matrix_continuous_gradient_contDiffAt_two_fderiv_of_radius`,
+  and
+  `chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_contDiffAt_two_fderiv_of_radius`.
+  These wrappers prove the `C^1` regularity of mathlib's `gradient f` from
+  pointwise `ContDiffAt ℝ 2 f` by using `ContDiffAt.fderiv_right_succ` and
+  composing with `(InnerProductSpace.toDual ℝ _).symm.contDiff`.  Methodology
+  note: a focused stdin Lean probe resolved the Riesz/toDual coercions quickly;
+  the remaining Theorem 13.1 blocker is now only the Hessian matrix equality
+  `fderiv ℝ (gradient f) z = chewi131MatrixCLM (Hfun z)` or a concrete
+  barrier instance of that equality.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

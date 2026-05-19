@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V68` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V69` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -33,7 +33,7 @@ record proof accelerators, friction sources, repeated searches to avoid, and
 the shortest accurate next prompt.  This is part of building a reusable
 formalization workflow for future statistical theory development in Lean.
 
-Current V68 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V69 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -278,6 +278,19 @@ reuse came from mathlib `ContDiffAt.hasStrictFDerivAt`,
 derivative patterns.  Methodology note: the next useful packet should not add
 another wrapper layer; it should prove the Hessian identification from
 `ContDiffAt ℝ 2 f`/`iteratedFDeriv` or concrete barrier derivative data.
+The V69 layer adds `chewi131_gradient_contDiffAt_one_of_contDiffAt_two`,
+`chewi131_taylor_norm_bound_of_matrix_continuous_gradient_contDiffAt_two_fderiv`,
+`chewi131_local_quadratic_step_of_matrix_continuous_gradient_contDiffAt_two_fderiv_of_radius`,
+and
+`chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_contDiffAt_two_fderiv_of_radius`.
+It proves that pointwise `ContDiffAt ℝ 2 f` supplies the needed
+`ContDiffAt ℝ 1 (gradient f)` by composing `fderiv ℝ f` with the Riesz
+isometry `(InnerProductSpace.toDual ℝ _).symm`.  Search-first reuse came from
+mathlib `ContDiffAt.fderiv_right_succ`, `LinearIsometryEquiv.contDiff`, and
+the gradient definition as `(toDual ℝ _).symm (fderiv ℝ f x)`.  Methodology
+note: stdin Lean probes are the right tool for semilinear/coercion questions;
+the remaining proof work is the Hessian matrix equality, not gradient
+regularity.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source
