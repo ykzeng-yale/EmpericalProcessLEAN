@@ -14856,6 +14856,147 @@ theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_int
       hν_zero hA
 
 /--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+a law-side zero mean supplies the coordinate future-increment zero mean.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_partialSumDiff_integral_eq_zero
+    (ν : MeasureTheory.ProbabilityMeasure ℝ)
+    {m n : ℕ} (hmn : m ≤ n)
+    (hν_int : Integrable (fun x : ℝ => x) (ν : Measure ℝ))
+    (hν_zero : ∫ x, x ∂(ν : Measure ℝ) = (0 : ℝ)) :
+    ∫ sample, ((∑ k ∈ Finset.range n, sample k) -
+      ∑ k ∈ Finset.range m, sample k)
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_hasLaw_infinitePi_and_integral_eq_zero
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      (ν := (ν : Measure ℝ)) hmn hCoord.2.2 hν_int hν_zero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+early-coordinate statistics have zero mixed term with future increments when
+the common law-side mean is zero.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero
+    (ν : MeasureTheory.ProbabilityMeasure ℝ)
+    {m n : ℕ} (hmn : m ≤ n)
+    (hν_int : Integrable (fun x : ℝ => x) (ν : Measure ℝ))
+    (hν_zero : ∫ x, x ∂(ν : Measure ℝ) = (0 : ℝ))
+    {ψ : ((i : Finset.range m) -> ℝ) -> ℝ} (hψ : Measurable ψ) :
+    ∫ sample, ψ (fun i : Finset.range m => sample i) *
+      ((∑ k ∈ Finset.range n, sample k) -
+        ∑ k ∈ Finset.range m, sample k)
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_hasLaw_infinitePi_and_integral_eq_zero
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      (ν := (ν : Measure ℝ)) (fun i => measurable_pi_apply i) hmn
+      hCoord.2.2 hν_int hν_zero hψ
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space: the
+Kolmogorov-maximal mixed coordinate term vanishes when the common law-side
+mean is zero.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero
+    (ν : MeasureTheory.ProbabilityMeasure ℝ)
+    {m n : ℕ} (hmn : m ≤ n)
+    (hν_int : Integrable (fun x : ℝ => x) (ν : Measure ℝ))
+    (hν_zero : ∫ x, x ∂(ν : Measure ℝ) = (0 : ℝ))
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    ∫ sample, ((2 : ℝ) * (∑ i : Finset.range m, sample i) *
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => sample i)) *
+      ((∑ k ∈ Finset.range n, sample k) -
+        ∑ k ∈ Finset.range m, sample k)
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates ν
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_of_hasLaw_infinitePi_and_integral_eq_zero
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      (ν := (ν : Measure ℝ)) (fun i => measurable_pi_apply i) hmn
+      hCoord.2.2 hν_int hν_zero hA
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space in
+one-based textbook notation: a law-side zero mean supplies the shifted
+coordinate future-increment zero mean.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_partialSumDiff_integral_eq_zero_oneBased
+    (ν : MeasureTheory.ProbabilityMeasure ℝ)
+    {m n : ℕ} (hmn : m ≤ n)
+    (hν_int : Integrable (fun x : ℝ => x) (ν : Measure ℝ))
+    (hν_zero : ∫ x, x ∂(ν : Measure ℝ) = (0 : ℝ)) :
+    ∫ sample, ((∑ k ∈ Finset.range n, sample (k + 1)) -
+      ∑ k ∈ Finset.range m, sample (k + 1))
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased ν
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_integral_eq_zero
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      (ν := (ν : Measure ℝ)) hmn hCoord.2.2 hν_int hν_zero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space in
+one-based textbook notation: early shifted-coordinate statistics have zero
+mixed term with future increments when the common law-side mean is zero.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_oneBased
+    (ν : MeasureTheory.ProbabilityMeasure ℝ)
+    {m n : ℕ} (hmn : m ≤ n)
+    (hν_int : Integrable (fun x : ℝ => x) (ν : Measure ℝ))
+    (hν_zero : ∫ x, x ∂(ν : Measure ℝ) = (0 : ℝ))
+    {ψ : ((i : Finset.range m) -> ℝ) -> ℝ} (hψ : Measurable ψ) :
+    ∫ sample, ψ (fun i : Finset.range m => sample (i + 1)) *
+      ((∑ k ∈ Finset.range n, sample (k + 1)) -
+        ∑ k ∈ Finset.range m, sample (k + 1))
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased ν
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_integral_eq_zero
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      (ν := (ν : Measure ℝ)) (fun i => measurable_pi_apply i) hmn
+      hCoord.2.2 hν_int hν_zero hψ
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space in
+one-based textbook notation: the Kolmogorov-maximal shifted-coordinate mixed
+term vanishes when the common law-side mean is zero.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_oneBased
+    (ν : MeasureTheory.ProbabilityMeasure ℝ)
+    {m n : ℕ} (hmn : m ≤ n)
+    (hν_int : Integrable (fun x : ℝ => x) (ν : Measure ℝ))
+    (hν_zero : ∫ x, x ∂(ν : Measure ℝ) = (0 : ℝ))
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    ∫ sample, ((2 : ℝ) * (∑ i : Finset.range m, sample (i + 1)) *
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => sample (i + 1))) *
+      ((∑ k ∈ Finset.range n, sample (k + 1)) -
+        ∑ k ∈ Finset.range m, sample (k + 1))
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  have hCoord :=
+    durrett2019_theorem_2_1_11_canonical_iid_infinite_product_coordinates_oneBased ν
+  exact
+    durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_integral_eq_zero
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+      (ν := (ν : Measure ℝ)) (fun i => measurable_pi_apply i) hmn
+      hCoord.2.2 hν_int hν_zero hA
+
+/--
 Durrett 2019, Theorem 2.5.5 first-crossing block set.  On this set, the
 partial sum at time `m` has crossed the threshold `x`, while every earlier
 partial sum has stayed below `x` in absolute value.
