@@ -5524,6 +5524,141 @@ theorem durrett2019_theorem_2_1_13_canonical_iid_shift_integral_oneBased_Icc_law
       ν (f := f) hf (s := Finset.Icc 1 n) (i := i) hi hzero
 
 /--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law power display over an arbitrary finite set of coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_pow_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf : Integrable f (ν : Measure ℝ)) (s : Finset ℕ) :
+    ∫ sample, ∏ i ∈ s, f (sample i)
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+      (∫ x, f x ∂(ν : Measure ℝ)) ^ s.card := by
+  calc
+    ∫ sample, ∏ i ∈ s, f (sample i)
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+        ∏ i ∈ s, ∫ x, f x ∂(ν : Measure ℝ) := by
+      simpa using
+        durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_prod_integral
+          ν (f := fun _ : ℕ => f) (fun _ => hf) s
+    _ = (∫ x, f x ∂(ν : Measure ℝ)) ^ s.card := by
+      rw [Finset.prod_const]
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law power display over an initial coordinate range.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_range_law_prod_eq_pow_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf : Integrable f (ν : Measure ℝ)) (n : ℕ) :
+    ∫ sample, ∏ i ∈ Finset.range n, f (sample i)
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+      (∫ x, f x ∂(ν : Measure ℝ)) ^ n := by
+  simpa using
+    durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_pow_integral
+      ν (f := f) hf (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law power display over a coordinate interval.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_Ico_law_prod_eq_pow_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf : Integrable f (ν : Measure ℝ)) (m n : ℕ) :
+    ∫ sample, ∏ i ∈ Finset.Ico m n, f (sample i)
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+      (∫ x, f x ∂(ν : Measure ℝ)) ^ (n - m) := by
+  simpa [Nat.card_Ico] using
+    durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_pow_integral
+      ν (f := f) hf (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law power display over the literal one-based index set.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_oneBased_Icc_law_prod_eq_pow_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf : Integrable f (ν : Measure ℝ)) (n : ℕ) :
+    ∫ sample, ∏ i ∈ Finset.Icc 1 n, f (sample i)
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+      (∫ x, f x ∂(ν : Measure ℝ)) ^ n := by
+  simpa [Nat.card_Icc] using
+    durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_pow_integral
+      ν (f := f) hf (Finset.Icc 1 n)
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law power display over an arbitrary finite set of shifted one-based
+coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_shift_integral_finset_law_prod_eq_pow_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf : Integrable f (ν : Measure ℝ)) (s : Finset ℕ) :
+    ∫ sample, ∏ i ∈ s, f (sample (i + 1))
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+      (∫ x, f x ∂(ν : Measure ℝ)) ^ s.card := by
+  calc
+    ∫ sample, ∏ i ∈ s, f (sample (i + 1))
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+        ∏ i ∈ s, ∫ x, f x ∂(ν : Measure ℝ) := by
+      simpa using
+        durrett2019_theorem_2_1_13_canonical_iid_shift_integral_finset_law_prod_eq_prod_integral
+          ν (f := fun _ : ℕ => f) (fun _ => hf) s
+    _ = (∫ x, f x ∂(ν : Measure ℝ)) ^ s.card := by
+      rw [Finset.prod_const]
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law power display over an initial range of shifted one-based
+coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_range_law_prod_eq_pow_integral_oneBased
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf : Integrable f (ν : Measure ℝ)) (n : ℕ) :
+    ∫ sample, ∏ i ∈ Finset.range n, f (sample (i + 1))
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+      (∫ x, f x ∂(ν : Measure ℝ)) ^ n := by
+  simpa using
+    durrett2019_theorem_2_1_13_canonical_iid_shift_integral_finset_law_prod_eq_pow_integral
+      ν (f := f) hf (Finset.range n)
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law power display over a shifted one-based coordinate interval.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_integral_Ico_law_prod_eq_pow_integral_oneBased
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf : Integrable f (ν : Measure ℝ)) (m n : ℕ) :
+    ∫ sample, ∏ i ∈ Finset.Ico m n, f (sample (i + 1))
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+      (∫ x, f x ∂(ν : Measure ℝ)) ^ (n - m) := by
+  simpa [Nat.card_Ico] using
+    durrett2019_theorem_2_1_13_canonical_iid_shift_integral_finset_law_prod_eq_pow_integral
+      ν (f := f) hf (Finset.Ico m n)
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+common-law power display over the literal one-based index set for shifted
+coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_shift_integral_oneBased_Icc_law_prod_eq_pow_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℝ -> 𝕜}
+    (hf : Integrable f (ν : Measure ℝ)) (n : ℕ) :
+    ∫ sample, ∏ i ∈ Finset.Icc 1 n, f (sample (i + 1))
+        ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+      (∫ x, f x ∂(ν : Measure ℝ)) ^ n := by
+  simpa [Nat.card_Icc] using
+    durrett2019_theorem_2_1_13_canonical_iid_shift_integral_finset_law_prod_eq_pow_integral
+      ν (f := f) hf (Finset.Icc 1 n)
+
+/--
 Durrett 2019, Theorem 2.1.13, iid law-side finite-subfamily power form.
 
 When the functions and laws are common, the factorized product becomes a power.

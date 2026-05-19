@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V586
+## Live In-Thread Goal Prompt V587
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -443,6 +443,9 @@ factorization and zero-factor wrappers.
 V586 adds the matching canonical iid product-coordinate Chapter 2.1.13
 law-side finite-subfamily and literal one-based `Icc` product-expectation
 factorization and zero-factor wrappers.
+V587 adds canonical iid common-law Chapter 2.1.13 law-side power displays
+over finite subfamilies, range/Ico intervals, literal one-based `Icc`, and
+shifted one-based coordinate forms.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -752,6 +755,10 @@ After V586, do not rebuild the canonical iid product-coordinate Theorem
 2.1.13 law-side finite-subfamily or literal one-based `Icc`
 product-expectation factorization or zero-factor wrappers unless an exact
 later consumer needs a different display shape.
+After V587, do not rebuild the canonical iid common-law Theorem 2.1.13
+law-side power displays for finite, range/Ico, literal one-based `Icc`, or
+shifted one-based coordinate products unless an exact later consumer needs a
+different display shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -993,7 +1000,27 @@ range-sum, and textbook inverse-multiple displays in zero-based and one-based
 forms,
 or old app-level stale prompts.
 
-Latest verified target V586 adds canonical iid product-coordinate Chapter
+Latest verified target V587 adds canonical iid common-law Chapter 2.1.13
+law-side power displays over finite subfamilies, range/Ico intervals, literal
+one-based `Icc`, and shifted one-based coordinate forms:
+`durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_pow_integral`,
+`durrett2019_theorem_2_1_13_canonical_iid_integral_range_law_prod_eq_pow_integral`,
+`durrett2019_theorem_2_1_13_canonical_iid_integral_Ico_law_prod_eq_pow_integral`,
+`durrett2019_theorem_2_1_13_canonical_iid_integral_oneBased_Icc_law_prod_eq_pow_integral`,
+`durrett2019_theorem_2_1_13_canonical_iid_shift_integral_finset_law_prod_eq_pow_integral`,
+`durrett2019_theorem_2_1_13_canonical_iid_integral_range_law_prod_eq_pow_integral_oneBased`,
+`durrett2019_theorem_2_1_13_canonical_iid_integral_Ico_law_prod_eq_pow_integral_oneBased`, and
+`durrett2019_theorem_2_1_13_canonical_iid_shift_integral_oneBased_Icc_law_prod_eq_pow_integral`.
+These wrappers give canonical product-coordinate consumers the iid/common-law
+power form directly, including the shifted one-based displays used around
+Kolmogorov-style partial-sum blocks, without requiring callers to rewrite a
+constant product by hand.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V586 adds canonical iid product-coordinate Chapter
 2.1.13 law-side finite-subfamily and literal one-based `Icc`
 product-expectation factorization and zero-factor wrappers:
 `durrett2019_theorem_2_1_13_canonical_iid_integral_finset_law_prod_eq_prod_integral`,
@@ -6960,6 +6987,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V586` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V587` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
