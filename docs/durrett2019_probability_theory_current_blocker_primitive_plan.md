@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V584
+## Live In-Thread Goal Prompt V585
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -437,6 +437,9 @@ plus expectation-value and zero-factor wrappers for shifted coordinates.
 V584 adds the matching canonical iid shifted-coordinate Chapter 2.1.13
 law-side finite-subfamily and literal one-based `Icc` product integrability
 plus expectation-value and zero-factor wrappers.
+V585 adds the matching canonical iid shifted-coordinate Chapter 2.1.13
+law-side finite-subfamily and literal one-based `Icc` product-expectation
+factorization and zero-factor wrappers.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -738,6 +741,10 @@ After V584, do not rebuild the canonical iid shifted-coordinate Theorem
 2.1.13 law-side finite-subfamily or literal one-based `Icc` product
 integrability plus expectation-value or zero-factor wrappers unless an exact
 later consumer needs a different display shape.
+After V585, do not rebuild the canonical iid shifted-coordinate Theorem
+2.1.13 law-side finite-subfamily or literal one-based `Icc`
+product-expectation factorization or zero-factor wrappers unless an exact
+later consumer needs a different display shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -979,7 +986,23 @@ range-sum, and textbook inverse-multiple displays in zero-based and one-based
 forms,
 or old app-level stale prompts.
 
-Latest verified target V584 adds canonical iid shifted-coordinate Chapter
+Latest verified target V585 adds canonical iid shifted-coordinate Chapter
+2.1.13 law-side finite-subfamily and literal one-based `Icc`
+product-expectation factorization and zero-factor wrappers:
+`durrett2019_theorem_2_1_13_canonical_iid_shift_integral_finset_law_prod_eq_prod_integral`,
+`durrett2019_theorem_2_1_13_canonical_iid_shift_integral_oneBased_Icc_law_prod_eq_prod_integral`,
+`durrett2019_theorem_2_1_13_canonical_iid_shift_integral_finset_law_prod_eq_zero_of_integral_eq_zero`, and
+`durrett2019_theorem_2_1_13_canonical_iid_shift_integral_oneBased_Icc_law_prod_eq_zero_of_integral_eq_zero`.
+These wrappers give canonical product-coordinate consumers the same shifted
+finite-family expectation-value displays as the V584 integrability-packaged
+forms, without requiring callers to carry the product-integrability
+conjunction.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V584 adds canonical iid shifted-coordinate Chapter
 2.1.13 law-side finite-subfamily and literal one-based `Icc` product
 integrability plus expectation-value and zero-factor wrappers:
 `durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_finset_law_prod_eq_prod_integral`,
@@ -989,10 +1012,6 @@ integrability plus expectation-value and zero-factor wrappers:
 These wrappers give canonical product-coordinate consumers the same shifted
 finite-family expectation-exists packaging that V583 supplied for shifted
 joint laws.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V583 adds shifted infinite-product joint-law Chapter
 2.1.13 law-side finite-subfamily and literal one-based `Icc` product
@@ -6919,6 +6938,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V584` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V585` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
