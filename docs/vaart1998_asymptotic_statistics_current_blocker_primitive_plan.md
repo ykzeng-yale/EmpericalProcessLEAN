@@ -17,7 +17,7 @@ Active frontier: van der Vaart 1998, Theorem 5.41 Z-estimator asymptotic
 normality in `StatInference/AsymptoticStatistics/MEstimators.lean`.
 
 Current verified endpoint:
-`vaart1998_theorem_5_41_positiveSample_identityMeanObservationSource`.
+`vaart1998_theorem_5_41_positiveSample_identityMeanObservationCenteredProductSource`.
 
 Use this endpoint as the live route. It states Theorem 5.41 directly for a
 positive-sample estimator indexed as sample size `n + 1` and defined by the
@@ -31,17 +31,21 @@ specializes the observation space to finite-coordinate vectors
 the offset measurability field from `measurable_const.sub measurable_id`,
 the offset `MemLp 2` field from the observation vector `MemLp 2` source, and
 the population offset-mean field from the mean identity
-`theta0 = E[observation]` plus `integral_neg`. It then reuses the identity
-common-core theta0-offset-vector-mean endpoint, which fixes the common core to
-the identity matrix, discharges the determinant source internally with
-`vaart1998_identityCommonObservationCore_det`, derives theta0 estimating-map
-coordinate measurability and theta0 estimating-map coordinate `MemLp 2`,
-derives product-space zero-coordinate integrability, pairwise independence,
-identical distribution, and positive-sample offset-average convergence from
-the canonical `Measure.infinitePi` observation sequence, then derives
-common-core target convergence, estimator consistency, and coordinate
-measurability of the explicit inverse estimator. It proves the textbook
-finite estimating-equation identity internally, packages it as exact root-set
+`theta0 = E[observation]` plus `integral_neg`. It derives the theta0
+estimating-map centered-product table from the centered observation product
+table
+`∫ (observation i - theta0 i) * (observation j - theta0 j) = Gamma i j`
+using the sample-mean display and sign cancellation. It then reuses the
+identity common-core theta0-offset-vector-mean endpoint, which fixes the
+common core to the identity matrix, discharges the determinant source
+internally with `vaart1998_identityCommonObservationCore_det`, derives theta0
+estimating-map coordinate measurability and theta0 estimating-map coordinate
+`MemLp 2`, derives product-space zero-coordinate integrability, pairwise
+independence, identical distribution, and positive-sample offset-average
+convergence from the canonical `Measure.infinitePi` observation sequence, then
+derives common-core target convergence, estimator consistency, and coordinate
+measurability of the explicit inverse estimator. It proves the textbook finite
+estimating-equation identity internally, packages it as exact root-set
 membership, prepends `theta0` at sample size zero, applies the compiled
 exact-root-set Theorem 5.41 source endpoint, and shifts the
 convergence-in-distribution conclusion back along `Nat.succ`.
@@ -60,9 +64,17 @@ equation, direct coordinate mean-zero, a caller-supplied square matrix, a
 caller-supplied determinant source, the matrix common-core affine display, or
 the matrix population equation, a caller-supplied observation-offset function,
 offset measurability, offset `MemLp 2`, or a separate offset population-mean
-source for the sample-mean observation route.
+source, or a theta0 estimating-map centered-product source for the
+sample-mean observation route.
 
-The newest sample-mean observation packet adds
+The newest centered-product sample-mean packet adds
+`vaart1998_identityMeanObservation_theta0_centeredProduct_of_observation_centeredProduct`
+and
+`vaart1998_theorem_5_41_positiveSample_identityMeanObservationCenteredProductSource`.
+It replaces the theta0 estimating-map centered-product source by the textbook
+centered observation product table for the sample-mean equation.
+
+The previous sample-mean observation packet adds
 `vaart1998_negativeObservationOffset`,
 `vaart1998_negativeObservationOffset_measurable`,
 `vaart1998_negativeObservationOffset_memLp`,
@@ -3105,9 +3117,21 @@ compiling:
    feeds that display into the finite Taylor-zero action-bound endpoint.
 
 Latest verified Vaart frontier before the next packet:
-`vaart1998_theorem_5_41_positiveSample_identityMeanObservationSource`.
+`vaart1998_theorem_5_41_positiveSample_identityMeanObservationCenteredProductSource`.
 
 The latest theorem-sized packet adds
+`vaart1998_identityMeanObservation_theta0_centeredProduct_of_observation_centeredProduct`
+and
+`vaart1998_theorem_5_41_positiveSample_identityMeanObservationCenteredProductSource`.
+The live route now derives the theta0 estimating-map centered-product source
+from the centered observation product table using the sample-mean display
+`observationEstimatingMap observation theta = theta - observation`. The
+remaining live source fields for the sample-mean observation endpoint include
+the observation vector `MemLp 2`, the population mean identity
+`theta0 = E[observation]`, the sample-mean affine display, and the
+still-model-facing derivative/Gaussian and smoothness fields.
+
+The previous theorem-sized packet adds
 `vaart1998_negativeObservationOffset`,
 `vaart1998_negativeObservationOffset_measurable`,
 `vaart1998_negativeObservationOffset_memLp`,
@@ -3127,10 +3151,11 @@ smoothness fields.
 The next aggressive packet should prove exactly one live source field for the
 current endpoint. Priority order:
 
-1. Derive the theta0 centered-product covariance source for the sample-mean
-   equation from a centered observation covariance table.
-2. Derive the derivative-at-theta0 operator mean/source fields for the
+1. Derive the derivative-at-theta0 operator mean/source fields for the
    sample-mean equation from the identity derivative display.
+2. Derive the theta0 centered observation product table from a covariance
+   table plus mean assumptions if the next concrete example needs covariance
+   notation rather than centered products.
 3. Keep generalizing beyond the identity sample-mean route only if a concrete
    textbook example requires it.
 

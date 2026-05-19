@@ -15,7 +15,7 @@ Live `/goal` continuation: use the efficient prompt at the top of
 The long verified-frontier list below is a progress ledger, not a queue to
 revisit.
 
-Latest verified packet: positive-sample identity sample-mean observation
+Latest verified packet: positive-sample identity sample-mean centered-product
 source for Theorem 5.41.
 The live endpoint now states the asymptotic-normality handoff for the explicit estimator
 `vaart1998PositiveCommonObservationCoreInverseEstimator` using
@@ -27,6 +27,8 @@ textbook finite estimating-equation identity from the sample-mean display
 offset measurability from `measurable_const.sub measurable_id`, derives the
 offset `MemLp 2` source from observation-vector `MemLp 2`, derives the offset
 population mean source from `theta0 = E[observation]` and `integral_neg`,
+derives the theta0 estimating-map centered-product table from the centered
+observation product table using sign cancellation for the sample-mean display,
 fixes the common core to the identity matrix, discharges the determinant
 source internally with `vaart1998_identityCommonObservationCore_det`, and
 reuses the square-matrix determinant route. That route derives common-core
@@ -72,21 +74,27 @@ population offset-mean equation, the caller-supplied square matrix, the
 determinant source, the matrix common-core affine display, and the matrix
 population offset-mean equation, caller-supplied observation-offset function,
 offset measurability, offset `MemLp 2`, and separate offset population-mean
-source from the current route.
+source, and theta0 estimating-map centered-product source from the current
+route.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_identityMeanObservationSource`.
+`vaart1998_theorem_5_41_positiveSample_identityMeanObservationCenteredProductSource`.
 
-The newest sample-mean observation packet adds
+The newest centered-product sample-mean packet adds
+`vaart1998_identityMeanObservation_theta0_centeredProduct_of_observation_centeredProduct`
+and
+`vaart1998_theorem_5_41_positiveSample_identityMeanObservationCenteredProductSource`.
+The next blocker is to derive the derivative-at-theta0 operator mean/source
+fields from the identity derivative display, or to connect centered products
+to an explicit covariance-table source if a concrete example needs covariance
+notation.
+
+The previous sample-mean observation packet adds
 `vaart1998_negativeObservationOffset`,
 `vaart1998_negativeObservationOffset_measurable`,
 `vaart1998_negativeObservationOffset_memLp`,
 `vaart1998_theta0_negativeObservationOffsetMean_of_observationMean`, and
 `vaart1998_theorem_5_41_positiveSample_identityMeanObservationSource`.
-The next blocker is to derive one of the remaining sample-mean model-facing
-sources, especially the theta0 centered-product covariance from a centered
-observation covariance table or the derivative-at-theta0 operator mean from
-the identity derivative display.
 
 The previous identity common-core packet adds
 `vaart1998_identityCommonObservationCore_det`,

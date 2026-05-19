@@ -23,9 +23,9 @@ This blueprint tracks the intended Lean route for A. W. van der Vaart,
    possible task would create redundant work.
 
 Current frontier: Theorem 5.41 now has a compiled positive-sample identity
-sample-mean observation source. It states the limit theorem for the explicit
-estimator `vaart1998PositiveCommonObservationCoreInverseEstimator` using
-`vaart1998_identityCommonObservationCoreInverse` and the concrete
+sample-mean centered-product source. It states the limit theorem for the
+explicit estimator `vaart1998PositiveCommonObservationCoreInverseEstimator`
+using `vaart1998_identityCommonObservationCoreInverse` and the concrete
 negative-observation offset `vaart1998_negativeObservationOffset`. It
 specializes the observation space to finite-coordinate vectors, proves the
 textbook finite estimating-equation identity from the pointwise sample-mean
@@ -33,8 +33,10 @@ display `observationEstimatingMap observation theta = theta - observation`,
 derives offset measurability from `measurable_const.sub measurable_id`,
 derives offset `MemLp 2` from observation-vector `MemLp 2`, derives the
 offset population mean source from `theta0 = E[observation]` and
-`integral_neg`, fixes the common core to the identity matrix, discharges the
-determinant source internally with `vaart1998_identityCommonObservationCore_det`,
+`integral_neg`, derives the theta0 estimating-map centered-product table from
+the centered observation product table using sign cancellation for the
+sample-mean display, fixes the common core to the identity matrix, discharges
+the determinant source internally with `vaart1998_identityCommonObservationCore_det`,
 and reuses the square-matrix determinant route. That route derives
 injectivity from the identity determinant using mathlib's matrix
 nonsingularity API, derives equality of the function-space finranks from
@@ -75,21 +77,27 @@ equation, the direct coordinate mean-zero field, a caller-supplied square
 matrix, a caller-supplied determinant source, the matrix common-core affine
 display, the matrix population equation, a caller-supplied observation-offset
 function, offset measurability, offset `MemLp 2`, a separate offset
-population-mean source, or a raw right-inverse value at the limiting target.
+population-mean source, a theta0 estimating-map centered-product source, or a
+raw right-inverse value at the limiting target.
 
 Current endpoint:
-`vaart1998_theorem_5_41_positiveSample_identityMeanObservationSource`.
+`vaart1998_theorem_5_41_positiveSample_identityMeanObservationCenteredProductSource`.
 
 The newest wrapper adds
+`vaart1998_identityMeanObservation_theta0_centeredProduct_of_observation_centeredProduct`
+and
+`vaart1998_theorem_5_41_positiveSample_identityMeanObservationCenteredProductSource`.
+The next proof layer should derive the derivative-at-theta0 operator
+mean/source fields from the identity derivative display, or connect centered
+products to an explicit covariance-table source if the next concrete example
+needs covariance notation.
+
+The previous wrapper adds
 `vaart1998_negativeObservationOffset`,
 `vaart1998_negativeObservationOffset_measurable`,
 `vaart1998_negativeObservationOffset_memLp`,
 `vaart1998_theta0_negativeObservationOffsetMean_of_observationMean`, and
 `vaart1998_theorem_5_41_positiveSample_identityMeanObservationSource`.
-The next proof layer should derive one remaining sample-mean model-facing
-source, especially the theta0 centered-product covariance from a centered
-observation covariance table or the derivative-at-theta0 operator mean from
-the identity derivative display.
 
 The previous wrapper adds
 `vaart1998_identityCommonObservationCore_det`,
