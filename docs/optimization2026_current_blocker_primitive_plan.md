@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V82`, this file's top
+   the full book is complete, route from `Live Goal Prompt V83`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -140,39 +140,54 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V82
+## Live Goal Prompt V83
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V82 packages the finite-row central-path Newton
-decrement recurrence, bypassing the additive Euclidean `hlip` route.  Newly
-compiled declarations are
+Current active frontier: V83 packages the finite-row central-path Newton
+decrement recurrence into trajectory stability and summable doubled-decrement
+budgets.  Newly compiled declarations are
+`chewi1316RangeCentralPathValue_iterates_mem_and_newtonDecrement_le_quarter_of_trajectory`,
+`chewi1316RangeCentralPathValue_iterates_mem_of_initial_decrement_le_quarter`,
+`chewi1316RangeCentralPathValue_newtonDecrement_le_quarter_of_initial_decrement_le_quarter`,
+`chewi1316RangeCentralPathValue_newtonDecrement_succ_le_eighth_of_initial_decrement_le_quarter`,
+`real_newton_fraction_le_half_mul_of_le_quarter`,
+`chewi1316RangeCentralPathValue_newtonDecrement_succ_le_half_mul_of_initial_decrement_le_quarter`,
+`chewi1316RangeCentralPathValue_newtonDecrement_doubled_tsum_le_half_of_initial_decrement_le_eighth`,
+and
+`chewi1316RangeCentralPathValue_newtonDecrement_doubled_prefix_le_half_of_initial_decrement_le_eighth`
+in `StatInference/Optimization/Theorem131Gradient.lean`.  The proof reuses
+V82's recurrence
 `chewi1316RangeCentralPathValue_newtonDecrement_step_le_of_decrement_lt_one`
-and `chewi1316RangeCentralPathValue_newtonDecrement_succ_le_of_trajectory` in
-`StatInference/Optimization/Theorem131Gradient.lean`.  The proof reuses
+and
+`chewi1316RangeCentralPathValue_newtonDecrement_succ_le_of_trajectory`,
 `chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`,
 `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel`,
 `chewi1316RangeCentralPathValue_gradient_hasFDerivAt`,
-`newton_linear_of_hessian_right_inverse`, and the finite-row
-feasibility/right-inverse/Hessian derivative APIs.  Focused verification
+`chewi1316_mainStage_newtonDecrement_le_quarter`,
+`chewi1316_mainStage_newtonDecrement_le_eighth`,
+`chewi1316_stepBudget_tsum_le_half_of_doubled_recurrence`, and
+`chewi1316_stepBudget_prefix_le_half_of_tsum`.  Focused verification
 command: `lake build StatInference.Optimization.Theorem131Gradient`.
 
-Next active proof target: assemble this Newton-decrement recurrence into a
-stable trajectory-level control theorem.  A good packet is either a scalar
-invariant that turns `λ_{k+1} ≤ λ_k^2/(1-λ_k)^2` and `λ_0 ≤ c` into
-`λ_k ≤ c`/summable budgets, or a direct central-path recurrence wrapper that
-uses V82 plus the existing `chewi1316_mainStage_*` scalar lemmas.  Do not
-reopen the Euclidean Hessian `hlip` route unless it is needed only as a thin
-consumer; the active analytic surface should now be Newton decrement/local
-norm.  Do not repeat the square-root-coordinate, gradient differentiability,
-Newton linearization, feasible step, source-radius, or `hlower` searches.
+Next active proof target: feed the V83 central-path prefix budget into the
+existing V80/V81 source-radius/lower-bound recurrence wrappers, or add the
+thin transport theorem that identifies the range central-path doubled
+decrement budget with the consumer-facing `stepBudget` interface.  The
+quadratic-to-linear contraction and prefix budget are no longer blockers.
+Do not reopen the Euclidean Hessian `hlip` route unless it is only a thin
+consumer; the active analytic surface remains Newton decrement/local norm.
+Do not repeat the square-root-coordinate, gradient differentiability, Newton
+linearization, feasible step, source-radius, `hlower`, scalar
+main-stage-decrement, or geometric-budget searches.
 
-Methodology note: V82 validates the high-throughput path: search for the
-strong source theorem, specialize it once to the finite-row range model, then
-add a trajectory wrapper.  This avoided manufacturing a bespoke Hessian
-Lipschitz proof and should be preferred for the remaining Chewi 13.1/13.16
-Newton convergence route.
+Methodology note: V83 confirms the fastest pattern for this lane.  After a
+strong local-norm theorem is specialized to the finite-row range model, first
+convert it into invariant/budget interfaces that match existing consumers.
+The reusable scalar layer already contains both the main-stage decrement
+algebra and geometric-budget adapter, so the remaining work should be
+interface transport, not new recurrence algebra.
 
 V81 dependency cache: V81 feeds V80 into the finite-row central-path local
 quadratic recurrence.  Compiled declarations are

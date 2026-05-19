@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V82` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V83` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -33,21 +33,23 @@ record proof accelerators, friction sources, repeated searches to avoid, and
 the shortest accurate next prompt.  This is part of building a reusable
 formalization workflow for future statistical theory development in Lean.
 
-Current V82 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V83 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, while active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
-range-space local Newton-convergence recurrence.  V82 adds the finite-row
-central-path Newton-decrement recurrence and its trajectory wrapper:
-`λ_{k+1} ≤ λ_k^2/(1-λ_k)^2` now follows from feasibility and
-`λ_k < 1`, using Chewi 13.8 and the compiled range square-root model.  The
-next live target is to turn this recurrence into stable trajectory control
-and summable decrement budgets, then feed those budgets back into the
-source-radius/lower-bound recurrence wrappers when needed.  The active route
-is now local-norm/Newton-decrement shaped; the additive Euclidean op-norm
-`hlip` route is no longer the preferred blocker.  Do not repeat the
+range-space local Newton-convergence recurrence.  V83 adds the stable
+trajectory and budget layer on top of V82: initial feasibility plus
+`λ_0 <= 1/4` keeps all central-path iterates feasible and all decrements
+`<= 1/4`; each successor decrement is `<= 1/8`; the recurrence linearizes to
+`λ_{k+1} <= (1/2) λ_k`; and initial `λ_0 <= 1/8` gives a doubled-decrement
+`tsum` and every finite prefix bounded by `1/2`.  The next live target is to
+feed this V83 prefix budget back into the source-radius/lower-bound recurrence
+wrappers when needed, or add the thin range-to-consumer transport theorem.  The
+active route is local-norm/Newton-decrement shaped; the additive Euclidean
+op-norm `hlip` route is no longer the preferred blocker.  Do not repeat the
 inverse-norm, recurrence-induction, feasible-segment, Newton-feasibility,
 source-radius, lower-Hessian, square-root-coordinate, gradient
-differentiability, Newton-linearization, or range-coordinate searches unless a
+differentiability, Newton-linearization, scalar main-stage-decrement,
+geometric-budget, or range-coordinate searches unless a
 specific self-concordance/local-norm blocker requires it.
 
 Historical route cache: the module

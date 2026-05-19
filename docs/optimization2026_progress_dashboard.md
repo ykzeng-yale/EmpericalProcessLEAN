@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V82` near the top of
+  `Live Goal Prompt V83` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -52,20 +52,26 @@ This dashboard tracks the Chewi optimization formalization lane for
   If that temp worktree disappears, recreate it and run `lake exe cache get`
   before focused builds; otherwise the first build can waste time rebuilding
   mathlib locally.
-- Latest Theorem 13.1 frontier: V82 compiles the finite-row central-path
-  Newton-decrement recurrence and trajectory wrapper.  New declarations are
-  `chewi1316RangeCentralPathValue_newtonDecrement_step_le_of_decrement_lt_one`
-  and `chewi1316RangeCentralPathValue_newtonDecrement_succ_le_of_trajectory`
-  in `StatInference/Optimization/Theorem131Gradient.lean`.  Search-first reuse
-  came from
-  `chewi138_newtonDecrement_step_le_of_sqrtCoordFamilyModel_of_sourceNewtonSegment`,
-  `chewi1314_polytopeSlackNegLog_exists_rangeSqrtCoordModel`,
-  `chewi1316RangeCentralPathValue_gradient_hasFDerivAt`, and
-  `newton_linear_of_hessian_right_inverse`.  Next blocker: turn the recurrence
-  `λ_{k+1} ≤ λ_k^2/(1-λ_k)^2` into trajectory-level decrement control and
-  summable budgets, preferably using existing `chewi1316_mainStage_*` scalar
-  lemmas.  Methodology note: specialize strong local-norm source theorems
-  before attempting bespoke Euclidean Hessian Lipschitz proofs.
+- Latest Theorem 13.1 frontier: V83 compiles trajectory-level central-path
+  decrement stability and doubled-budget control from the V82 recurrence.
+  New declarations in `StatInference/Optimization/Theorem131Gradient.lean`
+  are
+  `chewi1316RangeCentralPathValue_iterates_mem_and_newtonDecrement_le_quarter_of_trajectory`,
+  `chewi1316RangeCentralPathValue_iterates_mem_of_initial_decrement_le_quarter`,
+  `chewi1316RangeCentralPathValue_newtonDecrement_le_quarter_of_initial_decrement_le_quarter`,
+  `chewi1316RangeCentralPathValue_newtonDecrement_succ_le_eighth_of_initial_decrement_le_quarter`,
+  `real_newton_fraction_le_half_mul_of_le_quarter`,
+  `chewi1316RangeCentralPathValue_newtonDecrement_succ_le_half_mul_of_initial_decrement_le_quarter`,
+  `chewi1316RangeCentralPathValue_newtonDecrement_doubled_tsum_le_half_of_initial_decrement_le_eighth`,
+  and
+  `chewi1316RangeCentralPathValue_newtonDecrement_doubled_prefix_le_half_of_initial_decrement_le_eighth`.
+  Search-first reuse came from V82's finite-row recurrence, the
+  `chewi1316_mainStage_*` scalar decrement lemmas, and the existing
+  `chewi1316_stepBudget_*` geometric budget adapters.  Next blocker: transport
+  the V83 prefix budget into the V80/V81 source-radius and lower-Hessian
+  recurrence consumers, not new scalar recurrence algebra.  Methodology note:
+  specialize strong local-norm source theorems, then immediately expose
+  invariant and consumer-facing budget interfaces.
 - V81 frontier cache: V81 compiles the lower-Hessian supplier and recurrence
   wrapper for the finite-row central-path trajectory.  New declarations are
   `chewi1316RangeCentralPathValue_hlower_of_trajectory_decrementBudget` and
