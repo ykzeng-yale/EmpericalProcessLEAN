@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V596
+## Live In-Thread Goal Prompt V597
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -481,6 +481,10 @@ coordinate forms, and shifted-joint-law one-based coordinate forms.
 V596 adds the direct source-side iid shifted common-law Chapter 2.1.13
 power-value and expectation-exists-and-power-value wrappers over arbitrary
 finite subfamilies and the shifted literal one-based `Icc`.
+V597 adds the matching joint infinite-product common-law Chapter 2.1.13
+value-only power handoffs over finite subfamilies, range/Ico intervals,
+literal one-based `Icc`, full-law shifted one-based coordinate forms, and
+shifted-joint-law one-based coordinate forms.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -834,6 +838,10 @@ After V596, do not rebuild the source-side iid shifted common-law Theorem
 2.1.13 power-value or expectation-exists-and-power-value wrappers for
 arbitrary finite subfamilies or shifted literal one-based `Icc` products unless
 an exact later consumer needs a different display shape.
+After V597, do not rebuild the joint infinite-product common-law Theorem
+2.1.13 value-only power handoffs for finite, range/Ico, literal one-based
+`Icc`, full-law shifted one-based, or shifted-joint-law one-based products
+unless an exact later consumer needs a different display shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -1075,7 +1083,31 @@ range-sum, and textbook inverse-multiple displays in zero-based and one-based
 forms,
 or old app-level stale prompts.
 
-Latest verified target V596 adds direct source-side iid shifted common-law
+Latest verified target V597 adds joint infinite-product common-law Chapter
+2.1.13 value-only power handoffs over finite subfamilies, range/Ico intervals,
+literal one-based `Icc`, full-law shifted one-based coordinate forms, and
+shifted-joint-law one-based coordinate forms:
+`durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_pow_integral_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integral_range_law_prod_eq_pow_integral_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integral_Ico_law_prod_eq_pow_integral_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integral_oneBased_Icc_law_prod_eq_pow_integral_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_pow_integral_oneBased_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integral_range_law_prod_eq_pow_integral_oneBased_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integral_Ico_law_prod_eq_pow_integral_oneBased_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_shift_integral_oneBased_Icc_law_prod_eq_pow_integral_of_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integral_finset_law_prod_eq_pow_integral_oneBased_of_shift_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integral_range_law_prod_eq_pow_integral_oneBased_of_shift_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integral_Ico_law_prod_eq_pow_integral_oneBased_of_shift_hasLaw_infinitePi`, and
+`durrett2019_theorem_2_1_13_integral_oneBased_Icc_law_prod_eq_pow_integral_of_shift_hasLaw_infinitePi`.
+These wrappers let joint infinite-product law consumers use iid common-law
+power expectation values without carrying extra measurability hypotheses when
+integrability packaging is not needed.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V596 adds direct source-side iid shifted common-law
 Chapter 2.1.13 power-value and expectation-exists-and-power-value wrappers
 over arbitrary finite subfamilies and the shifted literal one-based `Icc`:
 `durrett2019_theorem_2_1_13_iid_shift_integral_finset_law_prod_eq_pow_integral`,
@@ -7240,6 +7272,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V596` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V597` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
