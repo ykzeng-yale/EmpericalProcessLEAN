@@ -9191,6 +9191,336 @@ theorem durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_law_pro
         (P := P) (X := X) (μ := μ) (f := f) hX hLaw hf hi hzero
 
 /--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+law-side product integrability and expectation factorization over an initial
+range.
+-/
+theorem durrett2019_theorem_2_1_13_integrable_and_integral_range_law_prod_eq_prod_integral_of_hasLaw_infinitePi
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℕ -> ℝ -> 𝕜}
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) ν) (n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.range n, f i (X i ω)) P ∧
+      ∫ ω, ∏ i ∈ Finset.range n, f i (X i ω) ∂P =
+        ∏ i ∈ Finset.range n, ∫ x, f i x ∂ν := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_law_prod_eq_prod_integral
+      (P := P) (S := fun _ : ℕ => ℝ) (X := X)
+      (μ := fun _ : ℕ => ν) (f := f)
+      hSource.2 hX_meas hSource.1 hf_meas hf n
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+law-side product integrability and expectation factorization over an interval
+block.
+-/
+theorem durrett2019_theorem_2_1_13_integrable_and_integral_Ico_law_prod_eq_prod_integral_of_hasLaw_infinitePi
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℕ -> ℝ -> 𝕜}
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) ν) (m n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.Ico m n, f i (X i ω)) P ∧
+      ∫ ω, ∏ i ∈ Finset.Ico m n, f i (X i ω) ∂P =
+        ∏ i ∈ Finset.Ico m n, ∫ x, f i x ∂ν := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_law_prod_eq_prod_integral
+      (P := P) (S := fun _ : ℕ => ℝ) (X := X)
+      (μ := fun _ : ℕ => ν) (f := f)
+      hSource.2 hX_meas hSource.1 hf_meas hf m n
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+a zero law-side factor gives product integrability and zero expectation over an
+initial range.
+-/
+theorem durrett2019_theorem_2_1_13_integrable_and_integral_range_law_prod_eq_zero_of_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℕ -> ℝ -> 𝕜}
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) ν)
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hzero : ∫ x, f i x ∂ν = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.range n, f j (X j ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.range n, f j (X j ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_law_prod_eq_zero_of_integrable_and_integral_eq_zero
+      (P := P) (S := fun _ : ℕ => ℝ) (X := X)
+      (μ := fun _ : ℕ => ν) (f := f)
+      hSource.2 hX_meas hSource.1 hf_meas hf hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law:
+a zero law-side factor gives product integrability and zero expectation over an
+interval block.
+-/
+theorem durrett2019_theorem_2_1_13_integrable_and_integral_Ico_law_prod_eq_zero_of_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℕ -> ℝ -> 𝕜}
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) ν)
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hzero : ∫ x, f i x ∂ν = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.Ico m n, f j (X j ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.Ico m n, f j (X j ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_law_prod_eq_zero_of_integrable_and_integral_eq_zero
+      (P := P) (S := fun _ : ℕ => ℝ) (X := X)
+      (μ := fun _ : ℕ => ν) (f := f)
+      hSource.2 hX_meas hSource.1 hf_meas hf hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law in
+one-based notation: law-side product integrability and expectation
+factorization over an initial range.
+-/
+theorem durrett2019_theorem_2_1_13_integrable_and_integral_range_law_prod_eq_prod_integral_oneBased_of_hasLaw_infinitePi
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℕ -> ℝ -> 𝕜}
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) ν) (n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.range n, f (i + 1) (X (i + 1) ω)) P ∧
+      ∫ ω, ∏ i ∈ Finset.range n, f (i + 1) (X (i + 1) ω) ∂P =
+        ∏ i ∈ Finset.range n, ∫ x, f (i + 1) x ∂ν := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_law_prod_eq_prod_integral_oneBased
+      (P := P) (S := fun _ : ℕ => ℝ) (X := X)
+      (μ := fun _ : ℕ => ν) (f := f)
+      hSource.2 hX_meas hSource.1 hf_meas hf n
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law in
+one-based notation: law-side product integrability and expectation
+factorization over an interval block.
+-/
+theorem durrett2019_theorem_2_1_13_integrable_and_integral_Ico_law_prod_eq_prod_integral_oneBased_of_hasLaw_infinitePi
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℕ -> ℝ -> 𝕜}
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) ν) (m n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.Ico m n, f (i + 1) (X (i + 1) ω)) P ∧
+      ∫ ω, ∏ i ∈ Finset.Ico m n, f (i + 1) (X (i + 1) ω) ∂P =
+        ∏ i ∈ Finset.Ico m n, ∫ x, f (i + 1) x ∂ν := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_law_prod_eq_prod_integral_oneBased
+      (P := P) (S := fun _ : ℕ => ℝ) (X := X)
+      (μ := fun _ : ℕ => ν) (f := f)
+      hSource.2 hX_meas hSource.1 hf_meas hf m n
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law in
+one-based notation: a zero law-side factor gives product integrability and zero
+expectation over an initial range.
+-/
+theorem durrett2019_theorem_2_1_13_integrable_and_integral_range_law_prod_eq_zero_oneBased_of_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℕ -> ℝ -> 𝕜}
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) ν)
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hzero : ∫ x, f (i + 1) x ∂ν = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.range n, f (j + 1) (X (j + 1) ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.range n, f (j + 1) (X (j + 1) ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_law_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero
+      (P := P) (S := fun _ : ℕ => ℝ) (X := X)
+      (μ := fun _ : ℕ => ν) (f := f)
+      hSource.2 hX_meas hSource.1 hf_meas hf hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a full infinite-product joint law in
+one-based notation: a zero law-side factor gives product integrability and zero
+expectation over an interval block.
+-/
+theorem durrett2019_theorem_2_1_13_integrable_and_integral_Ico_law_prod_eq_zero_oneBased_of_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℕ -> ℝ -> 𝕜}
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X i ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) ν)
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hzero : ∫ x, f (i + 1) x ∂ν = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.Ico m n, f (j + 1) (X (j + 1) ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.Ico m n, f (j + 1) (X (j + 1) ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_sequence_of_hasLaw_infinitePi hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_law_prod_eq_zero_oneBased_of_integrable_and_integral_eq_zero
+      (P := P) (S := fun _ : ℕ => ℝ) (X := X)
+      (μ := fun _ : ℕ => ν) (f := f)
+      hSource.2 hX_meas hSource.1 hf_meas hf hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a shifted infinite-product joint law:
+law-side product integrability and expectation factorization over a one-based
+initial range.
+-/
+theorem durrett2019_theorem_2_1_13_integrable_and_integral_range_law_prod_eq_prod_integral_oneBased_of_shift_hasLaw_infinitePi
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℕ -> ℝ -> 𝕜}
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) ν) (n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.range n, f (i + 1) (X (i + 1) ω)) P ∧
+      ∫ ω, ∏ i ∈ Finset.range n, f (i + 1) (X (i + 1) ω) ∂P =
+        ∏ i ∈ Finset.range n, ∫ x, f (i + 1) x ∂ν := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_law_prod_eq_prod_integral
+      (P := P) (S := fun _ : ℕ => ℝ)
+      (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      (μ := fun _ : ℕ => ν) (f := fun i : ℕ => f (i + 1))
+      hSource.2 (fun i => hX_meas (i + 1)) hSource.1
+      (fun i => hf_meas (i + 1)) (fun i => hf (i + 1)) n
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a shifted infinite-product joint law:
+law-side product integrability and expectation factorization over a one-based
+interval block.
+-/
+theorem durrett2019_theorem_2_1_13_integrable_and_integral_Ico_law_prod_eq_prod_integral_oneBased_of_shift_hasLaw_infinitePi
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℕ -> ℝ -> 𝕜}
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) ν) (m n : ℕ) :
+    Integrable (fun ω => ∏ i ∈ Finset.Ico m n, f (i + 1) (X (i + 1) ω)) P ∧
+      ∫ ω, ∏ i ∈ Finset.Ico m n, f (i + 1) (X (i + 1) ω) ∂P =
+        ∏ i ∈ Finset.Ico m n, ∫ x, f (i + 1) x ∂ν := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_law_prod_eq_prod_integral
+      (P := P) (S := fun _ : ℕ => ℝ)
+      (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      (μ := fun _ : ℕ => ν) (f := fun i : ℕ => f (i + 1))
+      hSource.2 (fun i => hX_meas (i + 1)) hSource.1
+      (fun i => hf_meas (i + 1)) (fun i => hf (i + 1)) m n
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a shifted infinite-product joint law:
+a zero law-side factor gives product integrability and zero expectation over a
+one-based initial range.
+-/
+theorem durrett2019_theorem_2_1_13_integrable_and_integral_range_law_prod_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℕ -> ℝ -> 𝕜}
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) ν)
+    {n i : ℕ} (hi : i ∈ Finset.range n)
+    (hzero : ∫ x, f (i + 1) x ∂ν = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.range n, f (j + 1) (X (j + 1) ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.range n, f (j + 1) (X (j + 1) ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_range_law_prod_eq_zero_of_integrable_and_integral_eq_zero
+      (P := P) (S := fun _ : ℕ => ℝ)
+      (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      (μ := fun _ : ℕ => ν) (f := fun i : ℕ => f (i + 1))
+      hSource.2 (fun i => hX_meas (i + 1)) hSource.1
+      (fun i => hf_meas (i + 1)) (fun i => hf (i + 1)) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support from a shifted infinite-product joint law:
+a zero law-side factor gives product integrability and zero expectation over a
+one-based interval block.
+-/
+theorem durrett2019_theorem_2_1_13_integrable_and_integral_Ico_law_prod_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_integral_eq_zero
+    {Ω : Type u} {𝕜 : Type v} [RCLike 𝕜] [MeasurableSpace Ω]
+    {P : Measure Ω} {X : ℕ -> Ω -> ℝ} {ν : Measure ℝ}
+    [IsProbabilityMeasure ν] {f : ℕ -> ℝ -> 𝕜}
+    (hX_meas : ∀ i, Measurable (X i))
+    (hJoint : _root_.ProbabilityTheory.HasLaw
+      (fun ω => fun i : ℕ => X (i + 1) ω)
+      (Measure.infinitePi fun _ : ℕ => ν) P)
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) ν)
+    {m n i : ℕ} (hi : i ∈ Finset.Ico m n)
+    (hzero : ∫ x, f (i + 1) x ∂ν = 0) :
+    Integrable (fun ω => ∏ j ∈ Finset.Ico m n, f (j + 1) (X (j + 1) ω)) P ∧
+      ∫ ω, ∏ j ∈ Finset.Ico m n, f (j + 1) (X (j + 1) ω) ∂P = 0 := by
+  have hSource :=
+    durrett2019_theorem_2_1_11_iid_shift_sequence_of_hasLaw_infinitePi
+      (X := X) hJoint
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_Ico_law_prod_eq_zero_of_integrable_and_integral_eq_zero
+      (P := P) (S := fun _ : ℕ => ℝ)
+      (X := fun i : ℕ => fun ω => X (i + 1) ω)
+      (μ := fun _ : ℕ => ν) (f := fun i : ℕ => f (i + 1))
+      hSource.2 (fun i => hX_meas (i + 1)) hSource.1
+      (fun i => hf_meas (i + 1)) (fun i => hf (i + 1)) hi hzero
+
+/--
 Durrett 2019, Theorem 2.1.13, iid law-side finite-subfamily
 expectation-exists-and-power-value formula.
 -/
