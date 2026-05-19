@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V70` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V71` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -33,7 +33,7 @@ record proof accelerators, friction sources, repeated searches to avoid, and
 the shortest accurate next prompt.  This is part of building a reusable
 formalization workflow for future statistical theory development in Lean.
 
-Current V70 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V71 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -305,6 +305,23 @@ one-step, and recurrence wrappers.  Methodology note: prefer this existing
 Hilbert-space API over custom semilinear coercion lemmas; the next proof
 packet should instantiate the bilinear Hessian from `iteratedFDeriv` or a
 concrete barrier Hessian model.
+The V71 layer adds `chewi131SecondFDerivBilin`,
+`chewi131SecondFDerivBilin_toContinuousLinearMap_eq_fderiv_fderiv`,
+`chewi131SecondFDerivBilin_hasFDerivAt_of_contDiffAt_two`,
+`chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_contDiffAt_two_secondFDerivBilin_of_radius`,
+`positiveOrthantNegLogBarrier_gradient_eq`,
+`positiveOrthantNegLogBarrier_gradient_hasFDerivAt`,
+`positiveOrthantNegLogBarrier_fderiv_gradient_eq`,
+`positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt`, and
+`positiveOrthantNegLogBarrier_fderiv_gradient_eventually_eq`.  It uses
+mathlib `ContinuousMultilinearMap.curryLeft`,
+`continuousMultilinearCurryFin1`, `iteratedFDeriv_two_apply`,
+`ContDiffAt.fderiv_right_succ`, `ContDiffAt.differentiableAt_one`, and
+`HasFDerivAt.congr_of_eventuallyEq`, plus local
+`positiveOrthantNegLogBarrier_hasGradientAt` and
+`positiveOrthantNegLogGrad_hasFDerivAt`.  The next source step is the
+concrete Hessian matrix adapter from the positive-orthant diagonal Hessian or
+from a source Hessian matrix family into `chewi131MatrixCLM`.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source

@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V70` near the top of
+  `Live Goal Prompt V71` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -52,6 +52,29 @@ This dashboard tracks the Chewi optimization formalization lane for
   If that temp worktree disappears, recreate it and run `lake exe cache get`
   before focused builds; otherwise the first build can waste time rebuilding
   mathlib locally.
+- Latest Theorem 13.1 frontier: V71 compiles the abstract `C^2`-to-bilinear
+  Hessian bridge in `StatInference/Optimization/Theorem131Gradient.lean` and
+  the concrete positive-orthant `gradient`/Hessian bridge in
+  `StatInference/Optimization/InteriorPoint.lean`.  New declarations are
+  `chewi131SecondFDerivBilin`,
+  `chewi131SecondFDerivBilin_toContinuousLinearMap_eq_fderiv_fderiv`,
+  `chewi131SecondFDerivBilin_hasFDerivAt_of_contDiffAt_two`,
+  `chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_contDiffAt_two_secondFDerivBilin_of_radius`,
+  `positiveOrthantNegLogBarrier_gradient_eq`,
+  `positiveOrthantNegLogBarrier_gradient_hasFDerivAt`,
+  `positiveOrthantNegLogBarrier_fderiv_gradient_eq`,
+  `positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt`, and
+  `positiveOrthantNegLogBarrier_fderiv_gradient_eventually_eq`.  Search-first
+  reuse came from mathlib `ContinuousMultilinearMap.curryLeft`,
+  `continuousMultilinearCurryFin1`, `iteratedFDeriv_two_apply`,
+  `ContDiffAt.fderiv_right_succ`, `ContDiffAt.differentiableAt_one`,
+  `HasFDerivAt.congr_of_eventuallyEq`, `HasGradientAt.gradient`, and local
+  positive-orthant derivative facts.  Next blocker: prove the concrete
+  Hessian matrix adapter, either
+  `chewi131MatrixCLM (Hfun z) = positiveOrthantNegLogHessCLM z` for the
+  positive-orthant barrier or the source bilinear equality
+  `InnerProductSpace.continuousLinearMapOfBilin (chewi131SecondFDerivBilin f z)
+    = chewi131MatrixCLM (Hfun z)`.
 - Latest Appendix A frontier: `StatInference/Optimization/AppendixA.lean` now
   starts the source-facing matrix-order layer and is imported by
   `StatInference.lean`.  Compiled declarations
@@ -328,6 +351,20 @@ This dashboard tracks the Chewi optimization formalization lane for
   one-step, and recurrence wrappers.  Methodology note: this removes the
   abstract Hessian-identification blocker; next work should instantiate the
   bilinear Hessian family from `iteratedFDeriv` or a concrete barrier model.
+  The V71 layer adds `chewi131SecondFDerivBilin`,
+  `chewi131SecondFDerivBilin_toContinuousLinearMap_eq_fderiv_fderiv`,
+  `chewi131SecondFDerivBilin_hasFDerivAt_of_contDiffAt_two`,
+  `chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_contDiffAt_two_secondFDerivBilin_of_radius`,
+  `positiveOrthantNegLogBarrier_gradient_eq`,
+  `positiveOrthantNegLogBarrier_gradient_hasFDerivAt`,
+  `positiveOrthantNegLogBarrier_fderiv_gradient_eq`,
+  `positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt`, and
+  `positiveOrthantNegLogBarrier_fderiv_gradient_eventually_eq`.  It
+  instantiates the V70 bilinear interface from mathlib `iteratedFDeriv` and
+  exposes the concrete positive-orthant barrier derivative surface for
+  mathlib's `gradient`.  Methodology note: read-only API scouts were highly
+  effective here; keep scouts read-only and let the main thread own the proof
+  integration to avoid duplicate edits.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

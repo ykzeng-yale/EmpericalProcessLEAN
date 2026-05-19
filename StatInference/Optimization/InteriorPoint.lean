@@ -25713,6 +25713,15 @@ theorem positiveOrthantNegLogBarrier_hasGradientAt {d : ℕ}
   ext y
   simp [positiveOrthantNegLogGrad, PiLp.inner_apply, RCLike.inner_apply, mul_comm]
 
+/--
+On the positive orthant, mathlib's `gradient` agrees with the coordinatewise
+gradient model for the logarithmic barrier.
+-/
+theorem positiveOrthantNegLogBarrier_gradient_eq {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    gradient positiveOrthantNegLogBarrier x = positiveOrthantNegLogGrad x :=
+  (positiveOrthantNegLogBarrier_hasGradientAt hx).gradient
+
 theorem barrierAffineRangeValue_positiveOrthantNegLogBarrier_hasGradientAt
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
     (A : F →L[ℝ] (EuclideanSpace ℝ (Fin m)))
@@ -25913,6 +25922,52 @@ theorem positiveOrthantNegLogGrad_hasFDerivAt {d : ℕ}
       ring
     simpa [positiveOrthantNegLogGrad, hproj] using hcomp
   exact hstrict.hasFDerivAt
+
+/--
+On the positive orthant, mathlib's `gradient` of the logarithmic barrier has
+the concrete diagonal Hessian as its Frechet derivative.
+-/
+theorem positiveOrthantNegLogBarrier_gradient_hasFDerivAt {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    HasFDerivAt (gradient positiveOrthantNegLogBarrier)
+      (positiveOrthantNegLogHessCLM x) x := by
+  refine (positiveOrthantNegLogGrad_hasFDerivAt hx).congr_of_eventuallyEq ?_
+  filter_upwards [isOpen_positiveOrthant.mem_nhds hx] with y hy
+  exact positiveOrthantNegLogBarrier_gradient_eq hy
+
+/--
+The `fderiv` of mathlib's `gradient` of the logarithmic barrier is the
+coordinatewise diagonal Hessian on the positive orthant.
+-/
+theorem positiveOrthantNegLogBarrier_fderiv_gradient_eq {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    fderiv ℝ (gradient positiveOrthantNegLogBarrier) x =
+      positiveOrthantNegLogHessCLM x :=
+  (positiveOrthantNegLogBarrier_gradient_hasFDerivAt hx).fderiv
+
+/--
+The concrete Hessian derivative model for mathlib's `gradient` holds
+eventually near every positive-orthant point.
+-/
+theorem positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    ∀ᶠ y in 𝓝 x,
+      HasFDerivAt (gradient positiveOrthantNegLogBarrier)
+        (positiveOrthantNegLogHessCLM y) y := by
+  filter_upwards [isOpen_positiveOrthant.mem_nhds hx] with y hy
+  exact positiveOrthantNegLogBarrier_gradient_hasFDerivAt hy
+
+/--
+The `fderiv` identity for mathlib's `gradient` holds eventually near every
+positive-orthant point.
+-/
+theorem positiveOrthantNegLogBarrier_fderiv_gradient_eventually_eq {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    ∀ᶠ y in 𝓝 x,
+      fderiv ℝ (gradient positiveOrthantNegLogBarrier) y =
+        positiveOrthantNegLogHessCLM y := by
+  filter_upwards [isOpen_positiveOrthant.mem_nhds hx] with y hy
+  exact positiveOrthantNegLogBarrier_fderiv_gradient_eq hy
 
 theorem positiveOrthantNegLogGrad_continuousOn {d : ℕ} :
     ContinuousOn positiveOrthantNegLogGrad (positiveOrthant (d := d)) := by

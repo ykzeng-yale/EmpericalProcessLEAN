@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V70`, this file's top
+   the full book is complete, route from `Live Goal Prompt V71`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -140,12 +140,60 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V70
+## Live Goal Prompt V71
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V70 extends the root-imported module
+Current active frontier: V71 extends both
+`StatInference/Optimization/Theorem131Gradient.lean` and
+`StatInference/Optimization/InteriorPoint.lean`.  Newly compiled V71
+declarations are
+`chewi131SecondFDerivBilin`,
+`chewi131SecondFDerivBilin_toContinuousLinearMap_eq_fderiv_fderiv`,
+`chewi131SecondFDerivBilin_hasFDerivAt_of_contDiffAt_two`,
+`chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_contDiffAt_two_secondFDerivBilin_of_radius`,
+`positiveOrthantNegLogBarrier_gradient_eq`,
+`positiveOrthantNegLogBarrier_gradient_hasFDerivAt`,
+`positiveOrthantNegLogBarrier_fderiv_gradient_eq`,
+`positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt`, and
+`positiveOrthantNegLogBarrier_fderiv_gradient_eventually_eq`.  The abstract
+bridge curries mathlib's `iteratedFDeriv ℝ 2 f z` with
+`ContinuousMultilinearMap.curryLeft` and `continuousMultilinearCurryFin1` to
+produce the V70 bilinear Hessian interface from pointwise `ContDiffAt ℝ 2 f`.
+The concrete positive-orthant bridge reuses
+`positiveOrthantNegLogBarrier_hasGradientAt`,
+`positiveOrthantNegLogGrad_hasFDerivAt`, `isOpen_positiveOrthant`, and
+mathlib `HasFDerivAt.congr_of_eventuallyEq` to identify mathlib's `gradient`
+with the local coordinate gradient and diagonal Hessian.  The focused
+verification commands are
+`lake build StatInference.Optimization.InteriorPoint` and
+`lake build StatInference.Optimization.Theorem131Gradient`; root verification
+remains blocked by the current low-disk environment unless enough cache/disk is
+available.
+
+Next active proof target: discharge the remaining Hessian matrix adapter for a
+concrete barrier/source instance.  Preferred route A is to prove a diagonal
+matrix bridge of the form
+`chewi131MatrixCLM (Hfun z) = positiveOrthantNegLogHessCLM z` for the
+positive-orthant logarithmic barrier, then feed the V71 eventual
+`gradient_hasFDerivAt` facts into the Theorem 13.1 recurrence surface.
+Preferred route B is to prove the source matrix equality
+`InnerProductSpace.continuousLinearMapOfBilin (chewi131SecondFDerivBilin f z)
+  = chewi131MatrixCLM (Hfun z)` from an explicit Hessian matrix family.  Search
+first in mathlib/local code for diagonal matrix/CLM bridges, `Matrix.toLin`,
+`Matrix.toEuclideanLin`, `Matrix.toLpLin_apply`, existing
+`positiveOrthantNegLogHessCLM_apply`, and V62 `chewi131MatrixCLM` coercion
+lemmas before adding primitives.
+
+Methodology note: this packet confirms that theorem-sized progress is fastest
+when the main thread proves the active bridge while read-only scouts search
+independent API lanes.  The `iteratedFDeriv` scout avoided a custom second
+derivative construction; the local positive-orthant scout identified the exact
+existing source theorems.  Avoid repeating broad searches for these APIs in
+future runs.
+
+V70 dependency cache: V70 extended the root-imported module
 `StatInference/Optimization/Theorem131Gradient.lean`, keeping mathlib's
 `gradient`/Frechet-derivative surface separate from the heavier V61-V63
 Taylor bridge and discharging the Hessian-identification gate from a source

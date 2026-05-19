@@ -113,6 +113,51 @@ theorem chewi131_fderiv_gradient_eq_of_hasFDerivAt_fderiv_bilin
     fderiv ℝ (gradient f) z = InnerProductSpace.continuousLinearMapOfBilin B := by
   exact (chewi131_gradient_hasFDerivAt_of_hasFDerivAt_fderiv_bilin B h).fderiv
 
+omit [DecidableEq n] in
+/--
+The source bilinear Hessian interface obtained by currying mathlib's second
+iterated Frechet derivative.
+-/
+noncomputable def chewi131SecondFDerivBilin
+    (f : EuclideanSpace ℝ n -> ℝ) (z : EuclideanSpace ℝ n) :
+    EuclideanSpace ℝ n →L⋆[ℝ] StrongDual ℝ (EuclideanSpace ℝ n) :=
+  ((continuousMultilinearCurryFin1 ℝ (EuclideanSpace ℝ n) ℝ).toContinuousLinearEquiv.toContinuousLinearMap).comp
+    (iteratedFDeriv ℝ 2 f z).curryLeft
+
+omit [DecidableEq n] in
+/--
+The curried second iterated derivative is exactly the Frechet derivative of
+the dual-valued derivative map.
+-/
+theorem chewi131SecondFDerivBilin_toContinuousLinearMap_eq_fderiv_fderiv
+    {f : EuclideanSpace ℝ n -> ℝ} {z : EuclideanSpace ℝ n} :
+    (chewi131SecondFDerivBilin f z).toContinuousLinearMap =
+      fderiv ℝ (fun y => fderiv ℝ f y) z := by
+  ext u v
+  change
+    (continuousMultilinearCurryFin1 ℝ (EuclideanSpace ℝ n) ℝ
+        ((iteratedFDeriv ℝ 2 f z).curryLeft u)) v =
+      ((fderiv ℝ (fun y => fderiv ℝ f y) z) u) v
+  simp [continuousMultilinearCurryFin1_apply,
+    ContinuousMultilinearMap.curryLeft_apply, iteratedFDeriv_two_apply]
+
+omit [DecidableEq n] in
+/--
+Pointwise `C^2` regularity of the scalar objective supplies the V70 bilinear
+second-derivative hypothesis.
+-/
+theorem chewi131SecondFDerivBilin_hasFDerivAt_of_contDiffAt_two
+    {f : EuclideanSpace ℝ n -> ℝ} {z : EuclideanSpace ℝ n}
+    (hf : ContDiffAt ℝ 2 f z) :
+    HasFDerivAt (fun y => fderiv ℝ f y)
+      (chewi131SecondFDerivBilin f z).toContinuousLinearMap z := by
+  have hfderiv : ContDiffAt ℝ 1 (fun y => fderiv ℝ f y) z := by
+    simpa using (hf.fderiv_right_succ (n := 1))
+  have hdiff : DifferentiableAt ℝ (fun y => fderiv ℝ f y) z :=
+    hfderiv.differentiableAt_one
+  rw [chewi131SecondFDerivBilin_toContinuousLinearMap_eq_fderiv_fderiv]
+  exact hdiff.hasFDerivAt
+
 /--
 Chewi Theorem 13.1 Taylor norm estimate with mathlib's `gradient f`.  The
 second-derivative data is expressed as the equality between
@@ -1140,6 +1185,55 @@ theorem chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_second
       (f := f) (x := x) (xStar := xStar)
       hH hlower hclose hHfun_cont hseg hgrad hgrad_star hnewton hlip_matrix
       hinit
+
+/--
+Chewi Theorem 13.1 sequence recurrence with mathlib's `gradient f`, deriving
+the V70 bilinear second-derivative hypothesis from pointwise `C^2`
+regularity via mathlib's `iteratedFDeriv`.
+-/
+theorem chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_contDiffAt_two_secondFDerivBilin_of_radius
+    {Hstar : Matrix n n ℝ}
+    {Hfun : EuclideanSpace ℝ n -> Matrix n n ℝ}
+    {s : Set (EuclideanSpace ℝ n)}
+    (hHstar : Hstar.IsHermitian)
+    {alpha gamma : ℝ} (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    {f : EuclideanSpace ℝ n -> ℝ}
+    {x : ℕ -> EuclideanSpace ℝ n} {xStar : EuclideanSpace ℝ n}
+    (hH : ∀ k, (Hfun (x k)).IsHermitian)
+    (hlower : alpha • (1 : Matrix n n ℝ) ≤ Hstar)
+    (hclose : ∀ k, ‖Hfun (x k) - Hstar‖ ≤ gamma * ‖x k - xStar‖)
+    (hHfun_cont : ContinuousOn Hfun s)
+    (hseg : ∀ k t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar (x k) t ∈ s)
+    (hf_contDiff : ∀ k t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      ContDiffAt ℝ 2 f (hessianSegmentPoint xStar (x k) t))
+    (hB_eq : ∀ k t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      InnerProductSpace.continuousLinearMapOfBilin
+          (chewi131SecondFDerivBilin f
+            (hessianSegmentPoint xStar (x k) t)) =
+        chewi131MatrixCLM (Hfun (hessianSegmentPoint xStar (x k) t)))
+    (hgrad_star : gradient f xStar = 0)
+    (hnewton : ∀ k,
+      x (k + 1) =
+        x k - chewi131MatrixCLM ((Hfun (x k))⁻¹) (gradient f (x k)))
+    (hlip_matrix : ∀ k t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖Hfun (x k) - Hfun (hessianSegmentPoint xStar (x k) t)‖ ≤
+        gamma * (1 - t) * ‖x k - xStar‖)
+    (hinit : ‖x 0 - xStar‖ ≤ alpha / (2 * gamma)) :
+    ∀ k,
+      ‖x (k + 1) - xStar‖ ≤
+          (gamma / alpha) * ‖x k - xStar‖ ^ (2 : ℕ) ∧
+        ‖x (k + 1) - xStar‖ ≤ (1 / 2) * ‖x k - xStar‖ := by
+  exact
+    chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_secondFDerivBilin_of_radius
+      (Hstar := Hstar) (Hfun := Hfun)
+      (Bfun := fun z => chewi131SecondFDerivBilin f z) (s := s)
+      hHstar halpha hgamma (f := f) (x := x) (xStar := xStar)
+      hH hlower hclose hHfun_cont hseg
+      (fun k t ht =>
+        chewi131SecondFDerivBilin_hasFDerivAt_of_contDiffAt_two
+          (hf_contDiff k t ht))
+      hB_eq hgrad_star hnewton hlip_matrix hinit
 
 /--
 Chewi Theorem 13.1 sequence recurrence with mathlib's `gradient f`, deriving
