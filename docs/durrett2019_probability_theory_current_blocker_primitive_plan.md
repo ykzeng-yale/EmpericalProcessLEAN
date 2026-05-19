@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V582
+## Live In-Thread Goal Prompt V583
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -431,6 +431,9 @@ zero-factor wrappers, in zero-based and one-based notation.
 V582 adds full infinite-product joint-law and canonical iid product-coordinate
 Chapter 2.1.13 law-side finite-subfamily and literal one-based `Icc` product
 integrability plus expectation-value and zero-factor wrappers.
+V583 adds the matching shifted infinite-product joint-law Chapter 2.1.13
+law-side finite-subfamily and literal one-based `Icc` product integrability
+plus expectation-value and zero-factor wrappers for shifted coordinates.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -724,6 +727,10 @@ After V582, do not rebuild the full infinite-product joint-law or canonical iid
 product-coordinate Theorem 2.1.13 law-side finite-subfamily or literal
 one-based `Icc` product integrability plus expectation-value or zero-factor
 wrappers unless an exact later consumer needs a different display shape.
+After V583, do not rebuild the shifted infinite-product joint-law Theorem
+2.1.13 law-side finite-subfamily or literal one-based `Icc` product
+integrability plus expectation-value or zero-factor wrappers for shifted
+coordinates unless an exact later consumer needs a different display shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -965,10 +972,25 @@ range-sum, and textbook inverse-multiple displays in zero-based and one-based
 forms,
 or old app-level stale prompts.
 
-Latest verified target V582 adds full infinite-product joint-law and canonical
-iid product-coordinate Chapter 2.1.13 law-side finite-subfamily and literal
-one-based `Icc` product integrability plus expectation-value and zero-factor
-wrappers:
+Latest verified target V583 adds shifted infinite-product joint-law Chapter
+2.1.13 law-side finite-subfamily and literal one-based `Icc` product
+integrability plus expectation-value and zero-factor wrappers:
+`durrett2019_theorem_2_1_13_integrable_and_integral_finset_law_prod_eq_prod_integral_oneBased_of_shift_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integrable_and_integral_oneBased_Icc_law_prod_eq_prod_integral_of_shift_hasLaw_infinitePi`,
+`durrett2019_theorem_2_1_13_integrable_and_integral_finset_law_prod_eq_zero_oneBased_of_shift_hasLaw_infinitePi_and_integral_eq_zero`, and
+`durrett2019_theorem_2_1_13_integrable_and_integral_oneBased_Icc_law_prod_eq_zero_of_shift_hasLaw_infinitePi_and_integral_eq_zero`.
+These wrappers give shifted joint-law consumers the same expectation-exists
+packaging that V582 supplied for full-joint and canonical product-coordinate
+finite-family displays.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V582 adds full infinite-product joint-law and
+canonical iid product-coordinate Chapter 2.1.13 law-side finite-subfamily and
+literal one-based `Icc` product integrability plus expectation-value and
+zero-factor wrappers:
 `durrett2019_theorem_2_1_13_integrable_and_integral_finset_law_prod_eq_prod_integral_of_hasLaw_infinitePi`,
 `durrett2019_theorem_2_1_13_integrable_and_integral_oneBased_Icc_law_prod_eq_prod_integral_of_hasLaw_infinitePi`,
 `durrett2019_theorem_2_1_13_integrable_and_integral_finset_law_prod_eq_zero_of_hasLaw_infinitePi_and_integral_eq_zero`,
@@ -977,13 +999,6 @@ wrappers:
 `durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_oneBased_Icc_law_prod_eq_prod_integral`,
 `durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_finset_law_prod_eq_zero_of_integral_eq_zero`, and
 `durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_oneBased_Icc_law_prod_eq_zero_of_integral_eq_zero`.
-These wrappers give the textbook finite-family and `{1, ..., n}` displays the
-same expectation-exists packaging already available for range/Ico source
-shapes.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V581 adds canonical iid product-coordinate Chapter
 2.1.13 law-side range/Ico product integrability plus expectation-value and
@@ -6889,6 +6904,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V582` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V583` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
