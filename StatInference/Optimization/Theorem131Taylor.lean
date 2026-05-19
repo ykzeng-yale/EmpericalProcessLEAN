@@ -17,6 +17,44 @@ open scoped intervalIntegral BigOperators Topology
 namespace StatInference
 namespace Optimization
 
+section Normed
+
+variable {E : Type*} [NormedAddCommGroup E]
+
+/--
+Chewi Theorem 13.1 recurrence scaffold: if every iterate inside the source
+local radius admits the quadratic step and half-contraction, then the full
+sequence satisfies those two estimates at every time.  This isolates the
+induction used repeatedly by the matrix and range-space Newton routes.
+-/
+theorem chewi131_local_quadratic_recurrence_of_conditional_step
+    {alpha gamma : ℝ}
+    {x : ℕ -> E} {xStar : E}
+    (hstep : ∀ k,
+      ‖x k - xStar‖ ≤ alpha / (2 * gamma) ->
+        ‖x (k + 1) - xStar‖ ≤
+            (gamma / alpha) * ‖x k - xStar‖ ^ (2 : ℕ) ∧
+          ‖x (k + 1) - xStar‖ ≤ (1 / 2) * ‖x k - xStar‖)
+    (hinit : ‖x 0 - xStar‖ ≤ alpha / (2 * gamma)) :
+    ∀ k,
+      ‖x (k + 1) - xStar‖ ≤
+          (gamma / alpha) * ‖x k - xStar‖ ^ (2 : ℕ) ∧
+        ‖x (k + 1) - xStar‖ ≤ (1 / 2) * ‖x k - xStar‖ := by
+  have hradius : ∀ k, ‖x k - xStar‖ ≤ alpha / (2 * gamma) := by
+    intro k
+    induction k with
+    | zero => exact hinit
+    | succ k ih =>
+        have hstepk := hstep k ih
+        have hshrink :
+            (1 / 2) * ‖x k - xStar‖ ≤ ‖x k - xStar‖ := by
+          nlinarith [norm_nonneg (x k - xStar)]
+        exact hstepk.2.trans (hshrink.trans ih)
+  intro k
+  exact hstep k (hradius k)
+
+end Normed
+
 section Hilbert
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -315,6 +353,60 @@ theorem chewi131_local_quadratic_step_and_half_of_taylor_bound_clm_of_hessian_lo
       mul_le_mul_of_nonneg_right hcoeff (norm_nonneg (x - xStar))
     simpa [pow_two, mul_assoc, mul_comm, mul_left_comm] using hmul
   exact ⟨hquad, hquad.trans hhalf_quad⟩
+
+/--
+Chewi Theorem 13.1 range-space sequence recurrence from an unconditional CLM
+Taylor estimate and Hessian lower/right-inverse data at every iterate.
+-/
+theorem chewi131_local_quadratic_recurrence_of_taylor_bound_clm_of_hessian_lower_half
+    {H Hinv : ℕ -> E →L[ℝ] E} {alpha gamma : ℝ}
+    (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    {x : ℕ -> E} {xStar : E}
+    (hlower : ∀ k v, (alpha / 2) * ‖v‖ ^ (2 : ℕ) ≤ inner ℝ (H k v) v)
+    (hright : ∀ k v, H k (Hinv k v) = v)
+    (htaylor : ∀ k,
+      ‖x (k + 1) - xStar‖ ≤
+        (gamma / 2) * ‖Hinv k‖ * ‖x k - xStar‖ ^ (2 : ℕ))
+    (hinit : ‖x 0 - xStar‖ ≤ alpha / (2 * gamma)) :
+    ∀ k,
+      ‖x (k + 1) - xStar‖ ≤
+          (gamma / alpha) * ‖x k - xStar‖ ^ (2 : ℕ) ∧
+        ‖x (k + 1) - xStar‖ ≤ (1 / 2) * ‖x k - xStar‖ := by
+  refine chewi131_local_quadratic_recurrence_of_conditional_step ?_ hinit
+  intro k hradius
+  exact chewi131_local_quadratic_step_and_half_of_taylor_bound_clm_of_hessian_lower_half
+    (H := H k) (Hinv := Hinv k) (alpha := alpha) (gamma := gamma)
+    (x := x k) (xNext := x (k + 1)) (xStar := xStar)
+    halpha hgamma hradius (hlower k) (hright k) (htaylor k)
+
+/--
+Chewi Theorem 13.1 range-space sequence recurrence when the Taylor estimate
+and quantitative Hessian data are available conditionally inside the local
+radius.  This matches the source induction shape for local Newton convergence.
+-/
+theorem chewi131_local_quadratic_recurrence_of_conditional_taylor_bound_clm_of_hessian_lower_half
+    {H Hinv : ℕ -> E →L[ℝ] E} {alpha gamma : ℝ}
+    (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    {x : ℕ -> E} {xStar : E}
+    (hlower : ∀ k, ‖x k - xStar‖ ≤ alpha / (2 * gamma) ->
+      ∀ v, (alpha / 2) * ‖v‖ ^ (2 : ℕ) ≤ inner ℝ (H k v) v)
+    (hright : ∀ k, ‖x k - xStar‖ ≤ alpha / (2 * gamma) ->
+      ∀ v, H k (Hinv k v) = v)
+    (htaylor : ∀ k, ‖x k - xStar‖ ≤ alpha / (2 * gamma) ->
+      ‖x (k + 1) - xStar‖ ≤
+        (gamma / 2) * ‖Hinv k‖ * ‖x k - xStar‖ ^ (2 : ℕ))
+    (hinit : ‖x 0 - xStar‖ ≤ alpha / (2 * gamma)) :
+    ∀ k,
+      ‖x (k + 1) - xStar‖ ≤
+          (gamma / alpha) * ‖x k - xStar‖ ^ (2 : ℕ) ∧
+        ‖x (k + 1) - xStar‖ ≤ (1 / 2) * ‖x k - xStar‖ := by
+  refine chewi131_local_quadratic_recurrence_of_conditional_step ?_ hinit
+  intro k hradius
+  exact chewi131_local_quadratic_step_and_half_of_taylor_bound_clm_of_hessian_lower_half
+    (H := H k) (Hinv := Hinv k) (alpha := alpha) (gamma := gamma)
+    (x := x k) (xNext := x (k + 1)) (xStar := xStar)
+    halpha hgamma hradius (hlower k hradius) (hright k hradius)
+    (htaylor k hradius)
 
 end Hilbert
 

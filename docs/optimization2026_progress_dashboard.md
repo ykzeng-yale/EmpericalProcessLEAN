@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V76` near the top of
+  `Live Goal Prompt V77` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -52,11 +52,26 @@ This dashboard tracks the Chewi optimization formalization lane for
   If that temp worktree disappears, recreate it and run `lake exe cache get`
   before focused builds; otherwise the first build can waste time rebuilding
   mathlib locally.
-- Latest Theorem 13.1 frontier: V76 compiles the CLM/range-space inverse-norm
-  and local quadratic Newton step layer for the finite-row central-path
-  objective in
+- Latest Theorem 13.1 frontier: V77 compiles the range-space sequence
+  recurrence layer for the finite-row central-path objective in
   `StatInference/Optimization/Theorem131Taylor.lean` and
   `StatInference/Optimization/Theorem131Gradient.lean`.  New declarations are
+  `chewi131_local_quadratic_recurrence_of_conditional_step`,
+  `chewi131_local_quadratic_recurrence_of_taylor_bound_clm_of_hessian_lower_half`,
+  `chewi131_local_quadratic_recurrence_of_conditional_taylor_bound_clm_of_hessian_lower_half`,
+  and `chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_gradient_ftc`.
+  Search-first reuse came from the existing matrix recurrence induction in
+  `Theorem131.lean`, but V77 extracts the induction into a low-assumption
+  conditional-step scaffold and specializes it to the central-path value.
+  Next blocker: discharge concrete source assumptions required by the
+  recurrence: feasible segments/local-radius preservation, Hessian lower bound,
+  and Hessian Lipschitz/close bound along feasible segments.  Methodology note:
+  isolate source recurrence inductions before plugging in domain-specific
+  Hessian facts; this makes the next theorem packet mathematical rather than
+  proof-script plumbing.
+- V76 frontier cache: V76 compiles the CLM/range-space inverse-norm and local
+  quadratic Newton step layer for the finite-row central-path objective.  New
+  declarations are
   `chewi131_inverse_clm_opNorm_le_two_div_alpha_of_hessian_lower_half`,
   `chewi131_local_quadratic_step_of_taylor_bound_clm`,
   `chewi131_local_quadratic_step_of_taylor_bound_clm_of_hessian_lower_half`,
@@ -66,13 +81,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   Search-first reuse came from Appendix A's
   `continuousLinearMap_opNorm_right_inverse_le_of_inner_lower`, V75's
   central-path Taylor bound, and
-  `chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse`.  Next blocker:
-  either assemble the sequence recurrence over Newton iterates from the V76
-  pointwise step, or discharge the concrete source quantitative assumptions:
-  feasible segments, Hessian lower bound, Hessian Lipschitz/close bound, and
-  local-radius preservation.  Methodology note: do not repeat the inverse-norm
-  or basis-coordinate search; the compiled CLM route is now the source-facing
-  path for range-space Theorem 13.1.
+  `chewi1314_polytopeSlackNegLog_rangeInvHess_right_inverse`.
 - V75 frontier cache: V75 compiles the CLM/range-space Taylor norm layer for
   the finite-row central-path objective.  New declarations are
   `chewi131_taylor_norm_bound_of_gradient_ftc_clm` and

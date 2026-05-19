@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V76`, this file's top
+   the full book is complete, route from `Live Goal Prompt V77`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -140,12 +140,48 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V76
+## Live Goal Prompt V77
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V76 extends
+Current active frontier: V77 extends
+`StatInference/Optimization/Theorem131Taylor.lean` and
+`StatInference/Optimization/Theorem131Gradient.lean` with the sequence
+recurrence layer for the finite-row central-path objective.  Newly compiled
+V77 declarations are
+`chewi131_local_quadratic_recurrence_of_conditional_step`,
+`chewi131_local_quadratic_recurrence_of_taylor_bound_clm_of_hessian_lower_half`,
+`chewi131_local_quadratic_recurrence_of_conditional_taylor_bound_clm_of_hessian_lower_half`,
+and `chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_gradient_ftc`.
+The first theorem isolates the local-radius induction: a conditional
+pointwise quadratic step plus half-contraction yields the recurrence at every
+time.  The CLM theorems feed that scaffold from V76's Taylor/lower-bound/right
+inverse layer, and the central-path theorem specializes it to
+`chewi1316RangeCentralPathValue` with feasibility, segment, Newton-update,
+Hessian lower, and Hessian Lipschitz assumptions required only while the
+current iterate lies in the source local radius.  Focused verification
+command: `lake build StatInference.Optimization.Theorem131Gradient`.
+
+Next active proof target: discharge one of the concrete source quantitative
+assumptions exposed by V77 for the finite-row central-path recurrence.  Search
+first for feasible-segment and Dikin/local-norm APIs in
+`InteriorPoint.lean`, especially `dikinEllipsoid`, `localNorm`,
+`dualLocalNorm`, `newtonDecrement`, `sourceRadius_*`, `chewi136_*`,
+`chewi138_*`, `chewi1314_polytopeSlackNegLog_rangeHess*`,
+`chewi1314_polytopeSlackNegLog_rangeInvHess*`, and
+`chewi1314_polytopeSlackNegLog_range_newtonStep_mem*`.  The best next packet
+should either prove a reusable feasible-segment/local-radius preservation
+lemma, a Hessian lower bound in local coordinates, or a Hessian
+Lipschitz/close bound along feasible segments.  Do not redo recurrence
+induction or inverse-norm work; those are now compiled reusable layers.
+
+Methodology note: V77 confirms that induction scaffolds should be extracted
+once in a low-assumption theorem before specializing to source objectives.
+This removes repeated proof-script overhead and makes later chapters consume
+the same conditional-step pattern without copy-pasting sequence inductions.
+
+V76 dependency cache: V76 extends
 `StatInference/Optimization/Theorem131Taylor.lean` and
 `StatInference/Optimization/Theorem131Gradient.lean` with the CLM/range-space
 inverse-norm and local quadratic Newton layer for the finite-row central-path
