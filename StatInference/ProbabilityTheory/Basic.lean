@@ -10833,6 +10833,152 @@ theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_comp_prod_eq_zero_oneBased_
       exact Finset.prod_eq_zero hi hbase_zero
 
 /--
+Durrett 2019, Theorem 2.1.13, source-side iid common-transform nonnegative
+finite power formula.
+
+For identically distributed independent source variables and one common
+nonnegative measurable transform, the source-space product `lintegral`
+collapses to a power of the base-coordinate transformed `lintegral`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_finset_comp_prod_eq_pow_lintegral_of_identDistrib
+    {Ω : Type u} {ι : Type w}
+    [MeasurableSpace Ω] {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ι -> Ω -> S} {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : Measurable f)
+    {s : Finset ι} {i0 : ι}
+    (hident : ∀ i ∈ s,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X i0) P P) :
+    ∫⁻ ω, ∏ i ∈ s, f (X i ω) ∂P =
+      (∫⁻ ω, f (X i0 ω) ∂P) ^ s.card := by
+  calc
+    ∫⁻ ω, ∏ i ∈ s, f (X i ω) ∂P =
+        ∏ i ∈ s, ∫⁻ ω, f (X i0 ω) ∂P := by
+      exact
+        durrett2019_theorem_2_1_13_iid_lintegral_finset_comp_prod_eq_prod_lintegral_base_of_identDistrib
+          (P := P) (X := X) (f := fun _ : ι => f)
+          hX hX_meas (fun _ => hf_meas) hident
+    _ = (∫⁻ ω, f (X i0 ω) ∂P) ^ s.card := by
+      rw [Finset.prod_const]
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid common-transform nonnegative
+initial-range power formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_comp_prod_eq_pow_lintegral_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : Measurable f)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.range n, f (X i ω) ∂P =
+      (∫⁻ ω, f (X 0 ω) ∂P) ^ n := by
+  simpa using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_comp_prod_eq_pow_lintegral_of_identDistrib
+      (P := P) (X := X) (f := f) hX hX_meas hf_meas
+      (s := Finset.range n) (i0 := 0) (fun i _hi => hident i)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid common-transform nonnegative
+interval-block power formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_comp_prod_eq_pow_lintegral_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : Measurable f)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (m n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Ico m n, f (X i ω) ∂P =
+      (∫⁻ ω, f (X 0 ω) ∂P) ^ (n - m) := by
+  simpa [Nat.card_Ico] using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_comp_prod_eq_pow_lintegral_of_identDistrib
+      (P := P) (X := X) (f := f) hX hX_meas hf_meas
+      (s := Finset.Ico m n) (i0 := 0) (fun i _hi => hident i)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid common-transform nonnegative
+power formula on the literal one-based index set `{1, ..., n}`.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_comp_prod_eq_pow_lintegral_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : Measurable f)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Icc 1 n, f (X i ω) ∂P =
+      (∫⁻ ω, f (X 0 ω) ∂P) ^ n := by
+  simpa [Nat.card_Icc] using
+    durrett2019_theorem_2_1_13_iid_lintegral_finset_comp_prod_eq_pow_lintegral_of_identDistrib
+      (P := P) (X := X) (f := f) hX hX_meas hf_meas
+      (s := Finset.Icc 1 n) (i0 := 0) (fun i _hi => hident i)
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid common-transform nonnegative
+one-based initial-range power formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_range_comp_prod_eq_pow_lintegral_oneBased_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : Measurable f)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.range n, f (X (i + 1) ω) ∂P =
+      (∫⁻ ω, f (X 0 ω) ∂P) ^ n := by
+  calc
+    ∫⁻ ω, ∏ i ∈ Finset.range n, f (X (i + 1) ω) ∂P =
+        ∏ i ∈ Finset.range n, ∫⁻ ω, f (X 0 ω) ∂P := by
+      exact
+        durrett2019_theorem_2_1_13_iid_lintegral_range_comp_prod_eq_prod_lintegral_base_oneBased_of_identDistrib
+          (P := P) (X := X) (f := fun _ : ℕ => f)
+          hX hX_meas (fun _ => hf_meas) hident n
+    _ = (∫⁻ ω, f (X 0 ω) ∂P) ^ n := by
+      rw [Finset.prod_const, Finset.card_range]
+
+/--
+Durrett 2019, Theorem 2.1.13, source-side iid common-transform nonnegative
+one-based interval-block power formula.
+-/
+theorem durrett2019_theorem_2_1_13_iid_lintegral_Ico_comp_prod_eq_pow_lintegral_oneBased_of_identDistrib
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {S : Type*} [MeasurableSpace S]
+    {X : ℕ -> Ω -> S} {f : S -> ℝ≥0∞}
+    (hX : _root_.ProbabilityTheory.iIndepFun X P)
+    (hX_meas : ∀ i, Measurable (X i))
+    (hf_meas : Measurable f)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (m n : ℕ) :
+    ∫⁻ ω, ∏ i ∈ Finset.Ico m n, f (X (i + 1) ω) ∂P =
+      (∫⁻ ω, f (X 0 ω) ∂P) ^ (n - m) := by
+  calc
+    ∫⁻ ω, ∏ i ∈ Finset.Ico m n, f (X (i + 1) ω) ∂P =
+        ∏ i ∈ Finset.Ico m n, ∫⁻ ω, f (X 0 ω) ∂P := by
+      exact
+        durrett2019_theorem_2_1_13_iid_lintegral_Ico_comp_prod_eq_prod_lintegral_base_oneBased_of_identDistrib
+          (P := P) (X := X) (f := fun _ : ℕ => f)
+          hX hX_meas (fun _ => hf_meas) hident m n
+    _ = (∫⁻ ω, f (X 0 ω) ∂P) ^ (n - m) := by
+      rw [Finset.prod_const, Nat.card_Ico]
+
+/--
 Durrett 2019, Theorem 2.1.13, source-side iid indexed-transform real
 nonnegative finite expectation formula.
 

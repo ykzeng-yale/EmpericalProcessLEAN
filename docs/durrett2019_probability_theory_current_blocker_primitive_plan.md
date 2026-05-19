@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V558
+## Live In-Thread Goal Prompt V559
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -327,6 +327,12 @@ zero-factor formulas: under `IdentDistrib`, one common measurable transform
 base-coordinate norm `lintegral` over `X_0` vanishes, for nonempty finite,
 positive range, interval, and one-based products, without requiring `HasLaw`
 or ordinary integrability assumptions.
+V559 adds source-side iid/common-transform Chapter 2.1.13 nonnegative
+`ℝ≥0∞` power formulas: under `IdentDistrib`, one common measurable transform
+`f : S -> ℝ≥0∞` has source-space `lintegral` formulas for `∏ f(X_i)` as
+powers of the base-coordinate `lintegral` over `X_0`, for finite/range/Ico and
+one-based products, without requiring `HasLaw` or ordinary integrability
+assumptions.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -517,6 +523,10 @@ After V558, do not rebuild the source-side iid/common-transform Theorem 2.1.13
 absolute-value/norm zero-factor formulas for nonempty finite, positive
 range/Ico, or one-based range/Ico/`Icc` products unless an exact later consumer
 needs a different source shape.
+After V559, do not rebuild the source-side iid/common-transform Theorem 2.1.13
+nonnegative `ℝ≥0∞` power formulas for finite/range/Ico or one-based
+range/Ico/`Icc` products unless an exact later consumer needs a different
+source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -721,9 +731,32 @@ power formulas for finite/range/Ico and one-based range/Ico/`Icc` products,
 solved source-side iid/common-transform Theorem 2.1.13 absolute-value/norm
 zero-factor formulas for nonempty finite, positive range/Ico, and one-based
 range/Ico/`Icc` products,
+solved source-side iid/common-transform Theorem 2.1.13 nonnegative `ℝ≥0∞`
+power formulas for finite/range/Ico and one-based range/Ico/`Icc` products,
 or old app-level stale prompts.
 
-Latest verified target V558 adds source-side iid/common-transform Chapter
+Latest verified target V559 adds source-side iid/common-transform Chapter
+2.1.13 nonnegative `ℝ≥0∞` power formulas:
+`durrett2019_theorem_2_1_13_iid_lintegral_finset_comp_prod_eq_pow_lintegral_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_comp_prod_eq_pow_lintegral_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_comp_prod_eq_pow_lintegral_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_comp_prod_eq_pow_lintegral_of_identDistrib`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_comp_prod_eq_pow_lintegral_oneBased_of_identDistrib`,
+and
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_comp_prod_eq_pow_lintegral_oneBased_of_identDistrib`.
+These specialize the V545 source-side iid/indexed-transform nonnegative product
+formulas to a common-transform power display: for an
+independent source family `X_i` with `IdentDistrib` marginals and one
+measurable transform `f : S -> ℝ≥0∞`, they package the source-space
+`lintegral` of `∏ f(X_i)` as powers of the base-coordinate `lintegral` over
+`X_0`, on finite/range/Ico and one-based index sets without `HasLaw`
+hypotheses or ordinary integrability assumptions.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V558 adds source-side iid/common-transform Chapter
 2.1.13 absolute-value/norm zero-factor formulas:
 `durrett2019_theorem_2_1_13_iid_lintegral_finset_norm_comp_prod_eq_zero_of_nonempty_identDistrib_and_lintegral_norm_base_eq_zero`,
 `durrett2019_theorem_2_1_13_iid_lintegral_range_norm_comp_prod_eq_zero_of_pos_identDistrib_and_lintegral_norm_base_eq_zero`,
@@ -739,10 +772,6 @@ they package the source-space `lintegral` of `‖∏ f(X_i)‖` as zero whenever
 base-coordinate norm `lintegral` over `X_0` vanishes, on nonempty finite,
 positive range/interval, and one-based index sets without `HasLaw` hypotheses
 or ordinary integrability assumptions.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
 Previous verified target V557 adds source-side iid/common-transform Chapter
 2.1.13 absolute-value/norm power formulas:
@@ -6258,6 +6287,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V558` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V559` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
