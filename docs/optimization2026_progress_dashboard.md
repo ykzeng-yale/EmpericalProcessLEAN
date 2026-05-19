@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V78` near the top of
+  `Live Goal Prompt V79` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -52,8 +52,23 @@ This dashboard tracks the Chewi optimization formalization lane for
   If that temp worktree disappears, recreate it and run `lake exe cache get`
   before focused builds; otherwise the first build can waste time rebuilding
   mathlib locally.
-- Latest Theorem 13.1 frontier: V78 compiles finite-row central-path wrappers
-  that discharge segment feasibility from convexity of the translated
+- Latest Theorem 13.1 frontier: V79 compiles finite-row central-path Newton
+  trajectory and invariant wrappers in
+  `StatInference/Optimization/Theorem131Gradient.lean`.  New declarations are
+  `IsChewi1316RangeCentralPathNewtonTrajectory`,
+  `chewi1316RangeCentralPathValue_iterates_mem_of_decrement_lt_one`, and
+  `chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_trajectory_decrement`.
+  Search-first reuse came from
+  `chewi1314_polytopeSlackNegLog_range_newtonStep_mem_of_decrement_lt_one`,
+  with V78's convex segment recurrence underneath.  Next blocker: convert
+  existing local-norm/self-concordance estimates into local-radius
+  preservation, pointwise Hessian lower bound, or Hessian Lipschitz/close
+  control for the V79 recurrence.  Feasible segments, feasible iterates, and
+  Newton update packaging are no longer live blockers.  Methodology note:
+  package trajectory/invariant gates as soon as one-step APIs exist, then keep
+  the endpoint focused on the true analytic estimates.
+- V78 frontier cache: V78 compiles finite-row central-path wrappers that
+  discharge segment feasibility from convexity of the translated
   positive-orthant range set in
   `StatInference/Optimization/Theorem131Gradient.lean`.  New declarations are
   `chewi1316RangeCentralPathValue_feasible_segment_mem`,
@@ -62,11 +77,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   and
   `chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_gradient_ftc_feasible_segment`.
   Search-first reuse came from `convex_barrierAffineRangeSet`,
-  `convex_positiveOrthant`, and `hessianSegmentPoint_mem_of_convex`.  Next
-  blocker: discharge feasible iterates/local-radius preservation, Newton
-  update packaging, Hessian lower bound, or Hessian Lipschitz/close control.
-  Methodology note: peel structural assumptions with existing convexity lemmas
-  before spending proof time on quantitative self-concordance estimates.
+  `convex_positiveOrthant`, and `hessianSegmentPoint_mem_of_convex`.
 - V77 frontier cache: V77 compiles the range-space sequence recurrence layer
   for the finite-row central-path objective.  New declarations are
   `chewi131_local_quadratic_recurrence_of_conditional_step`,
