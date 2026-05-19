@@ -10247,6 +10247,202 @@ theorem durrett2019_theorem_2_1_13_canonical_iid_integrable_and_integral_oneBase
       hindep (fun i => measurable_pi_apply i) hLaw hf_meas hf hi hzero
 
 /--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+law-side product integrability and expectation factorization over an arbitrary
+finite set of shifted one-based coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_finset_law_prod_eq_prod_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℕ -> ℝ -> 𝕜}
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) (ν : Measure ℝ)) (s : Finset ℕ) :
+    Integrable
+        (fun sample : ℕ -> ℝ => ∏ i ∈ s, f (i + 1) (sample (i + 1)))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ s, f (i + 1) (sample (i + 1))
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+        ∏ i ∈ s, ∫ x, f (i + 1) x ∂(ν : Measure ℝ) := by
+  have hCoord_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample (i + 1))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hCoord_indep)
+  have hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> ℝ => sample (i + 1)) (ν : Measure ℝ)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    intro i
+    exact
+      (measurePreserving_eval_infinitePi
+        (μ := fun _ : ℕ => (ν : Measure ℝ)) (i + 1)).hasLaw
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_finset_law_prod_eq_prod_integral
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (S := fun _ : ℕ => ℝ)
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample (i + 1))
+      (μ := fun _ : ℕ => (ν : Measure ℝ)) (f := fun i : ℕ => f (i + 1))
+      hindep (fun i => measurable_pi_apply (i + 1)) hLaw
+      (fun i => hf_meas (i + 1)) (fun i => hf (i + 1)) s
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+law-side product integrability and expectation factorization over the literal
+one-based index set for shifted coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_oneBased_Icc_law_prod_eq_prod_integral
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℕ -> ℝ -> 𝕜}
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) (ν : Measure ℝ)) (n : ℕ) :
+    Integrable
+        (fun sample : ℕ -> ℝ =>
+          ∏ i ∈ Finset.Icc 1 n, f (i + 1) (sample (i + 1)))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ i ∈ Finset.Icc 1 n, f (i + 1) (sample (i + 1))
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) =
+        ∏ i ∈ Finset.Icc 1 n, ∫ x, f (i + 1) x ∂(ν : Measure ℝ) := by
+  have hCoord_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample (i + 1))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hCoord_indep)
+  have hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> ℝ => sample (i + 1)) (ν : Measure ℝ)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    intro i
+    exact
+      (measurePreserving_eval_infinitePi
+        (μ := fun _ : ℕ => (ν : Measure ℝ)) (i + 1)).hasLaw
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_oneBased_Icc_law_prod_eq_prod_integral
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (S := fun _ : ℕ => ℝ)
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample (i + 1))
+      (μ := fun _ : ℕ => (ν : Measure ℝ)) (f := fun i : ℕ => f (i + 1))
+      hindep (fun i => measurable_pi_apply (i + 1)) hLaw
+      (fun i => hf_meas (i + 1)) (fun i => hf (i + 1)) n
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+a zero law-side factor gives product integrability and zero expectation over
+an arbitrary finite set of shifted one-based coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_finset_law_prod_eq_zero_of_integral_eq_zero
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℕ -> ℝ -> 𝕜}
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) (ν : Measure ℝ))
+    {s : Finset ℕ} {i : ℕ} (hi : i ∈ s)
+    (hzero : ∫ x, f (i + 1) x ∂(ν : Measure ℝ) = 0) :
+    Integrable
+        (fun sample : ℕ -> ℝ => ∏ j ∈ s, f (j + 1) (sample (j + 1)))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ j ∈ s, f (j + 1) (sample (j + 1))
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  have hCoord_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample (i + 1))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hCoord_indep)
+  have hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> ℝ => sample (i + 1)) (ν : Measure ℝ)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    intro i
+    exact
+      (measurePreserving_eval_infinitePi
+        (μ := fun _ : ℕ => (ν : Measure ℝ)) (i + 1)).hasLaw
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_finset_law_prod_eq_zero_of_integrable_and_integral_eq_zero
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (S := fun _ : ℕ => ℝ)
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample (i + 1))
+      (μ := fun _ : ℕ => (ν : Measure ℝ)) (f := fun i : ℕ => f (i + 1))
+      hindep (fun i => measurable_pi_apply (i + 1)) hLaw
+      (fun i => hf_meas (i + 1)) (fun i => hf (i + 1)) hi hzero
+
+/--
+Durrett 2019, Theorem 2.1.13 support on the canonical iid product space:
+a zero law-side factor gives product integrability and zero expectation over
+the literal one-based index set for shifted coordinates.
+-/
+theorem durrett2019_theorem_2_1_13_canonical_iid_shift_integrable_and_integral_oneBased_Icc_law_prod_eq_zero_of_integral_eq_zero
+    {𝕜 : Type v} [RCLike 𝕜]
+    (ν : MeasureTheory.ProbabilityMeasure ℝ) {f : ℕ -> ℝ -> 𝕜}
+    (hf_meas : ∀ i, Measurable (f i))
+    (hf : ∀ i, Integrable (f i) (ν : Measure ℝ))
+    {n i : ℕ} (hi : i ∈ Finset.Icc 1 n)
+    (hzero : ∫ x, f (i + 1) x ∂(ν : Measure ℝ) = 0) :
+    Integrable
+        (fun sample : ℕ -> ℝ =>
+          ∏ j ∈ Finset.Icc 1 n, f (j + 1) (sample (j + 1)))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) ∧
+      ∫ sample, ∏ j ∈ Finset.Icc 1 n, f (j + 1) (sample (j + 1))
+          ∂(Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) = 0 := by
+  have hCoord_indep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample i)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa using
+      (_root_.ProbabilityTheory.iIndepFun_infinitePi
+        (P := fun _ : ℕ => (ν : Measure ℝ))
+        (X := fun _ : ℕ => id)
+        (fun _ : ℕ => measurable_id))
+  have hindep :
+      _root_.ProbabilityTheory.iIndepFun
+        (fun i : ℕ => fun sample : ℕ -> ℝ => sample (i + 1))
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    simpa [Nat.succ_eq_add_one] using
+      (_root_.ProbabilityTheory.iIndepFun.precomp Nat.succ_injective hCoord_indep)
+  have hLaw : ∀ i : ℕ,
+      _root_.ProbabilityTheory.HasLaw
+        (fun sample : ℕ -> ℝ => sample (i + 1)) (ν : Measure ℝ)
+        (Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ)) := by
+    intro i
+    exact
+      (measurePreserving_eval_infinitePi
+        (μ := fun _ : ℕ => (ν : Measure ℝ)) (i + 1)).hasLaw
+  exact
+    durrett2019_theorem_2_1_13_iIndepFun_integrable_and_integral_oneBased_Icc_law_prod_eq_zero_of_integrable_and_integral_eq_zero
+      (P := Measure.infinitePi fun _ : ℕ => (ν : Measure ℝ))
+      (S := fun _ : ℕ => ℝ)
+      (X := fun i : ℕ => fun sample : ℕ -> ℝ => sample (i + 1))
+      (μ := fun _ : ℕ => (ν : Measure ℝ)) (f := fun i : ℕ => f (i + 1))
+      hindep (fun i => measurable_pi_apply (i + 1)) hLaw
+      (fun i => hf_meas (i + 1)) (fun i => hf (i + 1)) hi hzero
+
+/--
 Durrett 2019, Theorem 2.1.13, iid law-side finite-subfamily
 expectation-exists-and-power-value formula.
 -/
