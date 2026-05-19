@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V565
+## Live In-Thread Goal Prompt V566
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -367,6 +367,11 @@ factorization and iid/common-law power formulas: under `HasLaw` hypotheses,
 the source-space `lintegral` of `ENNReal.ofReal ‖∏ X_i‖` factors into
 law-side norm `lintegral`s, and a common law `μ` specializes this to powers of
 `∫⁻ x, ENNReal.ofReal ‖x‖ ∂μ`, for finite/range/Ico and one-based products.
+V566 adds law-side Chapter 2.1.13 absolute-value/norm zero-factor formulas:
+under `HasLaw` hypotheses, one zero law-side norm `lintegral` annihilates the
+source-space `lintegral` of `ENNReal.ofReal ‖∏ X_i‖`; under a common law `μ`,
+one zero `∫⁻ x, ENNReal.ofReal ‖x‖ ∂μ` handles nonempty finite, positive
+range/Ico, and one-based products.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -585,6 +590,10 @@ After V565, do not rebuild the law-side Theorem 2.1.13 absolute-value/norm
 `lintegral` factorization or iid/common-law norm-power formulas for finite,
 range/Ico, or one-based range/Ico/`Icc` products unless an exact later
 consumer needs a different source shape.
+After V566, do not rebuild the law-side Theorem 2.1.13 absolute-value/norm
+zero-factor formulas for finite, range/Ico, or one-based range/Ico/`Icc`
+products, including iid/common-law nonempty/positive variants, unless an exact
+later consumer needs a different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -809,9 +818,37 @@ and one-based range/Ico/`Icc` products,
 solved law-side Theorem 2.1.13 absolute-value/norm `lintegral`
 factorization and iid/common-law norm-power formulas for finite, range/Ico,
 and one-based range/Ico/`Icc` products,
+solved law-side Theorem 2.1.13 absolute-value/norm zero-factor formulas for
+finite, range/Ico, and one-based range/Ico/`Icc` products, including
+iid/common-law nonempty/positive variants,
 or old app-level stale prompts.
 
-Latest verified target V565 adds law-side Chapter 2.1.13
+Latest verified target V566 adds law-side Chapter 2.1.13
+absolute-value/norm zero-factor formulas:
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_norm_prod_eq_zero_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_norm_prod_eq_zero_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_norm_prod_eq_zero_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_range_law_norm_prod_eq_zero_of_lintegral_norm_eq_zero_oneBased`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_Ico_law_norm_prod_eq_zero_of_lintegral_norm_eq_zero_oneBased`,
+`durrett2019_theorem_2_1_13_iIndepFun_lintegral_oneBased_Icc_law_norm_prod_eq_zero_of_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_finset_law_norm_prod_eq_zero_of_nonempty_and_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_law_norm_prod_eq_zero_of_pos_and_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_norm_prod_eq_zero_of_lt_and_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_law_norm_prod_eq_zero_of_one_le_and_lintegral_norm_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_law_norm_prod_eq_zero_oneBased_of_pos_and_lintegral_norm_eq_zero`,
+and
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_law_norm_prod_eq_zero_oneBased_of_lt_and_lintegral_norm_eq_zero`.
+These reuse the V565 law-side norm factorization and turn a selected zero
+law-side norm `lintegral` into source-space zero for
+`∫⁻ ω, ENNReal.ofReal ‖∏ X_i ω‖ ∂P`; in the common-law iid shape, a single
+zero `∫⁻ x, ENNReal.ofReal ‖x‖ ∂μ` covers nonempty finite, positive
+range/Ico, shifted one-based range/Ico, and literal `{1, ..., n}` products.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V565 adds law-side Chapter 2.1.13
 absolute-value/norm `lintegral` factorization and iid/common-law power
 formulas:
 `durrett2019_theorem_2_1_13_iIndepFun_lintegral_finset_law_norm_prod_eq_prod_lintegral_norm`,
@@ -832,12 +869,8 @@ through marginal `HasLaw` hypotheses, so `∫⁻ ENNReal.ofReal ‖∏ X_i‖` f
 as the product of law-side norm `lintegral`s; with a common law `μ`, the same
 display becomes a power of `∫⁻ x, ENNReal.ofReal ‖x‖ ∂μ`, for finite,
 range/Ico, shifted one-based range/Ico, and literal `{1, ..., n}` products.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
 
-Previous verified target V564 adds law-side iid/common-law Chapter 2.1.13 real
+Earlier verified target V564 adds law-side iid/common-law Chapter 2.1.13 real
 nonnegative `ENNReal.ofReal` zero-factor formulas:
 `durrett2019_theorem_2_1_13_iid_lintegral_finset_law_ofReal_prod_eq_zero_of_nonempty_and_lintegral_ofReal_eq_zero`,
 `durrett2019_theorem_2_1_13_iid_lintegral_range_law_ofReal_prod_eq_zero_of_pos_and_lintegral_ofReal_eq_zero`,
@@ -6452,6 +6485,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V565` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V566` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
