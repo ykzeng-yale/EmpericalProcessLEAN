@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V61` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V62` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,7 +30,7 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V61 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V62 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -156,10 +156,24 @@ root-imported module `StatInference/Optimization/Theorem131Taylor.lean` with
 `chewi131_local_quadratic_recurrence_of_gradient_ftc`, reusing
 `InteriorPoint.lean`'s segment-gradient FTC theorem to produce the V60
 integral-remainder representation and bound from gradient/Hessian data.  The
-remaining Theorem 13.1 proof route is now the finite-dimensional matrix bridge:
-identify the supplied Hessian oracle with the Euclidean linear map induced by
-`H_n`, provide the inverse action needed by the Newton update, and express the
-Hessian Lipschitz bound in matrix operator-norm form.
+V62 layer adds `chewi131MatrixCLM`,
+`chewi131_matrix_clm_sub_norm_eq`,
+`chewi131_matrix_inverse_action_of_hessian_matrix`,
+`chewi131_hessian_lipschitz_clm_of_matrix_lipschitz`,
+`chewi131_taylor_norm_bound_of_matrix_gradient_ftc`,
+`chewi131_local_quadratic_step_of_matrix_gradient_ftc`, and
+`chewi131_local_quadratic_recurrence_of_matrix_gradient_ftc`, closing the
+finite-dimensional matrix bridge from Hessian matrices to the continuous
+linear map oracle consumed by V61.  Reuse came from `Matrix.l2_opNorm_def`,
+`Matrix.nonsing_inv_mul`, `Matrix.toEuclideanLin`,
+`Matrix.toLpLin_apply`, `Matrix.mulVec_mulVec`, and `LinearMap.map_sub`.
+Methodology note: small local abbrevs for repeated mathlib coercions are an
+efficiency tool, not cosmetic churn; they avoid parser/elaboration friction
+and make later route reuse clearer.  The remaining Theorem 13.1 proof route is
+now concrete function instantiation: identify `H_n` with the Hessian
+matrix/oracle at `x_n`, package the segment Hessian matrices, prove the
+segment differentiability/integrability hypotheses, and derive nonsingularity
+from the half-radius Hessian lower bound when needed.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source

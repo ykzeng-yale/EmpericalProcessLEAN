@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V61`, this file's top
+   the full book is complete, route from `Live Goal Prompt V62`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -140,16 +140,37 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V61
+## Live Goal Prompt V62
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V61 adds the root-imported module
+Current active frontier: V62 extends the root-imported module
+`StatInference/Optimization/Theorem131Taylor.lean` with the matrix/Hessian
+oracle bridge consumed by V61.  Newly compiled declarations are
+`chewi131MatrixCLM`, `chewi131_matrix_clm_sub_norm_eq`,
+`chewi131_matrix_inverse_action_of_hessian_matrix`,
+`chewi131_hessian_lipschitz_clm_of_matrix_lipschitz`,
+`chewi131_taylor_norm_bound_of_matrix_gradient_ftc`,
+`chewi131_local_quadratic_step_of_matrix_gradient_ftc`, and
+`chewi131_local_quadratic_recurrence_of_matrix_gradient_ftc`.  V62 proves the
+inverse action from `Matrix.nonsing_inv_mul`, transports matrix L2
+operator-norm Hessian Lipschitz bounds to continuous-linear-map bounds via
+`Matrix.l2_opNorm_def`, and packages source-facing matrix-Hessian recurrence
+wrappers.  The remaining Theorem 13.1 blocker is now narrower: instantiate
+the matrix-shaped wrappers from a concrete twice differentiable function by
+identifying `H_n` with the Hessian matrix/oracle at `x_n`, producing the
+segment Hessian matrix family, proving the segment differentiability and
+integrability hypotheses, and deriving nonsingularity from the existing
+half-radius Hessian lower bound when needed.  The active verification command
+is `lake build StatInference.Optimization.Theorem131Taylor`; root verification
+uses `lake build StatInference`.
+
+V61 dependency cache: V61 adds the root-imported module
 `StatInference/Optimization/Theorem131Taylor.lean`, discharging another
 source-proof layer of Chewi Theorem 13.1 by constructing the V60
 integral-remainder data from gradient FTC and Hessian-Lipschitz assumptions.
-Newly compiled declarations are
+Compiled declarations are
 `chewi131_integral_remainder_identity_of_gradient_ftc`,
 `chewi131_integral_remainder_pointwise_bound_of_hessian_lipschitz`,
 `chewi131_taylor_norm_bound_of_gradient_ftc`,
@@ -157,15 +178,7 @@ Newly compiled declarations are
 `chewi131_local_quadratic_recurrence_of_gradient_ftc`.  The module reuses
 local `InteriorPoint.lean` APIs, especially
 `hessianSegmentGradient_integral_eq_sub_of_hasFDerivAt`, and then feeds the
-result into V60's `chewi131_taylor_norm_bound_of_integral_remainder`.  The
-remaining Theorem 13.1 blocker is now the matrix/Hessian-oracle bridge:
-showing the supplied Hessian oracle at `x_n` is the matrix `H_n`, proving the
-inverse action `H_n^{-1} Hess(x_n)(x_n-x_star)=x_n-x_star`, and supplying the
-operator-norm Hessian Lipschitz estimate along the `x_star -> x_n` segment.
-The active verification command is
-`lake build StatInference.Optimization.Theorem131Taylor`; root verification
-requires `lake build StatInference` because `StatInference.lean` imports the
-new module.
+result into V60's `chewi131_taylor_norm_bound_of_integral_remainder`.
 
 V60 dependency cache: V60 strengthens the source-facing Chewi Theorem 13.1
 module by discharging the norm-of-integral algebra in the Taylor/Newton
@@ -843,9 +856,11 @@ with `chewi131_local_quadratic_step_of_taylor_bound`,
 `chewi131_local_quadratic_recurrence_of_taylor_bound`, assembling the source
 local quadratic and half-contraction recurrence from the supplied
 Taylor/integral Newton remainder estimate plus V56/V58.
-V60 adds the integral-remainder norm layer in `Theorem131.lean`, and V61 adds
+V60 adds the integral-remainder norm layer in `Theorem131.lean`, V61 adds
 the root-imported module `StatInference/Optimization/Theorem131Taylor.lean`
-with the gradient-FTC/Hessian-Lipschitz bridge feeding that V60 layer.
+with the gradient-FTC/Hessian-Lipschitz bridge feeding that V60 layer, and
+V62 adds the matrix-shaped Hessian oracle bridge for Chewi Theorem 13.1's
+source notation.
 
 Search-first reuse for V53-V59: source Definition A.5 and Theorem 13.1;
 mathlib singular values
@@ -881,7 +896,11 @@ shortcut.  V61 reuses local `InteriorPoint.lean`
 mathlib `intervalIntegral.integral_sub`, `intervalIntegrable_const`,
 `ContinuousLinearMap.map_sub`, and `ContinuousLinearMap.le_opNorm` to derive
 the Newton remainder identity and pointwise bound from gradient FTC plus a
-Hessian-Lipschitz operator-norm hypothesis.  Timed-out attempted APIs for the
+Hessian-Lipschitz operator-norm hypothesis.  V62 reuses `Matrix.l2_opNorm_def`,
+`Matrix.nonsing_inv_mul`, `Matrix.toEuclideanLin`, `Matrix.toLpLin_apply`,
+`Matrix.mulVec_mulVec`, and `LinearMap.map_sub` to transport matrix Hessian
+notation into the continuous-linear-map interface without rebuilding operator
+norm theory.  Timed-out attempted APIs for the
 exact inverse-order
 discharge:
 `CStarAlgebra.inv_le_inv` on Units and
@@ -917,18 +936,33 @@ before any `lake build`.  Also, importing the huge `InteriorPoint.lean` module
 is justified only when consuming its exact APIs; here it was justified by
 `hessianSegmentGradient_integral_eq_sub_of_hasFDerivAt`, but future packets
 should consider moving small reusable segment-FTC lemmas into a lighter module.
+Methodology note from V62: when mathlib exposes a long coercion expression
+that appears repeatedly in theorem statements, introduce a small local abbrev
+before proving bridge lemmas.  Here `chewi131MatrixCLM` avoided parser pain and
+made the matrix-to-continuous-linear-map norm transport readable.  Do not put
+large raw matrix-to-CLM expressions directly under nested norm/subtraction
+goals unless a focused probe shows Lean parses and elaborates them cheaply.
+Meta-methodology note: every future theorem packet should update this section
+with both accelerators and friction sources.  Useful accelerators include exact
+API names, minimal scratch probes for timeout-prone routes, theorem-sized
+packets, worktree isolation, and focused module builds.  Friction sources to
+avoid include replaying stale prompt text, broad searches after a cached search
+already found the right API, tiny wrapper-only commits, and trying high-level
+algebraic order APIs repeatedly after deterministic heartbeat timeouts.
 
-Next theorem-sized target: stay in Chewi Theorem 13.1 and discharge the
-matrix/Hessian-oracle bridge consumed by the V61 gradient-FTC recurrence
-module.  Search first for local matrix-to-CLM Hessian wrappers and mathlib
-`Matrix.toEuclideanLin`/`toLpLin_apply`/`Matrix.l2_opNorm_def` APIs.  The
-preferred next packet should prove that when
-`hess (x_n)` is the Euclidean linear map induced by `H_n`, the assumptions
-`x_{n+1}=x_n-H_n^{-1} grad(x_n)` and nonsingularity/inverse action imply the
-V61 `hnewton` and `hleft` hypotheses, and should package the operator-norm
-Hessian Lipschitz hypothesis in matrix notation.
-If that bridge balloons, split out only the reusable matrix-to-CLM action
-lemmas in `Theorem131Taylor.lean` or a lighter helper module.
+Next theorem-sized target: stay in Chewi Theorem 13.1 and instantiate the V62
+matrix-gradient-FTC wrappers from a concrete twice differentiable
+finite-dimensional function.  Search first for local Hessian matrix/oracle
+wrappers in `InteriorPoint.lean`, `AppendixA.lean`, and current
+`Theorem131*.lean`, then mathlib's `fderiv`, `HasFDerivAt`, second-derivative,
+matrix Jacobian/Hessian, and `IntervalIntegrable` APIs.  The preferred next
+packet should identify `H_n` with the Euclidean linear map induced by the
+Hessian matrix at `x_n`, package the segment Hessian family `Hseg n t`, derive
+the segment differentiability/integrability hypotheses, and derive
+nonsingularity from the existing half-radius Hessian lower bound if needed.
+If the concrete differentiability interface balloons, split out exactly one
+reusable function-to-Hessian-oracle bridge and record the missing API/subgoal
+before switching route.
 Create
 the Chewi Lemma 13.16 report only after the PDF screenshot
 and report compilation tools are available.  Do not reopen the completed
@@ -945,9 +979,10 @@ consumers.  The old §13.16 search surface near `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers is only relevant if a later run
-returns to the report/tooling gate; the active V61 Lean proof target is
-Theorem 13.1 matrix/Hessian-oracle bridge for the Taylor remainder discharge.
-Older paragraphs below are cached route history and must not override this V61
+returns to the report/tooling gate; the active V62 Lean proof target is
+Theorem 13.1 concrete function/Hessian instantiation for the Taylor remainder
+discharge.
+Older paragraphs below are cached route history and must not override this V62
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row

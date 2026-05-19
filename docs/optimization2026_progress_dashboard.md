@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V61` near the top of
+  `Live Goal Prompt V62` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -183,9 +183,25 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi131_local_quadratic_recurrence_of_gradient_ftc`.  It reuses local
   `InteriorPoint.lean` segment-gradient FTC plus mathlib interval-integral
   subtraction and continuous-linear-map norm/action lemmas to construct the
-  V60 integral-remainder data.  The next blocker is the matrix/Hessian-oracle
-  bridge connecting `hess (x_n)` with the matrix `H_n`, inverse action, and
-  matrix-notation Hessian Lipschitz assumptions.
+  V60 integral-remainder data.  The V62 layer adds
+  `chewi131MatrixCLM`, `chewi131_matrix_clm_sub_norm_eq`,
+  `chewi131_matrix_inverse_action_of_hessian_matrix`,
+  `chewi131_hessian_lipschitz_clm_of_matrix_lipschitz`,
+  `chewi131_taylor_norm_bound_of_matrix_gradient_ftc`,
+  `chewi131_local_quadratic_step_of_matrix_gradient_ftc`, and
+  `chewi131_local_quadratic_recurrence_of_matrix_gradient_ftc`, closing the
+  matrix/Hessian-oracle bridge consumed by the V61 gradient-FTC layer.  Reuse
+  came from `Matrix.l2_opNorm_def`, `Matrix.nonsing_inv_mul`,
+  `Matrix.toEuclideanLin`, `Matrix.toLpLin_apply`, `Matrix.mulVec_mulVec`, and
+  `LinearMap.map_sub`.  Methodology note: introduce small local abbrevs for
+  repeated long mathlib coercions before putting them under norm/subtraction
+  goals; it improves both parser reliability and future proof readability.
+  Meta-methodology policy: each new proof packet should update the live docs
+  with accelerators and friction sources, not just theorem names.  The next
+  blocker is the concrete function/Hessian instantiation: identify `H_n` with
+  the Hessian matrix/oracle at `x_n`, package the segment Hessian matrices,
+  prove segment differentiability/integrability, and derive nonsingularity
+  from the half-radius Hessian lower bound when needed.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations
