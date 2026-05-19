@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V72` near the top of
+  `Live Goal Prompt V73` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -52,8 +52,30 @@ This dashboard tracks the Chewi optimization formalization lane for
   If that temp worktree disappears, recreate it and run `lake exe cache get`
   before focused builds; otherwise the first build can waste time rebuilding
   mathlib locally.
-- Latest Theorem 13.1 frontier: V72 compiles the positive-orthant Hessian
-  matrix adapter and a concrete recurrence specialization in
+- Latest Theorem 13.1 frontier: V73 compiles the affine-range and finite-row
+  central-path `gradient`/Hessian bridge in
+  `StatInference/Optimization/Theorem131Gradient.lean`.  New declarations are
+  `barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_eq`,
+  `barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_hasFDerivAt`,
+  `barrierAffineRangeValue_positiveOrthantNegLogBarrier_fderiv_gradient_eq`,
+  `barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt`,
+  `chewi1316RangeCentralPathValue_gradient_eq`,
+  `chewi1316RangeCentralPathValue_gradient_hasFDerivAt`,
+  `chewi1316RangeCentralPathValue_fderiv_gradient_eq`, and
+  `chewi1316RangeCentralPathValue_gradient_eventually_hasFDerivAt`.  Search-first
+  reuse came from local `barrierAffineRangeValue_positiveOrthantNegLogBarrier_hasGradientAt`,
+  `barrierAffineRangeGrad_hasFDerivAt`, `positiveOrthantNegLogGrad_hasFDerivAt`,
+  `barrierAffineRangeSet_positiveOrthant_mem_nhds`,
+  `chewi1316RangeCentralPathValue_hasGradientAt`, and
+  `centralPathGrad_hasFDerivAt`.  Next blocker: specialize the Chapter 13 local
+  Newton/central-path route to this source objective, or discharge the remaining
+  stationarity and quantitative Hessian assumptions using the now-available
+  mathlib `gradient`/`fderiv` surface.  Methodology note: promote existing
+  `HasGradientAt` certificates with `.gradient`, then transfer derivative
+  models by `HasFDerivAt.congr_of_eventuallyEq` over the open feasible
+  neighborhood instead of rebuilding affine calculus.
+- V72 frontier cache: V72 compiles the positive-orthant Hessian matrix adapter
+  and a concrete recurrence specialization in
   `StatInference/Optimization/Theorem131Gradient.lean`.  New declarations are
   `positiveOrthantNegLogHessMatrix`,
   `positiveOrthantNegLogHessMatrix_isHermitian`,
@@ -66,9 +88,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   `chewi131_local_quadratic_recurrence_positiveOrthantNegLogBarrier_of_radius`.
   Search-first reuse came from V71's positive-orthant gradient/Hessian bridge,
   V65 `chewi131MatrixCLM_isometry`, mathlib `Matrix.mulVec_diagonal`,
-  `Matrix.toEuclideanLin`, and `Matrix.toLpLin_apply`.  Next blocker: lift
-  this adapter into the actual constrained/affine Chapter 13 objective where
-  the stationarity and quantitative local assumptions can be discharged.
+  `Matrix.toEuclideanLin`, and `Matrix.toLpLin_apply`.
 - V71 frontier cache: V71 compiles the abstract `C^2`-to-bilinear
   Hessian bridge in `StatInference/Optimization/Theorem131Gradient.lean` and
   the concrete positive-orthant `gradient`/Hessian bridge in
@@ -398,6 +418,22 @@ This dashboard tracks the Chewi optimization formalization lane for
   no longer supplied manually.  Methodology note: use exact CLM equality plus
   isometry transport for matrix-continuity bridges instead of low-level
   coordinate topology when a CLM derivative theorem already exists.
+  The V73 layer adds
+  `barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_eq`,
+  `barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_hasFDerivAt`,
+  `barrierAffineRangeValue_positiveOrthantNegLogBarrier_fderiv_gradient_eq`,
+  `barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt`,
+  `chewi1316RangeCentralPathValue_gradient_eq`,
+  `chewi1316RangeCentralPathValue_gradient_hasFDerivAt`,
+  `chewi1316RangeCentralPathValue_fderiv_gradient_eq`, and
+  `chewi1316RangeCentralPathValue_gradient_eventually_hasFDerivAt`.  It lifts
+  the existing affine-range and central-path `HasGradientAt` certificates to
+  mathlib `gradient`, then transfers the derivative model from the local
+  coordinate/range gradient through eventual equality on the open feasible
+  range neighborhood.  Methodology note: this closes the affine-range gradient
+  bridge search; next runs should spend proof time on local Newton recurrence
+  specialization or source quantitative assumptions, not on re-deriving this
+  calculus interface.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

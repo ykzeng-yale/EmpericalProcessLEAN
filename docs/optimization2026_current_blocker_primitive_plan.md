@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V72`, this file's top
+   the full book is complete, route from `Live Goal Prompt V73`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -140,12 +140,54 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V72
+## Live Goal Prompt V73
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V72 extends
+Current active frontier: V73 extends
+`StatInference/Optimization/Theorem131Gradient.lean` with the affine-range and
+finite-row central-path `gradient`/Hessian bridge needed to feed the real
+Chapter 13 constrained objective into the Theorem 13.1 Newton route.  Newly
+compiled V73 declarations are
+`barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_eq`,
+`barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_hasFDerivAt`,
+`barrierAffineRangeValue_positiveOrthantNegLogBarrier_fderiv_gradient_eq`,
+`barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt`,
+`chewi1316RangeCentralPathValue_gradient_eq`,
+`chewi1316RangeCentralPathValue_gradient_hasFDerivAt`,
+`chewi1316RangeCentralPathValue_fderiv_gradient_eq`, and
+`chewi1316RangeCentralPathValue_gradient_eventually_hasFDerivAt`.  The packet
+reuses the already compiled local APIs
+`barrierAffineRangeValue_positiveOrthantNegLogBarrier_hasGradientAt`,
+`barrierAffineRangeGrad_hasFDerivAt`, `positiveOrthantNegLogGrad_hasFDerivAt`,
+`barrierAffineRangeSet_positiveOrthant_mem_nhds`,
+`chewi1316RangeCentralPathValue_hasGradientAt`, and
+`centralPathGrad_hasFDerivAt`; no new calculus primitives were needed.
+Focused verification command:
+`lake build StatInference.Optimization.Theorem131Gradient`.
+
+Next active proof target: use the V73 affine/range gradient bridge to remove
+the next supplied analytic assumption in the Chapter 13 source route.  Prefer
+a theorem-sized packet that either specializes a CLM-level local Newton
+recurrence to `chewi1316RangeCentralPathValue`/polytope slack range data, or
+discharges the concrete stationarity/Hessian-derivative hypotheses that feed
+the existing recurrence and self-concordance wrappers.  Search first for local
+`chewi1316RangeCentralPathValue_*`, `chewi1314_polytopeSlackNegLog_range*`,
+`barrierAffineRangeHess`, `barrierAffineRangeGrad`,
+`centralPathGrad_hasFDerivAt`, `chewi131_local_quadratic_recurrence_of_gradient_ftc`,
+and any finite-dimensional coordinate equivalence for `(polytopeSlackCLM a).range`
+before adding a matrix-coordinate primitive.  Do not repeat the affine-range
+`gradient` equality/derivative search: V73 closes it.
+
+Methodology note: the fastest route was to promote an existing `HasGradientAt`
+certificate to mathlib `gradient` via `.gradient`, then transfer the derivative
+from the coordinate/range gradient with `HasFDerivAt.congr_of_eventuallyEq`
+using the open positive-orthant range neighborhood.  This pattern should be
+reused whenever a local `HasGradientAt` model exists but a theorem-facing
+module needs mathlib's `gradient`.
+
+V72 dependency cache: V72 extends
 `StatInference/Optimization/Theorem131Gradient.lean` with the concrete
 positive-orthant Hessian matrix adapter and a source-facing recurrence
 specialization.  Newly compiled V72 declarations are

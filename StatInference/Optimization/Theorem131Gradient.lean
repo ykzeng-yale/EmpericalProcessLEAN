@@ -238,6 +238,183 @@ theorem positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt_matrix {d :
   exact positiveOrthantNegLogBarrier_gradient_hasFDerivAt_matrix hy
 
 /--
+On a translated affine range, mathlib's `gradient` of the positive-orthant
+logarithmic barrier agrees with the range-restricted coordinate gradient.
+-/
+theorem barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_eq
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (A : F →L[ℝ] (EuclideanSpace ℝ (Fin m)))
+    (b : EuclideanSpace ℝ (Fin m)) [FiniteDimensional ℝ A.range]
+    {y : A.range}
+    (hy : y ∈ barrierAffineRangeSet A b (positiveOrthant (d := m))) :
+    gradient (barrierAffineRangeValue A b positiveOrthantNegLogBarrier) y =
+      barrierAffineRangeGrad A b positiveOrthantNegLogGrad y :=
+  (barrierAffineRangeValue_positiveOrthantNegLogBarrier_hasGradientAt
+    (A := A) (b := b) (y := y) hy).gradient
+
+/--
+On a translated affine range, the Frechet derivative of the mathlib gradient
+of the positive-orthant logarithmic barrier is the range Hessian CLM.
+-/
+theorem barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_hasFDerivAt
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (A : F →L[ℝ] (EuclideanSpace ℝ (Fin m)))
+    (b : EuclideanSpace ℝ (Fin m)) [FiniteDimensional ℝ A.range]
+    {y : A.range}
+    (hy : y ∈ barrierAffineRangeSet A b (positiveOrthant (d := m))) :
+    HasFDerivAt
+      (gradient (barrierAffineRangeValue A b positiveOrthantNegLogBarrier))
+      (barrierAffineRangeHess A b positiveOrthantNegLogHessCLM y) y := by
+  have hbarrier :
+      HasFDerivAt (barrierAffineRangeGrad A b positiveOrthantNegLogGrad)
+        (barrierAffineRangeHess A b positiveOrthantNegLogHessCLM y) y :=
+    barrierAffineRangeGrad_hasFDerivAt A b
+      (grad := positiveOrthantNegLogGrad)
+      (hess := positiveOrthantNegLogHessCLM)
+      (y := y) (positiveOrthantNegLogGrad_hasFDerivAt hy)
+  refine hbarrier.congr_of_eventuallyEq ?_
+  filter_upwards [barrierAffineRangeSet_positiveOrthant_mem_nhds A b hy] with z hz
+  exact barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_eq
+    (A := A) (b := b) hz
+
+/--
+The Frechet derivative of the mathlib gradient for the affine-range
+positive-orthant logarithmic barrier is the range Hessian CLM.
+-/
+theorem barrierAffineRangeValue_positiveOrthantNegLogBarrier_fderiv_gradient_eq
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (A : F →L[ℝ] (EuclideanSpace ℝ (Fin m)))
+    (b : EuclideanSpace ℝ (Fin m)) [FiniteDimensional ℝ A.range]
+    {y : A.range}
+    (hy : y ∈ barrierAffineRangeSet A b (positiveOrthant (d := m))) :
+    fderiv ℝ (gradient (barrierAffineRangeValue A b positiveOrthantNegLogBarrier)) y =
+      barrierAffineRangeHess A b positiveOrthantNegLogHessCLM y :=
+  (barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_hasFDerivAt
+    A b hy).fderiv
+
+/--
+The affine-range positive-orthant barrier has the range Hessian as the
+eventual derivative model for mathlib's `gradient` near every feasible point.
+-/
+theorem barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    (A : F →L[ℝ] (EuclideanSpace ℝ (Fin m)))
+    (b : EuclideanSpace ℝ (Fin m)) [FiniteDimensional ℝ A.range]
+    {y : A.range}
+    (hy : y ∈ barrierAffineRangeSet A b (positiveOrthant (d := m))) :
+    ∀ᶠ z in 𝓝 y,
+      HasFDerivAt
+        (gradient (barrierAffineRangeValue A b positiveOrthantNegLogBarrier))
+        (barrierAffineRangeHess A b positiveOrthantNegLogHessCLM z) z := by
+  filter_upwards [barrierAffineRangeSet_positiveOrthant_mem_nhds A b hy] with z hz
+  exact barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_hasFDerivAt
+    A b hz
+
+/--
+For the finite-row central-path value, mathlib's `gradient` is exactly the
+centrality vector `t a + ∇φ`.
+-/
+theorem chewi1316RangeCentralPathValue_gradient_eq
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (t : ℝ) (aObj : (polytopeSlackCLM aRow).range)
+    {center : (polytopeSlackCLM aRow).range}
+    (hcenter_mem :
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m))) :
+    gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj) center =
+      centralPathGrad t aObj
+        (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad) center := by
+  simpa [centralPathGrad] using
+    (chewi1316RangeCentralPathValue_hasGradientAt
+      aRow bSlack t aObj hcenter_mem).gradient
+
+/--
+For the finite-row central-path value, the Frechet derivative of mathlib's
+gradient is the translated slack-range logarithmic-barrier Hessian.
+-/
+theorem chewi1316RangeCentralPathValue_gradient_hasFDerivAt
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (t : ℝ) (aObj : (polytopeSlackCLM aRow).range)
+    {center : (polytopeSlackCLM aRow).range}
+    (hcenter_mem :
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m))) :
+    HasFDerivAt
+      (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+      (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+        positiveOrthantNegLogHessCLM center) center := by
+  have hphi : HasFDerivAt
+      (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+        positiveOrthantNegLogGrad)
+      (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+        positiveOrthantNegLogHessCLM center) center :=
+    barrierAffineRangeGrad_hasFDerivAt (polytopeSlackCLM aRow) bSlack
+      (grad := positiveOrthantNegLogGrad)
+      (hess := positiveOrthantNegLogHessCLM)
+      (y := center) (positiveOrthantNegLogGrad_hasFDerivAt hcenter_mem)
+  have hcentral : HasFDerivAt
+      (centralPathGrad t aObj
+        (barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad))
+      (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+        positiveOrthantNegLogHessCLM center) center :=
+    centralPathGrad_hasFDerivAt (hphi := hphi)
+  refine hcentral.congr_of_eventuallyEq ?_
+  filter_upwards
+    [barrierAffineRangeSet_positiveOrthant_mem_nhds
+      (polytopeSlackCLM aRow) bSlack hcenter_mem] with z hz
+  exact chewi1316RangeCentralPathValue_gradient_eq aRow bSlack t aObj hz
+
+/--
+For the finite-row central-path value, `fderiv` of mathlib's gradient is the
+translated slack-range logarithmic-barrier Hessian.
+-/
+theorem chewi1316RangeCentralPathValue_fderiv_gradient_eq
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (t : ℝ) (aObj : (polytopeSlackCLM aRow).range)
+    {center : (polytopeSlackCLM aRow).range}
+    (hcenter_mem :
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m))) :
+    fderiv ℝ (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+        center =
+      barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+        positiveOrthantNegLogHessCLM center :=
+  (chewi1316RangeCentralPathValue_gradient_hasFDerivAt
+    aRow bSlack t aObj hcenter_mem).fderiv
+
+/--
+The finite-row central-path value has the slack-range logarithmic-barrier
+Hessian as the eventual derivative model for mathlib's `gradient`.
+-/
+theorem chewi1316RangeCentralPathValue_gradient_eventually_hasFDerivAt
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (t : ℝ) (aObj : (polytopeSlackCLM aRow).range)
+    {center : (polytopeSlackCLM aRow).range}
+    (hcenter_mem :
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m))) :
+    ∀ᶠ z in 𝓝 center,
+      HasFDerivAt
+        (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+        (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM z) z := by
+  filter_upwards
+    [barrierAffineRangeSet_positiveOrthant_mem_nhds
+      (polytopeSlackCLM aRow) bSlack hcenter_mem] with z hz
+  exact chewi1316RangeCentralPathValue_gradient_hasFDerivAt
+    aRow bSlack t aObj hz
+
+/--
 Chewi Theorem 13.1 Taylor norm estimate with mathlib's `gradient f`.  The
 second-derivative data is expressed as the equality between
 `fderiv ℝ (gradient f)` and the matrix-induced Hessian CLM along the segment.
