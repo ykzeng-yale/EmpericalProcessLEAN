@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V71`, this file's top
+   the full book is complete, route from `Live Goal Prompt V72`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -140,12 +140,55 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V71
+## Live Goal Prompt V72
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V71 extends both
+Current active frontier: V72 extends
+`StatInference/Optimization/Theorem131Gradient.lean` with the concrete
+positive-orthant Hessian matrix adapter and a source-facing recurrence
+specialization.  Newly compiled V72 declarations are
+`positiveOrthantNegLogHessMatrix`,
+`positiveOrthantNegLogHessMatrix_isHermitian`,
+`positiveOrthantNegLogHessMatrix_clm_eq`,
+`positiveOrthantNegLogHessCLM_continuousOn`,
+`positiveOrthantNegLogHessMatrix_continuousOn`,
+`positiveOrthantNegLogBarrier_gradient_hasFDerivAt_matrix`,
+`positiveOrthantNegLogBarrier_fderiv_gradient_matrix_eq`,
+`positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt_matrix`, and
+`chewi131_local_quadratic_recurrence_positiveOrthantNegLogBarrier_of_radius`.
+The matrix adapter defines the diagonal matrix with entries `x_i^{-2}` and
+proves `chewi131MatrixCLM (positiveOrthantNegLogHessMatrix x) =
+positiveOrthantNegLogHessCLM x` by extensionality over
+`Matrix.toEuclideanLin`, `Matrix.toLpLin_apply`, and
+`Matrix.mulVec_diagonal`.  Matrix continuity on the orthant is derived from
+the existing CLM Hessian derivative and `chewi131MatrixCLM_isometry`, not by
+re-proving coordinatewise topology.  The positive-orthant recurrence wrapper
+now discharges the gradient/Hessian derivative, matrix Hermitian, and
+matrix-continuity hypotheses for the generic Theorem 13.1 recurrence, leaving
+only the source quantitative assumptions (`hlower`, `hclose`, `hlip_matrix`,
+`hgrad_star`, `hnewton`, `hinit`).  Focused verification command:
+`lake build StatInference.Optimization.Theorem131Gradient`.
+
+Next active proof target: move from this pure positive-orthant Hessian adapter
+to the actual source objective that has a stationary point, likely the
+affine-range/polytope slack barrier or another Chapter 13 local Newton model.
+Search first for local `barrierAffineRangeHess`, `barrierAffineRangeGrad`,
+`polytopeSlack*Hess`, `positiveOrthantNegLogHessMatrix`, and matrix/CLM
+transport lemmas before adding primitives.  The pure positive-orthant log
+barrier adapter is reusable, but its standalone `gradient = 0` premise is not
+expected to be the final source theorem; use it as the Hessian matrix bridge
+inside the constrained/affine objective where the stationarity condition is
+meaningful.
+
+Methodology note: the efficient route was to avoid direct coordinate topology
+for matrix continuity.  Prove the exact CLM equality, reuse the already
+compiled CLM derivative/continuity theorem, then transport continuity backward
+through the isometry.  This pattern should be reused for future matrix
+formalization tasks.
+
+V71 dependency cache: V71 extended both
 `StatInference/Optimization/Theorem131Gradient.lean` and
 `StatInference/Optimization/InteriorPoint.lean`.  Newly compiled V71
 declarations are
@@ -171,20 +214,6 @@ verification commands are
 `lake build StatInference.Optimization.Theorem131Gradient`; root verification
 remains blocked by the current low-disk environment unless enough cache/disk is
 available.
-
-Next active proof target: discharge the remaining Hessian matrix adapter for a
-concrete barrier/source instance.  Preferred route A is to prove a diagonal
-matrix bridge of the form
-`chewi131MatrixCLM (Hfun z) = positiveOrthantNegLogHessCLM z` for the
-positive-orthant logarithmic barrier, then feed the V71 eventual
-`gradient_hasFDerivAt` facts into the Theorem 13.1 recurrence surface.
-Preferred route B is to prove the source matrix equality
-`InnerProductSpace.continuousLinearMapOfBilin (chewi131SecondFDerivBilin f z)
-  = chewi131MatrixCLM (Hfun z)` from an explicit Hessian matrix family.  Search
-first in mathlib/local code for diagonal matrix/CLM bridges, `Matrix.toLin`,
-`Matrix.toEuclideanLin`, `Matrix.toLpLin_apply`, existing
-`positiveOrthantNegLogHessCLM_apply`, and V62 `chewi131MatrixCLM` coercion
-lemmas before adding primitives.
 
 Methodology note: this packet confirms that theorem-sized progress is fastest
 when the main thread proves the active bridge while read-only scouts search

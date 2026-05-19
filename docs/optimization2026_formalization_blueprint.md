@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V71` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V72` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -33,7 +33,7 @@ record proof accelerators, friction sources, repeated searches to avoid, and
 the shortest accurate next prompt.  This is part of building a reusable
 formalization workflow for future statistical theory development in Lean.
 
-Current V71 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V72 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -322,6 +322,21 @@ mathlib `ContinuousMultilinearMap.curryLeft`,
 `positiveOrthantNegLogGrad_hasFDerivAt`.  The next source step is the
 concrete Hessian matrix adapter from the positive-orthant diagonal Hessian or
 from a source Hessian matrix family into `chewi131MatrixCLM`.
+The V72 layer adds `positiveOrthantNegLogHessMatrix`,
+`positiveOrthantNegLogHessMatrix_isHermitian`,
+`positiveOrthantNegLogHessMatrix_clm_eq`,
+`positiveOrthantNegLogHessCLM_continuousOn`,
+`positiveOrthantNegLogHessMatrix_continuousOn`,
+`positiveOrthantNegLogBarrier_gradient_hasFDerivAt_matrix`,
+`positiveOrthantNegLogBarrier_fderiv_gradient_matrix_eq`,
+`positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt_matrix`, and
+`chewi131_local_quadratic_recurrence_positiveOrthantNegLogBarrier_of_radius`.
+It proves the positive-orthant diagonal Hessian matrix adapter and a
+source-facing recurrence specialization that discharges derivative,
+Hermitian, and continuity hypotheses.  The remaining source work is the
+quantitative local Newton data for the actual constrained/affine objective:
+stationarity, Newton update identity, Hessian closeness/Lipschitz bounds, and
+the lower spectral bound.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source

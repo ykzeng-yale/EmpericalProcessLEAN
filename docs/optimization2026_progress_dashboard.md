@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V71` near the top of
+  `Live Goal Prompt V72` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -52,7 +52,24 @@ This dashboard tracks the Chewi optimization formalization lane for
   If that temp worktree disappears, recreate it and run `lake exe cache get`
   before focused builds; otherwise the first build can waste time rebuilding
   mathlib locally.
-- Latest Theorem 13.1 frontier: V71 compiles the abstract `C^2`-to-bilinear
+- Latest Theorem 13.1 frontier: V72 compiles the positive-orthant Hessian
+  matrix adapter and a concrete recurrence specialization in
+  `StatInference/Optimization/Theorem131Gradient.lean`.  New declarations are
+  `positiveOrthantNegLogHessMatrix`,
+  `positiveOrthantNegLogHessMatrix_isHermitian`,
+  `positiveOrthantNegLogHessMatrix_clm_eq`,
+  `positiveOrthantNegLogHessCLM_continuousOn`,
+  `positiveOrthantNegLogHessMatrix_continuousOn`,
+  `positiveOrthantNegLogBarrier_gradient_hasFDerivAt_matrix`,
+  `positiveOrthantNegLogBarrier_fderiv_gradient_matrix_eq`,
+  `positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt_matrix`, and
+  `chewi131_local_quadratic_recurrence_positiveOrthantNegLogBarrier_of_radius`.
+  Search-first reuse came from V71's positive-orthant gradient/Hessian bridge,
+  V65 `chewi131MatrixCLM_isometry`, mathlib `Matrix.mulVec_diagonal`,
+  `Matrix.toEuclideanLin`, and `Matrix.toLpLin_apply`.  Next blocker: lift
+  this adapter into the actual constrained/affine Chapter 13 objective where
+  the stationarity and quantitative local assumptions can be discharged.
+- V71 frontier cache: V71 compiles the abstract `C^2`-to-bilinear
   Hessian bridge in `StatInference/Optimization/Theorem131Gradient.lean` and
   the concrete positive-orthant `gradient`/Hessian bridge in
   `StatInference/Optimization/InteriorPoint.lean`.  New declarations are
@@ -365,6 +382,22 @@ This dashboard tracks the Chewi optimization formalization lane for
   mathlib's `gradient`.  Methodology note: read-only API scouts were highly
   effective here; keep scouts read-only and let the main thread own the proof
   integration to avoid duplicate edits.
+  The V72 layer adds `positiveOrthantNegLogHessMatrix`,
+  `positiveOrthantNegLogHessMatrix_isHermitian`,
+  `positiveOrthantNegLogHessMatrix_clm_eq`,
+  `positiveOrthantNegLogHessCLM_continuousOn`,
+  `positiveOrthantNegLogHessMatrix_continuousOn`,
+  `positiveOrthantNegLogBarrier_gradient_hasFDerivAt_matrix`,
+  `positiveOrthantNegLogBarrier_fderiv_gradient_matrix_eq`,
+  `positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt_matrix`, and
+  `chewi131_local_quadratic_recurrence_positiveOrthantNegLogBarrier_of_radius`.
+  It defines the diagonal matrix Hessian for the positive-orthant log barrier,
+  proves its CLM equality with the existing coordinate Hessian, transports
+  continuity through `chewi131MatrixCLM_isometry`, and specializes the
+  Theorem 13.1 recurrence so derivative/Hermitian/continuity assumptions are
+  no longer supplied manually.  Methodology note: use exact CLM equality plus
+  isometry transport for matrix-continuity bridges instead of low-level
+  coordinate topology when a CLM derivative theorem already exists.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

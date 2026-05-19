@@ -159,6 +159,85 @@ theorem chewi131SecondFDerivBilin_hasFDerivAt_of_contDiffAt_two
   exact hdiff.hasFDerivAt
 
 /--
+The matrix Hessian of the positive-orthant logarithmic barrier.  This is the
+diagonal matrix whose `i`th diagonal entry is `x_i^{-2}`.
+-/
+noncomputable def positiveOrthantNegLogHessMatrix {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) : Matrix (Fin d) (Fin d) ℝ :=
+  Matrix.diagonal fun i : Fin d => (x i) ^ (-2 : ℤ)
+
+/-- The positive-orthant logarithmic-barrier Hessian matrix is Hermitian. -/
+theorem positiveOrthantNegLogHessMatrix_isHermitian {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) :
+    (positiveOrthantNegLogHessMatrix x).IsHermitian := by
+  simp [positiveOrthantNegLogHessMatrix]
+
+/--
+The matrix Hessian of the positive-orthant logarithmic barrier induces exactly
+the coordinatewise diagonal Hessian continuous-linear map.
+-/
+theorem positiveOrthantNegLogHessMatrix_clm_eq {d : ℕ}
+    (x : EuclideanSpace ℝ (Fin d)) :
+    chewi131MatrixCLM (positiveOrthantNegLogHessMatrix x) =
+      positiveOrthantNegLogHessCLM x := by
+  apply ContinuousLinearMap.ext
+  intro v
+  ext i
+  simp [chewi131MatrixCLM, positiveOrthantNegLogHessMatrix,
+    positiveOrthantNegLogHessCLM, Matrix.toEuclideanLin, Matrix.toLpLin_apply,
+    Matrix.mulVec_diagonal]
+
+/-- The positive-orthant logarithmic-barrier CLM Hessian is continuous on the orthant. -/
+theorem positiveOrthantNegLogHessCLM_continuousOn {d : ℕ} :
+    ContinuousOn positiveOrthantNegLogHessCLM (positiveOrthant (d := d)) := by
+  intro x hx
+  exact (positiveOrthantNegLogHessCLM_hasFDerivAt hx).continuousAt.continuousWithinAt
+
+/-- The positive-orthant logarithmic-barrier matrix Hessian is continuous on the orthant. -/
+theorem positiveOrthantNegLogHessMatrix_continuousOn {d : ℕ} :
+    ContinuousOn positiveOrthantNegLogHessMatrix (positiveOrthant (d := d)) := by
+  have hcomp : ContinuousOn
+      (fun x : EuclideanSpace ℝ (Fin d) =>
+        chewi131MatrixCLM (positiveOrthantNegLogHessMatrix x))
+      (positiveOrthant (d := d)) :=
+    (positiveOrthantNegLogHessCLM_continuousOn (d := d)).congr
+      (fun x _hx => positiveOrthantNegLogHessMatrix_clm_eq x)
+  exact (chewi131MatrixCLM_isometry (n := Fin d)).comp_continuousOn_iff.mp hcomp
+
+/--
+On the positive orthant, mathlib's `gradient` of the logarithmic barrier has
+the matrix-induced diagonal Hessian as its Frechet derivative.
+-/
+theorem positiveOrthantNegLogBarrier_gradient_hasFDerivAt_matrix {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    HasFDerivAt (gradient positiveOrthantNegLogBarrier)
+      (chewi131MatrixCLM (positiveOrthantNegLogHessMatrix x)) x := by
+  rw [positiveOrthantNegLogHessMatrix_clm_eq]
+  exact positiveOrthantNegLogBarrier_gradient_hasFDerivAt hx
+
+/--
+The Frechet derivative of mathlib's `gradient` for the positive-orthant
+logarithmic barrier is the matrix-induced diagonal Hessian.
+-/
+theorem positiveOrthantNegLogBarrier_fderiv_gradient_matrix_eq {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    fderiv ℝ (gradient positiveOrthantNegLogBarrier) x =
+      chewi131MatrixCLM (positiveOrthantNegLogHessMatrix x) :=
+  (positiveOrthantNegLogBarrier_gradient_hasFDerivAt_matrix hx).fderiv
+
+/--
+The matrix-induced diagonal Hessian derivative model for mathlib's `gradient`
+holds eventually near every positive-orthant point.
+-/
+theorem positiveOrthantNegLogBarrier_gradient_eventually_hasFDerivAt_matrix {d : ℕ}
+    {x : EuclideanSpace ℝ (Fin d)} (hx : x ∈ positiveOrthant (d := d)) :
+    ∀ᶠ y in 𝓝 x,
+      HasFDerivAt (gradient positiveOrthantNegLogBarrier)
+        (chewi131MatrixCLM (positiveOrthantNegLogHessMatrix y)) y := by
+  filter_upwards [isOpen_positiveOrthant.mem_nhds hx] with y hy
+  exact positiveOrthantNegLogBarrier_gradient_hasFDerivAt_matrix hy
+
+/--
 Chewi Theorem 13.1 Taylor norm estimate with mathlib's `gradient f`.  The
 second-derivative data is expressed as the equality between
 `fderiv ℝ (gradient f)` and the matrix-induced Hessian CLM along the segment.
@@ -1234,6 +1313,55 @@ theorem chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_contDi
         chewi131SecondFDerivBilin_hasFDerivAt_of_contDiffAt_two
           (hf_contDiff k t ht))
       hB_eq hgrad_star hnewton hlip_matrix hinit
+
+/--
+Chewi Theorem 13.1 sequence recurrence specialized to the positive-orthant
+logarithmic barrier.  The gradient/Hessian derivative hypotheses are
+discharged by the concrete diagonal Hessian matrix bridge.
+-/
+theorem chewi131_local_quadratic_recurrence_positiveOrthantNegLogBarrier_of_radius
+    {d : ℕ}
+    {Hstar : Matrix (Fin d) (Fin d) ℝ}
+    {s : Set (EuclideanSpace ℝ (Fin d))}
+    (hHstar : Hstar.IsHermitian)
+    {alpha gamma : ℝ} (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    {x : ℕ -> EuclideanSpace ℝ (Fin d)} {xStar : EuclideanSpace ℝ (Fin d)}
+    (hlower : alpha • (1 : Matrix (Fin d) (Fin d) ℝ) ≤ Hstar)
+    (hclose : ∀ k,
+      ‖positiveOrthantNegLogHessMatrix (x k) - Hstar‖ ≤
+        gamma * ‖x k - xStar‖)
+    (hs_subset : s ⊆ positiveOrthant (d := d))
+    (hseg : ∀ k t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar (x k) t ∈ s)
+    (hgrad_star : gradient positiveOrthantNegLogBarrier xStar = 0)
+    (hnewton : ∀ k,
+      x (k + 1) =
+        x k -
+          chewi131MatrixCLM ((positiveOrthantNegLogHessMatrix (x k))⁻¹)
+            (gradient positiveOrthantNegLogBarrier (x k)))
+    (hlip_matrix : ∀ k t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖positiveOrthantNegLogHessMatrix (x k) -
+          positiveOrthantNegLogHessMatrix (hessianSegmentPoint xStar (x k) t)‖ ≤
+        gamma * (1 - t) * ‖x k - xStar‖)
+    (hinit : ‖x 0 - xStar‖ ≤ alpha / (2 * gamma)) :
+    ∀ k,
+      ‖x (k + 1) - xStar‖ ≤
+          (gamma / alpha) * ‖x k - xStar‖ ^ (2 : ℕ) ∧
+        ‖x (k + 1) - xStar‖ ≤ (1 / 2) * ‖x k - xStar‖ := by
+  refine
+    chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_hasFDeriv_of_radius
+      (Hstar := Hstar) (Hfun := positiveOrthantNegLogHessMatrix) (s := s)
+      hHstar halpha hgamma (f := positiveOrthantNegLogBarrier) (x := x)
+      (xStar := xStar) ?hH hlower hclose ?hcont hseg ?hgrad hgrad_star
+      hnewton hlip_matrix hinit
+  · intro k
+    exact positiveOrthantNegLogHessMatrix_isHermitian (x k)
+  · exact positiveOrthantNegLogHessMatrix_continuousOn.mono hs_subset
+  · intro k t ht
+    have htIcc : t ∈ Set.Icc (0 : ℝ) 1 := by
+      simpa [Set.uIcc_of_le zero_le_one] using ht
+    exact positiveOrthantNegLogBarrier_gradient_hasFDerivAt_matrix
+      (hs_subset (hseg k t htIcc))
 
 /--
 Chewi Theorem 13.1 sequence recurrence with mathlib's `gradient f`, deriving
