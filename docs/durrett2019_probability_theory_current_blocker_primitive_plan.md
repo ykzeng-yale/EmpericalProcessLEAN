@@ -4,7 +4,7 @@ This file is the active blocker register for the Durrett probability-theory
 lane.  It should be checked at the start of each in-thread goal cycle before
 choosing a proof target.
 
-## Live In-Thread Goal Prompt V561
+## Live In-Thread Goal Prompt V562
 
 Use only this compact prompt as the live Durrett `/goal` whenever the app-level
 goal text is older than the verified route docs.  The detailed route notes
@@ -345,6 +345,12 @@ measurable real transform `f : S -> ℝ` has source-space `lintegral` formulas
 for `ENNReal.ofReal (∏ f(X_i))` as powers of the base-coordinate
 `ENNReal.ofReal` `lintegral` over `X_0`, for finite/range/Ico and one-based
 products, without requiring `HasLaw` or ordinary integrability assumptions.
+V562 adds source-side iid/common-transform Chapter 2.1.13 real nonnegative
+`ENNReal.ofReal` zero-factor formulas: under `IdentDistrib`, one common
+nonnegative measurable real transform `f : S -> ℝ` has source-space product
+`lintegral` zero whenever the base-coordinate `ENNReal.ofReal` `lintegral`
+over `X_0` vanishes, for nonempty finite, positive range/Ico, and one-based
+products, without requiring `HasLaw` or ordinary integrability assumptions.
 Next aggressive target: stay on the requested 2.4.9/Chapter 2.1 frontier.
 Search current `Basic.lean`, local `EmpiricalProcess`/`ProbabilityMeasure`,
 mathlib, and the Durrett source before editing.  Close one missing
@@ -547,6 +553,10 @@ After V561, do not rebuild the source-side iid/common-transform Theorem 2.1.13
 real nonnegative `ENNReal.ofReal` power formulas for finite/range/Ico or
 one-based range/Ico/`Icc` products unless an exact later consumer needs a
 different source shape.
+After V562, do not rebuild the source-side iid/common-transform Theorem 2.1.13
+real nonnegative `ENNReal.ofReal` zero-factor formulas for nonempty finite,
+positive range/Ico, or one-based range/Ico/`Icc` products unless an exact
+later consumer needs a different source shape.
 Do not return to
 2.5.13, solved product-expectation branches, solved finite-dimensional
 infinite-product restriction/cylinder wrappers, solved one-based finite-prefix
@@ -759,9 +769,34 @@ range/Ico/`Icc` products,
 solved source-side iid/common-transform Theorem 2.1.13 real nonnegative
 `ENNReal.ofReal` power formulas for finite/range/Ico and one-based
 range/Ico/`Icc` products,
+solved source-side iid/common-transform Theorem 2.1.13 real nonnegative
+`ENNReal.ofReal` zero-factor formulas for nonempty finite, positive range/Ico,
+and one-based range/Ico/`Icc` products,
 or old app-level stale prompts.
 
-Latest verified target V561 adds source-side iid/common-transform Chapter
+Latest verified target V562 adds source-side iid/common-transform Chapter
+2.1.13 real nonnegative `ENNReal.ofReal` zero-factor formulas:
+`durrett2019_theorem_2_1_13_iid_lintegral_finset_ofReal_comp_prod_eq_zero_of_nonempty_identDistrib_and_lintegral_ofReal_base_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_ofReal_comp_prod_eq_zero_of_pos_identDistrib_and_lintegral_ofReal_base_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_ofReal_comp_prod_eq_zero_of_lt_identDistrib_and_lintegral_ofReal_base_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_ofReal_comp_prod_eq_zero_of_one_le_identDistrib_and_lintegral_ofReal_base_eq_zero`,
+`durrett2019_theorem_2_1_13_iid_lintegral_range_ofReal_comp_prod_eq_zero_oneBased_of_pos_identDistrib_and_lintegral_ofReal_base_eq_zero`,
+and
+`durrett2019_theorem_2_1_13_iid_lintegral_Ico_ofReal_comp_prod_eq_zero_oneBased_of_lt_identDistrib_and_lintegral_ofReal_base_eq_zero`.
+These specialize the V548 source-side iid/indexed-transform real nonnegative
+zero-factor formulas to a common-transform nonempty-product display: for an
+independent source family `X_i` with `IdentDistrib` marginals and one
+nonnegative measurable real transform `f : S -> ℝ`, they package the
+source-space `lintegral` of `ENNReal.ofReal (∏ f(X_i))` as zero whenever the
+base-coordinate `ENNReal.ofReal` `lintegral` over `X_0` vanishes, on nonempty
+finite, positive range/Ico, and one-based index sets without `HasLaw`
+hypotheses or ordinary integrability assumptions.
+Next target:
+search for another genuinely missing 2.4.9 proof-step/final-display source
+wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
+that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
+
+Previous verified target V561 adds source-side iid/common-transform Chapter
 2.1.13 real nonnegative `ENNReal.ofReal` power formulas:
 `durrett2019_theorem_2_1_13_iid_lintegral_finset_ofReal_comp_prod_eq_pow_lintegral_ofReal_of_identDistrib`,
 `durrett2019_theorem_2_1_13_iid_lintegral_range_ofReal_comp_prod_eq_pow_lintegral_ofReal_of_identDistrib`,
@@ -776,27 +811,6 @@ source family `X_i` with `IdentDistrib` marginals and one nonnegative
 measurable real transform `f : S -> ℝ`, they package the source-space
 `lintegral` of `ENNReal.ofReal (∏ f(X_i))` as powers of the base-coordinate
 `ENNReal.ofReal` `lintegral` over `X_0`, on finite/range/Ico and one-based
-index sets without `HasLaw` hypotheses or ordinary integrability assumptions.
-Next target:
-search for another genuinely missing 2.4.9 proof-step/final-display source
-wrapper, or add the next Chapter 2.1 product-law/product-expectation handoff
-that directly supports 2.4.9 or the adjacent Kolmogorov-maximal route.
-
-Previous verified target V560 adds source-side iid/common-transform Chapter
-2.1.13 nonnegative `ℝ≥0∞` zero-factor formulas:
-`durrett2019_theorem_2_1_13_iid_lintegral_finset_comp_prod_eq_zero_of_nonempty_identDistrib_and_lintegral_base_eq_zero`,
-`durrett2019_theorem_2_1_13_iid_lintegral_range_comp_prod_eq_zero_of_pos_identDistrib_and_lintegral_base_eq_zero`,
-`durrett2019_theorem_2_1_13_iid_lintegral_Ico_comp_prod_eq_zero_of_lt_identDistrib_and_lintegral_base_eq_zero`,
-`durrett2019_theorem_2_1_13_iid_lintegral_oneBased_Icc_comp_prod_eq_zero_of_one_le_identDistrib_and_lintegral_base_eq_zero`,
-`durrett2019_theorem_2_1_13_iid_lintegral_range_comp_prod_eq_zero_oneBased_of_pos_identDistrib_and_lintegral_base_eq_zero`,
-and
-`durrett2019_theorem_2_1_13_iid_lintegral_Ico_comp_prod_eq_zero_oneBased_of_lt_identDistrib_and_lintegral_base_eq_zero`.
-These specialize the V546 source-side iid/indexed-transform nonnegative
-zero-factor formulas to a common-transform nonempty-product display: for an
-independent source family `X_i` with `IdentDistrib` marginals and one
-measurable transform `f : S -> ℝ≥0∞`, they package the source-space
-`lintegral` of `∏ f(X_i)` as zero whenever the base-coordinate `lintegral`
-over `X_0` vanishes, on nonempty finite, positive range/Ico, and one-based
 index sets without `HasLaw` hypotheses or ordinary integrability assumptions.
 
 Previous verified target V559 adds source-side iid/common-transform Chapter
@@ -6347,6 +6361,6 @@ Pinned mathlib search scope:
 
 ## Current In-Thread Goal Prompt Seed
 
-Use `Live In-Thread Goal Prompt V561` at the top of this file.  Historical route
+Use `Live In-Thread Goal Prompt V562` at the top of this file.  Historical route
 notes below this point are inventory, not instructions for the next proof
 packet.
