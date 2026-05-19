@@ -415,6 +415,140 @@ theorem chewi1316RangeCentralPathValue_gradient_eventually_hasFDerivAt
     aRow bSlack t aObj hz
 
 /--
+The finite-row central-path value is stationary in mathlib's `gradient`
+exactly when the Chewi centrality vector `t a + ∇φ` vanishes.
+-/
+theorem chewi1316RangeCentralPathValue_gradient_eq_zero_iff
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (t : ℝ) (aObj : (polytopeSlackCLM aRow).range)
+    {center : (polytopeSlackCLM aRow).range}
+    (hcenter_mem :
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m))) :
+    gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj) center = 0 ↔
+      t • aObj +
+          barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad center = 0 := by
+  rw [chewi1316RangeCentralPathValue_gradient_eq aRow bSlack t aObj hcenter_mem]
+  rfl
+
+/--
+Chewi centrality gives the mathlib stationary-point hypothesis for the
+finite-row central-path value.
+-/
+theorem chewi1316RangeCentralPathValue_gradient_eq_zero_of_centrality
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (t : ℝ) (aObj : (polytopeSlackCLM aRow).range)
+    {center : (polytopeSlackCLM aRow).range}
+    (hcenter_mem :
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hcentral :
+      t • aObj +
+          barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad center = 0) :
+    gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj) center = 0 :=
+  (chewi1316RangeCentralPathValue_gradient_eq_zero_iff
+    aRow bSlack t aObj hcenter_mem).2 hcentral
+
+/--
+The mathlib stationary-point equation recovers Chewi's finite-row centrality
+vector equation.
+-/
+theorem chewi1316RangeCentralPathValue_centrality_of_gradient_eq_zero
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (t : ℝ) (aObj : (polytopeSlackCLM aRow).range)
+    {center : (polytopeSlackCLM aRow).range}
+    (hcenter_mem :
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hgrad :
+      gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj) center = 0) :
+    t • aObj +
+        barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogGrad center = 0 :=
+  (chewi1316RangeCentralPathValue_gradient_eq_zero_iff
+    aRow bSlack t aObj hcenter_mem).1 hgrad
+
+/--
+A Chewi central-path selector supplies a feasible point satisfying the mathlib
+stationarity condition for the concrete finite-row central-path value.
+-/
+theorem chewi1316RangeCentralPathSelector_exists_gradient_eq_zero
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (aObj : (polytopeSlackCLM aRow).range)
+    (hselector : Chewi1316RangeCentralPathSelector aRow bSlack aObj)
+    {t : ℝ} (ht : 0 < t) :
+    ∃ center : (polytopeSlackCLM aRow).range,
+      center ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) ∧
+      gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj) center = 0 := by
+  rcases hselector ht with ⟨center, hcenter_mem, hcentral⟩
+  refine ⟨center, hcenter_mem, ?_⟩
+  exact chewi1316RangeCentralPathValue_gradient_eq_zero_of_centrality
+    aRow bSlack t aObj hcenter_mem hcentral
+
+/--
+Along any feasible Chewi segment, the central-path value gradient has the
+translated slack-range logarithmic-barrier Hessian as its Frechet derivative.
+-/
+theorem chewi1316RangeCentralPathValue_gradient_segment_hasFDerivAt
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    (t : ℝ) (aObj : (polytopeSlackCLM aRow).range)
+    {xStar x : (polytopeSlackCLM aRow).range}
+    (hseg : ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar x τ ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m))) :
+    ∀ τ, τ ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt
+        (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+        (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM (hessianSegmentPoint xStar x τ))
+        (hessianSegmentPoint xStar x τ) := by
+  intro τ hτ
+  exact chewi1316RangeCentralPathValue_gradient_hasFDerivAt
+    aRow bSlack t aObj (hseg τ hτ)
+
+/--
+Continuity of the finite-row slack-range Hessian gives interval integrability
+of the Hessian action along any feasible Chewi segment.
+-/
+theorem chewi1316RangeCentralPathValue_hessian_segment_intervalIntegrable
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {xStar x : (polytopeSlackCLM aRow).range}
+    (hseg : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar x τ ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m))) :
+    IntervalIntegrable
+      (fun τ : ℝ =>
+        barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM (hessianSegmentPoint xStar x τ)
+          (x - xStar))
+      MeasureTheory.volume (0 : ℝ) 1 := by
+  exact hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn
+    (hess := barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+      positiveOrthantNegLogHessCLM)
+    (s := barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+      (positiveOrthant (d := m)))
+    (x := xStar) (y := x) (v := x - xStar)
+    (chewi1314_polytopeSlackNegLog_rangeHess_continuousOn aRow bSlack)
+    hseg
+
+/--
 Chewi Theorem 13.1 Taylor norm estimate with mathlib's `gradient f`.  The
 second-derivative data is expressed as the equality between
 `fderiv ℝ (gradient f)` and the matrix-induced Hessian CLM along the segment.

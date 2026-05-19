@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V73`, this file's top
+   the full book is complete, route from `Live Goal Prompt V74`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -140,12 +140,52 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V73
+## Live Goal Prompt V74
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V73 extends
+Current active frontier: V74 extends
+`StatInference/Optimization/Theorem131Gradient.lean` with the affine-range and
+finite-row central-path stationarity and segment-FTC bridge needed to feed the
+real Chapter 13 constrained objective into the Theorem 13.1 Newton route.
+Newly compiled V74 declarations are
+`chewi1316RangeCentralPathValue_gradient_eq_zero_iff`,
+`chewi1316RangeCentralPathValue_gradient_eq_zero_of_centrality`,
+`chewi1316RangeCentralPathValue_centrality_of_gradient_eq_zero`,
+`chewi1316RangeCentralPathSelector_exists_gradient_eq_zero`,
+`chewi1316RangeCentralPathValue_gradient_segment_hasFDerivAt`, and
+`chewi1316RangeCentralPathValue_hessian_segment_intervalIntegrable`.  The
+packet reuses V73's mathlib `gradient` equality/derivative bridge, local
+`Chewi1316RangeCentralPathSelector`, `chewi1314_polytopeSlackNegLog_rangeHess_continuousOn`,
+and `hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn`.  It
+turns Chewi centrality into the exact mathlib stationary-point hypothesis and
+packages the segment derivative/integrability assumptions consumed by the
+gradient FTC recurrence layer.  Focused verification command:
+`lake build StatInference.Optimization.Theorem131Gradient`.
+
+Next active proof target: use the V74 stationarity/segment bridge to specialize
+a local Newton/FTC theorem to `chewi1316RangeCentralPathValue` on the finite-row
+polytope slack range.  The likely next packet is a source-shaped local step or
+recurrence wrapper with supplied quantitative assumptions only: range feasible
+segments, Hessian inverse/right-inverse or matrix-coordinate adapter, Hessian
+Lipschitz/close bounds, and the Newton update.  Search first for
+`chewi131_local_quadratic_recurrence_of_gradient_ftc`,
+`chewi131_taylor_norm_bound_of_gradient_ftc`,
+`chewi1314_polytopeSlackNegLog_rangeInvHess*`,
+`barrierAffineRangeInvHess*`, `newtonStep`, `newtonDecrement`, and existing
+range-coordinate or finite-dimensional basis adapters before introducing a new
+matrix representation of `(polytopeSlackCLM a).range`.  Do not repeat the
+centrality/stationarity or segment derivative searches: V73/V74 close them.
+
+Methodology note: after the `gradient` bridge exists, the efficient next layer
+is not another calculus search.  Convert domain-specific optimality
+certificates into theorem-facing assumptions (`gradient f x* = 0`,
+pointwise `HasFDerivAt`, and `IntervalIntegrable`) with small reusable wrappers,
+then spend the next proof packet on the genuinely missing quantitative Newton
+bounds.
+
+V73 dependency cache: V73 extends
 `StatInference/Optimization/Theorem131Gradient.lean` with the affine-range and
 finite-row central-path `gradient`/Hessian bridge needed to feed the real
 Chapter 13 constrained objective into the Theorem 13.1 Newton route.  Newly

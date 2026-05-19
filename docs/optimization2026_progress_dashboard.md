@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V73` near the top of
+  `Live Goal Prompt V74` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -52,7 +52,30 @@ This dashboard tracks the Chewi optimization formalization lane for
   If that temp worktree disappears, recreate it and run `lake exe cache get`
   before focused builds; otherwise the first build can waste time rebuilding
   mathlib locally.
-- Latest Theorem 13.1 frontier: V73 compiles the affine-range and finite-row
+- Latest Theorem 13.1 frontier: V74 compiles the finite-row central-path
+  stationarity and segment-FTC bridge in
+  `StatInference/Optimization/Theorem131Gradient.lean`.  New declarations are
+  `chewi1316RangeCentralPathValue_gradient_eq_zero_iff`,
+  `chewi1316RangeCentralPathValue_gradient_eq_zero_of_centrality`,
+  `chewi1316RangeCentralPathValue_centrality_of_gradient_eq_zero`,
+  `chewi1316RangeCentralPathSelector_exists_gradient_eq_zero`,
+  `chewi1316RangeCentralPathValue_gradient_segment_hasFDerivAt`, and
+  `chewi1316RangeCentralPathValue_hessian_segment_intervalIntegrable`.  It
+  turns Chewi centrality into the mathlib stationary hypothesis
+  `gradient f x* = 0` and packages the segment `HasFDerivAt` and Hessian-action
+  integrability assumptions needed by the gradient-FTC local Newton layer.
+  Search-first reuse came from V73's `chewi1316RangeCentralPathValue_gradient_eq`
+  and `chewi1316RangeCentralPathValue_gradient_hasFDerivAt`, local
+  `Chewi1316RangeCentralPathSelector`,
+  `chewi1314_polytopeSlackNegLog_rangeHess_continuousOn`, and
+  `hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn`.  Next
+  blocker: specialize a local Newton/FTC theorem to the finite-row central-path
+  value, leaving only the real quantitative assumptions such as feasible
+  segments, range inverse-Hessian/right-inverse data, Hessian Lipschitz/close
+  bounds, and the Newton update.  Methodology note: once the gradient bridge is
+  compiled, convert domain-specific optimality into theorem-facing FTC
+  assumptions before spending proof time on quantitative Newton estimates.
+- V73 frontier cache: V73 compiles the affine-range and finite-row
   central-path `gradient`/Hessian bridge in
   `StatInference/Optimization/Theorem131Gradient.lean`.  New declarations are
   `barrierAffineRangeValue_positiveOrthantNegLogBarrier_gradient_eq`,
@@ -434,6 +457,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   bridge search; next runs should spend proof time on local Newton recurrence
   specialization or source quantitative assumptions, not on re-deriving this
   calculus interface.
+  The V74 layer adds `chewi1316RangeCentralPathValue_gradient_eq_zero_iff`,
+  `chewi1316RangeCentralPathValue_gradient_eq_zero_of_centrality`,
+  `chewi1316RangeCentralPathValue_centrality_of_gradient_eq_zero`,
+  `chewi1316RangeCentralPathSelector_exists_gradient_eq_zero`,
+  `chewi1316RangeCentralPathValue_gradient_segment_hasFDerivAt`, and
+  `chewi1316RangeCentralPathValue_hessian_segment_intervalIntegrable`.  It
+  turns the Chewi centrality equation into the exact mathlib stationarity
+  hypothesis and packages the segment derivative and Hessian-action
+  integrability facts used by the gradient-FTC Newton route.  Methodology
+  note: after compiling a domain-to-`gradient` bridge, immediately add the
+  source-facing stationarity and segment wrappers so later recurrence proofs
+  can focus on quantitative assumptions rather than rebuilding calculus glue.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations
