@@ -36,7 +36,7 @@ must reuse Billingsley/local probability primitives whenever possible.
 
 ## Current Active Target
 
-Route from `Live In-Thread Goal Prompt V569` in
+Route from `Live In-Thread Goal Prompt V570` in
 `docs/durrett2019_probability_theory_current_blocker_primitive_plan.md`.
 The active immediate lane for this goal cycle is Durrett Theorem 2.4.9
 Glivenko-Cantelli plus Chapter 2.1 independence, product-law, and
@@ -409,8 +409,12 @@ V569 adds non-atomic Durrett Theorem 2.4.9 final-display wrappers for the
 outer-a.s. half-line GC endpoint, empirical-CDF GC predicate, exact
 outer-a.s. empirical-CDF predicate, range-sum display, and textbook
 inverse-multiple display, in both zero-based and one-based forms.
-The
-historical compiled inventory from the preceding 2.5.13 lane follows for
+V570 adds Chapter 2.1.13 partial-sum-difference `IdentDistrib` wrappers:
+one integrable zero-mean base marginal now supplies the future interval
+zero-mean hypotheses for zero-based and one-based partial-sum differences,
+including early-block statistic mixed terms and the Kolmogorov-maximal
+indicator mixed-term surface.
+The historical compiled inventory from the preceding 2.5.13 lane follows for
 provenance.
 V443 advances Durrett Theorem 2.5.13, the Feller infinite-mean dichotomy.
 The V443 bridge uses the already-compiled scaled sample-tail Borel-Cantelli
@@ -3723,7 +3727,7 @@ Next proof packet: search for a genuinely missing 2.4.9 proof-step or
 final-display source wrapper, or add the next Chapter 2.1
 product-law/product-expectation handoff that directly supports 2.4.9 or the
 adjacent Kolmogorov-maximal route.  Do not route back to solved 2.5.13
-plumbing or the closed V500-V569 2.4.9/2.1 source-wrapper surfaces unless an
+plumbing or the closed V500-V570 2.4.9/2.1 source-wrapper surfaces unless an
 exact source-shape consumer is missing.
 
 Cycle rule: sync GitHub, inspect only anchors needed for that theorem, implement

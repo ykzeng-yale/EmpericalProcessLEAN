@@ -14328,6 +14328,146 @@ theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_int
       hShift_indep (fun i => hX_meas (i + 1)) hmn hX_int hzero hA
 
 /--
+Durrett 2019, Theorem 2.1.13 support: identical distribution reduces the
+future-increment zero-mean hypothesis to one integrable zero-mean base
+marginal.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integrable_identDistrib_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    {m n : ℕ} (hmn : m ≤ n)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (hbase_zero : ∫ ω, X 0 ω ∂P = 0) :
+    ∫ ω, ((∑ k ∈ Finset.range n, X k ω) -
+      ∑ k ∈ Finset.range m, X k ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integral_Ico_eq_zero
+    (P := P) (X := X) hmn
+    (fun i _hi => ((hident i).integrable_iff).2 hbase_int)
+    (fun i _hi => (hident i).integral_eq.trans hbase_zero)
+
+/--
+Durrett 2019, Theorem 2.1.13 support: iid/source-shaped zero mixed term when
+the future interval mean-zero assumption is supplied by one base marginal and
+identical distribution.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_integrable_identDistrib_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (hbase_zero : ∫ ω, X 0 ω ∂P = 0)
+    {ψ : ((i : Finset.range m) -> ℝ) -> ℝ} (hψ : Measurable ψ) :
+    ∫ ω, ψ (fun i : Finset.range m => X i ω) *
+      ((∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_integral_Ico_eq_zero
+    (P := P) (X := X) hX_indep hX_meas hmn
+    (fun i _hi => ((hident i).integrable_iff).2 hbase_int)
+    (fun i _hi => (hident i).integral_eq.trans hbase_zero) hψ
+
+/--
+Durrett 2019, Theorem 2.1.13 support: the Kolmogorov-maximal mixed term
+`2 S_m 1_A (S_n - S_m)` vanishes from iid/source-shaped hypotheses with one
+integrable zero-mean base marginal.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_of_integrable_identDistrib_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (hbase_zero : ∫ ω, X 0 ω ∂P = 0)
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    ∫ ω, ((2 : ℝ) * (∑ i : Finset.range m, X i ω) *
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X i ω)) *
+      ((∑ k ∈ Finset.range n, X k ω) -
+        ∑ k ∈ Finset.range m, X k ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero
+    (P := P) (X := X) hX_indep hX_meas hmn
+    (fun i _hi => ((hident i).integrable_iff).2 hbase_int)
+    (fun i _hi => (hident i).integral_eq.trans hbase_zero) hA
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation:
+identical distribution reduces the future-increment zero-mean hypothesis to
+one integrable zero-mean base marginal.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_oneBased_of_integrable_identDistrib_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    {m n : ℕ} (hmn : m ≤ n)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (hbase_zero : ∫ ω, X 0 ω ∂P = 0) :
+    ∫ ω, ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+      ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_integral_eq_zero_of_integral_Ico_eq_zero_oneBased
+    (P := P) (X := X) hmn
+    (fun i _hi => ((hident (i + 1)).integrable_iff).2 hbase_int)
+    (fun i _hi => (hident (i + 1)).integral_eq.trans hbase_zero)
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation:
+iid/source-shaped zero mixed term when one base marginal supplies integrability
+and mean zero for the shifted future interval.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_oneBased_of_integrable_identDistrib_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (hbase_zero : ∫ ω, X 0 ω ∂P = 0)
+    {ψ : ((i : Finset.range m) -> ℝ) -> ℝ} (hψ : Measurable ψ) :
+    ∫ ω, ψ (fun i : Finset.range m => X (i + 1) ω) *
+      ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockFunction_integral_eq_zero_of_integral_Ico_eq_zero_oneBased
+    (P := P) (X := X) hX_indep hX_meas hmn
+    (fun i _hi => ((hident (i + 1)).integrable_iff).2 hbase_int)
+    (fun i _hi => (hident (i + 1)).integral_eq.trans hbase_zero) hψ
+
+/--
+Durrett 2019, Theorem 2.1.13 support in one-based textbook notation: the
+Kolmogorov-maximal mixed term `2 S_m 1_A (S_n - S_m)` vanishes from
+iid/source-shaped hypotheses with one integrable zero-mean base marginal.
+-/
+theorem durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_oneBased_of_integrable_identDistrib_and_integral_eq_zero
+    {Ω : Type u} [MeasurableSpace Ω] {P : Measure Ω}
+    {X : ℕ -> Ω -> ℝ}
+    (hX_indep : _root_.ProbabilityTheory.iIndepFun (μ := P) X)
+    (hX_meas : ∀ i, Measurable (X i))
+    {m n : ℕ} (hmn : m ≤ n)
+    (hident : ∀ i : ℕ,
+      _root_.ProbabilityTheory.IdentDistrib (X i) (X 0) P P)
+    (hbase_int : Integrable (X 0) P)
+    (hbase_zero : ∫ ω, X 0 ω ∂P = 0)
+    {A : Set ((i : Finset.range m) -> ℝ)} (hA : MeasurableSet A) :
+    ∫ ω, ((2 : ℝ) * (∑ i : Finset.range m, X (i + 1) ω) *
+        Set.indicator A (fun _ : ((i : Finset.range m) -> ℝ) => (1 : ℝ))
+          (fun i : Finset.range m => X (i + 1) ω)) *
+      ((∑ k ∈ Finset.range n, X (k + 1) ω) -
+        ∑ k ∈ Finset.range m, X (k + 1) ω) ∂P = 0 :=
+  durrett2019_theorem_2_1_13_partialSumDiff_mul_earlyBlockIndicatorSum_integral_eq_zero_oneBased
+    (P := P) (X := X) hX_indep hX_meas hmn
+    (fun i _hi => ((hident (i + 1)).integrable_iff).2 hbase_int)
+    (fun i _hi => (hident (i + 1)).integral_eq.trans hbase_zero) hA
+
+/--
 Durrett 2019, Theorem 2.5.5 first-crossing block set.  On this set, the
 partial sum at time `m` has crossed the threshold `x`, while every earlier
 partial sum has stayed below `x` in absolute value.
