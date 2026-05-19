@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V65` near the top of
+  `Live Goal Prompt V66` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -261,6 +261,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   local exact norm identities can be stronger and faster than broad mathlib
   continuity searches; future agents should reuse this bridge instead of
   re-probing matrix-to-operator continuity.
+  The V66 layer adds
+  `chewi131_taylor_norm_bound_of_matrix_continuous_gradient_hasFDeriv`,
+  `chewi131_local_quadratic_step_of_matrix_continuous_gradient_hasFDeriv_of_radius`,
+  and
+  `chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_hasFDeriv_of_radius`.
+  These wrappers consume the source Hessian matrix family directly as
+  `HasFDerivAt (gradient f) (chewi131MatrixCLM (Hfun z)) z`, so future theorem
+  assembly no longer needs the awkward `DifferentiableAt` plus `fderiv`
+  equality split.  Search-first reuse came from the existing V61-V63 Taylor
+  bridge's direct `HasFDerivAt` consumer and mathlib's
+  `HasStrictFDerivAt.hasFDerivAt`.  Methodology note: expose the lower-level
+  consumer API when it is already exactly what the theorem layer needs.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

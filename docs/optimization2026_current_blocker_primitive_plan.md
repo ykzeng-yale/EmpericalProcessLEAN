@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V65`, this file's top
+   the full book is complete, route from `Live Goal Prompt V66`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -140,16 +140,33 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V65
+## Live Goal Prompt V66
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V65 extends the root-imported module
+Current active frontier: V66 extends the root-imported module
 `StatInference/Optimization/Theorem131Gradient.lean`, keeping mathlib's
 `gradient`/Frechet-derivative surface separate from the heavier V61-V63
-Taylor bridge and removing one source-facing continuity burden.  Newly
-compiled V65 declarations are `chewi131MatrixCLM_isometry`,
+Taylor bridge and exposing the cleanest current second-derivative interface.
+Newly compiled V66 declarations are
+`chewi131_taylor_norm_bound_of_matrix_continuous_gradient_hasFDeriv`,
+`chewi131_local_quadratic_step_of_matrix_continuous_gradient_hasFDeriv_of_radius`,
+and
+`chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_hasFDeriv_of_radius`.
+They consume the source Hessian matrix family directly as
+`HasFDerivAt (gradient f) (chewi131MatrixCLM (Hfun z)) z`, avoiding the V64
+two-part decomposition into `DifferentiableAt ℝ (gradient f) z` plus
+`fderiv ℝ (gradient f) z = chewi131MatrixCLM (Hfun z)`.  The active focused
+verification command is `lake build
+StatInference.Optimization.Theorem131Gradient`; root verification remains
+`lake build StatInference` when enough disk and a warm local build cache are
+available.
+
+V65 dependency cache: V65 extended
+`StatInference/Optimization/Theorem131Gradient.lean`, removing one
+source-facing continuity burden.  Compiled V65 declarations are
+`chewi131MatrixCLM_isometry`,
 `chewi131MatrixCLM_continuous`, `chewi131MatrixCLM_continuousOn_comp`,
 `chewi131_taylor_norm_bound_of_matrix_continuous_gradient_fderiv`,
 `chewi131_local_quadratic_step_of_matrix_continuous_gradient_fderiv_of_radius`,
@@ -158,11 +175,7 @@ and
 They prove that the matrix-to-CLM bridge is continuous from the existing norm
 identity `chewi131_matrix_clm_sub_norm_eq`, then let theorem-facing wrappers
 consume the source-shaped hypothesis `ContinuousOn Hfun s` instead of
-`ContinuousOn (fun z => chewi131MatrixCLM (Hfun z)) s`.  The active focused
-verification command is `lake build
-StatInference.Optimization.Theorem131Gradient`; root verification remains
-`lake build StatInference` when enough disk and a warm local build cache are
-available.
+`ContinuousOn (fun z => chewi131MatrixCLM (Hfun z)) s`.
 
 V64 dependency cache: V64 added
 `StatInference/Optimization/Theorem131Gradient.lean`.  Compiled declarations
@@ -183,14 +196,13 @@ and how the next task definition can be sharper.  This is part of the
 Optimization lane deliverable and the reusable process memory for later Lean
 formalization of statistical theory.
 
-The remaining Theorem 13.1 blocker is now the differentiability/Hessian
-identification surface: package a clean second-derivative assumption that
-yields `DifferentiableAt ℝ (gradient f)` and the Frechet-derivative equality
-`fderiv ℝ (gradient f) z = chewi131MatrixCLM (Hfun z)` along the source
+The remaining Theorem 13.1 blocker is now to derive or instantiate the direct
+second-derivative hypothesis:
+`HasFDerivAt (gradient f) (chewi131MatrixCLM (Hfun z)) z` along the source
 segments.  Search-first gate for the next packet: before inventing another
-Hessian abstraction, inspect the V65 `Theorem131Gradient.lean` surface,
-mathlib `ContDiff`/`iteratedFDeriv` APIs, and local concrete Hessian examples
-in `InteriorPoint.lean`.
+Hessian abstraction, inspect the V66 `Theorem131Gradient.lean` surface,
+mathlib `ContDiff`/`iteratedFDeriv` and `HasStrictFDerivAt.hasFDerivAt` APIs,
+and local concrete Hessian examples in `InteriorPoint.lean`.
 
 V63 dependency cache: V63 extends the root-imported modules
 `StatInference/Optimization/Theorem131.lean` and
@@ -947,6 +959,9 @@ wrappers to mathlib `gradient f` through `DifferentiableAt.hasFDerivAt` and
 V65 proves the matrix-to-CLM bridge is continuous and adds source-facing
 matrix-continuity wrappers, so downstream Theorem 13.1 statements can assume
 `ContinuousOn Hfun s` directly.
+V66 adds direct `HasFDerivAt (gradient f)` wrappers, so downstream Theorem
+13.1 statements no longer need to split the second-derivative fact into
+`DifferentiableAt` plus a `fderiv` equality.
 
 Search-first reuse for V53-V59: source Definition A.5 and Theorem 13.1;
 mathlib singular values
@@ -1070,6 +1085,13 @@ was a small continuity bridge plus theorem-facing consumers.  Search output
 was noisy across mathlib; recording the local identity as the decisive reuse
 prevents future agents from re-searching broad matrix-continuity APIs for this
 same step.
+Methodology note from V66: when a theorem route already has a lower-level
+consumer API, expose that API before adding a more elaborate source wrapper.
+Here the V61-V63 Taylor bridge already wanted direct `HasFDerivAt` data for
+the gradient; V64's `DifferentiableAt` plus `fderiv` equality was useful but
+more awkward for later theorem assembly.  The efficient next interface is the
+direct Hessian-as-gradient-derivative fact, with `HasStrictFDerivAt.hasFDerivAt`
+and local concrete Hessian lemmas as the next reuse targets.
 Meta-methodology note: every future theorem packet should update this section
 with both accelerators and friction sources.  Useful accelerators include exact
 API names, minimal scratch probes for timeout-prone routes, theorem-sized
@@ -1078,18 +1100,20 @@ avoid include replaying stale prompt text, broad searches after a cached search
 already found the right API, tiny wrapper-only commits, and trying high-level
 algebraic order APIs repeatedly after deterministic heartbeat timeouts.
 
-Next theorem-sized target: stay in Chewi Theorem 13.1 and remove the remaining
-gradient differentiability/Frechet-derivative equality assumptions in
-`Theorem131Gradient.lean`.  Search first in
+Next theorem-sized target: stay in Chewi Theorem 13.1 and instantiate the
+direct `HasFDerivAt (gradient f) (chewi131MatrixCLM (Hfun z)) z` hypothesis
+from a stronger source condition.  Search first in
 `Mathlib.Analysis.Calculus.Gradient.Basic`,
 `Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries`,
 `Mathlib.Analysis.Calculus.ContDiff.FiniteDimension`, and local
 `InteriorPoint.lean`/`Theorem131Taylor.lean` for `gradient`, `∇`,
 `HasGradientAt`, `hasGradientAt_iff_hasFDerivAt`, `HasFDerivAt.hasGradientAt`,
-`DifferentiableAt.hasFDerivAt`, `iteratedFDeriv`, and CLM-valued continuity
-APIs.  Preferred packet: package a theorem that consumes a clean
-second-derivative interface for `f` and produces the V65 `hgrad_diff` /
-`hhess_eq` hypotheses.  Avoid putting new heavy imports back into
+`DifferentiableAt.hasFDerivAt`, `HasStrictFDerivAt.hasFDerivAt`,
+`iteratedFDeriv`, and concrete local Hessian derivative lemmas.  Preferred
+packet A: add strict-Frechet-derivative consumers if local concrete Hessian
+examples expose `HasStrictFDerivAt`.  Preferred packet B: package a theorem
+that consumes a clean ContDiff/iteratedFDeriv interface for `f` and produces
+the V66 direct `hgrad` hypothesis.  Avoid putting new heavy imports back into
 `Theorem131Taylor.lean`; keep gradient-facing and differentiability-facing
 wrappers downstream.
 Create
@@ -1108,10 +1132,10 @@ consumers.  The old §13.16 search surface near `*_standardPath` wrappers,
 `chewi1316_objective_gap_le_eps_*` consumers, central-path gradient
 definitions, finite-row range Hessian derivative/mixed-third lemmas, and
 terminal centrality/Hessian-derivative wrappers is only relevant if a later run
-returns to the report/tooling gate; the active V65 Lean proof target is
-Theorem 13.1 source-facing differentiability/Hessian identification for the
+returns to the report/tooling gate; the active V66 Lean proof target is
+Theorem 13.1 source-facing Hessian-as-gradient-derivative instantiation for the
 Taylor remainder discharge.
-Older paragraphs below are cached route history and must not override this V65
+Older paragraphs below are cached route history and must not override this V66
 target.
 
 Cached prior frontier before the main-stage accuracy packet: the finite-row
