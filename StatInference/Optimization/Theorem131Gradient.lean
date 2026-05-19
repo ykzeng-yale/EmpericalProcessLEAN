@@ -20,6 +20,38 @@ namespace Optimization
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
 /--
+The matrix-to-continuous-linear-map bridge used in Chewi Theorem 13.1 is an
+isometry for the matrix L2 operator norm and the induced operator norm.
+-/
+theorem chewi131MatrixCLM_isometry :
+    Isometry
+      (chewi131MatrixCLM :
+        Matrix n n ℝ -> EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ n) := by
+  refine Isometry.of_dist_eq ?_
+  intro A B
+  rw [dist_eq_norm, dist_eq_norm]
+  exact chewi131_matrix_clm_sub_norm_eq A B
+
+/-- The matrix-to-continuous-linear-map bridge is continuous. -/
+theorem chewi131MatrixCLM_continuous :
+    Continuous
+      (chewi131MatrixCLM :
+        Matrix n n ℝ -> EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ n) :=
+  chewi131MatrixCLM_isometry.continuous
+
+/--
+A source-facing matrix-continuity assumption gives the CLM-valued Hessian
+continuity consumed by the Taylor bridge.
+-/
+theorem chewi131MatrixCLM_continuousOn_comp
+    {Hfun : EuclideanSpace ℝ n -> Matrix n n ℝ}
+    {s : Set (EuclideanSpace ℝ n)}
+    (hHfun_cont : ContinuousOn Hfun s) :
+    ContinuousOn (fun z => chewi131MatrixCLM (Hfun z)) s := by
+  simpa [Function.comp_def] using
+    chewi131MatrixCLM_continuous.comp_continuousOn hHfun_cont
+
+/--
 Chewi Theorem 13.1 Taylor norm estimate with mathlib's `gradient f`.  The
 second-derivative data is expressed as the equality between
 `fderiv ℝ (gradient f)` and the matrix-induced Hessian CLM along the segment.
@@ -59,6 +91,41 @@ theorem chewi131_taylor_norm_bound_of_continuous_matrix_gradient_fderiv
       (Hfun := Hfun) (s := s) (gamma := gamma) (grad := gradient f)
       (x := x) (xNext := xNext) (xStar := xStar)
       hgamma hdet hhess_cont hseg hgrad hgrad_star hnewton hlip_matrix
+
+/--
+Chewi Theorem 13.1 Taylor norm estimate with mathlib's `gradient f`, using a
+source-facing continuity assumption on the Hessian matrix family `Hfun`.
+-/
+theorem chewi131_taylor_norm_bound_of_matrix_continuous_gradient_fderiv
+    {Hfun : EuclideanSpace ℝ n -> Matrix n n ℝ}
+    {s : Set (EuclideanSpace ℝ n)}
+    {gamma : ℝ} (hgamma : 0 ≤ gamma)
+    {f : EuclideanSpace ℝ n -> ℝ}
+    {x xNext xStar : EuclideanSpace ℝ n}
+    (hdet : IsUnit (Hfun x).det)
+    (hHfun_cont : ContinuousOn Hfun s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar x t ∈ s)
+    (hgrad_diff : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      DifferentiableAt ℝ (gradient f) (hessianSegmentPoint xStar x t))
+    (hhess_eq : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      fderiv ℝ (gradient f) (hessianSegmentPoint xStar x t) =
+        chewi131MatrixCLM (Hfun (hessianSegmentPoint xStar x t)))
+    (hgrad_star : gradient f xStar = 0)
+    (hnewton :
+      xNext =
+        x - chewi131MatrixCLM ((Hfun x)⁻¹) (gradient f x))
+    (hlip_matrix : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖Hfun x - Hfun (hessianSegmentPoint xStar x t)‖ ≤
+        gamma * (1 - t) * ‖x - xStar‖) :
+    ‖xNext - xStar‖ ≤
+      (gamma / 2) * ‖(Hfun x)⁻¹‖ * ‖x - xStar‖ ^ (2 : ℕ) := by
+  exact
+    chewi131_taylor_norm_bound_of_continuous_matrix_gradient_fderiv
+      (Hfun := Hfun) (s := s) (gamma := gamma) (f := f)
+      (x := x) (xNext := xNext) (xStar := xStar)
+      hgamma hdet (chewi131MatrixCLM_continuousOn_comp hHfun_cont) hseg
+      hgrad_diff hhess_eq hgrad_star hnewton hlip_matrix
 
 /--
 Chewi Theorem 13.1 one-step local quadratic convergence with mathlib's
@@ -106,6 +173,48 @@ theorem chewi131_local_quadratic_step_of_continuous_matrix_gradient_fderiv_of_ra
       (grad := gradient f) (x := x) (xNext := xNext) (xStar := xStar)
       hH hlower hclose hradius hhess_cont hseg hgrad hgrad_star hnewton
       hlip_matrix
+
+/--
+Chewi Theorem 13.1 one-step local quadratic convergence with mathlib's
+`gradient f`, using continuity of the Hessian matrix family instead of a
+precomposed CLM-valued continuity assumption.
+-/
+theorem chewi131_local_quadratic_step_of_matrix_continuous_gradient_fderiv_of_radius
+    {Hstar : Matrix n n ℝ}
+    {Hfun : EuclideanSpace ℝ n -> Matrix n n ℝ}
+    {s : Set (EuclideanSpace ℝ n)}
+    (hHstar : Hstar.IsHermitian) {alpha gamma : ℝ}
+    (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    {f : EuclideanSpace ℝ n -> ℝ}
+    {x xNext xStar : EuclideanSpace ℝ n}
+    (hH : (Hfun x).IsHermitian)
+    (hlower : alpha • (1 : Matrix n n ℝ) ≤ Hstar)
+    (hclose : ‖Hfun x - Hstar‖ ≤ gamma * ‖x - xStar‖)
+    (hradius : ‖x - xStar‖ ≤ alpha / (2 * gamma))
+    (hHfun_cont : ContinuousOn Hfun s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar x t ∈ s)
+    (hgrad_diff : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      DifferentiableAt ℝ (gradient f) (hessianSegmentPoint xStar x t))
+    (hhess_eq : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      fderiv ℝ (gradient f) (hessianSegmentPoint xStar x t) =
+        chewi131MatrixCLM (Hfun (hessianSegmentPoint xStar x t)))
+    (hgrad_star : gradient f xStar = 0)
+    (hnewton :
+      xNext =
+        x - chewi131MatrixCLM ((Hfun x)⁻¹) (gradient f x))
+    (hlip_matrix : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖Hfun x - Hfun (hessianSegmentPoint xStar x t)‖ ≤
+        gamma * (1 - t) * ‖x - xStar‖) :
+    ‖xNext - xStar‖ ≤
+      (gamma / alpha) * ‖x - xStar‖ ^ (2 : ℕ) := by
+  exact
+    chewi131_local_quadratic_step_of_continuous_matrix_gradient_fderiv_of_radius
+      (Hstar := Hstar) (Hfun := Hfun) (s := s) hHstar halpha hgamma
+      (f := f) (x := x) (xNext := xNext) (xStar := xStar)
+      hH hlower hclose hradius
+      (chewi131MatrixCLM_continuousOn_comp hHfun_cont) hseg hgrad_diff
+      hhess_eq hgrad_star hnewton hlip_matrix
 
 /--
 Chewi Theorem 13.1 sequence recurrence with mathlib's `gradient f`.  The
@@ -156,6 +265,48 @@ theorem chewi131_local_quadratic_recurrence_of_continuous_matrix_gradient_fderiv
       (grad := gradient f) (x := x) (xStar := xStar)
       hH hlower hclose hhess_cont hseg hgrad hgrad_star hnewton
       hlip_matrix hinit
+
+/--
+Chewi Theorem 13.1 sequence recurrence with mathlib's `gradient f`, using a
+source-facing continuity assumption on the Hessian matrix family.
+-/
+theorem chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_fderiv_of_radius
+    {Hstar : Matrix n n ℝ}
+    {Hfun : EuclideanSpace ℝ n -> Matrix n n ℝ}
+    {s : Set (EuclideanSpace ℝ n)}
+    (hHstar : Hstar.IsHermitian)
+    {alpha gamma : ℝ} (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    {f : EuclideanSpace ℝ n -> ℝ}
+    {x : ℕ -> EuclideanSpace ℝ n} {xStar : EuclideanSpace ℝ n}
+    (hH : ∀ k, (Hfun (x k)).IsHermitian)
+    (hlower : alpha • (1 : Matrix n n ℝ) ≤ Hstar)
+    (hclose : ∀ k, ‖Hfun (x k) - Hstar‖ ≤ gamma * ‖x k - xStar‖)
+    (hHfun_cont : ContinuousOn Hfun s)
+    (hseg : ∀ k t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar (x k) t ∈ s)
+    (hgrad_diff : ∀ k t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      DifferentiableAt ℝ (gradient f) (hessianSegmentPoint xStar (x k) t))
+    (hhess_eq : ∀ k t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      fderiv ℝ (gradient f) (hessianSegmentPoint xStar (x k) t) =
+        chewi131MatrixCLM (Hfun (hessianSegmentPoint xStar (x k) t)))
+    (hgrad_star : gradient f xStar = 0)
+    (hnewton : ∀ k,
+      x (k + 1) =
+        x k - chewi131MatrixCLM ((Hfun (x k))⁻¹) (gradient f (x k)))
+    (hlip_matrix : ∀ k t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖Hfun (x k) - Hfun (hessianSegmentPoint xStar (x k) t)‖ ≤
+        gamma * (1 - t) * ‖x k - xStar‖)
+    (hinit : ‖x 0 - xStar‖ ≤ alpha / (2 * gamma)) :
+    ∀ k,
+      ‖x (k + 1) - xStar‖ ≤
+          (gamma / alpha) * ‖x k - xStar‖ ^ (2 : ℕ) ∧
+        ‖x (k + 1) - xStar‖ ≤ (1 / 2) * ‖x k - xStar‖ := by
+  exact
+    chewi131_local_quadratic_recurrence_of_continuous_matrix_gradient_fderiv_of_radius
+      (Hstar := Hstar) (Hfun := Hfun) (s := s) hHstar halpha hgamma
+      (f := f) (x := x) (xStar := xStar)
+      hH hlower hclose (chewi131MatrixCLM_continuousOn_comp hHfun_cont) hseg
+      hgrad_diff hhess_eq hgrad_star hnewton hlip_matrix hinit
 
 end Optimization
 end StatInference

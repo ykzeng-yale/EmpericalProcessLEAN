@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V64` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V65` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -33,7 +33,7 @@ record proof accelerators, friction sources, repeated searches to avoid, and
 the shortest accurate next prompt.  This is part of building a reusable
 formalization workflow for future statistical theory development in Lean.
 
-Current V64 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V65 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -220,6 +220,20 @@ rebuilds and verified the focused Theorem 13.1 modules, but
 empirical-process modules.  Future broad verification should use a persistent
 Chewi worktree with a warm local `.lake/build`, or clear enough disk before a
 root build.
+The V65 layer proves the matrix-to-CLM bridge is an isometry/continuous map
+and adds source-facing matrix-continuity consumers:
+`chewi131MatrixCLM_isometry`, `chewi131MatrixCLM_continuous`,
+`chewi131MatrixCLM_continuousOn_comp`,
+`chewi131_taylor_norm_bound_of_matrix_continuous_gradient_fderiv`,
+`chewi131_local_quadratic_step_of_matrix_continuous_gradient_fderiv_of_radius`,
+and
+`chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_fderiv_of_radius`.
+The remaining Theorem 13.1 route no longer needs a hand-supplied
+`ContinuousOn (fun z => chewi131MatrixCLM (Hfun z)) s`; it can use the
+source-shaped `ContinuousOn Hfun s`.  Methodology note: when a local norm
+transport identity is exact, use it to prove continuity/isometry directly
+instead of searching broadly for a specialized matrix-to-operator continuity
+API.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source

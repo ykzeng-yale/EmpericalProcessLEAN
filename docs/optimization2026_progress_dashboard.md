@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V64` near the top of
+  `Live Goal Prompt V65` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -249,6 +249,18 @@ This dashboard tracks the Chewi optimization formalization lane for
   proof packets should keep a persistent Chewi worktree, share package
   dependencies rather than copying them, and root-build only with adequate free
   disk or a warm local root cache.
+  The V65 layer adds `chewi131MatrixCLM_isometry`,
+  `chewi131MatrixCLM_continuous`, `chewi131MatrixCLM_continuousOn_comp`,
+  `chewi131_taylor_norm_bound_of_matrix_continuous_gradient_fderiv`,
+  `chewi131_local_quadratic_step_of_matrix_continuous_gradient_fderiv_of_radius`,
+  and
+  `chewi131_local_quadratic_recurrence_of_matrix_continuous_gradient_fderiv_of_radius`.
+  It uses the existing norm identity `chewi131_matrix_clm_sub_norm_eq` to
+  prove continuity of the matrix-to-CLM bridge, so source-facing Theorem 13.1
+  wrappers now assume `ContinuousOn Hfun s` directly.  Methodology note:
+  local exact norm identities can be stronger and faster than broad mathlib
+  continuity searches; future agents should reuse this bridge instead of
+  re-probing matrix-to-operator continuity.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations
