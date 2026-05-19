@@ -1365,6 +1365,147 @@ theorem chewi1316RangeCentralPathValue_hessian_lower_half_of_sourceRadiusHalf
         simpa [rangeHess] using hsourceLower v)
 
 /--
+Trajectory-level lower-Hessian supplier for the finite-row central-path
+recurrence.  A source-point Euclidean lower bound at `x 0`, together with the
+decrement-budget source-radius certificate, gives the `hlower` hypothesis
+needed by the local quadratic recurrence for every iterate.
+-/
+theorem chewi1316RangeCentralPathValue_hlower_of_trajectory_decrementBudget
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {alpha gamma t : ℝ} (halpha_nonneg : 0 ≤ alpha)
+    (aObj : (polytopeSlackCLM aRow).range)
+    {x : ℕ -> (polytopeSlackCLM aRow).range}
+    {xStar : (polytopeSlackCLM aRow).range} {stepBudget : ℕ -> ℝ}
+    (htraj : IsChewi1316RangeCentralPathNewtonTrajectory aRow bSlack t aObj x)
+    (hx0_mem :
+      x 0 ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hdecr_lt : ∀ k,
+      x k ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) ->
+      newtonDecrement
+          (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack) (x k) < 1)
+    (hdecr_budget : ∀ k,
+      newtonDecrement
+          (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack) (x k) ≤
+        stepBudget k)
+    (hbudget : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), 2 * stepBudget n) ≤ 1 / 2)
+    (hsourceLower : ∀ v : (polytopeSlackCLM aRow).range,
+      (2 * alpha) * ‖v‖ ^ (2 : ℕ) ≤
+        inner ℝ v
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM (x 0) v)) :
+    ∀ k, ‖x k - xStar‖ ≤ alpha / (2 * gamma) ->
+      ∀ v : (polytopeSlackCLM aRow).range,
+        (alpha / 2) * ‖v‖ ^ (2 : ℕ) ≤
+          inner ℝ
+            (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM (x k) v) v := by
+  have hx_mem_all :
+      ∀ k,
+        x k ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) :=
+    chewi1316RangeCentralPathValue_iterates_mem_of_decrement_lt_one
+      aRow bSlack aObj htraj hx0_mem hdecr_lt
+  intro k _hradius v
+  cases k with
+  | zero =>
+      have hcoeff : alpha / 2 ≤ 2 * alpha := by
+        nlinarith
+      have hlower :=
+        (mul_le_mul_of_nonneg_right hcoeff (sq_nonneg ‖v‖)).trans
+          (hsourceLower v)
+      simpa [real_inner_comm] using hlower
+  | succ N =>
+      have hsourceRadius :
+          localNorm
+              (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+                positiveOrthantNegLogHessCLM)
+              (x 0) (x (N + 1) - x 0) ≤ 1 / 2 :=
+        chewi1316RangeCentralPathValue_sourceRadiusHalf_of_trajectory_decrementBudget
+          (aRow := aRow) (bSlack := bSlack) (t := t) aObj
+          (x := x) (stepBudget := stepBudget)
+          htraj hx0_mem hdecr_lt hdecr_budget hbudget N
+      simpa [real_inner_comm] using
+        chewi1316RangeCentralPathValue_hessian_lower_half_of_sourceRadiusHalf
+          (aRow := aRow) (bSlack := bSlack) (alpha := alpha)
+          (xStar := x 0) (x := x (N + 1))
+          hx0_mem (hx_mem_all (N + 1)) hsourceRadius hsourceLower v
+
+/--
+Finite-row central-path recurrence with the lower-Hessian premise discharged
+from a source lower bound and a Newton-decrement budget.  The remaining
+analytic gate is the Hessian close/Lipschitz control along the feasible
+segments.
+-/
+theorem chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_trajectory_decrementBudget_lower
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {alpha gamma t : ℝ} (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    (aObj : (polytopeSlackCLM aRow).range)
+    {x : ℕ -> (polytopeSlackCLM aRow).range}
+    {xStar : (polytopeSlackCLM aRow).range} {stepBudget : ℕ -> ℝ}
+    (htraj : IsChewi1316RangeCentralPathNewtonTrajectory aRow bSlack t aObj x)
+    (hx0_mem :
+      x 0 ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hdecr : ∀ k,
+      x k ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)) ->
+      newtonDecrement
+          (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack) (x k) < 1)
+    (hdecr_budget : ∀ k,
+      newtonDecrement
+          (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+          (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack) (x k) ≤
+        stepBudget k)
+    (hbudget : ∀ N : ℕ,
+      (∑ n ∈ Finset.range (N + 1), 2 * stepBudget n) ≤ 1 / 2)
+    (hxStar_mem :
+      xStar ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hcentral :
+      t • aObj +
+          barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad xStar = 0)
+    (hsourceLower : ∀ v : (polytopeSlackCLM aRow).range,
+      (2 * alpha) * ‖v‖ ^ (2 : ℕ) ≤
+        inner ℝ v
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM (x 0) v))
+    (hlip : ∀ k, ‖x k - xStar‖ ≤ alpha / (2 * gamma) ->
+      ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+        ‖barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM (x k) -
+          barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM (hessianSegmentPoint xStar (x k) τ)‖ ≤
+          gamma * (1 - τ) * ‖x k - xStar‖)
+    (hinit : ‖x 0 - xStar‖ ≤ alpha / (2 * gamma)) :
+    ∀ k,
+      ‖x (k + 1) - xStar‖ ≤
+          (gamma / alpha) * ‖x k - xStar‖ ^ (2 : ℕ) ∧
+        ‖x (k + 1) - xStar‖ ≤ (1 / 2) * ‖x k - xStar‖ := by
+  exact
+    chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_trajectory_decrement
+      (aRow := aRow) (bSlack := bSlack) (alpha := alpha) (gamma := gamma)
+      (t := t) halpha hgamma aObj
+      (x := x) (xStar := xStar)
+      htraj hx0_mem hdecr hxStar_mem hcentral
+      (chewi1316RangeCentralPathValue_hlower_of_trajectory_decrementBudget
+        (aRow := aRow) (bSlack := bSlack) (alpha := alpha) (gamma := gamma)
+        (t := t) halpha.le aObj (x := x) (xStar := xStar)
+        (stepBudget := stepBudget) htraj hx0_mem hdecr hdecr_budget hbudget
+        hsourceLower)
+      hlip hinit
+
+/--
 Chewi Theorem 13.1 Taylor norm estimate with mathlib's `gradient f`.  The
 second-derivative data is expressed as the equality between
 `fderiv ℝ (gradient f)` and the matrix-induced Hessian CLM along the segment.

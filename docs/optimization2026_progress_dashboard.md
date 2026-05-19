@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V80` near the top of
+  `Live Goal Prompt V81` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -52,8 +52,20 @@ This dashboard tracks the Chewi optimization formalization lane for
   If that temp worktree disappears, recreate it and run `lake exe cache get`
   before focused builds; otherwise the first build can waste time rebuilding
   mathlib locally.
-- Latest Theorem 13.1 frontier: V80 compiles the first quantitative
-  local-norm bridge for the central-path recurrence.  New declarations are
+- Latest Theorem 13.1 frontier: V81 compiles the lower-Hessian supplier and
+  recurrence wrapper for the finite-row central-path trajectory.  New
+  declarations are
+  `chewi1316RangeCentralPathValue_hlower_of_trajectory_decrementBudget` and
+  `chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_trajectory_decrementBudget_lower`
+  in `StatInference/Optimization/Theorem131Gradient.lean`.  Search-first reuse
+  came from V80's source-radius and Hessian-lower bridges.  Next blocker:
+  discharge or route around the remaining Hessian close/Lipschitz gate,
+  preferably through local-norm/Newton-decrement recurrence APIs from Chewi
+  13.6/13.8 rather than an additive Euclidean op-norm `hlip` theorem.
+  Methodology note: normalize real inner-product orientation explicitly when
+  feeding older recurrence interfaces.
+- V80 frontier cache: V80 compiles the first quantitative local-norm bridge
+  for the central-path recurrence.  New declarations are
   `hessian_lower_half_of_sourceRadius_half_and_source_lower_two` in
   `StatInference/Optimization/InteriorPoint.lean`, plus
   `chewi1316RangeCentralPathValue_sourceRadiusHalf_of_trajectory_decrementBudget`
@@ -63,13 +75,7 @@ This dashboard tracks the Chewi optimization formalization lane for
   came from
   `sourceRadius_successor_half_of_newtonSteps_currentLocalNorm_budget_hessian_pos`,
   `localNorm_source_le_two_current_of_sourceRadius_half`, and
-  `hessianQuadraticLower_of_mul_le_localNorm`.  Next blocker: assemble a
-  trajectory-level `hlower` supplier from initial/source Hessian lower bound
-  plus decrement budget, then continue through local-norm/Newton-decrement
-  control instead of forcing additive Euclidean Hessian Lipschitz first.
-  Methodology note: generic bridges in `InteriorPoint.lean` are worthwhile
-  when they remove repeated analytic proof work, but they are expensive to
-  verify; keep source-specific packaging in `Theorem131Gradient.lean`.
+  `hessianQuadraticLower_of_mul_le_localNorm`.
 - V79 frontier cache: V79 compiles finite-row central-path Newton trajectory
   and invariant wrappers in
   `StatInference/Optimization/Theorem131Gradient.lean`.  New declarations are

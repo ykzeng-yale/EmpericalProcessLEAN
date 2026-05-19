@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V80`, this file's top
+   the full book is complete, route from `Live Goal Prompt V81`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -140,13 +140,42 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V80
+## Live Goal Prompt V81
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V80 adds the first quantitative local-norm bridge for
-the V79 recurrence.  Newly compiled declarations are
+Current active frontier: V81 feeds V80 into the finite-row central-path local
+quadratic recurrence.  Newly compiled declarations are
+`chewi1316RangeCentralPathValue_hlower_of_trajectory_decrementBudget` and
+`chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_trajectory_decrementBudget_lower`
+in `StatInference/Optimization/Theorem131Gradient.lean`.  The first theorem
+supplies the recurrence `hlower` premise from a source Hessian lower bound at
+`x 0` and the V80 decrement-budget source-radius certificate; the second
+theorem removes the `hlower` argument from the recurrence endpoint.  Focused
+verification command: `lake build StatInference.Optimization.Theorem131Gradient`.
+
+Next active proof target: discharge or route around the remaining Hessian
+close/Lipschitz gate.  Do not return to the already-solved feasible segment,
+feasible iterates, Newton update, source-radius, or `hlower` blockers.  Search
+first for local-norm/Newton-decrement APIs in `InteriorPoint.lean`:
+`chewi138_newtonSegment_localNorm_sandwich_sourceRadius`,
+`chewi138_newtonDecrement_step_le_*`, `HessianSegment*`,
+`localNorm_sandwich_*`, and finite-row range certificates
+`chewi1314_polytopeSlackNegLog_rangeHess_*` /
+`chewi1314_polytopeSlackNegLog_rangeInvHess_*`.  Preferred route is a
+source-facing Newton-decrement recurrence for the central-path trajectory,
+reusing Chewi 13.6/13.8 multiplicative local-norm stability.  Only pursue the
+additive Euclidean op-norm `hlip` premise if a bounded existing bridge is
+found; otherwise keep theorem endpoints local-norm/decrement shaped.
+
+Methodology note: V81 confirms that theorem-facing wrappers should normalize
+inner-product orientation explicitly (`inner v (H v)` versus
+`inner (H v) v`) when feeding older recurrence interfaces.  This avoids noisy
+type mismatches while preserving the stronger local-norm proof route.
+
+V80 dependency cache: V80 adds the first quantitative local-norm bridge for
+the V79 recurrence.  Compiled declarations are
 `hessian_lower_half_of_sourceRadius_half_and_source_lower_two` in
 `StatInference/Optimization/InteriorPoint.lean`, plus
 `chewi1316RangeCentralPathValue_sourceRadiusHalf_of_trajectory_decrementBudget`
@@ -158,31 +187,7 @@ wrapper reuses
 `localNorm_newtonStep_sub_eq_newtonDecrement_of_hessian_right_inverse`, and
 the finite-row Hessian positivity/right-inverse APIs.  The lower bridge reuses
 `localNorm_source_le_two_current_of_sourceRadius_half` and
-`hessianQuadraticLower_of_mul_le_localNorm`.  Focused verification command:
-`lake build StatInference.Optimization.Theorem131Gradient`.
-
-Next active proof target: feed V80 into the V79 recurrence without reverting
-to additive Euclidean Hessian Lipschitz first.  Prove a trajectory-level
-`hlower` supplier by instantiating
-`chewi1316RangeCentralPathValue_hessian_lower_half_of_sourceRadiusHalf` with
-source point `x 0`, using
-`chewi1316RangeCentralPathValue_sourceRadiusHalf_of_trajectory_decrementBudget`
-for `localNorm H (x 0) (x (k+1) - x 0) ≤ 1/2`; handle `k = 0` separately by
-the source lower assumption.  Then either assemble a recurrence wrapper whose
-`hlower` is discharged from the initial/source lower bound and decrement
-budget, or move to the local-norm/Newton-decrement recurrence route suggested
-by the API scouts.  Remaining hard blocker is Hessian close/control: prefer
-Chewi 13.6/13.8 local-norm multiplicative stability and existing
-`chewi138_*` decrement theorems over manufacturing an additive Euclidean
-op-norm Lipschitz estimate.
-
-Methodology note: V80 demonstrates the current best acceleration pattern:
-search once for a strong local-norm theorem, add one generic bridge only when
-it eliminates repeated proof work, and keep theorem-facing wrappers in
-`Theorem131Gradient.lean`.  Editing `InteriorPoint.lean` has high verification
-cost because the module rebuild is large; future generic edits there should be
-reserved for reusable bridges, while routine source-specific packaging should
-stay in smaller theorem modules.
+`hessianQuadraticLower_of_mul_le_localNorm`.
 
 V79 dependency cache: V79 extends
 `StatInference/Optimization/Theorem131Gradient.lean` with a finite-row
