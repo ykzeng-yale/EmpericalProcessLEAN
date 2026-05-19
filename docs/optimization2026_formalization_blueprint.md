@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V77` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V78` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -33,18 +33,20 @@ record proof accelerators, friction sources, repeated searches to avoid, and
 the shortest accurate next prompt.  This is part of building a reusable
 formalization workflow for future statistical theory development in Lean.
 
-Current V77 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V78 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, while active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
-range-space local Newton-convergence recurrence.  V77 adds the reusable
-conditional-step recurrence scaffold and specializes it to the finite-row
-central-path objective through
-`chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_gradient_ftc`.
-The next live target is to discharge a concrete source assumption required by
-that recurrence: feasible segment/local-radius preservation, Hessian lower
-bound, or Hessian Lipschitz/close control along feasible segments.  Do not
-repeat the inverse-norm, recurrence-induction, or range-coordinate search
-unless a specific self-concordance/local-norm blocker requires it.
+range-space local Newton-convergence recurrence.  V78 removes the manual
+segment-feasibility assumption from the finite-row central-path step and
+recurrence wrappers using `convex_barrierAffineRangeSet`,
+`convex_positiveOrthant`, and `hessianSegmentPoint_mem_of_convex`.  The next
+live target is to discharge a genuinely quantitative source assumption
+required by
+`chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_gradient_ftc_feasible_segment`:
+feasible iterates/local-radius preservation, the Newton update certificate,
+Hessian lower bound, or Hessian Lipschitz/close control.  Do not repeat the
+inverse-norm, recurrence-induction, feasible-segment, or range-coordinate
+search unless a specific self-concordance/local-norm blocker requires it.
 
 Historical route cache: the module
 `StatInference/Optimization/AppendixA.lean` compiles and is root-imported,

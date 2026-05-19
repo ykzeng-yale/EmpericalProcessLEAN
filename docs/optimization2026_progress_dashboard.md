@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V77` near the top of
+  `Live Goal Prompt V78` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -52,10 +52,23 @@ This dashboard tracks the Chewi optimization formalization lane for
   If that temp worktree disappears, recreate it and run `lake exe cache get`
   before focused builds; otherwise the first build can waste time rebuilding
   mathlib locally.
-- Latest Theorem 13.1 frontier: V77 compiles the range-space sequence
-  recurrence layer for the finite-row central-path objective in
-  `StatInference/Optimization/Theorem131Taylor.lean` and
+- Latest Theorem 13.1 frontier: V78 compiles finite-row central-path wrappers
+  that discharge segment feasibility from convexity of the translated
+  positive-orthant range set in
   `StatInference/Optimization/Theorem131Gradient.lean`.  New declarations are
+  `chewi1316RangeCentralPathValue_feasible_segment_mem`,
+  `chewi1316RangeCentralPathValue_local_quadratic_step_of_gradient_ftc_feasible_segment`,
+  `chewi1316RangeCentralPathValue_local_quadratic_step_and_half_of_gradient_ftc_feasible_segment`,
+  and
+  `chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_gradient_ftc_feasible_segment`.
+  Search-first reuse came from `convex_barrierAffineRangeSet`,
+  `convex_positiveOrthant`, and `hessianSegmentPoint_mem_of_convex`.  Next
+  blocker: discharge feasible iterates/local-radius preservation, Newton
+  update packaging, Hessian lower bound, or Hessian Lipschitz/close control.
+  Methodology note: peel structural assumptions with existing convexity lemmas
+  before spending proof time on quantitative self-concordance estimates.
+- V77 frontier cache: V77 compiles the range-space sequence recurrence layer
+  for the finite-row central-path objective.  New declarations are
   `chewi131_local_quadratic_recurrence_of_conditional_step`,
   `chewi131_local_quadratic_recurrence_of_taylor_bound_clm_of_hessian_lower_half`,
   `chewi131_local_quadratic_recurrence_of_conditional_taylor_bound_clm_of_hessian_lower_half`,
@@ -63,12 +76,6 @@ This dashboard tracks the Chewi optimization formalization lane for
   Search-first reuse came from the existing matrix recurrence induction in
   `Theorem131.lean`, but V77 extracts the induction into a low-assumption
   conditional-step scaffold and specializes it to the central-path value.
-  Next blocker: discharge concrete source assumptions required by the
-  recurrence: feasible segments/local-radius preservation, Hessian lower bound,
-  and Hessian Lipschitz/close bound along feasible segments.  Methodology note:
-  isolate source recurrence inductions before plugging in domain-specific
-  Hessian facts; this makes the next theorem packet mathematical rather than
-  proof-script plumbing.
 - V76 frontier cache: V76 compiles the CLM/range-space inverse-norm and local
   quadratic Newton step layer for the finite-row central-path objective.  New
   declarations are

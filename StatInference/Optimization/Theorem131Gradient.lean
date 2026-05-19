@@ -776,6 +776,130 @@ theorem chewi1316RangeCentralPathValue_local_quadratic_step_and_half_of_gradient
     (by simpa [Hinv] using htaylor)
 
 /--
+The finite-row central-path feasible set is convex, so the segment from the
+central point to the current feasible point stays feasible.  This discharges
+the segment-feasibility hypothesis in the Theorem 13.1 range-space wrappers.
+-/
+theorem chewi1316RangeCentralPathValue_feasible_segment_mem
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {x xStar : (polytopeSlackCLM aRow).range}
+    (hx_mem :
+      x ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hxStar_mem :
+      xStar ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m))) :
+    ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar x τ ∈
+        barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+          (positiveOrthant (d := m)) := by
+  have hsRange : Convex ℝ
+      (barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m))) :=
+    convex_barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+      convex_positiveOrthant
+  intro τ hτ
+  exact hessianSegmentPoint_mem_of_convex hsRange hxStar_mem hx_mem hτ
+
+/--
+Pointwise finite-row central-path local quadratic step with segment
+feasibility discharged from convexity of the translated positive orthant.
+-/
+theorem chewi1316RangeCentralPathValue_local_quadratic_step_of_gradient_ftc_feasible_segment
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {alpha gamma t : ℝ} (halpha : 0 < alpha) (hgamma : 0 ≤ gamma)
+    (aObj : (polytopeSlackCLM aRow).range)
+    {x xNext xStar : (polytopeSlackCLM aRow).range}
+    (hx_mem :
+      x ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hxStar_mem :
+      xStar ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hcentral :
+      t • aObj +
+          barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad xStar = 0)
+    (hnewton :
+      xNext = newtonStep
+        (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+        (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack) x)
+    (hlower : ∀ v : (polytopeSlackCLM aRow).range,
+      (alpha / 2) * ‖v‖ ^ (2 : ℕ) ≤
+        inner ℝ
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM x v) v)
+    (hlip : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM x -
+        barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM (hessianSegmentPoint xStar x τ)‖ ≤
+        gamma * (1 - τ) * ‖x - xStar‖) :
+    ‖xNext - xStar‖ ≤
+      (gamma / alpha) * ‖x - xStar‖ ^ (2 : ℕ) := by
+  exact chewi1316RangeCentralPathValue_local_quadratic_step_of_gradient_ftc
+    (aRow := aRow) (bSlack := bSlack) (alpha := alpha) (gamma := gamma)
+    (t := t) halpha hgamma aObj
+    (x := x) (xNext := xNext) (xStar := xStar)
+    hx_mem hxStar_mem
+    (chewi1316RangeCentralPathValue_feasible_segment_mem
+      aRow bSlack hx_mem hxStar_mem)
+    hcentral hnewton hlower hlip
+
+/--
+Pointwise finite-row central-path local quadratic step plus half-contraction
+with segment feasibility discharged from convexity.
+-/
+theorem chewi1316RangeCentralPathValue_local_quadratic_step_and_half_of_gradient_ftc_feasible_segment
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {alpha gamma t : ℝ} (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    (aObj : (polytopeSlackCLM aRow).range)
+    {x xNext xStar : (polytopeSlackCLM aRow).range}
+    (hx_mem :
+      x ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hxStar_mem :
+      xStar ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hcentral :
+      t • aObj +
+          barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad xStar = 0)
+    (hnewton :
+      xNext = newtonStep
+        (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+        (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack) x)
+    (hradius : ‖x - xStar‖ ≤ alpha / (2 * gamma))
+    (hlower : ∀ v : (polytopeSlackCLM aRow).range,
+      (alpha / 2) * ‖v‖ ^ (2 : ℕ) ≤
+        inner ℝ
+          (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM x v) v)
+    (hlip : ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM x -
+        barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+          positiveOrthantNegLogHessCLM (hessianSegmentPoint xStar x τ)‖ ≤
+        gamma * (1 - τ) * ‖x - xStar‖) :
+    ‖xNext - xStar‖ ≤
+        (gamma / alpha) * ‖x - xStar‖ ^ (2 : ℕ) ∧
+      ‖xNext - xStar‖ ≤ (1 / 2) * ‖x - xStar‖ := by
+  exact chewi1316RangeCentralPathValue_local_quadratic_step_and_half_of_gradient_ftc
+    (aRow := aRow) (bSlack := bSlack) (alpha := alpha) (gamma := gamma)
+    (t := t) halpha hgamma aObj
+    (x := x) (xNext := xNext) (xStar := xStar)
+    hx_mem hxStar_mem
+    (chewi1316RangeCentralPathValue_feasible_segment_mem
+      aRow bSlack hx_mem hxStar_mem)
+    hcentral hnewton hradius hlower hlip
+
+/--
 Chewi Theorem 13.1 sequence recurrence specialized to the finite-row
 central-path value.  The feasibility, segment, Newton-update, Hessian lower,
 and Hessian Lipschitz hypotheses are only required while the current iterate is
@@ -834,6 +958,63 @@ theorem chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_gradient_ft
     (x := x k) (xNext := x (k + 1)) (xStar := xStar)
     (hx_mem k hradius) hxStar_mem (hseg k hradius) hcentral
     (hnewton k hradius) hradius (hlower k hradius) (hlip k hradius)
+
+/--
+Finite-row central-path sequence recurrence with the segment-feasibility
+hypothesis discharged from convexity of the translated positive-orthant
+range set.  This leaves the real quantitative assumptions: feasible iterates,
+Newton updates, Hessian lower bounds, and Hessian Lipschitz bounds.
+-/
+theorem chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_gradient_ftc_feasible_segment
+    {F : Type*} [NormedAddCommGroup F] [InnerProductSpace ℝ F] [CompleteSpace F]
+    {m : ℕ}
+    (aRow : Fin m -> F) (bSlack : EuclideanSpace ℝ (Fin m))
+    {alpha gamma t : ℝ} (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    (aObj : (polytopeSlackCLM aRow).range)
+    {x : ℕ -> (polytopeSlackCLM aRow).range}
+    {xStar : (polytopeSlackCLM aRow).range}
+    (hx_mem : ∀ k, ‖x k - xStar‖ ≤ alpha / (2 * gamma) ->
+      x k ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hxStar_mem :
+      xStar ∈ barrierAffineRangeSet (polytopeSlackCLM aRow) bSlack
+        (positiveOrthant (d := m)))
+    (hcentral :
+      t • aObj +
+          barrierAffineRangeGrad (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogGrad xStar = 0)
+    (hnewton : ∀ k, ‖x k - xStar‖ ≤ alpha / (2 * gamma) ->
+      x (k + 1) = newtonStep
+        (gradient (chewi1316RangeCentralPathValue aRow bSlack t aObj))
+        (chewi1314_polytopeSlackNegLog_rangeInvHess aRow bSlack) (x k))
+    (hlower : ∀ k, ‖x k - xStar‖ ≤ alpha / (2 * gamma) ->
+      ∀ v : (polytopeSlackCLM aRow).range,
+        (alpha / 2) * ‖v‖ ^ (2 : ℕ) ≤
+          inner ℝ
+            (barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+              positiveOrthantNegLogHessCLM (x k) v) v)
+    (hlip : ∀ k, ‖x k - xStar‖ ≤ alpha / (2 * gamma) ->
+      ∀ τ, τ ∈ Set.Icc (0 : ℝ) 1 ->
+        ‖barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM (x k) -
+          barrierAffineRangeHess (polytopeSlackCLM aRow) bSlack
+            positiveOrthantNegLogHessCLM (hessianSegmentPoint xStar (x k) τ)‖ ≤
+          gamma * (1 - τ) * ‖x k - xStar‖)
+    (hinit : ‖x 0 - xStar‖ ≤ alpha / (2 * gamma)) :
+    ∀ k,
+      ‖x (k + 1) - xStar‖ ≤
+          (gamma / alpha) * ‖x k - xStar‖ ^ (2 : ℕ) ∧
+        ‖x (k + 1) - xStar‖ ≤ (1 / 2) * ‖x k - xStar‖ := by
+  exact chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_gradient_ftc
+    (aRow := aRow) (bSlack := bSlack) (alpha := alpha) (gamma := gamma)
+    (t := t) halpha hgamma aObj
+    (x := x) (xStar := xStar)
+    hx_mem hxStar_mem
+    (by
+      intro k hradius
+      exact chewi1316RangeCentralPathValue_feasible_segment_mem
+        aRow bSlack (hx_mem k hradius) hxStar_mem)
+    hcentral hnewton hlower hlip hinit
 
 /--
 Chewi Theorem 13.1 Taylor norm estimate with mathlib's `gradient f`.  The

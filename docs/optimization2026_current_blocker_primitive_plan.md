@@ -66,7 +66,7 @@ to prevent the two observed failure modes in this lane: stale route replay and
 micro-packet overhead.
 
 1. Source of truth.  The immutable app-level `/goal` objective is stale.  Until
-   the full book is complete, route from `Live Goal Prompt V77`, this file's top
+   the full book is complete, route from `Live Goal Prompt V78`, this file's top
    sections, and the dashboard snapshot, not from older ASGD or Chapter 3
    archived wording.
 2. Packet size.  A normal run should target a theorem-sized packet: one
@@ -140,12 +140,46 @@ objective and should be preferred over archived prompts.
   theorem, the stuck subgoal or missing API, the search tried, and two viable
   next routes.  Avoid vague labels such as "next small gap".
 
-## Live Goal Prompt V77
+## Live Goal Prompt V78
 
 Use this as the current `/goal` replacement.  The app-level objective text is
 stale and cannot be edited until the whole textbook goal is complete.
 
-Current active frontier: V77 extends
+Current active frontier: V78 extends
+`StatInference/Optimization/Theorem131Gradient.lean` with finite-row
+central-path wrappers that discharge the segment-feasibility assumption from
+convexity of the translated positive-orthant range set.  Newly compiled V78
+declarations are `chewi1316RangeCentralPathValue_feasible_segment_mem`,
+`chewi1316RangeCentralPathValue_local_quadratic_step_of_gradient_ftc_feasible_segment`,
+`chewi1316RangeCentralPathValue_local_quadratic_step_and_half_of_gradient_ftc_feasible_segment`,
+and
+`chewi1316RangeCentralPathValue_local_quadratic_recurrence_of_gradient_ftc_feasible_segment`.
+The proof reuses `convex_barrierAffineRangeSet`, `convex_positiveOrthant`, and
+`hessianSegmentPoint_mem_of_convex`; do not repeat this search.  Focused
+verification command: `lake build StatInference.Optimization.Theorem131Gradient`.
+
+Next active proof target: discharge one of the remaining concrete source
+assumptions in the V78 recurrence.  The recurrence no longer needs a manual
+segment hypothesis; remaining blockers are feasible iterates/local-radius
+preservation, Newton update packaging, pointwise Hessian lower bound, and
+Hessian Lipschitz/close control along feasible segments.  Search first in
+`InteriorPoint.lean` for source-radius/local-norm APIs:
+`sourceRadius_*`, `sourceLocalNorm_*`, `localNorm_source_le_two_current*`,
+`chewi136_*`, `chewi138_*`,
+`chewi1314_polytopeSlackNegLog_rangeHess*`,
+`chewi1314_polytopeSlackNegLog_rangeInvHess*`, and
+`chewi1314_polytopeSlackNegLog_range_newtonStep_mem*`.  Prefer a theorem
+packet that converts existing local-norm/self-concordance facts into either
+the V78 Hessian lower assumption or the V78 Hessian Lipschitz assumption.  If
+those balloon, package a feasible-iterate/local-radius preservation wrapper
+from the existing `sourceRadius_*` Newton-step budget lemmas.
+
+Methodology note: V78 is a useful example of "assumption peeling": before
+attacking hard quantitative self-concordance estimates, remove easy structural
+assumptions by reusing convexity lemmas.  This keeps future statements shorter
+and makes the true mathematical blockers visible.
+
+V77 dependency cache: V77 extends
 `StatInference/Optimization/Theorem131Taylor.lean` and
 `StatInference/Optimization/Theorem131Gradient.lean` with the sequence
 recurrence layer for the finite-row central-path objective.  Newly compiled
