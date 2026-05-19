@@ -25,7 +25,7 @@ This dashboard tracks the Chewi optimization formalization lane for
 - Manual goal policy: the app-level `/goal` objective text cannot be edited
   directly in this tool surface unless the goal is complete.  Until the full
   textbook formalization is complete, use
-  `Live Goal Prompt V62` near the top of
+  `Live Goal Prompt V63` near the top of
   `docs/optimization2026_current_blocker_primitive_plan.md` as the live
   replacement goal prompt.  Older long prompts in that file are archived
   history and must not override the current Chapter 13/Appendix A frontier.
@@ -201,7 +201,23 @@ This dashboard tracks the Chewi optimization formalization lane for
   blocker is the concrete function/Hessian instantiation: identify `H_n` with
   the Hessian matrix/oracle at `x_n`, package the segment Hessian matrices,
   prove segment differentiability/integrability, and derive nonsingularity
-  from the half-radius Hessian lower bound when needed.
+  from the half-radius Hessian lower bound when needed.  The V63 layer adds
+  `chewi131_hessian_det_isUnit_of_radius`,
+  `chewi131_local_quadratic_recurrence_of_conditional_taylor_bound`,
+  `chewi131_taylor_norm_bound_of_continuous_matrix_gradient_ftc`,
+  `chewi131_local_quadratic_step_of_matrix_gradient_ftc_of_radius`,
+  `chewi131_local_quadratic_step_of_continuous_matrix_gradient_ftc_of_radius`,
+  `chewi131_local_quadratic_recurrence_of_matrix_gradient_ftc_of_radius`, and
+  `chewi131_local_quadratic_recurrence_of_continuous_matrix_gradient_ftc_of_radius`.
+  It removes the global `∀ k, IsUnit (H k).det` assumption by deriving
+  invertibility from the source radius induction, and it derives interval
+  integrability for concrete matrix-Hessian wrappers from
+  `hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn`.
+  V63 scout result: this mathlib pin has no direct named Hessian-matrix API;
+  use explicit `HasFDerivAt grad (chewi131MatrixCLM (Hfun z)) z`, `gradient`
+  / `HasGradientAt` bridges, and CLM-valued Hessian continuity.  Next blocker:
+  specialize the V63 continuous matrix-Hessian wrappers to `grad := gradient f`
+  or a source-named gradient oracle.
 - Latest Chapter 13 frontier: the concrete standard main-stage
   range-membership/decrement blocker is closed in
   `StatInference/Optimization/InteriorPoint.lean`.  New reusable declarations

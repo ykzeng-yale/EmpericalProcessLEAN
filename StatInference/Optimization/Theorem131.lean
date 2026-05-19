@@ -160,6 +160,39 @@ theorem chewi131_local_quadratic_step_of_taylor_bound
       exact mul_le_mul_of_nonneg_right hcoef (sq_nonneg _)
 
 /--
+Chewi Theorem 13.1, determinant invertibility of the current Hessian inside
+the local radius.  This packages the source sentence that the Hessian at
+`x_n` remains positive definite, hence Newton's inverse is well-defined.
+-/
+theorem chewi131_hessian_det_isUnit_of_radius
+    {Hstar H : Matrix n n ℝ} (hHstar : Hstar.IsHermitian)
+    (hH : H.IsHermitian) {alpha gamma : ℝ} (halpha : 0 < alpha)
+    (hgamma : 0 < gamma)
+    {x xStar : EuclideanSpace ℝ n}
+    (hlower : alpha • (1 : Matrix n n ℝ) ≤ Hstar)
+    (hclose : ‖H - Hstar‖ ≤ gamma * ‖x - xStar‖)
+    (hradius : ‖x - xStar‖ ≤ alpha / (2 * gamma)) :
+    IsUnit H.det := by
+  have hgr_nonneg : 0 ≤ gamma * ‖x - xStar‖ :=
+    mul_nonneg (le_of_lt hgamma) (norm_nonneg _)
+  have hmul_radius :
+      gamma * ‖x - xStar‖ ≤ gamma * (alpha / (2 * gamma)) :=
+    mul_le_mul_of_nonneg_left hradius (le_of_lt hgamma)
+  have hhalf : gamma * ‖x - xStar‖ ≤ alpha / 2 := by
+    have hscalar : gamma * (alpha / (2 * gamma)) = alpha / 2 := by
+      field_simp [hgamma.ne']
+    simpa [hscalar] using hmul_radius
+  have hlower_half :
+      (alpha / 2) • (1 : Matrix n n ℝ) ≤ H :=
+    chewi131_hessian_lower_half_of_lipschitz_opNorm hHstar hH hgr_nonneg
+      hlower hclose hhalf
+  have hhalf_pos : 0 < alpha / 2 := by
+    positivity
+  have hH_posDef : H.PosDef :=
+    chewiA5_posDef_of_pos_scalar_one_le hH hhalf_pos hlower_half
+  exact (Matrix.isUnit_iff_isUnit_det H).mp hH_posDef.isUnit
+
+/--
 Chewi Theorem 13.1, the one-step recurrence also gives the displayed
 half-contraction while the current iterate remains in the local radius.
 -/
@@ -274,6 +307,45 @@ theorem chewi131_local_quadratic_recurrence_of_taylor_bound
   exact
     chewi131_local_quadratic_step_and_half_of_taylor_bound hHstar (hH k)
       halpha hgamma hlower (hclose k) (hradius k) (htaylor k)
+
+/--
+Chewi Theorem 13.1, recurrence from a Taylor estimate that is available only
+while the current iterate is inside the local radius.  This matches the source
+induction more closely than requiring an unconditional Taylor/inverse-Hessian
+bound for every `k`.
+-/
+theorem chewi131_local_quadratic_recurrence_of_conditional_taylor_bound
+    {Hstar : Matrix n n ℝ} {H : ℕ -> Matrix n n ℝ}
+    (hHstar : Hstar.IsHermitian) (hH : ∀ k, (H k).IsHermitian)
+    {alpha gamma : ℝ} (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    {x : ℕ -> EuclideanSpace ℝ n} {xStar : EuclideanSpace ℝ n}
+    (hlower : alpha • (1 : Matrix n n ℝ) ≤ Hstar)
+    (hclose : ∀ k, ‖H k - Hstar‖ ≤ gamma * ‖x k - xStar‖)
+    (htaylor : ∀ k,
+      ‖x k - xStar‖ ≤ alpha / (2 * gamma) ->
+        ‖x (k + 1) - xStar‖ ≤
+          (gamma / 2) * ‖(H k)⁻¹‖ * ‖x k - xStar‖ ^ (2 : ℕ))
+    (hinit : ‖x 0 - xStar‖ ≤ alpha / (2 * gamma)) :
+    ∀ k,
+      ‖x (k + 1) - xStar‖ ≤
+          (gamma / alpha) * ‖x k - xStar‖ ^ (2 : ℕ) ∧
+        ‖x (k + 1) - xStar‖ ≤ (1 / 2) * ‖x k - xStar‖ := by
+  have hradius : ∀ k, ‖x k - xStar‖ ≤ alpha / (2 * gamma) := by
+    intro k
+    induction k with
+    | zero => exact hinit
+    | succ k ih =>
+        have hstep :=
+          chewi131_local_quadratic_step_and_half_of_taylor_bound hHstar
+            (hH k) halpha hgamma hlower (hclose k) ih (htaylor k ih)
+        have hshrink :
+            (1 / 2) * ‖x k - xStar‖ ≤ ‖x k - xStar‖ := by
+          nlinarith [norm_nonneg (x k - xStar)]
+        exact hstep.2.trans (hshrink.trans ih)
+  intro k
+  exact
+    chewi131_local_quadratic_step_and_half_of_taylor_bound hHstar (hH k)
+      halpha hgamma hlower (hclose k) (hradius k) (htaylor k (hradius k))
 
 /--
 Chewi Theorem 13.1, sequence form driven by the source-shaped integral

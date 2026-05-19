@@ -19,7 +19,7 @@ pinned mathlib under `.lake/packages/mathlib`, then search nearby
 
 ## Current Route Pointer
 
-For live manual `/goal` work, use `Live Goal Prompt V62` near the top of
+For live manual `/goal` work, use `Live Goal Prompt V63` near the top of
 `docs/optimization2026_current_blocker_primitive_plan.md` and the snapshot section of
 `docs/optimization2026_progress_dashboard.md`.  Later historical frontier
 paragraphs in this blueprint are retained for source crosswalk and dependency
@@ -30,7 +30,7 @@ docs.  The current speed rule is to move from that live prompt directly into
 one endpoint-moving Lean theorem, with only one bounded API search for the
 active blocker.
 
-Current V62 live route: the §13.16 Lean endpoint surface is source-facing and
+Current V63 live route: the §13.16 Lean endpoint surface is source-facing and
 report-blocked only by missing local PDF/screenshot tooling, so active proof
 work has moved through Appendix A matrix infrastructure into Theorem 13.1's
 local Newton-convergence matrix step.  The module
@@ -173,7 +173,23 @@ and make later route reuse clearer.  The remaining Theorem 13.1 proof route is
 now concrete function instantiation: identify `H_n` with the Hessian
 matrix/oracle at `x_n`, package the segment Hessian matrices, prove the
 segment differentiability/integrability hypotheses, and derive nonsingularity
-from the half-radius Hessian lower bound when needed.
+from the half-radius Hessian lower bound when needed.  The V63 layer adds
+`chewi131_hessian_det_isUnit_of_radius`,
+`chewi131_local_quadratic_recurrence_of_conditional_taylor_bound`,
+`chewi131_taylor_norm_bound_of_continuous_matrix_gradient_ftc`,
+`chewi131_local_quadratic_step_of_matrix_gradient_ftc_of_radius`,
+`chewi131_local_quadratic_step_of_continuous_matrix_gradient_ftc_of_radius`,
+`chewi131_local_quadratic_recurrence_of_matrix_gradient_ftc_of_radius`, and
+`chewi131_local_quadratic_recurrence_of_continuous_matrix_gradient_ftc_of_radius`.
+It removes the global Hessian-invertibility premise by deriving determinant
+invertibility from the local-radius Hessian lower bound inside the recurrence
+induction, and it adds theorem-facing concrete matrix-Hessian wrappers with
+`z ↦ chewi131MatrixCLM (Hfun z)` as the Hessian oracle.  Search-first result:
+the pinned mathlib has no direct named Hessian-matrix wrapper, so the active
+route should use explicit `HasFDerivAt grad (chewi131MatrixCLM (Hfun z)) z`
+or `gradient`/`HasGradientAt` bridges plus CLM-valued continuity.  Next source
+step: specialize these wrappers to `grad := gradient f` or a source-named
+gradient oracle and package the clean differentiability hypothesis.
 
 Historical Chapter 13 route summary retained for dependencies: the concrete
 standard preliminary stage now hands off to a concrete standard source

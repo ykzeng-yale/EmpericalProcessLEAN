@@ -314,6 +314,54 @@ theorem chewi131_taylor_norm_bound_of_matrix_gradient_ftc
       hgamma hgrad hint hgrad_star hnewton hleft hlip
 
 /--
+Chewi Theorem 13.1 Taylor norm estimate with a concrete matrix Hessian oracle.
+The Hessian continuous-linear-map oracle is `chewi131MatrixCLM (Hfun z)`;
+continuity along a set containing the segment supplies the interval
+integrability hypothesis.
+-/
+theorem chewi131_taylor_norm_bound_of_continuous_matrix_gradient_ftc
+    {Hfun : EuclideanSpace ℝ n -> Matrix n n ℝ}
+    {s : Set (EuclideanSpace ℝ n)}
+    {gamma : ℝ} (hgamma : 0 ≤ gamma)
+    {grad : EuclideanSpace ℝ n -> EuclideanSpace ℝ n}
+    {x xNext xStar : EuclideanSpace ℝ n}
+    (hdet : IsUnit (Hfun x).det)
+    (hhess_cont : ContinuousOn (fun z => chewi131MatrixCLM (Hfun z)) s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar x t ∈ s)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (chewi131MatrixCLM (Hfun (hessianSegmentPoint xStar x t)))
+        (hessianSegmentPoint xStar x t))
+    (hgrad_star : grad xStar = 0)
+    (hnewton :
+      xNext =
+        x - chewi131MatrixCLM ((Hfun x)⁻¹) (grad x))
+    (hlip_matrix : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖Hfun x - Hfun (hessianSegmentPoint xStar x t)‖ ≤
+        gamma * (1 - t) * ‖x - xStar‖) :
+    ‖xNext - xStar‖ ≤
+      (gamma / 2) * ‖(Hfun x)⁻¹‖ * ‖x - xStar‖ ^ (2 : ℕ) := by
+  let hess : EuclideanSpace ℝ n ->
+      EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ n :=
+    fun z => chewi131MatrixCLM (Hfun z)
+  have hint : IntervalIntegrable
+      (fun t : ℝ => hess (hessianSegmentPoint xStar x t) (x - xStar))
+      MeasureTheory.volume (0 : ℝ) 1 :=
+    hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn
+      (hess := hess) (s := s) (x := xStar) (y := x) (v := x - xStar)
+      (by simpa [hess] using hhess_cont) hseg
+  exact
+    chewi131_taylor_norm_bound_of_matrix_gradient_ftc
+      (H := Hfun x)
+      (Hseg := fun t => Hfun (hessianSegmentPoint xStar x t))
+      (gamma := gamma) (x := x) (xNext := xNext) (xStar := xStar)
+      (grad := grad) (hess := hess) hgamma hdet
+      (by simpa [hess] using hgrad) hint hgrad_star
+      (by simpa [hess, chewi131MatrixCLM] using hnewton)
+      (by rfl) (by intro t ht; rfl) hlip_matrix
+
+/--
 Chewi Theorem 13.1 one-step local quadratic convergence from gradient FTC and
 Hessian-Lipschitz data.
 -/
@@ -407,6 +455,107 @@ theorem chewi131_local_quadratic_step_of_matrix_gradient_ftc
         (x := x) (xNext := xNext) (xStar := xStar)
         (grad := grad) (hess := hess) (le_of_lt hgamma) hdet
         hgrad hint hgrad_star hnewton hhess_x hhess_seg hlip_matrix)
+
+/--
+Chewi Theorem 13.1 one-step matrix-gradient-FTC form with Hessian
+invertibility derived from the local-radius hypothesis, matching the textbook
+proof's `nabla^2 f(x_n) >= alpha / 2` argument.
+-/
+theorem chewi131_local_quadratic_step_of_matrix_gradient_ftc_of_radius
+    {Hstar H : Matrix n n ℝ} {Hseg : ℝ -> Matrix n n ℝ}
+    (hHstar : Hstar.IsHermitian) (hH : H.IsHermitian)
+    {alpha gamma : ℝ} (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    {grad : EuclideanSpace ℝ n -> EuclideanSpace ℝ n}
+    {hess : EuclideanSpace ℝ n ->
+      EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ n}
+    {x xNext xStar : EuclideanSpace ℝ n}
+    (hlower : alpha • (1 : Matrix n n ℝ) ≤ Hstar)
+    (hclose : ‖H - Hstar‖ ≤ gamma * ‖x - xStar‖)
+    (hradius : ‖x - xStar‖ ≤ alpha / (2 * gamma))
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint xStar x t))
+        (hessianSegmentPoint xStar x t))
+    (hint : IntervalIntegrable
+      (fun t : ℝ => hess (hessianSegmentPoint xStar x t) (x - xStar))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hgrad_star : grad xStar = 0)
+    (hnewton :
+      xNext =
+        x -
+          ((Matrix.toEuclideanLin (𝕜 := ℝ) (m := n) (n := n)).trans
+            LinearMap.toContinuousLinearMap H⁻¹) (grad x))
+    (hhess_x :
+      hess x =
+        ((Matrix.toEuclideanLin (𝕜 := ℝ) (m := n) (n := n)).trans
+          LinearMap.toContinuousLinearMap H))
+    (hhess_seg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hess (hessianSegmentPoint xStar x t) =
+        ((Matrix.toEuclideanLin (𝕜 := ℝ) (m := n) (n := n)).trans
+          LinearMap.toContinuousLinearMap (Hseg t)))
+    (hlip_matrix : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖H - Hseg t‖ ≤ gamma * (1 - t) * ‖x - xStar‖) :
+    ‖xNext - xStar‖ ≤
+      (gamma / alpha) * ‖x - xStar‖ ^ (2 : ℕ) := by
+  have hdet : IsUnit H.det :=
+    chewi131_hessian_det_isUnit_of_radius hHstar hH halpha hgamma
+      hlower hclose hradius
+  exact
+    chewi131_local_quadratic_step_of_matrix_gradient_ftc hHstar hH
+      halpha hgamma hdet hlower hclose hradius hgrad hint hgrad_star
+      hnewton hhess_x hhess_seg hlip_matrix
+
+/--
+Chewi Theorem 13.1 one-step local quadratic convergence with a concrete
+continuous matrix Hessian oracle.  This is the theorem-facing form that keeps
+only the Hessian matrix family `Hfun` and derives both interval integrability
+and Hessian invertibility from the source hypotheses.
+-/
+theorem chewi131_local_quadratic_step_of_continuous_matrix_gradient_ftc_of_radius
+    {Hstar : Matrix n n ℝ}
+    {Hfun : EuclideanSpace ℝ n -> Matrix n n ℝ}
+    {s : Set (EuclideanSpace ℝ n)}
+    (hHstar : Hstar.IsHermitian) {alpha gamma : ℝ}
+    (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    {grad : EuclideanSpace ℝ n -> EuclideanSpace ℝ n}
+    {x xNext xStar : EuclideanSpace ℝ n}
+    (hH : (Hfun x).IsHermitian)
+    (hlower : alpha • (1 : Matrix n n ℝ) ≤ Hstar)
+    (hclose : ‖Hfun x - Hstar‖ ≤ gamma * ‖x - xStar‖)
+    (hradius : ‖x - xStar‖ ≤ alpha / (2 * gamma))
+    (hhess_cont : ContinuousOn (fun z => chewi131MatrixCLM (Hfun z)) s)
+    (hseg : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar x t ∈ s)
+    (hgrad : ∀ t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (chewi131MatrixCLM (Hfun (hessianSegmentPoint xStar x t)))
+        (hessianSegmentPoint xStar x t))
+    (hgrad_star : grad xStar = 0)
+    (hnewton :
+      xNext =
+        x - chewi131MatrixCLM ((Hfun x)⁻¹) (grad x))
+    (hlip_matrix : ∀ t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖Hfun x - Hfun (hessianSegmentPoint xStar x t)‖ ≤
+        gamma * (1 - t) * ‖x - xStar‖) :
+    ‖xNext - xStar‖ ≤
+      (gamma / alpha) * ‖x - xStar‖ ^ (2 : ℕ) := by
+  let hess : EuclideanSpace ℝ n ->
+      EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ n :=
+    fun z => chewi131MatrixCLM (Hfun z)
+  have hint : IntervalIntegrable
+      (fun t : ℝ => hess (hessianSegmentPoint xStar x t) (x - xStar))
+      MeasureTheory.volume (0 : ℝ) 1 :=
+    hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn
+      (hess := hess) (s := s) (x := xStar) (y := x) (v := x - xStar)
+      (by simpa [hess] using hhess_cont) hseg
+  exact
+    chewi131_local_quadratic_step_of_matrix_gradient_ftc_of_radius
+      (Hstar := Hstar) (H := Hfun x)
+      (Hseg := fun t => Hfun (hessianSegmentPoint xStar x t))
+      hHstar hH halpha hgamma hlower hclose hradius
+      (by simpa [hess] using hgrad) hint hgrad_star
+      (by simpa [hess, chewi131MatrixCLM] using hnewton)
+      (by rfl) (by intro t ht; rfl) hlip_matrix
 
 /--
 Chewi Theorem 13.1 sequence recurrence from gradient FTC and Hessian-Lipschitz
@@ -512,6 +661,122 @@ theorem chewi131_local_quadratic_recurrence_of_matrix_gradient_ftc
       (grad := grad) (hess := hess) (le_of_lt hgamma) (hdet k)
       (hgrad k) (hint k) hgrad_star (hnewton k) (hhess_x k)
       (hhess_seg k) (hlip_matrix k)
+
+/--
+Chewi Theorem 13.1 sequence recurrence in matrix-shaped Hessian notation,
+with invertibility derived inside the radius induction.  This is closer to the
+textbook proof than requiring a separate global `IsUnit (H k).det` assumption.
+-/
+theorem chewi131_local_quadratic_recurrence_of_matrix_gradient_ftc_of_radius
+    {Hstar : Matrix n n ℝ} {H : ℕ -> Matrix n n ℝ}
+    {Hseg : ℕ -> ℝ -> Matrix n n ℝ}
+    (hHstar : Hstar.IsHermitian) (hH : ∀ k, (H k).IsHermitian)
+    {alpha gamma : ℝ} (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    {grad : EuclideanSpace ℝ n -> EuclideanSpace ℝ n}
+    {hess : EuclideanSpace ℝ n ->
+      EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ n}
+    {x : ℕ -> EuclideanSpace ℝ n} {xStar : EuclideanSpace ℝ n}
+    (hlower : alpha • (1 : Matrix n n ℝ) ≤ Hstar)
+    (hclose : ∀ k, ‖H k - Hstar‖ ≤ gamma * ‖x k - xStar‖)
+    (hgrad : ∀ k t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (hess (hessianSegmentPoint xStar (x k) t))
+        (hessianSegmentPoint xStar (x k) t))
+    (hint : ∀ k, IntervalIntegrable
+      (fun t : ℝ => hess (hessianSegmentPoint xStar (x k) t) (x k - xStar))
+      MeasureTheory.volume (0 : ℝ) 1)
+    (hgrad_star : grad xStar = 0)
+    (hnewton : ∀ k,
+      x (k + 1) =
+        x k -
+          ((Matrix.toEuclideanLin (𝕜 := ℝ) (m := n) (n := n)).trans
+            LinearMap.toContinuousLinearMap (H k)⁻¹) (grad (x k)))
+    (hhess_x : ∀ k,
+      hess (x k) =
+        ((Matrix.toEuclideanLin (𝕜 := ℝ) (m := n) (n := n)).trans
+          LinearMap.toContinuousLinearMap (H k)))
+    (hhess_seg : ∀ k t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hess (hessianSegmentPoint xStar (x k) t) =
+        ((Matrix.toEuclideanLin (𝕜 := ℝ) (m := n) (n := n)).trans
+          LinearMap.toContinuousLinearMap (Hseg k t)))
+    (hlip_matrix : ∀ k t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖H k - Hseg k t‖ ≤ gamma * (1 - t) * ‖x k - xStar‖)
+    (hinit : ‖x 0 - xStar‖ ≤ alpha / (2 * gamma)) :
+    ∀ k,
+      ‖x (k + 1) - xStar‖ ≤
+          (gamma / alpha) * ‖x k - xStar‖ ^ (2 : ℕ) ∧
+        ‖x (k + 1) - xStar‖ ≤ (1 / 2) * ‖x k - xStar‖ := by
+  refine
+    chewi131_local_quadratic_recurrence_of_conditional_taylor_bound hHstar hH
+      halpha hgamma hlower hclose ?_ hinit
+  intro k hradius
+  have hdet : IsUnit (H k).det :=
+    chewi131_hessian_det_isUnit_of_radius hHstar (hH k) halpha hgamma
+      hlower (hclose k) hradius
+  exact
+    chewi131_taylor_norm_bound_of_matrix_gradient_ftc
+      (H := H k) (Hseg := Hseg k) (gamma := gamma)
+      (x := x k) (xNext := x (k + 1)) (xStar := xStar)
+      (grad := grad) (hess := hess) (le_of_lt hgamma) hdet
+      (hgrad k) (hint k) hgrad_star (hnewton k) (hhess_x k)
+      (hhess_seg k) (hlip_matrix k)
+
+/--
+Chewi Theorem 13.1 sequence recurrence with a concrete continuous matrix
+Hessian oracle.  The interval-integrability hypotheses are derived from
+continuity of `z ↦ chewi131MatrixCLM (Hfun z)` on a set containing every
+`x_star -> x_k` segment, and Hessian invertibility is derived inside the
+radius induction.
+-/
+theorem chewi131_local_quadratic_recurrence_of_continuous_matrix_gradient_ftc_of_radius
+    {Hstar : Matrix n n ℝ}
+    {Hfun : EuclideanSpace ℝ n -> Matrix n n ℝ}
+    {s : Set (EuclideanSpace ℝ n)}
+    (hHstar : Hstar.IsHermitian)
+    {alpha gamma : ℝ} (halpha : 0 < alpha) (hgamma : 0 < gamma)
+    {grad : EuclideanSpace ℝ n -> EuclideanSpace ℝ n}
+    {x : ℕ -> EuclideanSpace ℝ n} {xStar : EuclideanSpace ℝ n}
+    (hH : ∀ k, (Hfun (x k)).IsHermitian)
+    (hlower : alpha • (1 : Matrix n n ℝ) ≤ Hstar)
+    (hclose : ∀ k, ‖Hfun (x k) - Hstar‖ ≤ gamma * ‖x k - xStar‖)
+    (hhess_cont : ContinuousOn (fun z => chewi131MatrixCLM (Hfun z)) s)
+    (hseg : ∀ k t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      hessianSegmentPoint xStar (x k) t ∈ s)
+    (hgrad : ∀ k t, t ∈ Set.uIcc (0 : ℝ) 1 ->
+      HasFDerivAt grad
+        (chewi131MatrixCLM (Hfun (hessianSegmentPoint xStar (x k) t)))
+        (hessianSegmentPoint xStar (x k) t))
+    (hgrad_star : grad xStar = 0)
+    (hnewton : ∀ k,
+      x (k + 1) =
+        x k - chewi131MatrixCLM ((Hfun (x k))⁻¹) (grad (x k)))
+    (hlip_matrix : ∀ k t, t ∈ Set.Icc (0 : ℝ) 1 ->
+      ‖Hfun (x k) - Hfun (hessianSegmentPoint xStar (x k) t)‖ ≤
+        gamma * (1 - t) * ‖x k - xStar‖)
+    (hinit : ‖x 0 - xStar‖ ≤ alpha / (2 * gamma)) :
+    ∀ k,
+      ‖x (k + 1) - xStar‖ ≤
+          (gamma / alpha) * ‖x k - xStar‖ ^ (2 : ℕ) ∧
+        ‖x (k + 1) - xStar‖ ≤ (1 / 2) * ‖x k - xStar‖ := by
+  let hess : EuclideanSpace ℝ n ->
+      EuclideanSpace ℝ n →L[ℝ] EuclideanSpace ℝ n :=
+    fun z => chewi131MatrixCLM (Hfun z)
+  have hint : ∀ k, IntervalIntegrable
+      (fun t : ℝ => hess (hessianSegmentPoint xStar (x k) t) (x k - xStar))
+      MeasureTheory.volume (0 : ℝ) 1 := by
+    intro k
+    exact
+      hessianSegmentHessian_apply_intervalIntegrable_of_continuousOn
+        (hess := hess) (s := s) (x := xStar) (y := x k)
+        (v := x k - xStar) (by simpa [hess] using hhess_cont) (hseg k)
+  exact
+    chewi131_local_quadratic_recurrence_of_matrix_gradient_ftc_of_radius
+      (Hstar := Hstar) (H := fun k => Hfun (x k))
+      (Hseg := fun k t => Hfun (hessianSegmentPoint xStar (x k) t))
+      hHstar hH halpha hgamma hlower hclose
+      (by simpa [hess] using hgrad) hint hgrad_star
+      (by intro k; simpa [hess, chewi131MatrixCLM] using hnewton k)
+      (by intro k; rfl) (by intro k t ht; rfl) hlip_matrix hinit
 
 end Optimization
 end StatInference
